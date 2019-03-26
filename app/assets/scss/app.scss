@@ -1,1 +1,22 @@
-p {}
+.board {
+    border-collapse: collapse;
+
+    td.border {
+        background: #888;
+    }
+
+    td.tree {
+        background: green;
+    }
+}
+
+.player {
+    background: red; 
+    position: absolute;
+}
+
+.coin {
+    background: gold;
+    border-radius: 50%; 
+    position: absolute;
+}
