@@ -1,10 +1,20 @@
-class Player {
-    constructor(vec) {
-        this.pos = vec;
+import BaseActor from './BaseActor';
+
+class Player extends BaseActor {
+    constructor(pos) {
+        super(pos);
+
+        document.addEventListener('click', e => {
+            this.el.style.left = '1000px';
+        });
     }
 
-    static create(vec) {
-        return new Player(vec);
+    static create(pos) {
+        return new Player(pos);
+    }
+
+    update(time) {
+        //this.pos.x += .1;
     }
 }
 

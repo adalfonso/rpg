@@ -1,10 +1,16 @@
-class Coin {
+import BaseActor from './BaseActor';
+
+class Coin extends BaseActor {
     constructor(pos) {
-        this.pos = pos;        
+        super(pos);
     }
 
     static create(pos) {
         return new Coin(pos);
+    }
+
+    update(time) {
+        //console.log(time, this);
     }
 }
 

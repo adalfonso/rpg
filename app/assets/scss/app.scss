@@ -1,4 +1,4 @@
-.board {
+.grid {
     border-collapse: collapse;
 
     td.border {
@@ -11,12 +11,12 @@
 }
 
 .player {
-    background: red; 
+    background: red;
     position: absolute;
 }
 
 .coin {
     background: gold;
-    border-radius: 50%; 
+    border-radius: 50%;
     position: absolute;
 }

@@ -1,2 +1,2 @@
-.board{border-collapse:collapse}.board td.border{background:#888}.board td.tree{background:green}.player{background:red;position:absolute}.coin{background:gold;border-radius:50%;position:absolute}
+.grid{border-collapse:collapse}.grid td.border{background:#888}.grid td.tree{background:green}.player{background:red;position:absolute}.coin{background:gold;border-radius:50%;position:absolute}
 
