@@ -1,5 +1,9 @@
+body { margin: 0; }
+
 .grid {
     border-collapse: collapse;
+
+    td { padding: 0; }
 
     td.border {
         background: #888;

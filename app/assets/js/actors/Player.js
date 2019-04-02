@@ -4,8 +4,11 @@ class Player extends BaseActor {
     constructor(pos) {
         super(pos);
 
-        document.addEventListener('click', e => {
-            this.el.style.left = '1000px';
+        document.addEventListener('keydown', e => {
+            console.log(e);
+            if (e.key.match(/Arrow/)) {
+                this.move(e.key);
+            }
         });
     }
 
@@ -14,7 +17,24 @@ class Player extends BaseActor {
     }
 
     update(time) {
-        //this.pos.x += .1;
+
+    }
+
+    move(key) {
+        switch(key) {
+            case 'ArrowLeft':
+                this.pos.x--;
+                break;
+            case 'ArrowDown':
+                this.pos.y++;
+                break;
+            case 'ArrowRight':
+                this.pos.x++
+                break;
+            case 'ArrowUp':
+                this.pos.y--
+                break;
+        }
     }
 }
 
