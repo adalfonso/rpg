@@ -40,10 +40,7 @@ class Display {
         let actors = domify('div', { class: 'actors' });
 
         this.actors.map(actor => {
-            let el = domify(
-                'div',
-                { class: actor.constructor.name.toLowerCase() }
-            );
+            let el = domify('div', { class: actor.type });
 
             el.style.top = actor.pos.y * this.scale + 'px';
             el.style.left = actor.pos.x * this.scale + 'px';

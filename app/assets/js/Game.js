@@ -3,10 +3,12 @@ import Display from './Display.js';
 import Level from './Level.js';
 
 import { level1 } from './levels.js';
+import Vector from './Vector.js';
 
 class Game {
     constructor() {
         this.level = new Level(level1);
+
         let resources = this.level.getRows();
 
         this.state = new State(resources);
@@ -14,6 +16,23 @@ class Game {
 
         this.display.drawGrid();
         this.display.drawActors();
+
+        document.addEventListener('keydown', e => {
+            if (!e.key.match(/Arrow/)) {
+                return;
+            }
+
+            let player = this.state.player;
+            let movesTo = player.moveTo(e.key);
+            let touches = this.level.touches(movesTo, player.size, 'wall');
+
+            if (!touches) {
+                player.move(e.key);
+            }
+        });
+
+        document.addEventListener('keyup', e => {
+        });
     }
 
     start() {
@@ -36,11 +55,12 @@ class Game {
     }
 
     refresh(time) {
-        this.state.update(time, 'state');
+        this.state.update(time, this.level);
         this.display.sync(this.state);
 
         return true;
-    };
+    }
+
 }
 
 export default Game;

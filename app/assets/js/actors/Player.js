@@ -1,39 +1,35 @@
 import BaseActor from './BaseActor';
+import Vector from '../Vector';
 
 class Player extends BaseActor {
-    constructor(pos) {
-        super(pos);
-
-        document.addEventListener('keydown', e => {
-            console.log(e);
-            if (e.key.match(/Arrow/)) {
-                this.move(e.key);
-            }
-        });
+    constructor(pos, size) {
+        super(pos, size);
+        this.type = 'player';
     }
 
-    static create(pos) {
-        return new Player(pos);
+    static create(pos, size) {
+        return new Player(pos, size);
     }
 
-    update(time) {
-
+    update() {
     }
 
     move(key) {
+        this.pos = this.moveTo(key);
+    }
+
+    moveTo(key) {
         switch(key) {
             case 'ArrowLeft':
-                this.pos.x--;
-                break;
+                return this.pos.plus({ x: -.5, y: 0 });
             case 'ArrowDown':
-                this.pos.y++;
-                break;
+                return this.pos.plus({ x: 0, y: .5 });
             case 'ArrowRight':
-                this.pos.x++
-                break;
+                return this.pos.plus({ x: .5, y: 0 });
             case 'ArrowUp':
-                this.pos.y--
-                break;
+                return this.pos.plus({ x: 0, y: -.5 });
+            default:
+                return this.pos;
         }
     }
 }

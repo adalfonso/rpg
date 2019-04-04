@@ -1,6 +1,5 @@
 import Vector from './Vector.js';
 import chars from './characters.js';
-import { domify } from './helpers.js';
 
 class Level {
     constructor(plan) {
@@ -8,7 +7,6 @@ class Level {
 
         this.width = this.rows[0].length;
         this.height = this.rows.length;
-        this.scale = 20;
         this.actors = [];
     }
 
@@ -22,7 +20,10 @@ class Level {
 
                 } else {
                     actors.push(
-                        chars[ch].create(new Vector(x, y), ch)
+                        chars[ch].create(
+                            new Vector(x, y),
+                            new Vector(1,1)
+                        )
                     );
 
                     return 'empty';
@@ -30,7 +31,30 @@ class Level {
             });
         });
 
+        this.rows = grid;
+
         return { grid: grid, actors: actors };
+    }
+
+    touches(pos, size, type) {
+        let x1 = Math.floor(pos.x);
+        let x2 = Math.ceil(pos.x + size.x);
+        let y1 = Math.floor(pos.y);
+        let y2 = Math.ceil(pos.y + size.y);
+
+        for (let y = y1; y < y2; y++) {
+            for (let x = x1; x < x2; x++) {
+                let isOutside = x < 0 || x >= this.width ||
+                    y < 0 || y >= this.height;
+
+                let touching = isOutside ? "wall" : this.rows[y][x];
+
+                if (touching === type) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
 
