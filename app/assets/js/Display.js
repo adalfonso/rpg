@@ -1,9 +1,8 @@
 import { domify } from './helpers.js';
 
 class Display {
-    constructor(resources) {
-        this.grid = resources.grid || [];
-        this.actors = resources.actors || [];
+    constructor(state) {
+        this.state = state;
 
         this.layers = {
             grid: null,
@@ -21,7 +20,7 @@ class Display {
             'table',
             { class: 'grid' },
 
-            this.grid.map(row => {
+            this.state.grid.map(row => {
                 return domify('tr', {}, row.map(cell => {
                     return domify(
                         'td', {
@@ -39,7 +38,7 @@ class Display {
     drawActors() {
         let actors = domify('div', { class: 'actors' });
 
-        this.actors.map(actor => {
+        this.state.actors.map(actor => {
             let el = domify('div', { class: actor.type });
 
             el.style.top = actor.pos.y * this.scale + 'px';

@@ -11,7 +11,11 @@ class Player extends BaseActor {
         return new Player(pos, size);
     }
 
-    update() {
+    update(time, state) {
+        state.actors = state.actors.filter(actor => {
+            return actor.type !== 'coin' ||
+                !this.collidesWith(actor);
+        });
     }
 
     move(key) {

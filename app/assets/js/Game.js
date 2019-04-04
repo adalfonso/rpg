@@ -12,7 +12,7 @@ class Game {
         let resources = this.level.getRows();
 
         this.state = new State(resources);
-        this.display = new Display(resources);
+        this.display = new Display(this.state);
 
         this.display.drawGrid();
         this.display.drawActors();

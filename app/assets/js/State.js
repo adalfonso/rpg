@@ -10,15 +10,7 @@ class State {
 
     update(time, level) {
         this.actors.forEach(actor => {
-            let distance = actor.travelDistance(time);
-            let movesTo = this.player.pos.plus(distance);
-            let touches = level.touches(movesTo, this.player.size, 'wall');
-
-            if (touches) {
-                actor.velocity = new Vector(0, 0);
-            }
-
-            actor.update(time, level);
+            actor.update(time, this);
         });
 
         return this;

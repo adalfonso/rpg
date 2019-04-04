@@ -32,6 +32,7 @@ class Level {
         });
 
         this.rows = grid;
+        this.actors = actors;
 
         return { grid: grid, actors: actors };
     }
