@@ -25,13 +25,13 @@ class Player extends BaseActor {
     moveTo(key) {
         switch(key) {
             case 'ArrowLeft':
-                return this.pos.plus({ x: -.5, y: 0 });
+                return this.pos.plus({ x: -1, y: 0 });
             case 'ArrowDown':
-                return this.pos.plus({ x: 0, y: .5 });
+                return this.pos.plus({ x: 0, y: 1 });
             case 'ArrowRight':
-                return this.pos.plus({ x: .5, y: 0 });
+                return this.pos.plus({ x: 1, y: 0 });
             case 'ArrowUp':
-                return this.pos.plus({ x: 0, y: -.5 });
+                return this.pos.plus({ x: 0, y: -1 });
             default:
                 return this.pos;
         }

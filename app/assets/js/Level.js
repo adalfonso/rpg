@@ -1,9 +1,12 @@
 import Vector from './Vector.js';
+import BaseActor from './actors/BaseActor.js';
 import chars from './characters.js';
 
 class Level {
-    constructor(plan) {
+    constructor(plan, config) {
+        this.config = config;
         this.rows = plan.split("\n").map(row => [...row.trim()]);
+        this.level = 0;
 
         this.width = this.rows[0].length;
         this.height = this.rows.length;
@@ -19,12 +22,14 @@ class Level {
                     return chars[ch];
 
                 } else {
-                    actors.push(
-                        chars[ch].create(
-                            new Vector(x, y),
-                            new Vector(1,1)
-                        )
-                    );
+                    if (ch !== '@' || !this.config.hasOwnProperty('origin')) {
+                        actors.push(
+                            chars[ch].create(
+                                new Vector(x, y),
+                                new Vector(1,1)
+                            )
+                        );
+                    }
 
                     return 'empty';
                 }
@@ -32,6 +37,16 @@ class Level {
         });
 
         this.rows = grid;
+
+        if (this.config.hasOwnProperty('origin')) {
+            actors.push(
+                chars['@'].create(
+                    this.findPlayerStart(),
+                    new Vector(1, 1)
+                )
+            );
+        }
+
         this.actors = actors;
 
         return { grid: grid, actors: actors };
@@ -56,6 +71,50 @@ class Level {
             }
         }
         return false;
+    }
+
+    portalCollisionIndex(charName, player) {
+        let vecs = this.locateByCharName(charName);
+
+        return vecs.map((vec, index) => {
+            let actor = new BaseActor(
+                vec,
+                new Vector(1, 1)
+            );
+
+            return {
+                index: index,
+                collides: player.collidesWith(actor)
+            };
+        }).filter(vec => vec.collides);
+    }
+
+    findPlayerStart() {
+        let charName = this.config.origin.charName === 'portal-next'
+            ? 'portal-previous'
+            : 'portal-next';
+
+        let vecs = this.locateByCharName(charName);
+
+        for (let i = 0; i < vecs.length; i++) {
+            if (i === this.config.origin.collision[0].index) {
+                return vecs[i];
+            }
+        }
+    }
+
+    locateByCharName(charName) {
+        let vecs = [];
+
+        for (let y = 0, y2 = this.height; y < y2; y++) {
+            for (let x = 0, x2 = this.width; x < x2; x++) {
+                if (this.rows[y][x] === charName) {
+                    vecs.push(new Vector(x,y));
+                }
+            }
+        }
+
+        return vecs;
     }
 }
 

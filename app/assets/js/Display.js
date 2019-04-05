@@ -55,6 +55,16 @@ class Display {
         this.layers.actor = actors;
     }
 
+    clear() {
+        if (this.layers.grid) {
+            this.layers.grid.remove();
+        }
+
+        if (this.layers.actor) {
+            this.layers.actor.remove();
+        }
+    }
+
     sync(state) {
         if (this.layers.actor) {
             this.layers.actor.remove();

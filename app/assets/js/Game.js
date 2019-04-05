@@ -2,20 +2,13 @@ import State from './State.js';
 import Display from './Display.js';
 import Level from './Level.js';
 
-import { level1 } from './levels.js';
+import levels from './levels.js';
 import Vector from './Vector.js';
 
 class Game {
     constructor() {
-        this.level = new Level(level1);
-
-        let resources = this.level.getRows();
-
-        this.state = new State(resources);
-        this.display = new Display(this.state);
-
-        this.display.drawGrid();
-        this.display.drawActors();
+        this.levelNumber = 0;
+        this.loadLevel();
 
         document.addEventListener('keydown', e => {
             if (!e.key.match(/Arrow/)) {
@@ -29,10 +22,44 @@ class Game {
             if (!touches) {
                 player.move(e.key);
             }
-        });
 
-        document.addEventListener('keyup', e => {
+            if (this.level.touches(movesTo, player.size, 'portal-next')) {
+                this.loadLevel('next');
+            } else if (this.level.touches(movesTo, player.size, 'portal-previous')) {
+                this.loadLevel('previous');
+            }
         });
+    }
+
+    loadLevel(origin = null) {
+        let config = {};
+
+        if (origin) {
+            let charName = 'portal-' + origin;
+
+            let collision = this.level.portalCollisionIndex(charName, this.state.player);
+
+            config.origin = {
+                charName: charName,
+                collision: collision
+            };
+
+            this.levelNumber += origin === 'previous' ? -1 : 1;
+        }
+
+        this.level = new Level(levels[this.levelNumber], config);
+
+        if (this.display) {
+            this.display.clear();
+        }
+
+        let resources = this.level.getRows();
+
+        this.state = new State(resources);
+        this.display = new Display(this.state);
+
+        this.display.drawGrid();
+        this.display.drawActors();
     }
 
     start() {
