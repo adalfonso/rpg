@@ -1,3 +1,4 @@
+import config from '../config';
 import BaseActor from './BaseActor';
 import sprite from '../../img/player.png';
 import Renderable from '../Renderable';
@@ -5,6 +6,7 @@ import Renderable from '../Renderable';
 class Player extends BaseActor {
     constructor(pos, size) {
         super(pos, size);
+
         this.speed = { x: 0, y: 0 };
         this.maxSpeed = this.size.x / 32;
 
@@ -36,16 +38,24 @@ class Player extends BaseActor {
     }
 
     draw(ctx) {
-        // ctx.fillStyle = '#F00';
-        // ctx.fillRect(this.pos.x, this.pos.y, this.size.x, this.size.y);
-
         ctx.save();
-        ctx.translate(this.pos.x, this.pos.y-20);
+
+        if (config.debug) {
+            this.debugDraw(ctx);
+        }
+
+        ctx.translate(this.pos.x, this.pos.y);
 
         super.draw(ctx);
+
         this.sprites[this.direction].draw(ctx);
 
         ctx.restore();
+    }
+
+    debugDraw(ctx) {
+        ctx.fillStyle = '#F99';
+        ctx.fillRect(this.pos.x, this.pos.y, this.size.x, this.size.y);
     }
 
     move(key) {
@@ -93,12 +103,16 @@ class Player extends BaseActor {
     changeDirection() {
         if (!this.speed.x && !this.speed.y) {
            this.direction = 0;
+
         } else if (this.speed.x > 0) {
             this.direction = 4;
+
         } else if (this.speed.x < 0) {
             this.direction = 2;
+
         } else if (this.speed.y > 0) {
             this.direction = 3;
+
         } else if (this.speed.y < 0) {
             this.direction = 1;
         }

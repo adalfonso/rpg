@@ -10,6 +10,7 @@ class BaseActor {
     }
 
     update(dt) {
+
     }
 
     draw(ctx) {

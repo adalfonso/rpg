@@ -1,3 +1,5 @@
+import config from '../config';
+
 export default class BaseInanimate {
     constructor(pos, size) {
         this.pos = pos || { x: 0, y: 0 };
@@ -9,13 +11,9 @@ export default class BaseInanimate {
     }
 
     draw(ctx) {
-        ctx.fillStyle = this.fillStyle;
-
-        ctx.fillRect(
-            this.pos.x,
-            this.pos.y,
-            this.size.x,
-            this.size.y
-        );
+        if (config.debug) {
+            ctx.strokeStyle = "#F00";
+            ctx.strokeRect(this.pos.x, this.pos.y, this.size.x, this.size.y);
+        }
     }
 }

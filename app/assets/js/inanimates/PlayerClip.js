@@ -6,8 +6,9 @@ export default class PlayerClip extends BaseInanimate {
     }
 
     collidesWith(entity) {
-        let x = entity.pos.x + entity.size.x / 2;
-        let y = entity.pos.y + entity.size.y / 2;
+        let xRatio = entity.pos.x < this.pos.x ? .6 : .4;
+        let x = entity.pos.x + entity.size.x  * xRatio;
+        let y = entity.pos.y + entity.size.y * .8;
 
         return x > this.pos.x &&
             x < this.pos.x + this.size.x &&
@@ -16,7 +17,6 @@ export default class PlayerClip extends BaseInanimate {
     }
 
     draw(ctx) {
-        // ctx.strokeStyle = "#F00";
-        // ctx.strokeRect(this.pos.x, this.pos.y, this.size.x, this.size.y);
+        super.draw(ctx);
     }
 }
