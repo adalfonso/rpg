@@ -39,6 +39,7 @@ export default class Renderable {
         let posX = (this.frame % this.framesX) * this.subWidth;
         let posY = Math.floor(this.frame / this.framesX) * this.subHeight;
 
+
         ctx.drawImage(
             this.img,
             posX, posY,

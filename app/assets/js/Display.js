@@ -1,18 +1,41 @@
 class Display {
-    constructor(game) {
-        let canvas = document.getElementById('game');
+    constructor(canvas, game) {
+        this.game = game;
         this.ctx = canvas.getContext('2d');
+
+        canvas.width = this.game.width;
+        canvas.height = this.game.height;
+
         this.ctx.imageSmoothingEnabled = false;
 
-        this.game = game;
+        this.buffer = document.createElement('canvas').getContext('2d');
+        this.buffer.canvas.width = this.game.width;
+        this.buffer.canvas.height = this.game.height;
+        this.buffer.imageSmoothingEnabled = false;
     }
 
     draw() {
-        this.ctx.clearRect(0, 0, this.game.width, this.game.height);
+        this.buffer.fillRect(0, 0, this.game.width, this.game.height);
+
+        this.game.level.map.draw(this.buffer);
 
         this.game.level.entities.forEach(entity => {
-            entity.draw(this.ctx);
+            entity.draw(this.buffer);
         });
+
+        this.game.level.map.draw(this.buffer, true);
+
+       // this.ctx.clearRect(0, 0, this.game.width, this.game.height);
+
+        this.ctx.drawImage(
+            this.buffer.canvas,
+            0, 0,
+            this.buffer.canvas.width,
+            this.buffer.canvas.height,
+            0, 0,
+            this.ctx.canvas.width,
+            this.ctx.canvas.height
+        );
     }
 }
 

@@ -8,7 +8,7 @@ class Player extends BaseActor {
         super(pos, size);
 
         this.speed = { x: 0, y: 0 };
-        this.maxSpeed = this.size.x / 32;
+        this.maxSpeed = this.size.x / 22;
 
         this.direction = 0;
 

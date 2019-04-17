@@ -1,5 +1,8 @@
 import Renderable from "../Renderable";
 import PlayerClip from "./PlayerClip";
+import Portal from "./Portal";
+import Vector from "../Vector";
+import config from '../config';
 
 export default class Map {
 
@@ -7,11 +10,14 @@ export default class Map {
         this.data = data;
         this.player = player;
         this.pos = { x: 0, y: 0 };
-        this.scale = 2;
+        this.scale = config.scale;
+        this.config = {};
 
         this.renderable = new Renderable(img, this.scale, 0, 240, 24, 10, 0);
 
         this.playerClips = [];
+        this.portals = [];
+        this.playerStarts = {};
 
         this.data.layers.forEach(layer => {
             if (layer.type !== 'objectgroup') {
@@ -19,23 +25,62 @@ export default class Map {
             }
 
             layer.objects.forEach(obj => {
-                this.playerClips.push(
-                    new PlayerClip(
-                        { x: obj.x * this.scale, y: obj.y * this.scale },
-                        { x: obj.width * this.scale, y: obj.height * this.scale }
-                    )
-                );
+                let pos = new Vector(obj.x * this.scale, obj.y * this.scale);
+                let size = new Vector(obj.width * this.scale, obj.height * this.scale);
+                let match = layer.name.match(/^player_start_(\d+\.\d+)$/);
+
+                if (layer.name === 'collision') {
+                    this.playerClips.push(new PlayerClip(pos, size));
+
+                } else if (layer.name === 'portal') {
+                    this.portals.push(new Portal(pos, size, layer));
+
+                } else if (layer.name === 'config') {
+                    this.config = this.obj.properties;
+
+                } else if (match) {
+                    this.playerStarts[match[1]] = obj;
+                }
             });
         });
     }
 
-    update() {
+    update(dt) {
+        let events = [];
 
+        this.playerClips.forEach(clip => {
+            let collision = clip.collidesWith(this.player);
+
+            if (collision) {
+                this.player.resetPos(collision);
+            }
+        });
+
+        this.portals.forEach(portal => {
+            let collision = portal.collidesWith(this.player);
+
+            if (collision) {
+               events.push({
+                   type: 'enter_portal',
+                   obj: portal
+               });
+            }
+        });
+
+        return events;
     }
 
-    draw(ctx) {
+    draw(ctx, overPlayer = false) {
         this.data.layers.forEach(layer => {
             if (layer.type !== 'tilelayer') {
+                return;
+            }
+
+            if (overPlayer && layer.name !== 'above_player') {
+                return;
+            }
+
+            if (!overPlayer && layer.name === 'above_player') {
                 return;
             }
 
@@ -57,15 +102,6 @@ export default class Map {
 
                 ctx.restore();
             });
-
-        });
-
-        this.playerClips.forEach(clip => {
-            clip.draw(ctx);
-
-            if (clip.collidesWith(this.player)) {
-                this.player.resetPos();
-            }
         });
     }
 }

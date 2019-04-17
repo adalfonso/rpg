@@ -1,2 +1,2 @@
-body{margin:0}.grid{border-collapse:collapse}.grid td{padding:0}.grid td.wall{background:#888}.grid td.tree{background:green}.player{background:red;position:absolute}.coin{background:gold;border-radius:50%;position:absolute}
+body{background:#333;margin:0}body #main{display:flex}body canvas{margin:auto}.grid{border-collapse:collapse}.grid td{padding:0}.grid td.wall{background:#888}.grid td.tree{background:green}.player{background:red;position:absolute}.coin{background:gold;border-radius:50%;position:absolute}
 

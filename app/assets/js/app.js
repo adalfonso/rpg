@@ -1,12 +1,15 @@
 import Game from './Game.js';
+import Display from './Display';
 
 let canvas = document.getElementById('game');
 let ctx = canvas.getContext('2d');
 
-const GAME_WIDTH = 1000;
-const GAME_HEIGHT = 600;
+const GAME_WIDTH = 800 - 32;
+const GAME_HEIGHT = 800 - 32;
 
 let game = new Game(GAME_WIDTH, GAME_HEIGHT);
+let display = new Display(canvas, game);
+
 game.start();
 
 let lastTime = 0;
@@ -16,7 +19,7 @@ function frame(timestamp) {
     lastTime = timestamp;
 
     game.update(dt);
-    game.draw(ctx);
+    display.draw(ctx);
 
     requestAnimationFrame(frame);
 }
