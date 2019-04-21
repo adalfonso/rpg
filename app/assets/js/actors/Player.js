@@ -1,6 +1,6 @@
 import config from '../config';
 import BaseActor from './BaseActor';
-import sprite from '../../img/player.png';
+import sprite from '../../img/player-new.png';
 import Renderable from '../Renderable';
 
 class Player extends BaseActor {
@@ -8,17 +8,22 @@ class Player extends BaseActor {
         super(pos, size);
 
         this.speed = { x: 0, y: 0 };
-        this.maxSpeed = this.size.x / 22;
+        this.maxSpeed = this.size.x / 10;
 
         this.direction = 0;
 
         this.sprites = [
             // img, scale, startFrame, frameCount, framesX, framesY, speed
-            new Renderable(sprite, 1, 18, 0, 9, 4, 8),
-            new Renderable(sprite, 1, 1, 7, 9, 4, 8),
-            new Renderable(sprite, 1, 9, 7, 9, 4, 8),
-            new Renderable(sprite, 1, 19, 7, 9, 4, 8),
-            new Renderable(sprite, 1, 27, 7, 9, 4, 8)
+            // new Renderable(sprite, 1, 18, 0, 9, 4, 8),
+            // new Renderable(sprite, 1, 1, 7, 9, 4, 8),
+            // new Renderable(sprite, 1, 9, 7, 9, 4, 8),
+            // new Renderable(sprite, 1, 19, 7, 9, 4, 8),
+            // new Renderable(sprite, 1, 27, 7, 9, 4, 8)
+            new Renderable(sprite, 2, 0, 0, 1, 4, 8),
+            new Renderable(sprite, 2, 3, 0, 1, 4, 8),
+            new Renderable(sprite, 2, 2, 0, 1, 4, 8),
+            new Renderable(sprite, 2, 0, 0, 1, 4, 8),
+            new Renderable(sprite, 2, 1, 0, 1, 4, 8)
         ];
     }
 

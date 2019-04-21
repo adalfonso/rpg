@@ -14,7 +14,10 @@ class Display {
         this.buffer.imageSmoothingEnabled = false;
     }
 
-    draw() {
+    draw(offset) {
+        this.buffer.clearRect(0, 0, this.game.width, this.game.height);
+        this.buffer.save();
+        this.buffer.translate(offset.x, offset.y);
         this.buffer.fillRect(0, 0, this.game.width, this.game.height);
 
         this.game.level.map.draw(this.buffer);
@@ -25,7 +28,9 @@ class Display {
 
         this.game.level.map.draw(this.buffer, true);
 
-       // this.ctx.clearRect(0, 0, this.game.width, this.game.height);
+        this.buffer.restore();
+
+        this.ctx.clearRect(0, 0, this.game.width, this.game.height);
 
         this.ctx.drawImage(
             this.buffer.canvas,

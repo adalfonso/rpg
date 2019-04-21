@@ -1,39 +1,13 @@
 body {
-    background: #333;
+    background: #eee;
     margin: 0;
 
-    #main {
-        display: flex;
-    }
+    #main { display: flex; }
 
     canvas {
         margin: auto;
+        margin-top: 2rem;
+        border: 1px solid #000;
+        background: #000;
     }
-}
-
-
-
-.grid {
-    border-collapse: collapse;
-
-    td { padding: 0; }
-
-    td.wall {
-        background: #888;
-    }
-
-    td.tree {
-        background: green;
-    }
-}
-
-.player {
-    background: red;
-    position: absolute;
-}
-
-.coin {
-    background: gold;
-    border-radius: 50%;
-    position: absolute;
 }

@@ -4,8 +4,8 @@ import Display from './Display';
 let canvas = document.getElementById('game');
 let ctx = canvas.getContext('2d');
 
-const GAME_WIDTH = 800 - 32;
-const GAME_HEIGHT = 800 - 32;
+const GAME_WIDTH = 1440;
+const GAME_HEIGHT = 900;
 
 let game = new Game(GAME_WIDTH, GAME_HEIGHT);
 let display = new Display(canvas, game);
@@ -19,7 +19,7 @@ function frame(timestamp) {
     lastTime = timestamp;
 
     game.update(dt);
-    display.draw(ctx);
+    display.draw(game.offset);
 
     requestAnimationFrame(frame);
 }

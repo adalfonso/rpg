@@ -1,9 +1,10 @@
 import Vector from "../Vector";
 
 class BaseActor {
-    constructor(pos, size) {
+    constructor(pos, size, offset) {
         this.pos = pos;
         this.size = size;
+        this.offset = offset;
 
         this.lastPos = {
             x: this.pos.x,

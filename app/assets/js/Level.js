@@ -10,7 +10,7 @@ class Level {
 
         this.player = new Player(
             { x: 75, y: 75 },
-            { x: 64, y: 64 }
+            { x: 36, y: 64 }
         );
 
         this.reload(json);
