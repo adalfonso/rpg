@@ -4,8 +4,8 @@ import Display from './Display';
 let canvas = document.getElementById('game');
 let ctx = canvas.getContext('2d');
 
-const GAME_WIDTH = 1440;
-const GAME_HEIGHT = 900;
+const GAME_WIDTH = 1280;
+const GAME_HEIGHT = 720;
 
 let game = new Game(GAME_WIDTH, GAME_HEIGHT);
 let display = new Display(canvas, game);
