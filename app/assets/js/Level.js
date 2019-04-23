@@ -2,11 +2,13 @@ import Player from './actors/Player';
 import tileset from '../img/dungeon_sheet.png';
 import Map from './inanimates/Map';
 import config from './config';
+import Dialogue from './Dialogue';
 
 class Level {
     constructor(json) {
         this.inanimates = [];
         this.actors = [];
+        this.dialogues = [];
 
         this.player = new Player(
             { x: 75, y: 75 },
@@ -14,6 +16,13 @@ class Level {
         );
 
         this.reload(json);
+
+        this.dialogues.push(
+            new Dialogue([
+                'Huh... Where am I?',
+                'How did I get here?'
+            ], this.player)
+        );
     }
 
     reload(json, portal) {
@@ -32,11 +41,20 @@ class Level {
             entity.update(dt);
         });
 
+        this.dialogues.forEach((dialogue, index) => {
+            if (dialogue.done) {
+                this.dialogues.splice(index, 1);
+            }
+        });
+
         return this.map.update(dt);
     }
 
     get entities() {
-        return [this.player, ...this.inanimates, ...this.actors];
+        return [
+            this.player, ...this.inanimates,
+            ...this.actors, ...this.dialogues
+        ];
     }
 }
 

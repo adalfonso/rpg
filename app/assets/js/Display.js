@@ -23,7 +23,7 @@ class Display {
         this.game.level.map.draw(this.buffer);
 
         this.game.level.entities.forEach(entity => {
-            entity.draw(this.buffer);
+            entity.draw(this.buffer, offset);
         });
 
         this.game.level.map.draw(this.buffer, true);

@@ -35,8 +35,8 @@ class Game {
             });
         }
 
-        this.offset.x = this.width / 2 - this.level.player.pos.x
-        this.offset.y = this.height / 2 - this.level.player.pos.y
+        this.offset.x = this.width / 2 - this.level.player.pos.x;
+        this.offset.y = this.height / 2 - this.level.player.pos.y;
     }
 }
 

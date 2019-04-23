@@ -9,8 +9,8 @@ class Player extends BaseActor {
 
         this.speed = { x: 0, y: 0 };
         this.maxSpeed = this.size.x / 10;
-
         this.direction = 0;
+        this.locked = false;
 
         this.sprites = [
             // img, scale, startFrame, frameCount, framesX, framesY, speed
@@ -35,7 +35,15 @@ class Player extends BaseActor {
         return 'player';
     }
 
+    get dialogueName() {
+        return 'Me';
+    }
+
     update(time) {
+        if (this.locked) {
+            return;
+        }
+
         this.pos.x += this.speed.x;
         this.pos.y += this.speed.y;
 
@@ -106,6 +114,10 @@ class Player extends BaseActor {
     }
 
     changeDirection() {
+        if (this.locked) {
+            return;
+        }
+
         if (!this.speed.x && !this.speed.y) {
            this.direction = 0;
 
@@ -121,6 +133,14 @@ class Player extends BaseActor {
         } else if (this.speed.y < 0) {
             this.direction = 1;
         }
+    }
+
+    lock() {
+        this.locked = true;
+    }
+
+    unlock() {
+        this.locked = false;
     }
 }
 
