@@ -1,5 +1,6 @@
 import Renderable from "../Renderable";
 import PlayerClip from "./PlayerClip";
+import NPC from '../actors/NPC';
 import Portal from "./Portal";
 import Vector from "../Vector";
 import config from '../config';
@@ -17,6 +18,7 @@ export default class Map {
 
         this.playerClips = [];
         this.portals = [];
+        this.npcs = [];
         this.playerStarts = {};
 
         this.data.layers.forEach(layer => {
@@ -35,6 +37,9 @@ export default class Map {
                 } else if (layer.name === 'portal') {
                     this.portals.push(new Portal(pos, size, layer));
 
+                } else if (layer.name === 'npcs') {
+                    this.npcs.push(new NPC(obj, player));
+
                 } else if (layer.name === 'config') {
                     this.config = this.obj.properties;
 
@@ -49,7 +54,7 @@ export default class Map {
         let events = [];
 
         this.playerClips.forEach(clip => {
-            let collision = clip.collidesWith(this.player);
+            let collision = this.player.collidesWith(clip);
 
             if (collision) {
                 this.player.resetPos(collision);
@@ -57,7 +62,7 @@ export default class Map {
         });
 
         this.portals.forEach(portal => {
-            let collision = portal.collidesWith(this.player);
+            let collision = this.player.collidesWith(portal);
 
             if (collision) {
                events.push({

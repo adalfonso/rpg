@@ -1,7 +1,8 @@
 export default class Dialogue {
-    constructor(texts, entity) {
+    constructor(texts, entity, player = entity) {
         this.texts = texts;
         this.entity = entity;
+        this.player = player;
         this.currentText = '';
 
         this.index = 0;
@@ -11,6 +12,7 @@ export default class Dialogue {
         this.frameLength = 1000 / 24;
         this.timeStore = 0;
         this.entity.lock();
+        this.player.lock();
 
         window.addEventListener('keyup', this.next.bind(this));
     }
@@ -65,6 +67,7 @@ export default class Dialogue {
         } else {
             this.done = true;
             this.entity.unlock();
+            this.player.unlock();
         }
     }
 }

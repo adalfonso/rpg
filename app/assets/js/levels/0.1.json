@@ -49,6 +49,34 @@
         }, 
         {
          "draworder":"topdown",
+         "id":14,
+         "name":"npcs",
+         "objects":[
+                {
+                 "height":16,
+                 "id":37,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"murdoc"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":464,
+                 "y":272
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
          "id":8,
          "name":"player_start_0.2",
          "objects":[
@@ -351,8 +379,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":14,
- "nextobjectid":37,
+ "nextlayerid":15,
+ "nextobjectid":38,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.2.3",

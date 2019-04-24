@@ -2,6 +2,7 @@ import Player from './actors/Player';
 import tileset from '../img/dungeon_sheet.png';
 import Map from './inanimates/Map';
 import config from './config';
+import Vector from './Vector';
 import Dialogue from './Dialogue';
 
 class Level {
@@ -11,8 +12,8 @@ class Level {
         this.dialogues = [];
 
         this.player = new Player(
-            { x: 75, y: 75 },
-            { x: 36, y: 64 }
+            new Vector(75, 75),
+            new Vector(36, 64)
         );
 
         this.reload(json);
@@ -53,7 +54,8 @@ class Level {
     get entities() {
         return [
             this.player, ...this.inanimates,
-            ...this.actors, ...this.dialogues
+            ...this.actors, ...this.dialogues,
+            ...this.map.npcs
         ];
     }
 }

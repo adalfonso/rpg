@@ -1,19 +1,35 @@
+import config from '../config';
 import Vector from "../Vector";
 
 class BaseActor {
-    constructor(pos, size, offset) {
-        this.pos = pos;
+    constructor(pos, size) {
+        this.pos = pos.times(config.scale);
         this.size = size;
-        this.offset = offset;
+        this.locked = false;
 
-        this.lastPos = {
-            x: this.pos.x,
-            y: this.pos.y
-        }
+        this.lastPos = pos.copy();
     }
 
     update(dt) {
 
+    }
+
+    collidesWith(entity) {
+        let collisionPoint = this.collisionPoint();
+
+        let collision = collisionPoint.x > entity.pos.x &&
+            collisionPoint.x < entity.pos.x + entity.size.x &&
+            collisionPoint.y > entity.pos.y &&
+            collisionPoint.y < entity.pos.y + entity.size.y;
+
+        if (collision) {
+            return {
+                pos: entity.pos.copy(),
+                size: entity.size.copy()
+            }
+        }
+
+        return false;
     }
 
     collisionPoint(prev = false) {
@@ -24,8 +40,17 @@ class BaseActor {
     }
 
     draw(ctx) {
+        if (config.debug) {
+            this.debugDraw(ctx);
+        }
+
         this.lastPos.x = this.pos.x;
         this.lastPos.y = this.pos.y
+    }
+
+    debugDraw(ctx) {
+        ctx.fillStyle = '#F99';
+        ctx.fillRect(this.pos.x, this.pos.y, this.size.x, this.size.y);
     }
 
     resetPos(collision) {
@@ -42,6 +67,14 @@ class BaseActor {
             this.pos.x = this.lastPos.x;
             this.pos.y = this.lastPos.y
         }
+    }
+
+    lock() {
+        this.locked = true;
+    }
+
+    unlock() {
+        this.locked = false;
     }
 }
 

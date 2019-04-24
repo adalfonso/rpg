@@ -8,4 +8,8 @@ export default class Vector {
     copy() {
         return new Vector(this.x, this.y);
     }
+
+    times(mult) {
+        return new Vector(this.x * mult, this.y * mult);
+    }
 }

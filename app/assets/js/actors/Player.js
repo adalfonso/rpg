@@ -1,16 +1,15 @@
-import config from '../config';
 import BaseActor from './BaseActor';
 import sprite from '../../img/player-new.png';
 import Renderable from '../Renderable';
+import Vector from '../Vector';
 
 class Player extends BaseActor {
     constructor(pos, size) {
         super(pos, size);
 
-        this.speed = { x: 0, y: 0 };
-        this.maxSpeed = this.size.x / 10;
+        this.speed = new Vector(0, 0);
+        this.maxSpeed = size.x / 10;
         this.direction = 0;
-        this.locked = false;
 
         this.sprites = [
             // img, scale, startFrame, frameCount, framesX, framesY, speed
@@ -25,10 +24,6 @@ class Player extends BaseActor {
             new Renderable(sprite, 2, 0, 0, 1, 4, 8),
             new Renderable(sprite, 2, 1, 0, 1, 4, 8)
         ];
-    }
-
-    static create(pos, size) {
-        return new Player(pos, size);
     }
 
     get name() {
@@ -51,24 +46,14 @@ class Player extends BaseActor {
     }
 
     draw(ctx) {
-        ctx.save();
-
-        if (config.debug) {
-            this.debugDraw(ctx);
-        }
-
-        ctx.translate(this.pos.x, this.pos.y);
-
         super.draw(ctx);
+
+        ctx.save();
+        ctx.translate(this.pos.x, this.pos.y);
 
         this.sprites[this.direction].draw(ctx);
 
         ctx.restore();
-    }
-
-    debugDraw(ctx) {
-        ctx.fillStyle = '#F99';
-        ctx.fillRect(this.pos.x, this.pos.y, this.size.x, this.size.y);
     }
 
     move(key) {
@@ -133,14 +118,6 @@ class Player extends BaseActor {
         } else if (this.speed.y < 0) {
             this.direction = 1;
         }
-    }
-
-    lock() {
-        this.locked = true;
-    }
-
-    unlock() {
-        this.locked = false;
     }
 }
 
