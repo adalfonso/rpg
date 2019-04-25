@@ -22,7 +22,8 @@ class Game {
         ];
 
         this.menu = new Menu([
-            'Press Enter to Start!'
+            'Press Enter to Start!',
+            'Load Saved State (doesn\'t work yet)'
         ]);
     }
 

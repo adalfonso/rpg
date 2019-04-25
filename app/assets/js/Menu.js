@@ -28,7 +28,9 @@ export default class Menu {
     }
 
     select() {
-        this.active = false;
+        if (this.currentOption === 0) {
+            this.active = false;
+        }
     }
 
     back() {
@@ -36,11 +38,19 @@ export default class Menu {
     }
 
     previousOption() {
-
+        if (this.currentOption === 0) {
+            this.currentOption = this.options.length - 1;
+        } else {
+            this.currentOption--;
+        }
     }
 
     nextOption() {
-
+        if (this.currentOption === this.options.length - 1) {
+            this.currentOption = 0;
+        } else {
+            this.currentOption++;
+        }
     }
 
     draw(ctx, width, height) {
@@ -50,14 +60,33 @@ export default class Menu {
 
         ctx.fillRect(0, 0, width, height);
 
-        ctx.font = "42px Arial";
-        ctx.fillStyle = '#FFF';
+       ctx.fillStyle = '#FFF';
         ctx.textAlign = "center";
 
-        ctx.fillText(
-           this.options[0],
-            width / 2, height / 2
-        );
+        this.options.forEach((option, index) => {
+            ctx.save();
+
+            if (index === this.currentOption) {
+                ctx.shadowColor = "#FFF";
+                ctx.shadowOffsetX = 2;
+                ctx.shadowOffsetY = 2;
+                ctx.shadowBlur = 4;
+                ctx.font = "bold 42px Arial";
+
+            } else {
+                ctx.font = "42px Arial";
+            }
+
+            ctx.fillText(
+                index === this.currentOption
+                    ? '▶ ' + option
+                    : option,
+                width / 2,
+                height / (this.options.length - index) * .5
+            )
+
+            ctx.restore();
+        });
 
         ctx.restore();
     }
