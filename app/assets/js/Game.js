@@ -2,6 +2,7 @@ import Level from './Level';
 import InputHandler from  './InputHandler';
 import levels from './levels/levels'
 import Vector from './Vector';
+import Menu from './Menu';
 
 class Game {
     constructor(width, height) {
@@ -11,6 +12,18 @@ class Game {
         this.offset = new Vector(0, 0);
 
         let handler = new InputHandler(this);
+
+        this.state = 0;
+
+        this.states = [
+            'menu',
+            'play',
+            'pause'
+        ];
+
+        this.menu = new Menu([
+            'Press Enter to Start!'
+        ]);
     }
 
     loadLevel(event) {
@@ -25,6 +38,14 @@ class Game {
     }
 
     update(dt) {
+        if (this.menuIsOpen && !this.menu.active) {
+            this.play();
+        }
+
+        if (!this.playing) {
+            return;
+        }
+
         let events = this.level.update(dt);
 
         if (events.length) {
@@ -42,6 +63,18 @@ class Game {
     resize(width, height) {
         this.width = width;
         this.height = height;
+    }
+
+    play() {
+        this.state = 1;
+    }
+
+    get playing() {
+        return this.states[this.state] === 'play';
+    }
+
+    get menuIsOpen() {
+        return this.states[this.state] === 'menu';
     }
 }
 

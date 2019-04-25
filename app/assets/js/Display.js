@@ -22,6 +22,10 @@ class Display {
 
         this.game.level.map.draw(this.buffer, true);
 
+        if (this.game.menuIsOpen) {
+            this.game.menu.draw(this.buffer, this.game.width, this.game.height, offset);
+        }
+
         this.buffer.restore();
 
         this.ctx.clearRect(0, 0, this.game.width, this.game.height);
