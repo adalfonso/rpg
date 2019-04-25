@@ -5,8 +5,8 @@ import Vector from './Vector';
 
 class Game {
     constructor(width, height) {
-        this.width = width;
-        this.height = height;
+        this.resolution = new Vector(width, height);
+        this.resize(width, height);
         this.levelNumber = 0;
         this.offset = new Vector(0, 0);
 
@@ -37,6 +37,11 @@ class Game {
 
         this.offset.x = this.width / 2 - this.level.player.pos.x;
         this.offset.y = this.height / 2 - this.level.player.pos.y;
+    }
+
+    resize(width, height) {
+        this.width = width;
+        this.height = height;
     }
 }
 

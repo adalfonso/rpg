@@ -2,16 +2,10 @@ class Display {
     constructor(canvas, game) {
         this.game = game;
         this.ctx = canvas.getContext('2d');
-
-        canvas.width = this.game.width;
-        canvas.height = this.game.height;
-
-        this.ctx.imageSmoothingEnabled = false;
-
         this.buffer = document.createElement('canvas').getContext('2d');
-        this.buffer.canvas.width = this.game.width;
-        this.buffer.canvas.height = this.game.height;
-        this.buffer.imageSmoothingEnabled = false;
+        this.triggerResize(this.game.width, this.game.height);
+
+        window.addEventListener('resize', e => this.triggerResize(e));
     }
 
     draw(offset) {
@@ -41,6 +35,42 @@ class Display {
             this.ctx.canvas.width,
             this.ctx.canvas.height
         );
+    }
+
+    triggerResize(e) {
+        if (window.innerWidth < this.game.resolution.x) {
+            let ratio = this.game.height / this.game.width;
+            let width = Math.floor(window.innerWidth);
+            let height = Math.floor(window.innerWidth * ratio);
+
+            if (width % 2 === 1) {
+                width--;
+            }
+
+            if (height % 2 === 1) {
+                height--;
+            }
+
+            this.resize(width, height);
+
+        } else if (this.width !== this.game.resolution.x) {
+            this.resize(
+                this.game.resolution.x,
+                this.game.resolution.y
+            );
+        }
+    }
+
+    resize(width, height) {
+        this.ctx.canvas.width = width;
+        this.ctx.canvas.height = height;
+        this.ctx.imageSmoothingEnabled = false;
+
+        this.buffer.canvas.width = width;
+        this.buffer.canvas.height = height;
+        this.buffer.imageSmoothingEnabled = false;
+
+        this.game.resize(width, height);
     }
 }
 
