@@ -24,6 +24,8 @@ class Player extends BaseActor {
             new Renderable(sprite, 2, 0, 0, 1, 4, 8),
             new Renderable(sprite, 2, 1, 0, 1, 4, 8)
         ];
+
+        _handler.register(this);
     }
 
     get name() {
@@ -117,6 +119,22 @@ class Player extends BaseActor {
 
         } else if (this.speed.y < 0) {
             this.direction = 1;
+        }
+    }
+
+    register() {
+        return {
+            keydown: e => {
+                if (e.key.match(/Arrow/)) {
+                    this.move(e.key);
+                }
+            },
+
+            keyup: e =>{
+                if (e.key.match(/Arrow/)) {
+                    this.stop(e.key);
+                }
+            },
         }
     }
 }

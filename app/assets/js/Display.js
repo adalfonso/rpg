@@ -5,7 +5,7 @@ class Display {
         this.buffer = document.createElement('canvas').getContext('2d');
         this.triggerResize(this.game.width, this.game.height);
 
-        window.addEventListener('resize', e => this.triggerResize(e));
+        _handler.register(this);
     }
 
     draw(offset) {
@@ -22,8 +22,16 @@ class Display {
 
         this.game.level.map.draw(this.buffer, true);
 
-        if (this.game.menuIsOpen) {
-            this.game.menu.draw(this.buffer, this.game.width, this.game.height, offset);
+        if (this.game.inventory.active) {
+            this.game.inventory.draw(
+                this.buffer, this.game.width, this.game.height, offset
+            );
+        }
+
+        if (this.game.menu.active) {
+            this.game.menu.draw(
+                this.buffer, this.game.width, this.game.height, offset
+            );
         }
 
         this.buffer.restore();
@@ -41,7 +49,7 @@ class Display {
         );
     }
 
-    triggerResize(e) {
+    triggerResize() {
         if (window.innerWidth < this.game.resolution.x) {
             let ratio = this.game.height / this.game.width;
             let width = Math.floor(window.innerWidth);
@@ -75,6 +83,12 @@ class Display {
         this.buffer.imageSmoothingEnabled = false;
 
         this.game.resize(width, height);
+    }
+
+    register() {
+        return {
+            resize: e => this.triggerResize()
+        };
     }
 }
 

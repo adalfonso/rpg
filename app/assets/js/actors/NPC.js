@@ -28,11 +28,7 @@ export default class NPC extends BaseActor {
         this.dialogue = null;
         this.playerRef = player;
 
-        window.addEventListener('keyup', e => {
-            if (e.key === ' ' || e.key === 'Enter') {
-                this.speak(e);
-            }
-        });
+        _handler.register(this);
     }
 
     get dialogueName() {
@@ -60,5 +56,15 @@ export default class NPC extends BaseActor {
         if (this.dialogue) {
             this.dialogue.draw(ctx, offset);
         }
+    }
+
+    register() {
+        return {
+            keyup: e => {
+                if (e.key === ' ' || e.key === 'Enter') {
+                    this.speak();
+                }
+            }
+        };
     }
 }

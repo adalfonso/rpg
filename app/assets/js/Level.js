@@ -27,6 +27,10 @@ class Level {
     }
 
     reload(json, portal) {
+        if (this.map) {
+            this.map.destruct();
+        }
+
         this.map = new Map(json, tileset, this.player);
 
         let start = portal

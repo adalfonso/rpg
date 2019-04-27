@@ -14,7 +14,7 @@ export default class Dialogue {
         this.entity.lock();
         this.player.lock();
 
-        window.addEventListener('keyup', this.next.bind(this));
+        _handler.register(this);
     }
 
     update(dt) {
@@ -50,11 +50,21 @@ export default class Dialogue {
         ctx.restore();
     }
 
-    next(e) {
-        if (e.key !== 'Enter') {
-            return;
-        }
+    register() {
+        return {
+            keyup: (e, handler) => {
+                if (e.key === 'Enter') {
+                    this.next();
+                }
 
+                if (this.done) {
+                    handler.unregister(this);
+                }
+            }
+        };
+    }
+
+    next(e) {
         if (!this.waiting || this.done) {
             return;
         }

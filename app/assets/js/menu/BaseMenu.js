@@ -1,30 +1,11 @@
-export default class Menu {
+export default class BaseMenu {
 
     constructor(options) {
         this.options = options;
         this.currentOption = 0;
         this.active = true;
 
-        document.addEventListener('keyup', e => {
-            if (!this.active) {
-                return;
-            }
-
-            switch(e.key) {
-                case 'Enter':
-                    this.select();
-                    break;
-                case 'Backspace':
-                    this.back();
-                    break;
-                case 'ArrowUp':
-                    this.previousOption();
-                    break;
-                case 'ArrowDown':
-                    this.nextOption();
-                    break;
-            }
-        });
+        _handler.register(this);
     }
 
     select() {
@@ -53,19 +34,15 @@ export default class Menu {
         }
     }
 
-    draw(ctx, width, height) {
+    draw(ctx, width, height, offset) {
         ctx.save();
-
+        ctx.translate(-offset.x, -offset.y);
         ctx.fillStyle = 'rgba(0, 0, 0, .85)';
-
         ctx.fillRect(0, 0, width, height);
-
-       ctx.fillStyle = '#FFF';
+        ctx.fillStyle = '#FFF';
         ctx.textAlign = "center";
 
         this.options.forEach((option, index) => {
-            ctx.save();
-
             if (index === this.currentOption) {
                 ctx.shadowColor = "#FFF";
                 ctx.shadowOffsetX = 2;
@@ -84,10 +61,33 @@ export default class Menu {
                 width / 2,
                 height / (this.options.length - index) * .5
             )
-
-            ctx.restore();
         });
 
         ctx.restore();
+    }
+
+    register() {
+        return {
+            keyup: e => {
+                if (!this.active) {
+                    return;
+                }
+
+                switch(e.key) {
+                    case 'Enter':
+                        this.select();
+                        break;
+                    case 'Backspace':
+                        this.back();
+                        break;
+                    case 'ArrowUp':
+                        this.previousOption();
+                        break;
+                    case 'ArrowDown':
+                        this.nextOption();
+                        break;
+                }
+            }
+        };
     }
 }

@@ -109,4 +109,8 @@ export default class Map {
             });
         });
     }
+
+    destruct() {
+        this.npcs.forEach(npc => _handler.unregister(npc));
+    }
 }

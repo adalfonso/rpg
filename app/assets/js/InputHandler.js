@@ -1,21 +1,46 @@
 export default class InputHandler {
-    constructor(game) {
-        this.game = game;
+    constructor() {
+        this.events = {};
+    }
 
-        document.addEventListener('keydown', e => {
-            if (!e.key.match(/Arrow/)) {
-                return;
+    register(target) {
+        if (typeof target.register !== 'function') {
+            throw new Error('Target class does not have event register method');
+        }
+
+        let events = target.register();
+
+        if (Array.isArray(events)) {
+            events.forEach(event => this.install(target, event));
+        } else {
+            this.install(target, events)
+        }
+    }
+
+    install(target, events) {
+        for (let event in events) {
+            if (!this.events.hasOwnProperty(event)) {
+                this.events[event] = [];
+
+                window.addEventListener(event, e => {
+                    this.events[event].forEach(ev => {
+                        ev.handle(e, this);
+                    });
+                });
             }
 
-            this.game.level.player.move(e.key);
-        });
+            this.events[event].push({
+                target: target,
+                handle: events[event]
+            });
+        }
+    }
 
-        document.addEventListener("keyup", e => {
-            if (!e.key.match(/Arrow/)) {
-                return;
-            }
-
-            this.game.level.player.stop(e.key);
-        });
+    unregister(target) {
+        for (let event in this.events) {
+            this.events[event] = this.events[event].filter(e => {
+                return e.target !== target;
+            });
+        }
     }
 }

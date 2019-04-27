@@ -1,8 +1,8 @@
 import Level from './Level';
-import InputHandler from  './InputHandler';
 import levels from './levels/levels'
 import Vector from './Vector';
-import Menu from './Menu';
+import Menu from './menu/BaseMenu';
+import Inventory from './menu/Inventory';
 
 class Game {
     constructor(width, height) {
@@ -11,19 +11,24 @@ class Game {
         this.levelNumber = 0;
         this.offset = new Vector(0, 0);
 
-        let handler = new InputHandler(this);
-
         this.state = 0;
 
         this.states = [
-            'menu',
+            'start-menu',
             'play',
-            'pause'
+            'pause',
+            'inventory'
         ];
 
         this.menu = new Menu([
             'Press Enter to Start!',
             'Load Saved State (doesn\'t work yet)'
+        ]);
+
+        this.inventory = new Inventory([
+            'Items',
+            'Equip',
+            'Special'
         ]);
     }
 
@@ -39,7 +44,7 @@ class Game {
     }
 
     update(dt) {
-        if (this.menuIsOpen && !this.menu.active) {
+        if (!this.inventory.active && !this.menu.active) {
             this.play();
         }
 
@@ -72,10 +77,6 @@ class Game {
 
     get playing() {
         return this.states[this.state] === 'play';
-    }
-
-    get menuIsOpen() {
-        return this.states[this.state] === 'menu';
     }
 }
 
