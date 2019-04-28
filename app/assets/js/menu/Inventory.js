@@ -4,6 +4,20 @@ export default class Inventory extends BaseMenu {
     constructor(options) {
         super(options);
         this.active = false;
+
+        this.items = [];
+        this.equipable = [];
+        this.special = [];
+
+        this.equiped = {
+            weapon: null,
+            armor: null,
+            spell: null
+        };
+    }
+
+    store(item) {
+        this[item.type].push(item);
     }
 
     draw(ctx, width, height, offset) {
@@ -15,7 +29,7 @@ export default class Inventory extends BaseMenu {
         ctx.textAlign = "left";
 
         this.options.forEach((option, index) => {
-            if (index === this.currentOption) {
+            if (index === this.index) {
                 ctx.shadowColor = "#75A";
                 ctx.shadowOffsetX = 2;
                 ctx.shadowOffsetY = 2;
@@ -27,7 +41,7 @@ export default class Inventory extends BaseMenu {
             }
 
             ctx.fillText(
-                option,
+                option.description,
                 48, 72 * (index + 1)
             )
         });
@@ -38,7 +52,6 @@ export default class Inventory extends BaseMenu {
     register() {
         return [
             super.register(),
-
             {
                 keyup: e => {
                     if (e.key === 'i') {

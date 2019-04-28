@@ -2,69 +2,73 @@ export default class BaseMenu {
 
     constructor(options) {
         this.options = options;
-        this.currentOption = 0;
+        this.index = 0;
+        this.subIndex = null;
         this.active = true;
 
         _handler.register(this);
     }
 
     select() {
-        if (this.currentOption === 0) {
-            this.active = false;
+        let option = this.subIndex === null
+            ? this.options[this.index]
+            : this.options[this.index].data[this.subIndex];
+
+        if (option.data && option.data.length) {
+            this.subIndex = 0;
+
+        } else if (this.subIndex !== null) {
+            option.select();
+
+        } else if (option.hasOwnProperty('action')) {
+            option.action(this);
         }
     }
 
     back() {
+        if (this.subIndex !== null) {
+            this.subIndex = null;
 
+        } else {
+            this.active = false;
+        }
     }
 
     previousOption() {
-        if (this.currentOption === 0) {
-            this.currentOption = this.options.length - 1;
+        if (this.subIndex === null) {
+            if (this.index === 0) {
+                this.index = this.options.length - 1;
+            } else {
+                this.index--;
+            }
+
         } else {
-            this.currentOption--;
+            if (this.subIndex === 0) {
+                this.subIndex = this.options[this.index].data.length - 1;
+            } else {
+                this.subIndex--;
+            }
         }
     }
 
     nextOption() {
-        if (this.currentOption === this.options.length - 1) {
-            this.currentOption = 0;
+        if (this.subIndex === null) {
+            if (this.index === this.options.length - 1) {
+                this.index = 0;
+            } else {
+                this.index++;
+            }
+
         } else {
-            this.currentOption++;
+            if (this.subIndex === this.options[this.index].data.length - 1) {
+                this.subIndex = 0;
+            } else {
+                this.subIndex++;
+            }
         }
     }
 
-    draw(ctx, width, height, offset) {
-        ctx.save();
-        ctx.translate(-offset.x, -offset.y);
-        ctx.fillStyle = 'rgba(0, 0, 0, .85)';
-        ctx.fillRect(0, 0, width, height);
-        ctx.fillStyle = '#FFF';
-        ctx.textAlign = "center";
-
-        this.options.forEach((option, index) => {
-            if (index === this.currentOption) {
-                ctx.shadowColor = "#FFF";
-                ctx.shadowOffsetX = 2;
-                ctx.shadowOffsetY = 2;
-                ctx.shadowBlur = 4;
-                ctx.font = "bold 42px Arial";
-
-            } else {
-                ctx.font = "42px Arial";
-            }
-
-            ctx.fillText(
-                index === this.currentOption
-                    ? '▶ ' + option
-                    : option,
-                width / 2,
-                height / (this.options.length - index) * .5
-            )
-        });
-
-        ctx.restore();
-    }
+    draw(ctx, width, height, offset) {}
 
     register() {
         return {

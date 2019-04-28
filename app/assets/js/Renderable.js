@@ -9,19 +9,17 @@ export default class Renderable {
 
         this.scale = scale;
         this.frame = startFrame;
-
         this.startFrame = startFrame;
         this.frameCount = frameCount;
-
         this.framesX = framesX;
         this.framesY = framesY;
-
-        this.subWidth = this.img.width / this.framesX;
-        this.subHeight = this.img.height / this.framesY;
-
         this.speed = speed;
-
         this.animTime = new Date().getTime();
+
+        this.img.onload = () => {
+            this.subWidth = this.img.width / this.framesX;
+            this.subHeight = this.img.height / this.framesY;
+        }
     }
 
     draw(ctx) {

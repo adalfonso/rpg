@@ -12,7 +12,9 @@ export default class Dialogue {
         this.frameLength = 1000 / 24;
         this.timeStore = 0;
         this.entity.lock();
+        this.entity.inDialogue = true;
         this.player.lock();
+        this.player.inDialogue = true;
 
         _handler.register(this);
     }
@@ -76,7 +78,9 @@ export default class Dialogue {
             this.waiting = false;
         } else {
             this.done = true;
+            this.entity.inDialogue = false;
             this.entity.unlock();
+            this.player.inDialogue = false;
             this.player.unlock();
         }
     }

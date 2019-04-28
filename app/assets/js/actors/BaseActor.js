@@ -5,6 +5,7 @@ class BaseActor {
     constructor(pos, size) {
         this.pos = pos.times(config.scale);
         this.size = size;
+        this.inDialogue;
         this.locked = false;
 
         this.lastPos = pos.copy();
@@ -74,7 +75,9 @@ class BaseActor {
     }
 
     unlock() {
-        this.locked = false;
+        if (!this.inDialogue) {
+            this.locked = false;
+        }
     }
 }
 

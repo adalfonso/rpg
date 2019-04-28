@@ -1,8 +1,9 @@
 import Level from './Level';
 import levels from './levels/levels'
 import Vector from './Vector';
-import Menu from './menu/BaseMenu';
+import StartMenu from './menu/StartMenu';
 import Inventory from './menu/Inventory';
+import Weapon from './item/Weapon';
 
 class Game {
     constructor(width, height) {
@@ -20,16 +21,36 @@ class Game {
             'inventory'
         ];
 
-        this.menu = new Menu([
-            'Press Enter to Start!',
-            'Load Saved State (doesn\'t work yet)'
-        ]);
+        this.menu = new StartMenu([{
+            type: 'start',
+            description: 'Press Enter to Start!',
+            action: menu => { menu.active = false }
+        }, {
+            type: 'load',
+            description: 'Load Saved State (doesn\'t work yet)',
+            action: menu => {}
+        }]);
 
-        this.inventory = new Inventory([
-            'Items',
-            'Equip',
-            'Special'
-        ]);
+        this.inventory = new Inventory(
+            [{
+                type: 'item',
+                description: 'Items',
+                data: []
+            }, {
+                type: 'equipable',
+                description: 'Equipment',
+                data: []
+            }, {
+                type: 'special',
+                description: 'Special',
+                data: []
+            }]
+        );
+
+        this.inventory.store(new Weapon({
+            name: 'Basic Sword',
+            attack: 3
+        }));
     }
 
     loadLevel(event) {
@@ -44,8 +65,14 @@ class Game {
     }
 
     update(dt) {
-        if (!this.inventory.active && !this.menu.active) {
-            this.play();
+        if (this.menu.active) {
+            this.lock(0);
+
+        } else if (this.inventory.active) {
+            this.lock(3);
+
+        } else {
+            this.unlock();
         }
 
         if (!this.playing) {
@@ -71,7 +98,13 @@ class Game {
         this.height = height;
     }
 
-    play() {
+    lock(state) {
+        this.state = state;
+        this.level.player.lock();
+    }
+
+    unlock() {
+        this.level.player.unlock();
         this.state = 1;
     }
 
