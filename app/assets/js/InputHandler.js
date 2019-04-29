@@ -1,6 +1,7 @@
 export default class InputHandler {
     constructor() {
         this.events = {};
+        this.customEvents = {};
     }
 
     register(target) {
@@ -42,5 +43,10 @@ export default class InputHandler {
                 return e.target !== target;
             });
         }
+    }
+
+    trigger(event, detail) {
+        let e = new CustomEvent(event, { detail: detail });
+        window.dispatchEvent(e);
     }
 }

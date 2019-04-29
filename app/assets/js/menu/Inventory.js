@@ -29,7 +29,9 @@ export default class Inventory extends BaseMenu {
         ctx.textAlign = "left";
 
         this.options.forEach((option, index) => {
-            if (index === this.index) {
+            ctx.save();
+
+            if (index === this.index && this.subIndex === null) {
                 ctx.shadowColor = "#75A";
                 ctx.shadowOffsetX = 2;
                 ctx.shadowOffsetY = 2;
@@ -44,7 +46,45 @@ export default class Inventory extends BaseMenu {
                 option.description,
                 48, 72 * (index + 1)
             )
+
+            ctx.restore();
         });
+
+        let subMenu = this[this.options[this.index].type];
+
+        if (subMenu) {
+            subMenu.forEach((option, index) => {
+                ctx.save();
+
+                if (index === this.subIndex) {
+                    ctx.shadowColor = "#75A";
+                    ctx.shadowOffsetX = 2;
+                    ctx.shadowOffsetY = 2;
+                    ctx.shadowBlur = 4;
+                    ctx.font = "bold 20px Arial";
+
+                } else {
+                    ctx.font = "20px Arial";
+                }
+
+                ctx.fillText(
+                    option.name,
+                    256, 72 * (this.index + 1) + 32 * index
+                )
+
+                ctx.restore();
+
+                if (this.subIndex !== null && index === this.subIndex) {
+                    ctx.font = "20px Arial";
+
+                    ctx.fillText(
+                        option.name + "\n" +
+                        'Description: ' + option.description,
+                        512, 72 * (this.index + 1)
+                    )
+                }
+            });
+        }
 
         ctx.restore();
     }

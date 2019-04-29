@@ -105,10 +105,7 @@ class Player extends BaseActor {
             return;
         }
 
-        if (!this.speed.x && !this.speed.y) {
-           this.direction = 0;
-
-        } else if (this.speed.x > 0) {
+        if (this.speed.x > 0) {
             this.direction = 4;
 
         } else if (this.speed.x < 0) {

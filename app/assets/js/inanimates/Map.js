@@ -1,6 +1,7 @@
 import Renderable from "../Renderable";
 import PlayerClip from "./PlayerClip";
 import NPC from '../actors/NPC';
+import Enemy from '../actors/Enemy';
 import Portal from "./Portal";
 import Vector from "../Vector";
 import config from '../config';
@@ -19,6 +20,7 @@ export default class Map {
         this.playerClips = [];
         this.portals = [];
         this.npcs = [];
+        this.enemies = [];
         this.playerStarts = {};
 
         this.data.layers.forEach(layer => {
@@ -39,6 +41,9 @@ export default class Map {
 
                 } else if (layer.name === 'npcs') {
                     this.npcs.push(new NPC(obj, player));
+
+                } else if (layer.name === 'enemies') {
+                    this.enemies.push(new Enemy(obj, player));
 
                 } else if (layer.name === 'config') {
                     this.config = this.obj.properties;

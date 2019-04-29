@@ -49,8 +49,23 @@ class Game {
 
         this.inventory.store(new Weapon({
             name: 'Basic Sword',
+            description: 'A basic bitch sword.',
             attack: 3
         }));
+
+        this.inventory.store(new Weapon({
+            name: 'Mace',
+            description: 'A fucking mace. Watch out!',
+            attack: 10
+        }));
+
+        this.inventory.store(new Weapon({
+            name: 'Pole Arm',
+            description: 'Swift and strong.',
+            attack: 5
+        }));
+
+        _handler.register(this);
     }
 
     loadLevel(event) {
@@ -106,6 +121,13 @@ class Game {
     unlock() {
         this.level.player.unlock();
         this.state = 1;
+    }
+
+    register() {
+        return {
+            battle: e => {
+            }
+        }
     }
 
     get playing() {

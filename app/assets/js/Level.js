@@ -18,12 +18,12 @@ class Level {
 
         this.reload(json);
 
-        this.dialogues.push(
-            new Dialogue([
-                'Huh... Where am I?',
-                'How did I get here?'
-            ], this.player)
-        );
+        // this.dialogues.push(
+        //     new Dialogue([
+        //         'Huh... Where am I?',
+        //         'How did I get here?'
+        //     ], this.player)
+        // );
     }
 
     reload(json, portal) {
@@ -59,7 +59,7 @@ class Level {
         return [
             this.player, ...this.inanimates,
             ...this.actors, ...this.dialogues,
-            ...this.map.npcs
+            ...this.map.npcs, ...this.map.enemies
         ];
     }
 }

@@ -14,11 +14,16 @@ export default class BaseMenu {
             ? this.options[this.index]
             : this.options[this.index].data[this.subIndex];
 
-        if (option.data && option.data.length) {
+        if (
+            this.subIndex === null &&
+            option.type &&
+            this[option.type] &&
+            this[option.type].length
+        ) {
             this.subIndex = 0;
 
         } else if (this.subIndex !== null) {
-            option.select();
+            //option.select();
 
         } else if (option.hasOwnProperty('action')) {
             option.action(this);
@@ -44,7 +49,7 @@ export default class BaseMenu {
 
         } else {
             if (this.subIndex === 0) {
-                this.subIndex = this.options[this.index].data.length - 1;
+                this.subIndex = this[this.options[this.index].type].length - 1;
             } else {
                 this.subIndex--;
             }
@@ -60,7 +65,7 @@ export default class BaseMenu {
             }
 
         } else {
-            if (this.subIndex === this.options[this.index].data.length - 1) {
+            if (this.subIndex === this[this.options[this.index].type].length - 1) {
                 this.subIndex = 0;
             } else {
                 this.subIndex++;
@@ -78,9 +83,11 @@ export default class BaseMenu {
                 }
 
                 switch(e.key) {
+                    case 'ArrowRight':
                     case 'Enter':
                         this.select();
                         break;
+                    case 'ArrowLeft':
                     case 'Backspace':
                         this.back();
                         break;

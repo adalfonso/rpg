@@ -1,0 +1,12 @@
+{
+    "knight": {
+        "display_name": "Knight",
+        "default": {
+            "stats" : {
+                "hp": 10,
+                "atk": 2,
+                "def": 0
+            }
+        }
+    }
+}
