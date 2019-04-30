@@ -28,6 +28,12 @@ class Display {
             );
         }
 
+        if (this.game.battle && this.game.battle.active) {
+            this.game.battle.draw(
+                this.buffer, this.game.width, this.game.height
+            );
+        }
+
         if (this.game.menu.active) {
             this.game.menu.draw(
                 this.buffer, this.game.width, this.game.height, offset

@@ -4,10 +4,12 @@ import Vector from './Vector';
 import StartMenu from './menu/StartMenu';
 import Inventory from './menu/Inventory';
 import Weapon from './item/Weapon';
+import Battle from './Battle';
 
 class Game {
     constructor(width, height) {
         this.resolution = new Vector(width, height);
+        this.battle = null;
         this.resize(width, height);
         this.levelNumber = 0;
         this.offset = new Vector(0, 0);
@@ -18,7 +20,8 @@ class Game {
             'start-menu',
             'play',
             'pause',
-            'inventory'
+            'inventory',
+            'battle'
         ];
 
         this.menu = new StartMenu([{
@@ -86,6 +89,8 @@ class Game {
         } else if (this.inventory.active) {
             this.lock(3);
 
+        } else if (this.battle && this.battle.active) {
+            this.battle.update(dt);
         } else {
             this.unlock();
         }
@@ -104,8 +109,13 @@ class Game {
             });
         }
 
-        this.offset.x = this.width / 2 - this.level.player.pos.x;
-        this.offset.y = this.height / 2 - this.level.player.pos.y;
+        if (this.battle && this.battle.active) {
+            this.offset.x = 0;
+            this.offset.y = 0;
+        } else {
+            this.offset.x = this.width / 2 - this.level.player.pos.x;
+            this.offset.y = this.height / 2 - this.level.player.pos.y;
+        }
     }
 
     resize(width, height) {
@@ -126,6 +136,14 @@ class Game {
     register() {
         return {
             battle: e => {
+                if (this.battle) {
+                    return;
+                }
+
+                this.battle = new Battle(
+                    e.detail.player,
+                    e.detail.enemy
+                );
             }
         }
     }
