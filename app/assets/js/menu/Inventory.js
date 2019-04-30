@@ -1,7 +1,21 @@
 import BaseMenu from './BaseMenu';
 
 export default class Inventory extends BaseMenu {
-    constructor(options) {
+    constructor() {
+        let options = [{
+            type: 'item',
+            description: 'Items',
+            data: []
+        }, {
+            type: 'equipable',
+            description: 'Equipment',
+            data: []
+        }, {
+            type: 'special',
+            description: 'Special',
+            data: []
+        }];
+
         super(options);
         this.active = false;
 

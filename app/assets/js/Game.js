@@ -9,12 +9,12 @@ import Battle from './Battle';
 class Game {
     constructor(width, height) {
         this.resolution = new Vector(width, height);
-        this.battle = null;
         this.resize(width, height);
         this.levelNumber = 0;
         this.offset = new Vector(0, 0);
 
-        this.state = 0;
+        this.battle = null;
+        this.state = 'start-menu';
 
         this.states = [
             'start-menu',
@@ -24,51 +24,13 @@ class Game {
             'battle'
         ];
 
-        this.menu = new StartMenu([{
-            type: 'start',
-            description: 'Press Enter to Start!',
-            action: menu => { menu.active = false }
-        }, {
-            type: 'load',
-            description: 'Load Saved State (doesn\'t work yet)',
-            action: menu => {}
-        }]);
-
-        this.inventory = new Inventory(
-            [{
-                type: 'item',
-                description: 'Items',
-                data: []
-            }, {
-                type: 'equipable',
-                description: 'Equipment',
-                data: []
-            }, {
-                type: 'special',
-                description: 'Special',
-                data: []
-            }]
-        );
-
-        this.inventory.store(new Weapon({
-            name: 'Basic Sword',
-            description: 'A basic bitch sword.',
-            attack: 3
-        }));
-
-        this.inventory.store(new Weapon({
-            name: 'Mace',
-            description: 'A fucking mace. Watch out!',
-            attack: 10
-        }));
-
-        this.inventory.store(new Weapon({
-            name: 'Pole Arm',
-            description: 'Swift and strong.',
-            attack: 5
-        }));
+        this.menu = new StartMenu();
+        this.inventory = new Inventory();
 
         _handler.register(this);
+
+        // Testing
+        this.init();
     }
 
     loadLevel(event) {
@@ -84,10 +46,10 @@ class Game {
 
     update(dt) {
         if (this.menu.active) {
-            this.lock(0);
+            this.lock('start-menu');
 
         } else if (this.inventory.active) {
-            this.lock(3);
+            this.lock('inventory');
 
         } else if (this.battle && this.battle.active) {
             this.battle.update(dt);
@@ -95,7 +57,7 @@ class Game {
             this.unlock();
         }
 
-        if (!this.playing) {
+        if (this.state !== 'playing') {
             return;
         }
 
@@ -130,7 +92,7 @@ class Game {
 
     unlock() {
         this.level.player.unlock();
-        this.state = 1;
+        this.state = 'playing';
     }
 
     register() {
@@ -148,8 +110,24 @@ class Game {
         }
     }
 
-    get playing() {
-        return this.states[this.state] === 'play';
+    init() {
+        this.inventory.store(new Weapon({
+            name: 'Basic Sword',
+            description: 'A basic bitch sword.',
+            attack: 3
+        }));
+
+        this.inventory.store(new Weapon({
+            name: 'Mace',
+            description: 'A fucking mace. Watch out!',
+            attack: 10
+        }));
+
+        this.inventory.store(new Weapon({
+            name: 'Pole Arm',
+            description: 'Swift and strong.',
+            attack: 5
+        }));
     }
 }
 

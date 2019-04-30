@@ -1,7 +1,17 @@
 import BaseMenu from './BaseMenu'
 
 export default class StartMenu extends BaseMenu {
-    constructor(options) {
+    constructor() {
+        let options = [{
+            type: 'start',
+            description: 'Press Enter to Start!',
+            action: menu => { menu.active = false }
+        }, {
+            type: 'load',
+            description: 'Load Saved State (doesn\'t work yet)',
+            action: menu => {}
+        }];
+
         super(options);
     }
 
