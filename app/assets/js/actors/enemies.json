@@ -3,9 +3,12 @@
         "display_name": "Knight",
         "default": {
             "stats" : {
-                "hp": 10,
+                "hp": 5,
                 "atk": 2,
-                "def": 0
+                "def": 0,
+                "sp_atk": 0,
+                "sp_de": 0,
+                "spd" : 0
             }
         }
     }

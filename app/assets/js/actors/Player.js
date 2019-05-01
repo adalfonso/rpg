@@ -2,6 +2,7 @@ import BaseActor from './BaseActor';
 import sprite from '../../img/player-new.png';
 import Renderable from '../Renderable';
 import Vector from '../Vector';
+import Stats from '../Stats';
 
 class Player extends BaseActor {
     constructor(pos, size) {
@@ -24,6 +25,18 @@ class Player extends BaseActor {
             new Renderable(sprite, 2, 0, 0, 1, 4, 8),
             new Renderable(sprite, 2, 1, 0, 1, 4, 8)
         ];
+
+        this.stats = new Stats({
+            hp: 10,
+            atk: 2,
+            def: 0,
+            sp_atk: 0,
+            sp_def: 0,
+            spd: 1
+        });
+
+        this.weapon = null;
+        this.spells = [];
 
         _handler.register(this);
     }

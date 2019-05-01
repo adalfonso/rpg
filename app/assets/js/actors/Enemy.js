@@ -5,6 +5,7 @@ import Dialogue from '../Dialogue';
 import Renderable from '../Renderable';
 
 import knight from '../../img/enemies/knight.png';
+import Stats from '../Stats';
 
 let sprites = {
     knight: knight
@@ -34,6 +35,7 @@ export default class Enemy extends BaseActor {
         this.data = enemy;
         this.dialogue = null;
         this.playerRef = player;
+        this.stats = new Stats(enemy.default.stats);
 
         let sprite = sprites[this.type];
 
