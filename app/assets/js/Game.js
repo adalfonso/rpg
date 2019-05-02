@@ -113,13 +113,13 @@ class Game {
     init() {
         this.inventory.store(new Weapon({
             name: 'Basic Sword',
-            description: 'A basic bitch sword.',
+            description: 'A basic bish sword.',
             attack: 3
         }));
 
         this.inventory.store(new Weapon({
             name: 'Mace',
-            description: 'A fucking mace. Watch out!',
+            description: 'An effing mace. Watch out!',
             attack: 10
         }));
 

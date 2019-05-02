@@ -34,16 +34,16 @@ export default class Battle {
     battleMenu() {
         return new BattleMenu({
             type: 'Items',
-            options: []
+            menu: []
         }, {
             type: 'Attack',
-            options: [this.player.weapon]
+            menu: [this.player.weapon]
         }, {
             type: 'Spells',
-            options: [this.player.spells]
+            menu: [this.player.spells]
         }, {
             type: 'Other',
-            options: ['Defend', 'Run Away']
+            menu: ['Defend', 'Run Away']
         });
     }
 
@@ -54,7 +54,7 @@ export default class Battle {
     draw(ctx, width, height) {
         let offset = new Vector(
             width / 2 - 128 - 64,
-            height/ 2 - 64 - 64
+            height / 2 - 64 - 64
         );
 
         ctx.save();

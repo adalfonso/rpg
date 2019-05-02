@@ -1,29 +1,19 @@
 export default class BaseMenu {
 
-    constructor(options) {
-        this.options = options;
-        this.index = 0;
-        this.subIndex = null;
+    constructor(menu) {
+        this.menu = menu;
+        this.selected = [];
         this.active = true;
+        this.selected.push(this.menu[0]);
 
         _handler.register(this);
     }
 
     select() {
-        let option = this.subIndex === null
-            ? this.options[this.index]
-            : this.options[this.index].data[this.subIndex];
+        let option = this.selected[this.selected.length - 1];
 
-        if (
-            this.subIndex === null &&
-            option.type &&
-            this[option.type] &&
-            this[option.type].length
-        ) {
-            this.subIndex = 0;
-
-        } else if (this.subIndex !== null) {
-            //option.select();
+        if (option.hasOwnProperty('menu') && option.menu.length) {
+            this.selected.push(option.menu[0]);
 
         } else if (option.hasOwnProperty('action')) {
             option.action(this);
@@ -31,45 +21,46 @@ export default class BaseMenu {
     }
 
     back() {
-        if (this.subIndex !== null) {
-            this.subIndex = null;
-
-        } else {
-            this.active = false;
+        if (this.selected.length > 1) {
+            return this.selected.pop();
         }
+
+        this.active = false;
     }
 
     previousOption() {
-        if (this.subIndex === null) {
-            if (this.index === 0) {
-                this.index = this.options.length - 1;
-            } else {
-                this.index--;
-            }
+        let menu = this.selected.length > 1
+            ? this.selected[this.selected.length - 2].menu
+            : this.menu;
 
+        let option = this.selected[this.selected.length - 1];
+
+        let index = menu.reduce((carry, value, index) => {
+            return value === option ? index : carry;
+        }, 0);
+
+        if (index === 0) {
+            this.selected[this.selected.length - 1] = menu[menu.length - 1]
         } else {
-            if (this.subIndex === 0) {
-                this.subIndex = this[this.options[this.index].type].length - 1;
-            } else {
-                this.subIndex--;
-            }
+            this.selected[this.selected.length - 1] = menu[index - 1];
         }
     }
 
     nextOption() {
-        if (this.subIndex === null) {
-            if (this.index === this.options.length - 1) {
-                this.index = 0;
-            } else {
-                this.index++;
-            }
+        let menu = this.selected.length > 1
+            ? this.selected[this.selected.length - 2].menu
+            : this.menu;
 
+        let option = this.selected[this.selected.length - 1];
+
+        let index = menu.reduce((carry, value, index) => {
+            return value === option ? index : carry;
+        }, 0);
+
+        if (index === menu.length - 1) {
+            this.selected[this.selected.length - 1] = menu[0];
         } else {
-            if (this.subIndex === this[this.options[this.index].type].length - 1) {
-                this.subIndex = 0;
-            } else {
-                this.subIndex++;
-            }
+            this.selected[this.selected.length - 1] = menu[index + 1];
         }
     }
 
@@ -80,6 +71,10 @@ export default class BaseMenu {
             keyup: e => {
                 if (!this.active) {
                     return;
+                }
+
+                if (e.key === 'Escape') {
+                    return this.active = false;
                 }
 
                 switch(e.key) {

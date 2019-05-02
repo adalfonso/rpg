@@ -16,9 +16,9 @@ export default class Stats {
 
     get atk() { return this.base_atk; }
     get def() { return this.base_def; }
-    get sp_atk() { return this.base_sp_atk - e; }
+    get sp_atk() { return this.base_sp_atk; }
     get sp_def() { return this.base_sp_def; }
-    get def() { return this.base_def; }
+    get spd() { return this.base_spd; }
 
     get givesExperience() {
         return this.base_hp +

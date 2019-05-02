@@ -2,7 +2,7 @@ import BaseMenu from './BaseMenu'
 
 export default class StartMenu extends BaseMenu {
     constructor() {
-        let options = [{
+        let menu = [{
             type: 'start',
             description: 'Press Enter to Start!',
             action: menu => { menu.active = false }
@@ -12,7 +12,7 @@ export default class StartMenu extends BaseMenu {
             action: menu => {}
         }];
 
-        super(options);
+        super(menu);
     }
 
     draw(ctx, width, height, offset) {
@@ -23,10 +23,11 @@ export default class StartMenu extends BaseMenu {
         ctx.fillStyle = '#FFF';
         ctx.textAlign = "center";
 
-        this.options.forEach((option, index) => {
-            let current = this.options[index];
+        this.menu.forEach((option, index) => {
+            let current = this.menu[index];
+            let selected = current === this.selected[this.selected.length - 1];
 
-            if (index === this.index) {
+            if (selected) {
                 ctx.shadowColor = "#FFF";
                 ctx.shadowOffsetX = 2;
                 ctx.shadowOffsetY = 2;
@@ -38,11 +39,9 @@ export default class StartMenu extends BaseMenu {
             }
 
             ctx.fillText(
-                index === this.index
-                    ? '▶ ' + current.description
-                    : current.description,
+                selected ? '▶ ' + current.description : current.description,
                 width / 2,
-                height / (this.options.length - index) * .5
+                height / (this.menu.length - index) * .5
             )
         });
 

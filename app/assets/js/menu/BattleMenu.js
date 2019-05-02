@@ -11,12 +11,12 @@ export default class BattleMenu extends BaseMenu {
         ctx.font = '12px Arial';
 
         ctx.translate(
-            offset.x + entity.pos.x - 72 * this.options.length,
+            offset.x + entity.pos.x - 72 * this.menu.length,
             offset.y + entity.pos.y + entity.size.y + 24
         );
 
-        this.options.forEach(option => {
-            let height = option === this.options[this.index] ? 64 : 24;
+        this.menu.forEach(option => {
+            let height = option === this.selected[0] ? 64 : 24;
 
             ctx.translate(72, 0);
             ctx.fillStyle = '#fff';

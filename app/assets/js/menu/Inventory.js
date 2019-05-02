@@ -1,29 +1,26 @@
 import BaseMenu from './BaseMenu';
+import Vector from '../Vector';
 
 export default class Inventory extends BaseMenu {
     constructor() {
-        let options = [{
+        let menu = [{
             type: 'item',
             description: 'Items',
-            data: []
+            menu: []
         }, {
             type: 'equipable',
             description: 'Equipment',
-            data: []
+            menu: []
         }, {
             type: 'special',
             description: 'Special',
-            data: []
+            menu: []
         }];
 
-        super(options);
+        super(menu);
         this.active = false;
 
-        this.items = [];
-        this.equipable = [];
-        this.special = [];
-
-        this.equiped = {
+        this.equipped = {
             weapon: null,
             armor: null,
             spell: null
@@ -31,7 +28,9 @@ export default class Inventory extends BaseMenu {
     }
 
     store(item) {
-        this[item.type].push(item);
+        this.menu.filter(option => {
+            return option.type === item.type
+        })[0].menu.push(item);
     }
 
     draw(ctx, width, height, offset) {
@@ -42,63 +41,40 @@ export default class Inventory extends BaseMenu {
         ctx.fillStyle = '#75A';
         ctx.textAlign = "left";
 
-        this.options.forEach((option, index) => {
-            ctx.save();
+        let current = this.selected[this.selected.length - 1];
 
-            if (index === this.index && this.subIndex === null) {
-                ctx.shadowColor = "#75A";
-                ctx.shadowOffsetX = 2;
-                ctx.shadowOffsetY = 2;
-                ctx.shadowBlur = 4;
-                ctx.font = "bold 24px Arial";
+        // Menu Tier
+        this.selected.reduce((subMenuOffset, selected, index) => {
+            let menu = index > 0
+                ? this.selected[index - 1].menu
+                : this.menu;
 
-            } else {
-                ctx.font = "24px Arial";
-            }
+            return subMenuOffset +
 
-            ctx.fillText(
-                option.description,
-                48, 72 * (index + 1)
-            )
+            // Menu menu
+            menu.reduce((subCarry, option, subIndex) => {
+                let pos = new Vector(
+                    48 + 200 * index,
+                    48 + 48 * (subIndex + subMenuOffset + 1)
+                );
 
-            ctx.restore();
-        });
-
-        let subMenu = this[this.options[this.index].type];
-
-        if (subMenu) {
-            subMenu.forEach((option, index) => {
                 ctx.save();
+                ctx.font = "24px Arial";
 
-                if (index === this.subIndex) {
+                if (option === current) {
                     ctx.shadowColor = "#75A";
                     ctx.shadowOffsetX = 2;
                     ctx.shadowOffsetY = 2;
                     ctx.shadowBlur = 4;
-                    ctx.font = "bold 20px Arial";
-
-                } else {
-                    ctx.font = "20px Arial";
+                    ctx.font = "bold 24px Arial";
                 }
 
-                ctx.fillText(
-                    option.name,
-                    256, 72 * (this.index + 1) + 32 * index
-                )
-
+                ctx.fillText(option.description, pos.x, pos.y);
                 ctx.restore();
 
-                if (this.subIndex !== null && index === this.subIndex) {
-                    ctx.font = "20px Arial";
-
-                    ctx.fillText(
-                        option.name + "\n" +
-                        'Description: ' + option.description,
-                        512, 72 * (this.index + 1)
-                    )
-                }
-            });
-        }
+                return subCarry + (option === selected ? subIndex : 0)
+            }, 0);
+        }, 0);
 
         ctx.restore();
     }
