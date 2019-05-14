@@ -25,7 +25,7 @@ export default class StartMenu extends BaseMenu {
 
         this.menu.forEach((option, index) => {
             let current = this.menu[index];
-            let selected = current === this.selected[this.selected.length - 1];
+            let selected = current === this.currentOption;
 
             if (selected) {
                 ctx.shadowColor = "#FFF";

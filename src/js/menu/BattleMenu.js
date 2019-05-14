@@ -16,13 +16,32 @@ export default class BattleMenu extends BaseMenu {
         );
 
         this.menu.forEach(option => {
-            let height = option === this.selected[0] ? 64 : 24;
+            let isSelected = option === this.selected[0];
+            let height = isSelected ? 64 : 24;
 
             ctx.translate(72, 0);
             ctx.fillStyle = '#fff';
             ctx.fillRect(0, 0, 64, height);
             ctx.fillStyle = '#000';
             ctx.fillText(option.type, 4, 4 + 12);
+
+            if (isSelected && option.menu && option.menu.length) {
+                option.menu.forEach((subOption, index) => {
+                    ctx.save();
+
+                    if (this.currentOption === subOption) {
+                        ctx.font = 'bold 12px Arial';
+                    } else {
+                        ctx.font = '12px Arial';
+                    }
+
+                    let desc = subOption.name ? subOption.name : subOption;
+
+                    ctx.translate(0, 18 * (index + 1));
+                    ctx.fillText(desc, 4, 16);
+                    ctx.restore();
+                });
+            }
         });
 
         ctx.restore();

@@ -1,15 +1,15 @@
-const webpack = require('webpack');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const path = require('path');
 
 module.exports = {
-    entry: [
-		'./app/assets/js/app.js',
-		'./app/assets/scss/app.scss'
+  entry: [
+		'./src/js/app.js',
+		'./src/scss/app.scss'
 	],
 
 	output: {
-		path: __dirname,
-		filename: "public/js/app.js"
+		path: path.resolve(__dirname, 'dist'),
+		filename: "js/app.js"
 	},
 
 	module: {
@@ -38,7 +38,7 @@ module.exports = {
           {
             loader: 'file-loader',
 						options: {
-              name: 'public/img/[name].[ext]',
+							name: 'img/[name].[ext]',
             },
           },
         ],
@@ -48,7 +48,7 @@ module.exports = {
 
 	plugins: [
 		new MiniCssExtractPlugin({
-			filename: "/public/css/app.css"
+			filename: "css/app.css"
 		})
 	]
 };

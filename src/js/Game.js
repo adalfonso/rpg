@@ -2,8 +2,6 @@ import Level from './Level';
 import levels from './levels/levels'
 import Vector from './Vector';
 import StartMenu from './menu/StartMenu';
-import Inventory from './menu/Inventory';
-import Weapon from './item/Weapon';
 import Battle from './Battle';
 
 class Game {
@@ -25,12 +23,8 @@ class Game {
         ];
 
         this.menu = new StartMenu();
-        this.inventory = new Inventory();
 
         _handler.register(this);
-
-        // Testing
-        this.init();
     }
 
     loadLevel(event) {
@@ -48,7 +42,7 @@ class Game {
         if (this.menu.active) {
             this.lock('start-menu');
 
-        } else if (this.inventory.active) {
+        } else if (this.level.player.inventory.active) {
             this.lock('inventory');
 
         } else if (this.battle && this.battle.active) {
@@ -108,26 +102,6 @@ class Game {
                 );
             }
         }
-    }
-
-    init() {
-        this.inventory.store(new Weapon({
-            name: 'Basic Sword',
-            description: 'A basic bish sword.',
-            attack: 3
-        }));
-
-        this.inventory.store(new Weapon({
-            name: 'Mace',
-            description: 'An effing mace. Watch out!',
-            attack: 10
-        }));
-
-        this.inventory.store(new Weapon({
-            name: 'Pole Arm',
-            description: 'Swift and strong.',
-            attack: 5
-        }));
     }
 }
 

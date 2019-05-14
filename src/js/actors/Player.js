@@ -1,6 +1,8 @@
 import BaseActor from './BaseActor';
 import sprite from '../../img/player-new.png';
 import Renderable from '../Renderable';
+import Inventory from '../menu/Inventory';
+import Weapon from '../item/Weapon';
 import Vector from '../Vector';
 import Stats from '../Stats';
 
@@ -35,10 +37,15 @@ class Player extends BaseActor {
             spd: 1
         });
 
+        this.inventory = new Inventory();
+
         this.weapon = null;
         this.spells = [];
 
         _handler.register(this);
+
+        // Testing
+        this.init();
     }
 
     get name() {
@@ -146,6 +153,32 @@ class Player extends BaseActor {
                 }
             },
         }
+    }
+
+    init() {
+        this.inventory.store(new Weapon({
+            name: 'Basic Sword',
+            description: 'A basic bish sword.',
+            attack: 3
+        }));
+
+        this.inventory.store(new Weapon({
+            name: 'Mace',
+            description: 'An effing mace. Watch out!',
+            attack: 10
+        }));
+
+        this.inventory.store(new Weapon({
+            name: 'Pole Arm',
+            description: 'Swift and strong.',
+            attack: 5
+        }));
+
+        this.weapon = new Weapon({
+            name: 'Basic Sword',
+            description: 'A basic bish sword.',
+            attack: 3
+        });
     }
 }
 

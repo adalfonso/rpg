@@ -22,8 +22,8 @@ class Display {
 
         this.game.level.map.draw(this.buffer, true);
 
-        if (this.game.inventory.active) {
-            this.game.inventory.draw(
+        if (this.game.level.player.inventory.active) {
+            this.game.level.player.inventory.draw(
                 this.buffer, this.game.width, this.game.height, offset
             );
         }

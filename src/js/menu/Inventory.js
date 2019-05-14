@@ -41,7 +41,7 @@ export default class Inventory extends BaseMenu {
         ctx.fillStyle = '#75A';
         ctx.textAlign = "left";
 
-        let current = this.selected[this.selected.length - 1];
+        let current = this.currentOption;
 
         // Menu Tier
         this.selected.reduce((subMenuOffset, selected, index) => {

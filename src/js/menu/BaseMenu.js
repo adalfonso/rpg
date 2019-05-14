@@ -10,7 +10,7 @@ export default class BaseMenu {
     }
 
     select() {
-        let option = this.selected[this.selected.length - 1];
+        let option = this.currentOption;
 
         if (option.hasOwnProperty('menu') && option.menu.length) {
             this.selected.push(option.menu[0]);
@@ -33,7 +33,7 @@ export default class BaseMenu {
             ? this.selected[this.selected.length - 2].menu
             : this.menu;
 
-        let option = this.selected[this.selected.length - 1];
+        let option = this.currentOption;
 
         let index = menu.reduce((carry, value, index) => {
             return value === option ? index : carry;
@@ -51,7 +51,7 @@ export default class BaseMenu {
             ? this.selected[this.selected.length - 2].menu
             : this.menu;
 
-        let option = this.selected[this.selected.length - 1];
+        let option = this.currentOption;
 
         let index = menu.reduce((carry, value, index) => {
             return value === option ? index : carry;
@@ -63,6 +63,11 @@ export default class BaseMenu {
             this.selected[this.selected.length - 1] = menu[index + 1];
         }
     }
+
+    get currentOption () {
+        return this.selected[this.selected.length - 1];
+    }
+
 
     draw(ctx, width, height, offset) {}
 
