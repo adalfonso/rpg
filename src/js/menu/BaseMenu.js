@@ -29,10 +29,7 @@ export default class BaseMenu {
     }
 
     previousOption() {
-        let menu = this.selected.length > 1
-            ? this.selected[this.selected.length - 2].menu
-            : this.menu;
-
+        let menu = this.currentMenu;
         let option = this.currentOption;
 
         let index = menu.reduce((carry, value, index) => {
@@ -47,10 +44,7 @@ export default class BaseMenu {
     }
 
     nextOption() {
-        let menu = this.selected.length > 1
-            ? this.selected[this.selected.length - 2].menu
-            : this.menu;
-
+        let menu = this.currentMenu;
         let option = this.currentOption;
 
         let index = menu.reduce((carry, value, index) => {
@@ -68,6 +62,17 @@ export default class BaseMenu {
         return this.selected[this.selected.length - 1];
     }
 
+    get currentMenu() {
+        return this.selected.length > 1
+            ? this.selected[this.selected.length - 2].menu
+            : this.menu;
+    }
+
+    hasSubMenu() {
+        let current = this.currentOption;
+
+        return current.menu && current.menu.length;
+    }
 
     draw(ctx, width, height, offset) {}
 

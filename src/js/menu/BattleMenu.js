@@ -50,18 +50,39 @@ export default class BattleMenu extends BaseMenu {
     register() {
         return {
             keyup: e => {
+                let menu = this.currentMenu;
+                let option = this.currentOption;
+
                 switch(e.key) {
                     case 'ArrowDown':
-                        this.select();
+                        if (this.hasSubMenu()) {
+                            this.select();
+
+                        } else if (this.selected.length > 1) {
+                            this.nextOption();
+                        }
+
                         break;
                     case 'ArrowUp':
-                        this.back();
+                        if (option === menu[0]) {
+                            this.back();
+
+                        } else if (this.selected.length > 1) {
+                            this.previousOption();
+                        }
+
                         break;
                     case 'ArrowLeft':
-                        this.previousOption();
+                        if (this.selected.length === 1) {
+                            this.previousOption();
+                        }
+
                         break;
                     case 'ArrowRight':
-                        this.nextOption();
+                        if (this.selected.length === 1) {
+                            this.nextOption();
+                        }
+
                         break;
                 }
             }

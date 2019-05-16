@@ -37,10 +37,10 @@ export default class Battle {
             menu: []
         }, {
             type: 'Attack',
-            menu: [this.player.weapon]
+            menu: this.player.weapon ? [this.player.weapon] : []
         }, {
             type: 'Spells',
-            menu: [this.player.spells]
+            menu: this.player.spells
         }, {
             type: 'Other',
             menu: ['Defend', 'Run Away']
