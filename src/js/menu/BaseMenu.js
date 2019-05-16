@@ -28,7 +28,7 @@ export default class BaseMenu {
         this.active = false;
     }
 
-    previousOption() {
+    previous() {
         let menu = this.currentMenu;
         let option = this.currentOption;
 
@@ -43,7 +43,7 @@ export default class BaseMenu {
         }
     }
 
-    nextOption() {
+    next() {
         let menu = this.currentMenu;
         let option = this.currentOption;
 
@@ -56,16 +56,6 @@ export default class BaseMenu {
         } else {
             this.selected[this.selected.length - 1] = menu[index + 1];
         }
-    }
-
-    get currentOption () {
-        return this.selected[this.selected.length - 1];
-    }
-
-    get currentMenu() {
-        return this.selected.length > 1
-            ? this.selected[this.selected.length - 2].menu
-            : this.menu;
     }
 
     hasSubMenu() {
@@ -97,13 +87,23 @@ export default class BaseMenu {
                         this.back();
                         break;
                     case 'ArrowUp':
-                        this.previousOption();
+                        this.previous();
                         break;
                     case 'ArrowDown':
-                        this.nextOption();
+                        this.next();
                         break;
                 }
             }
         };
+    }
+
+    get currentOption () {
+        return this.selected[this.selected.length - 1];
+    }
+
+    get currentMenu() {
+        return this.selected.length > 1
+            ? this.selected[this.selected.length - 2].menu
+            : this.menu;
     }
 }

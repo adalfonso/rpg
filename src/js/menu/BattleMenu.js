@@ -1,4 +1,5 @@
 import BaseMenu from './BaseMenu';
+import Vector from '../Vector';
 
 export default class BattleMenu extends BaseMenu {
 
@@ -10,18 +11,32 @@ export default class BattleMenu extends BaseMenu {
         ctx.save();
         ctx.font = '12px Arial';
 
+        let tileSize = new Vector(72, 24);
+        let tilePadding = new Vector(8, 0);
+
         ctx.translate(
-            offset.x + entity.pos.x - 72 * this.menu.length,
-            offset.y + entity.pos.y + entity.size.y + 24
+            offset.x + entity.pos.x - (tileSize.x + tilePadding.x) * this.menu.length,
+            offset.y + entity.pos.y + entity.size.y + tileSize.y
         );
 
         this.menu.forEach(option => {
             let isSelected = option === this.selected[0];
-            let height = isSelected ? 64 : 24;
 
-            ctx.translate(72, 0);
+            ctx.translate(tileSize.x + tilePadding.x, 0);
+
+            ctx.font = '12px Arial';
             ctx.fillStyle = '#fff';
-            ctx.fillRect(0, 0, 64, height);
+
+            if (option === this.selected[0]) {
+                ctx.fillStyle = '#ddd';
+                ctx.strokeRect(0, 0, tileSize.x, tileSize.y);
+            }
+
+            if (option === this.currentOption) {
+                ctx.font = 'bold 12px Arial';
+            }
+
+            ctx.fillRect(0, 0, tileSize.x , tileSize.y);
             ctx.fillStyle = '#000';
             ctx.fillText(option.type, 4, 4 + 12);
 
@@ -29,7 +44,7 @@ export default class BattleMenu extends BaseMenu {
                 option.menu.forEach((subOption, index) => {
                     ctx.save();
 
-                    if (this.currentOption === subOption) {
+                    if (subOption === this.currentOption) {
                         ctx.font = 'bold 12px Arial';
                     } else {
                         ctx.font = '12px Arial';
@@ -37,8 +52,8 @@ export default class BattleMenu extends BaseMenu {
 
                     let desc = subOption.name ? subOption.name : subOption;
 
-                    ctx.translate(0, 18 * (index + 1));
-                    ctx.fillText(desc, 4, 16);
+                    ctx.translate(0, 18 * (index + 1) + 6);
+                    ctx.fillText(desc, 0, 16);
                     ctx.restore();
                 });
             }
@@ -59,7 +74,7 @@ export default class BattleMenu extends BaseMenu {
                             this.select();
 
                         } else if (this.selected.length > 1) {
-                            this.nextOption();
+                            this.next();
                         }
 
                         break;
@@ -68,19 +83,19 @@ export default class BattleMenu extends BaseMenu {
                             this.back();
 
                         } else if (this.selected.length > 1) {
-                            this.previousOption();
+                            this.previous();
                         }
 
                         break;
                     case 'ArrowLeft':
                         if (this.selected.length === 1) {
-                            this.previousOption();
+                            this.previous();
                         }
 
                         break;
                     case 'ArrowRight':
                         if (this.selected.length === 1) {
-                            this.nextOption();
+                            this.next();
                         }
 
                         break;
