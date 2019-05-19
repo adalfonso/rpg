@@ -45,8 +45,13 @@ class Game {
         } else if (this.level.player.inventory.active) {
             this.lock('inventory');
 
-        } else if (this.battle && this.battle.active) {
-            this.battle.update(dt);
+        } else if (this.battle) {
+            if (this.battle.active) {
+                this.battle.update(dt);
+
+            } else {
+                this.battle = null;
+            }
         } else {
             this.unlock();
         }

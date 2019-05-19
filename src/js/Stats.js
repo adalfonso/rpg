@@ -11,7 +11,7 @@ export default class Stats {
     }
 
     get hp() {
-        return this.base_hp - this.damage;
+        return Math.max(0, this.base_hp - this.damage);
     }
 
     get atk() { return this.base_atk; }
@@ -27,5 +27,13 @@ export default class Stats {
             this.base_sp_atk +
             this.base_sp_def +
             this.base_spd;
+    }
+
+    endure(damage) {
+        this.damage += damage;
+    }
+
+    gainExperience(exp) {
+        this.experience += exp;
     }
 }

@@ -76,8 +76,8 @@ export default class BattleMenu extends BaseMenu {
                         } else if (this.selected.length > 1) {
                             this.next();
                         }
+                    break;
 
-                        break;
                     case 'ArrowUp':
                         if (option === menu[0]) {
                             this.back();
@@ -85,20 +85,25 @@ export default class BattleMenu extends BaseMenu {
                         } else if (this.selected.length > 1) {
                             this.previous();
                         }
+                    break;
 
-                        break;
                     case 'ArrowLeft':
                         if (this.selected.length === 1) {
                             this.previous();
                         }
+                    break;
 
-                        break;
                     case 'ArrowRight':
                         if (this.selected.length === 1) {
                             this.next();
                         }
+                    break;
 
-                        break;
+                    case 'Enter':
+                        if (typeof option.use === 'function') {
+                            option.use();
+                        }
+                    break;
                 }
             }
         }

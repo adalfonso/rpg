@@ -62,7 +62,7 @@ export default class Map {
             let collision = this.player.collidesWith(clip);
 
             if (collision) {
-                this.player.resetPos(collision);
+                this.player.backstep(collision);
             }
         });
 

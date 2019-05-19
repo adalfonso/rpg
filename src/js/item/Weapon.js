@@ -6,4 +6,9 @@ export default class Weapon {
 
         this.type = 'equipable';
     }
+
+    use() {
+        _handler.trigger('battleAction', this);
+    }
+
 }

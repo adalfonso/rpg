@@ -36,6 +36,7 @@ export default class Enemy extends BaseActor {
         this.dialogue = null;
         this.playerRef = player;
         this.stats = new Stats(enemy.default.stats);
+        this.defeated = false;
 
         let sprite = sprites[this.type];
 
@@ -65,7 +66,7 @@ export default class Enemy extends BaseActor {
     }
 
     update(dt, player) {
-        if (this.collidesWith(this.playerRef)) {
+        if (this.collidesWith(this.playerRef) && !this.defeated) {
             this.fight(this.playerRef);
         }
     }

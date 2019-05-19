@@ -159,25 +159,25 @@ class Player extends BaseActor {
         this.inventory.store(new Weapon({
             name: 'Basic Sword',
             description: 'A basic bish sword.',
-            attack: 3
+            damage: 3
         }));
 
         this.inventory.store(new Weapon({
             name: 'Mace',
             description: 'An effing mace. Watch out!',
-            attack: 10
+            damage: 10
         }));
 
         this.inventory.store(new Weapon({
             name: 'Pole Arm',
             description: 'Swift and strong.',
-            attack: 5
+            damage: 5
         }));
 
         this.weapon = new Weapon({
             name: 'Basic Sword',
             description: 'A basic bish sword.',
-            attack: 3
+            damage: 1
         });
     }
 }

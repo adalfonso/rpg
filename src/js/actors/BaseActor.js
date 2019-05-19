@@ -5,14 +5,60 @@ class BaseActor {
     constructor(pos, size) {
         this.pos = pos.times(config.scale);
         this.size = size;
+        this.direction = 0;
         this.inDialogue;
         this.locked = false;
 
         this.lastPos = pos.copy();
+
+        this.savedPos = pos.copy();
+        this.savedDirection = this.direction;
     }
 
     update(dt) {
 
+    }
+
+    draw(ctx) {
+        if (config.debug) {
+            this.debugDraw(ctx);
+        }
+
+        this.lastPos.x = this.pos.x;
+        this.lastPos.y = this.pos.y
+    }
+
+    debugDraw(ctx) {
+        ctx.fillStyle = '#F99';
+        ctx.fillRect(this.pos.x, this.pos.y, this.size.x, this.size.y);
+    }
+
+    lock() {
+        this.locked = true;
+    }
+
+    unlock() {
+        if (!this.inDialogue) {
+            this.locked = false;
+        }
+    }
+
+    // Positioning Methods
+
+    backstep(collision) {
+        let prevCollisionPoint = this.collisionPoint(true);
+
+        if (collision) {
+            if (prevCollisionPoint.x < collision.pos.x ||
+                prevCollisionPoint.x > collision.pos.x + collision.size.x) {
+                this.pos.x = this.lastPos.x;
+            } else {
+                this.pos.y = this.lastPos.y;
+            }
+        } else {
+            this.pos.x = this.lastPos.x;
+            this.pos.y = this.lastPos.y
+        }
     }
 
     collidesWith(entity) {
@@ -40,44 +86,35 @@ class BaseActor {
         );
     }
 
-    draw(ctx) {
-        if (config.debug) {
-            this.debugDraw(ctx);
-        }
-
-        this.lastPos.x = this.pos.x;
-        this.lastPos.y = this.pos.y
+    savePos() {
+        this.savedPos = this.pos.copy();
+        this.savedDirection = this.direction;
     }
 
-    debugDraw(ctx) {
-        ctx.fillStyle = '#F99';
-        ctx.fillRect(this.pos.x, this.pos.y, this.size.x, this.size.y);
-    }
+    restorePos(unlock = true) {
+        this.pos = this.savedPos.copy();
+        this.direction = this.savedDirection
 
-    resetPos(collision) {
-        let prevCollisionPoint = this.collisionPoint(true);
-
-        if (collision) {
-            if (prevCollisionPoint.x < collision.pos.x ||
-                prevCollisionPoint.x > collision.pos.x + collision.size.x) {
-                this.pos.x = this.lastPos.x;
-            } else {
-                this.pos.y = this.lastPos.y;
-            }
-        } else {
-            this.pos.x = this.lastPos.x;
-            this.pos.y = this.lastPos.y
+        if (unlock) {
+            this.unlock();
         }
     }
 
-    lock() {
-        this.locked = true;
+    // Combat Methods
+
+    attack(target, weapon) {
+        if (!weapon && this.weapon) {
+            weapon = this.weapon;
+        }
+
+        let weaponDamage = weapon && weapon.damage ? weapon.damage : 0;
+        let damage = this.stats.atk + weaponDamage;
+
+        target.endure(damage);
     }
 
-    unlock() {
-        if (!this.inDialogue) {
-            this.locked = false;
-        }
+    endure(damage) {
+        this.stats.endure(damage);
     }
 }
 

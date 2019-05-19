@@ -7,28 +7,31 @@ export default class Battle {
         this.active = true;
 
         this.player = player;
-        this.enemy = enemy;
-
-        this.origPlayerPos = player.lastPos.copy();
-        this.origEnemyPos = enemy.lastPos.copy();
-
+        this.player.savePos();
         this.player.pos.x = 64;
         this.player.pos.y = 128;
         this.player.direction = 4;
+        this.player.lock();
+
+        this.enemy = enemy;
+        this.enemy.savePos();
         this.enemy.pos.x = 256 + 64;
         this.enemy.pos.y = 0;
         this.enemy.direction = 2;
-        this.player.lock();
         this.enemy.lock();
 
-        // Set to opposite and call round
-        this.playersTurn = this.player.stats.spd < this.enemy.stats.spd;
-        this.cycle();
+        this.playersTurn = this.player.stats.spd > this.enemy.stats.spd;
         this.battleMenu = this.battleMenu();
+
+        _handler.register(this);
     }
 
     cycle() {
         this.playersTurn = !this.playersTurn;
+
+        if (!this.playersTurn) {
+           _handler.trigger('battleAction');
+        }
     }
 
     battleMenu() {
@@ -100,5 +103,41 @@ export default class Battle {
         ctx.font = "20px Arial";
         ctx.fillText("HP : " + this.enemy.stats.hp, 16, 32);
         ctx.restore();
+    }
+
+    register() {
+        return {
+            battleAction: e => {
+                if (this.playersTurn) {
+                    this.player.attack(this.enemy, e.attack);
+                } else {
+                    this.enemy.attack(this.player);
+                }
+
+                if (this.player.stats.hp <= 0) {
+                    // Handle death
+
+                } else if (this.enemy.stats.hp <= 0) {
+                    this.enemy.defeated = true;
+
+                    this.player.stats.gainExperience(
+                        this.enemy.stats.givesExperience
+                    );
+
+                    this.player.restorePos();
+                    this.enemy.restorePos();
+
+                    this.active = false;
+
+                } else {
+                    this.cycle();
+                }
+            }
+        }
+    }
+
+    end() {
+        this.enemy.defeated = true;
+        this.active = false;
     }
 }
