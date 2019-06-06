@@ -2,10 +2,15 @@ import Game from './Game.js';
 import Display from './Display';
 import InputHandler from  './InputHandler';
 
-window._handler = new InputHandler();
+declare global {
+    interface WindowInterface extends Window {
+        _handler: any;
+    }
+}
 
-let canvas = document.getElementById('game');
-let ctx = canvas.getContext('2d');
+(window as WindowInterface)._handler = new InputHandler();
+
+let canvas = <HTMLCanvasElement> document.getElementById('game');
 
 const GAME_WIDTH = 1280;
 const GAME_HEIGHT = 720;

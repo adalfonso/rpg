@@ -21,7 +21,12 @@
 		"node-sass": "^4.11.0",
 		"sass-loader": "^7.1.0",
 		"style-loader": "^0.23.1",
+		"typescript": "^3.5.1",
 		"webpack": "^4.28.4",
 		"webpack-cli": "^3.2.1"
+	},
+	"dependencies": {
+		"awesome-typescript-loader": "^5.2.1",
+		"source-map-loader": "^0.2.4"
 	}
 }

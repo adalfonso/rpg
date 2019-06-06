@@ -3,7 +3,7 @@ const path = require('path');
 
 module.exports = {
 	entry: [
-		'./src/js/app.js',
+		'./src/js/app.ts',
 		'./src/scss/app.scss'
 	],
 
@@ -14,6 +14,10 @@ module.exports = {
 
 	module: {
 		rules: [
+			{
+				test: /\.tsx?$/,
+				loader: "awesome-typescript-loader"
+			},
 			{
 				test: /\.m?js$/,
 				exclude: /(node_modules|bower_components)/,
