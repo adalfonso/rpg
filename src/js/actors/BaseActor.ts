@@ -1,25 +1,37 @@
 import config from '../config';
 import Vector from "../Vector";
+import Weapon from '../item/Weapon';
+import Stats from '../Stats';
 
 class BaseActor {
-    constructor(pos, size) {
+
+    public pos: Vector;
+    protected lastPos: Vector;
+    protected savedPos: Vector;
+    protected size: Vector;
+    protected direction: number;
+    protected savedDirection: number;
+    public inDialogue: boolean;
+    protected locked: boolean;
+    protected weapon: Weapon;
+    protected stats: Stats;
+
+    constructor(pos: Vector, size: Vector) {
         this.pos = pos.times(config.scale);
         this.size = size;
         this.direction = 0;
-        this.inDialogue;
+        this.inDialogue = false;
         this.locked = false;
-
         this.lastPos = pos.copy();
-
         this.savedPos = pos.copy();
         this.savedDirection = this.direction;
     }
 
-    update(dt) {
+    update(dt: number) {
 
     }
 
-    draw(ctx) {
+    draw(ctx: CanvasRenderingContext2D) {
         if (config.debug) {
             this.debugDraw(ctx);
         }
@@ -28,7 +40,7 @@ class BaseActor {
         this.lastPos.y = this.pos.y
     }
 
-    debugDraw(ctx) {
+    debugDraw(ctx: CanvasRenderingContext2D) {
         ctx.fillStyle = '#F99';
         ctx.fillRect(this.pos.x, this.pos.y, this.size.x, this.size.y);
     }
@@ -45,7 +57,7 @@ class BaseActor {
 
     // Positioning Methods
 
-    backstep(collision) {
+    backstep(collision?: { pos: Vector, size: Vector }) {
         let prevCollisionPoint = this.collisionPoint(true);
 
         if (collision) {
@@ -61,7 +73,7 @@ class BaseActor {
         }
     }
 
-    collidesWith(entity) {
+    collidesWith(entity: BaseActor) {
         let collisionPoint = this.collisionPoint();
 
         let collision = collisionPoint.x > entity.pos.x &&
@@ -79,7 +91,7 @@ class BaseActor {
         return false;
     }
 
-    collisionPoint(prev = false) {
+    collisionPoint(prev: boolean = false): Vector {
         return new Vector(
             (prev ? this.lastPos.x : this.pos.x) + this.size.x * .5,
             (prev ? this.lastPos.y : this.pos.y) + this.size.y * .8
@@ -91,7 +103,7 @@ class BaseActor {
         this.savedDirection = this.direction;
     }
 
-    restorePos(unlock = true) {
+    restorePos(unlock: boolean = true) {
         this.pos = this.savedPos.copy();
         this.direction = this.savedDirection
 
@@ -102,7 +114,7 @@ class BaseActor {
 
     // Combat Methods
 
-    attack(target, weapon) {
+    attack(target: BaseActor, weapon: Weapon) {
         if (!weapon && this.weapon) {
             weapon = this.weapon;
         }
@@ -113,7 +125,7 @@ class BaseActor {
         target.endure(damage);
     }
 
-    endure(damage) {
+    endure(damage: number) {
         this.stats.endure(damage);
     }
 }

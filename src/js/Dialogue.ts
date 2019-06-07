@@ -1,7 +1,23 @@
 import { handler } from './app';
+import BaseActor from './actors/BaseActor';
+import Player from './actors/Player';
+import Vector from './Vector';
+import InputHandler from './InputHandler';
 
 export default class Dialogue {
-    constructor(texts, entity, player = entity) {
+    protected texts: string[];
+    protected entity: any;
+    protected player: any;
+    protected currentText: string;
+
+    protected waiting: boolean;
+    public done: boolean;
+
+    protected index: number;
+    protected frameLength: number;
+    protected timeStore: number;
+
+    constructor(texts: string[], entity: BaseActor, player: BaseActor = entity) {
         this.texts = texts;
         this.entity = entity;
         this.player = player;
@@ -21,7 +37,7 @@ export default class Dialogue {
         handler.register(this);
     }
 
-    update(dt) {
+    update(dt: number) {
         if (this.waiting) {
             return;
         }
@@ -40,7 +56,7 @@ export default class Dialogue {
         }
     }
 
-    draw(ctx, offset) {
+    draw(ctx: CanvasRenderingContext2D, offset: Vector) {
         ctx.save();
         ctx.translate(32 - offset.x, 48 - offset.y);
         ctx.font = "30px Arial";
@@ -54,11 +70,11 @@ export default class Dialogue {
         ctx.restore();
     }
 
-    register() {
+    register(): object {
         return {
-            keyup: (e, handler) => {
+            keyup: (e: KeyboardEvent, handler: InputHandler) => {
                 if (e.key === 'Enter') {
-                    this.next();
+                    this.next(e);
                 }
 
                 if (this.done) {
@@ -68,7 +84,7 @@ export default class Dialogue {
         };
     }
 
-    next(e) {
+    next(e: KeyboardEvent) {
         if (!this.waiting || this.done) {
             return;
         }

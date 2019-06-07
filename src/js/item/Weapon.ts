@@ -1,7 +1,13 @@
 import { handler } from '../app';
 
 export default class Weapon {
-    constructor(stats) {
+
+    protected type: string;
+    public damage: number;
+    public name: string;
+    public description: string;
+
+    constructor(stats: object) {
         for (let stat in stats) {
             this[stat] = stats[stat];
         }
@@ -12,5 +18,4 @@ export default class Weapon {
     use() {
         handler.trigger('battleAction', this);
     }
-
 }
