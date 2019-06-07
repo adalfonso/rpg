@@ -80,7 +80,7 @@ class Display {
 
             this.resize(width, height);
 
-        } else if (this.game.width !== this.game.resolution.x) {
+        } else {
             this.resize(
                 this.game.resolution.x,
                 this.game.resolution.y
