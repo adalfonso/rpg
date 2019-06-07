@@ -1,10 +1,14 @@
+
 export default class InputHandler {
+    protected events: object;
+    protected customEvents: object;
+
     constructor() {
         this.events = {};
         this.customEvents = {};
     }
 
-    register(target) {
+    register(target: any) {
         if (typeof target.register !== 'function') {
             throw new Error('Target class does not have event register method');
         }
@@ -18,7 +22,7 @@ export default class InputHandler {
         }
     }
 
-    install(target, events) {
+    install(target: any, events: object[]) {
         for (let event in events) {
             if (!this.events.hasOwnProperty(event)) {
                 this.events[event] = [];
@@ -37,7 +41,7 @@ export default class InputHandler {
         }
     }
 
-    unregister(target) {
+    unregister(target: any) {
         for (let event in this.events) {
             this.events[event] = this.events[event].filter(e => {
                 return e.target !== target;
@@ -45,7 +49,7 @@ export default class InputHandler {
         }
     }
 
-    trigger(event, detail) {
+    trigger(event: string, detail: object) {
         let e = new CustomEvent(event, { detail: detail });
         window.dispatchEvent(e);
     }
