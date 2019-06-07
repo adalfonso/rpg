@@ -1,7 +1,7 @@
 import npcs from './npcs.json';
 import BaseActor from './BaseActor';
-import Vector from '../Vector.js';
-import Dialogue from '../Dialogue.js';
+import Vector from '../Vector';
+import Dialogue from '../Dialogue';
 import { handler } from '../app';
 
 export default class NPC extends BaseActor {

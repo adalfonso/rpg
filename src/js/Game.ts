@@ -6,16 +6,17 @@ import Battle from './Battle';
 import { handler } from './app';
 
 class Game {
-    battle: Battle;
     height: number;
-    level: Level;
     levelNumber: number;
-    menu: StartMenu;
-    offset: Vector;
-    resolution: Vector;
     state: string;
     states: string[];
     width: number;
+
+    battle: Battle;
+    level: Level;
+    menu: StartMenu;
+    offset: Vector;
+    resolution: Vector;
 
     constructor(width: number, height: number) {
         this.resolution = new Vector(width, height);
