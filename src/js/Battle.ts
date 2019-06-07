@@ -1,8 +1,16 @@
 import BattleMenu from "./menu/BattleMenu";
 import Vector from "./Vector";
 import { handler } from './app';
+import Player from "./actors/Player";
+import Enemy from "./actors/Enemy";
 
 export default class Battle {
+
+    protected player: Player;
+    protected enemy: Enemy;
+    public active: boolean;
+    protected playersTurn: boolean;
+    protected battleMenu: BattleMenu;
 
     constructor(player, enemy) {
         this.active = true;
@@ -22,7 +30,7 @@ export default class Battle {
         this.enemy.lock();
 
         this.playersTurn = this.player.stats.spd > this.enemy.stats.spd;
-        this.battleMenu = this.battleMenu();
+        this.battleMenu = this.getBattleMenu();
 
         handler.register(this);
     }
@@ -31,11 +39,11 @@ export default class Battle {
         this.playersTurn = !this.playersTurn;
 
         if (!this.playersTurn) {
-           handler.trigger('battleAction');
+           handler.trigger('battleAction', this);
         }
     }
 
-    battleMenu() {
+    getBattleMenu(): BattleMenu {
         return new BattleMenu({
             type: 'Items',
             menu: []
@@ -51,12 +59,12 @@ export default class Battle {
         });
     }
 
-    update(dt) {
+    update(dt: number) {
 
     }
 
-    draw(ctx, width, height) {
-        let offset = new Vector(
+    draw(ctx: CanvasRenderingContext2D, width: number, height: number) {
+        let offset: Vector = new Vector(
             width / 2 - 128 - 64,
             height / 2 - 64 - 64
         );
@@ -85,7 +93,7 @@ export default class Battle {
         }
     }
 
-    drawUiBar(ctx) {
+    drawUiBar(ctx: CanvasRenderingContext2D) {
         ctx.save();
         ctx.fillStyle = '#000';
         ctx.fillRect(0, 0, 512, 48);
@@ -95,7 +103,7 @@ export default class Battle {
         ctx.restore();
     }
 
-    drawEnemyUiBar(ctx, width, height) {
+    drawEnemyUiBar(ctx: CanvasRenderingContext2D, width: number, height: number) {
         ctx.save();
         ctx.translate(width - 512, 0)
         ctx.fillStyle = '#000';
@@ -106,7 +114,7 @@ export default class Battle {
         ctx.restore();
     }
 
-    register() {
+    register(): object {
         return {
             battleAction: e => {
                 if (this.playersTurn) {

@@ -114,7 +114,7 @@ class BaseActor {
 
     // Combat Methods
 
-    attack(target: BaseActor, weapon: Weapon) {
+    attack(target: BaseActor, weapon?: Weapon) {
         if (!weapon && this.weapon) {
             weapon = this.weapon;
         }
