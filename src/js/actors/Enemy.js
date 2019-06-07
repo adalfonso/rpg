@@ -6,6 +6,7 @@ import Renderable from '../Renderable';
 
 import knight from '../../img/enemies/knight.png';
 import Stats from '../Stats';
+import { handler } from '../app';
 
 let sprites = {
     knight: knight
@@ -57,7 +58,7 @@ export default class Enemy extends BaseActor {
     }
 
     fight(opponent) {
-        _handler.trigger(
+        handler.trigger(
             'battle', {
                 player: this.playerRef,
                 enemy: this

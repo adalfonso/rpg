@@ -12,6 +12,10 @@ module.exports = {
 		filename: "js/app.js"
 	},
 
+	resolve: {
+		extensions: ['.ts', '.js', '.json']
+	},
+
 	module: {
 		rules: [
 			{

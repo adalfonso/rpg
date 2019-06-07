@@ -3,11 +3,24 @@ import levels from './levels/levels'
 import Vector from './Vector';
 import StartMenu from './menu/StartMenu';
 import Battle from './Battle';
+import { handler } from './app';
 
 class Game {
-    constructor(width, height) {
+    battle: Battle;
+    height: number;
+    level: Level;
+    levelNumber: number;
+    menu: StartMenu;
+    offset: Vector;
+    resolution: Vector;
+    state: string;
+    states: string[];
+    width: number;
+
+    constructor(width: number, height: number) {
         this.resolution = new Vector(width, height);
         this.resize(width, height);
+
         this.levelNumber = 0;
         this.offset = new Vector(0, 0);
 
@@ -24,10 +37,10 @@ class Game {
 
         this.menu = new StartMenu();
 
-        _handler.register(this);
+        handler.register(this);
     }
 
-    loadLevel(event) {
+    loadLevel(event: any) {
         let match = event.obj.portal_to.match(/^(\d+)\.(\d+)$/);
         let level = levels[parseInt(match[1])][parseInt(match[2])];
         let portal = event.obj;
@@ -38,7 +51,7 @@ class Game {
         this.level = new Level(levels[0][0]);
     }
 
-    update(dt) {
+    update(dt: number) {
         if (this.menu.active) {
             this.lock('start-menu');
 
@@ -79,12 +92,12 @@ class Game {
         }
     }
 
-    resize(width, height) {
+    resize(width: number, height: number) {
         this.width = width;
         this.height = height;
     }
 
-    lock(state) {
+    lock(state: string) {
         this.state = state;
         this.level.player.lock();
     }
@@ -94,7 +107,7 @@ class Game {
         this.state = 'playing';
     }
 
-    register() {
+    register(): object {
         return {
             battle: e => {
                 if (this.battle) {

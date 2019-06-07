@@ -1,3 +1,5 @@
+import { handler } from './app';
+
 class Display {
     constructor(canvas, game) {
         this.game = game;
@@ -5,7 +7,7 @@ class Display {
         this.buffer = document.createElement('canvas').getContext('2d');
         this.triggerResize(this.game.width, this.game.height);
 
-        _handler.register(this);
+        handler.register(this);
     }
 
     draw(offset) {

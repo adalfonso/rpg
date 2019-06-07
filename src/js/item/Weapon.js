@@ -1,3 +1,5 @@
+import { handler } from '../app';
+
 export default class Weapon {
     constructor(stats) {
         for (let stat in stats) {
@@ -8,7 +10,7 @@ export default class Weapon {
     }
 
     use() {
-        _handler.trigger('battleAction', this);
+        handler.trigger('battleAction', this);
     }
 
 }

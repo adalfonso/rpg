@@ -1,3 +1,5 @@
+import { handler } from './app';
+
 export default class Dialogue {
     constructor(texts, entity, player = entity) {
         this.texts = texts;
@@ -16,7 +18,7 @@ export default class Dialogue {
         this.player.lock();
         this.player.inDialogue = true;
 
-        _handler.register(this);
+        handler.register(this);
     }
 
     update(dt) {

@@ -1,14 +1,8 @@
-import Game from './Game.js';
+import Game from './Game';
 import Display from './Display';
 import InputHandler from  './InputHandler';
 
-declare global {
-    interface WindowInterface extends Window {
-        _handler: any;
-    }
-}
-
-(window as WindowInterface)._handler = new InputHandler();
+export let handler = new InputHandler();
 
 let canvas = <HTMLCanvasElement> document.getElementById('game');
 
@@ -20,9 +14,9 @@ let display = new Display(canvas, game);
 
 game.start();
 
-let lastTime = 0;
+let lastTime: number = 0;
 
-function frame(timestamp) {
+function frame(timestamp: number) {
     let dt = timestamp - lastTime;
     lastTime = timestamp;
 

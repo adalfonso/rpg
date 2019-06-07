@@ -5,6 +5,7 @@ import Inventory from '../menu/Inventory';
 import Weapon from '../item/Weapon';
 import Vector from '../Vector';
 import Stats from '../Stats';
+import { handler } from '../app';
 
 class Player extends BaseActor {
     constructor(pos, size) {
@@ -42,7 +43,7 @@ class Player extends BaseActor {
         this.weapon = null;
         this.spells = [];
 
-        _handler.register(this);
+        handler.register(this);
 
         // Testing
         this.init();

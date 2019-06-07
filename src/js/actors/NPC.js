@@ -2,6 +2,7 @@ import npcs from './npcs.json';
 import BaseActor from './BaseActor';
 import Vector from '../Vector.js';
 import Dialogue from '../Dialogue.js';
+import { handler } from '../app';
 
 export default class NPC extends BaseActor {
     constructor(obj, player) {
@@ -28,7 +29,7 @@ export default class NPC extends BaseActor {
         this.dialogue = null;
         this.playerRef = player;
 
-        _handler.register(this);
+        handler.register(this);
     }
 
     get dialogueName() {

@@ -1,5 +1,6 @@
 import BattleMenu from "./menu/BattleMenu";
 import Vector from "./Vector";
+import { handler } from './app';
 
 export default class Battle {
 
@@ -23,14 +24,14 @@ export default class Battle {
         this.playersTurn = this.player.stats.spd > this.enemy.stats.spd;
         this.battleMenu = this.battleMenu();
 
-        _handler.register(this);
+        handler.register(this);
     }
 
     cycle() {
         this.playersTurn = !this.playersTurn;
 
         if (!this.playersTurn) {
-           _handler.trigger('battleAction');
+           handler.trigger('battleAction');
         }
     }
 

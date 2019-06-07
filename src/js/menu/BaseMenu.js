@@ -1,3 +1,5 @@
+import { handler } from '../app';
+
 export default class BaseMenu {
 
     constructor(menu) {
@@ -6,7 +8,7 @@ export default class BaseMenu {
         this.active = true;
         this.selected.push(this.menu[0]);
 
-        _handler.register(this);
+        handler.register(this);
     }
 
     select() {

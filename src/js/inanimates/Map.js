@@ -5,6 +5,7 @@ import Enemy from '../actors/Enemy';
 import Portal from "./Portal";
 import Vector from "../Vector";
 import config from '../config';
+import { handler } from '../app';
 
 export default class Map {
 
@@ -116,6 +117,6 @@ export default class Map {
     }
 
     destruct() {
-        this.npcs.forEach(npc => _handler.unregister(npc));
+        this.npcs.forEach(npc => handler.unregister(npc));
     }
 }
