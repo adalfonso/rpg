@@ -1,7 +1,11 @@
 import BaseInanimate from "./BaseInanimate";
+import Vector from "../Vector";
 
 export default class Portal extends BaseInanimate {
-    constructor(pos, size, obj) {
+    public pos: Vector;
+    public size: Vector;
+
+    constructor(pos: Vector, size: Vector, obj) {
         super(pos, size);
 
         if (obj && obj.properties) {
@@ -11,7 +15,7 @@ export default class Portal extends BaseInanimate {
         }
     }
 
-    draw(ctx) {
+    draw(ctx: CanvasRenderingContext2D) {
         super.draw(ctx);
     }
 }
