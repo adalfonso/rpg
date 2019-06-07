@@ -1,12 +1,28 @@
 export default class Renderable {
 
+    protected img: HTMLImageElement;
+    protected frame: number;
+    protected startFrame: number;
+    protected frameCount: number;
+    protected framesX: number;
+    protected framesY: number;
+    protected animTime: number;
+    protected speed: number;
+    protected scale: number;
+    protected subHeight: number;
+    protected subWidth: number;
+
     constructor(
-        img, scale = 1, startFrame = 0, frameCount = 9,
-        framesX = 9, framesY = 4, speed = 1
+        img: string,
+        scale: number = 1,
+        startFrame: number = 0,
+        frameCount: number = 9,
+        framesX: number = 9,
+        framesY: number = 4,
+        speed: number = 1
     ) {
         this.img = new Image();
         this.img.src = img;
-
         this.scale = scale;
         this.frame = startFrame;
         this.startFrame = startFrame;
@@ -22,7 +38,7 @@ export default class Renderable {
         }
     }
 
-    draw(ctx) {
+    draw(ctx: CanvasRenderingContext2D) {
         let t = new Date().getTime();
 
         if (t >= this.animTime) {
@@ -34,8 +50,8 @@ export default class Renderable {
             this.frame = this.startFrame;
         }
 
-        let posX = (this.frame % this.framesX) * this.subWidth;
-        let posY = Math.floor(this.frame / this.framesX) * this.subHeight;
+        let posX: number = (this.frame % this.framesX) * this.subWidth;
+        let posY: number = Math.floor(this.frame / this.framesX) * this.subHeight;
 
 
         ctx.drawImage(
