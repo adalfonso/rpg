@@ -73,7 +73,7 @@ class BaseActor {
         }
     }
 
-    collidesWith(entity: BaseActor) {
+    collidesWith(entity: any) {
         let collisionPoint = this.collisionPoint();
 
         let collision = collisionPoint.x > entity.pos.x &&

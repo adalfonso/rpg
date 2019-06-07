@@ -6,13 +6,26 @@ import Portal from "./Portal";
 import Vector from "../Vector";
 import config from '../config';
 import { handler } from '../app';
+import Player from "../actors/Player";
 
 export default class Map {
 
-    constructor (data, img, player) {
+    protected renderable: Renderable;
+    protected player: Player;
+    protected scale: number;
+    protected pos: Vector;
+    protected data: any;
+    protected config: object;
+    protected playerClips: PlayerClip[];
+    protected portals: Portal[];
+    protected playerStarts: object;
+    protected npcs: NPC[];
+    protected enemies: Enemy[];
+
+    constructor (data: object, img: string, player: Player) {
         this.data = data;
         this.player = player;
-        this.pos = { x: 0, y: 0 };
+        this.pos = new Vector(0, 0);
         this.scale = config.scale;
         this.config = {};
 
@@ -30,9 +43,9 @@ export default class Map {
             }
 
             layer.objects.forEach(obj => {
-                let pos = new Vector(obj.x * this.scale, obj.y * this.scale);
-                let size = new Vector(obj.width * this.scale, obj.height * this.scale);
-                let match = layer.name.match(/^player_start_(\d+\.\d+)$/);
+                let pos: Vector = new Vector(obj.x * this.scale, obj.y * this.scale);
+                let size: Vector = new Vector(obj.width * this.scale, obj.height * this.scale);
+                let match: boolean = layer.name.match(/^player_start_(\d+\.\d+)$/);
 
                 if (layer.name === 'collision') {
                     this.playerClips.push(new PlayerClip(pos, size));
@@ -47,7 +60,7 @@ export default class Map {
                     this.enemies.push(new Enemy(obj, player));
 
                 } else if (layer.name === 'config') {
-                    this.config = this.obj.properties;
+                    this.config = obj.properties;
 
                 } else if (match) {
                     this.playerStarts[match[1]] = obj;
@@ -56,10 +69,10 @@ export default class Map {
         });
     }
 
-    update(dt) {
+    update(dt: number) {
         let events = [];
 
-        this.playerClips.forEach(clip => {
+        this.playerClips.forEach((clip: PlayerClip) => {
             let collision = this.player.collidesWith(clip);
 
             if (collision) {
@@ -67,7 +80,7 @@ export default class Map {
             }
         });
 
-        this.portals.forEach(portal => {
+        this.portals.forEach((portal: Portal) => {
             let collision = this.player.collidesWith(portal);
 
             if (collision) {
@@ -81,7 +94,7 @@ export default class Map {
         return events;
     }
 
-    draw(ctx, overPlayer = false) {
+    draw(ctx:CanvasRenderingContext2D, overPlayer: boolean = false) {
         this.data.layers.forEach(layer => {
             if (layer.type !== 'tilelayer') {
                 return;
@@ -95,9 +108,10 @@ export default class Map {
                 return;
             }
 
-            let x = 0, y = 0;
+            let x: number = 0,
+                y: number = 0;
 
-            layer.data.forEach((value, index) => {
+            layer.data.forEach((value, index: number) => {
                 this.renderable.frame = value - 1;
 
                 x = index % layer.width;

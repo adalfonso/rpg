@@ -1,16 +1,16 @@
 export default class Renderable {
 
     protected img: HTMLImageElement;
-    protected frame: number;
+    public frame: number;
     protected startFrame: number;
     protected frameCount: number;
     protected framesX: number;
     protected framesY: number;
     protected animTime: number;
     protected speed: number;
-    protected scale: number;
-    protected subHeight: number;
-    protected subWidth: number;
+    public scale: number;
+    public subHeight: number;
+    public subWidth: number;
 
     constructor(
         img: string,
