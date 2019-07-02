@@ -63,7 +63,9 @@ export default class Battle {
 
     }
 
-    draw(ctx: CanvasRenderingContext2D, width: number, height: number) {
+    draw(ctx: CanvasRenderingContext2D, size: Vector) {
+        let width: number = size.x;
+        let height: number = size.y;
         let offset: Vector = new Vector(
             width / 2 - 128 - 64,
             height / 2 - 64 - 64
@@ -89,7 +91,7 @@ export default class Battle {
         this.drawEnemyUiBar(ctx, width, height);
 
         if (this.playersTurn) {
-            this.battleMenu.draw(ctx, offset, this.player);
+            this.battleMenu.draw(ctx, new Vector(0, 0), offset, this.player);
         }
     }
 

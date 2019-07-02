@@ -7,7 +7,7 @@ export default class BattleMenu extends BaseMenu {
         super(args);
     }
 
-    draw(ctx, offset, entity) {
+    draw(ctx:CanvasRenderingContext2D, size: Vector, offset: Vector, entity?) {
         ctx.save();
         ctx.font = '12px Arial';
 

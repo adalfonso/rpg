@@ -33,19 +33,19 @@ class Display {
 
         if (this.game.level.player.inventory.active) {
             this.game.level.player.inventory.draw(
-                this.buffer, this.game.width, this.game.height, offset
+                this.buffer, this.drawSize, offset
             );
         }
 
         if (this.game.battle && this.game.battle.active) {
             this.game.battle.draw(
-                this.buffer, this.game.width, this.game.height
+                this.buffer, this.drawSize
             );
         }
 
         if (this.game.menu.active) {
             this.game.menu.draw(
-                this.buffer, this.game.width, this.game.height, offset
+                this.buffer, this.drawSize, offset
             );
         }
 
@@ -104,6 +104,10 @@ class Display {
         return {
             resize: e => this.triggerResize()
         };
+    }
+
+    get drawSize () {
+        return new Vector(this.game.width, this.game.height)
     }
 }
 

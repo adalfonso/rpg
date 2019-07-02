@@ -1,6 +1,10 @@
 import { handler } from '../app';
+import Vector from '../Vector';
 
 export default class BaseMenu {
+    protected menu: any;
+    protected selected: any[];
+    public active: Boolean;
 
     constructor(menu) {
         this.menu = menu;
@@ -60,15 +64,17 @@ export default class BaseMenu {
         }
     }
 
-    hasSubMenu() {
+    hasSubMenu(): boolean {
         let current = this.currentOption;
 
         return current.menu && current.menu.length;
     }
 
-    draw(ctx, width, height, offset) {}
+    draw(ctx: CanvasRenderingContext2D, size: Vector, offset: Vector) {
 
-    register() {
+    }
+
+    register(): object {
         return {
             keyup: e => {
                 if (!this.active) {
@@ -99,7 +105,7 @@ export default class BaseMenu {
         };
     }
 
-    get currentOption () {
+    get currentOption() {
         return this.selected[this.selected.length - 1];
     }
 

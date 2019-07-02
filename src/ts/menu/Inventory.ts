@@ -2,6 +2,9 @@ import BaseMenu from './BaseMenu';
 import Vector from '../Vector';
 
 export default class Inventory extends BaseMenu {
+
+    protected equipped: object;
+
     constructor() {
         let menu = [{
             type: 'item',
@@ -33,11 +36,11 @@ export default class Inventory extends BaseMenu {
         })[0].menu.push(item);
     }
 
-    draw(ctx, width, height, offset) {
+    draw(ctx: CanvasRenderingContext2D, size: Vector, offset: Vector) {
         ctx.save();
         ctx.translate(-offset.x, -offset.y);
         ctx.fillStyle = 'rgba(200, 200, 200, .96)';
-        ctx.fillRect(0, 0, width, height);
+        ctx.fillRect(0, 0, size.x, size.y);
         ctx.fillStyle = '#75A';
         ctx.textAlign = "left";
 
@@ -79,7 +82,7 @@ export default class Inventory extends BaseMenu {
         ctx.restore();
     }
 
-    register() {
+    register(): object {
         return [
             super.register(),
             {

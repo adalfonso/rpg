@@ -1,4 +1,5 @@
 import BaseMenu from './BaseMenu'
+import Vector from '../Vector';
 
 export default class StartMenu extends BaseMenu {
     constructor() {
@@ -15,11 +16,11 @@ export default class StartMenu extends BaseMenu {
         super(menu);
     }
 
-    draw(ctx, width, height, offset) {
+    draw(ctx: CanvasRenderingContext2D, size: Vector, offset: Vector) {
         ctx.save();
         ctx.translate(-offset.x, -offset.y);
         ctx.fillStyle = 'rgba(0, 0, 0, .85)';
-        ctx.fillRect(0, 0, width, height);
+        ctx.fillRect(0, 0, size.x, size.y);
         ctx.fillStyle = '#FFF';
         ctx.textAlign = "center";
 
@@ -40,8 +41,8 @@ export default class StartMenu extends BaseMenu {
 
             ctx.fillText(
                 selected ? '▶ ' + current.description : current.description,
-                width / 2,
-                height / (this.menu.length - index) * .5
+                size.x / 2,
+                size.y / (this.menu.length - index) * .5
             )
         });
 
