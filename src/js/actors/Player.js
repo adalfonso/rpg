@@ -57,7 +57,7 @@ class Player extends BaseActor {
         return 'Me';
     }
 
-    update(time) {
+    update(dt) {
         if (this.locked) {
             return;
         }

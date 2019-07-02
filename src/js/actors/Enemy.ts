@@ -8,12 +8,20 @@ import knight from '../../img/enemies/knight.png';
 import Stats from '../Stats';
 import { handler } from '../app';
 
-let sprites = {
-    knight: knight
-};
+let sprites = { knight: knight };
 
 export default class Enemy extends BaseActor {
-    constructor(obj, player) {
+    protected type: string;
+    protected data: any;
+    protected dialogue: Dialogue;
+    protected playerRef: BaseActor;
+    public stats: Stats;
+    public defeated: boolean;
+    protected sprite: Renderable;
+    protected sprites: Renderable[];
+    public direction: number;
+
+    constructor(obj, player: BaseActor) {
         super(
             new Vector(obj.x, obj.y),
             new Vector(obj.width, obj.height)
@@ -53,11 +61,11 @@ export default class Enemy extends BaseActor {
         this.direction = 4;
     }
 
-    get dialogueName() {
+    get dialogueName(): string {
         return this.data.display_name;
     }
 
-    fight(opponent) {
+    fight() {
         handler.trigger(
             'battle', {
                 player: this.playerRef,
@@ -66,13 +74,13 @@ export default class Enemy extends BaseActor {
         );
     }
 
-    update(dt, player) {
+    update(dt: number) {
         if (this.collidesWith(this.playerRef) && !this.defeated) {
-            this.fight(this.playerRef);
+            this.fight();
         }
     }
 
-    draw(ctx) {
+    draw(ctx: CanvasRenderingContext2D) {
         super.draw(ctx);
 
         ctx.save();
