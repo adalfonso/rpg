@@ -10,17 +10,17 @@ import Player from "../actors/Player";
 
 export default class Map {
 
-    protected renderable: Renderable;
-    protected player: Player;
-    protected scale: number;
-    protected pos: Vector;
-    protected data: any;
     protected config: object;
+    protected data: any;
+    protected player: Player;
     protected playerClips: PlayerClip[];
     protected portals: Portal[];
-    protected playerStarts: object;
-    protected npcs: NPC[];
-    protected enemies: Enemy[];
+    protected pos: Vector;
+    protected renderable: Renderable;
+    protected scale: number;
+    public enemies: Enemy[];
+    public npcs: NPC[];
+    public playerStarts: object;
 
     constructor (data: object, img: string, player: Player) {
         this.data = data;

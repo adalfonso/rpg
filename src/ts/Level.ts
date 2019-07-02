@@ -4,8 +4,16 @@ import Map from './inanimates/Map';
 import config from './config';
 import Vector from './Vector';
 import Dialogue from './Dialogue';
+import BaseInanimate from './inanimates/BaseInanimate';
+import BaseActor from './actors/BaseActor';
 
 class Level {
+    protected inanimates: BaseInanimate[];
+    protected actors: BaseActor[];
+    protected dialogues: Dialogue[];
+    public player: Player;
+    public map: Map;
+
     constructor(json) {
         this.inanimates = [];
         this.actors = [];
@@ -26,7 +34,7 @@ class Level {
         // );
     }
 
-    reload(json, portal) {
+    reload(json, portal?) {
         if (this.map) {
             this.map.destruct();
         }
@@ -41,7 +49,7 @@ class Level {
         this.player.pos.y = start.y * config.scale;
     }
 
-    update(dt) {
+    update(dt: number) {
         this.entities.forEach(entity => {
             entity.update(dt);
         });
@@ -55,7 +63,7 @@ class Level {
         return this.map.update(dt);
     }
 
-    get entities() {
+    get entities(): any[] {
         return [
             this.player, ...this.inanimates,
             ...this.actors, ...this.dialogues,
