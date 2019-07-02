@@ -9,7 +9,7 @@ class BaseActor {
     protected lastPos: Vector;
     protected savedPos: Vector;
     protected size: Vector;
-    protected direction: number;
+    public direction: number;
     protected savedDirection: number;
     public inDialogue: boolean;
     protected locked: boolean;

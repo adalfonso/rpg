@@ -10,7 +10,7 @@ export default class Stats {
     protected base_sp_def: number;
     protected base_spd: number;
 
-    constructor(stats: number[]) {
+    constructor(stats: object) {
 
         for (let stat in stats) {
             this['base_' + stat] = stats[stat];

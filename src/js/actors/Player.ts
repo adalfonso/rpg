@@ -8,12 +8,20 @@ import Stats from '../Stats';
 import { handler } from '../app';
 
 class Player extends BaseActor {
-    constructor(pos, size) {
+
+    protected maxSpeed: number;
+    protected speed: Vector;
+    protected sprites: Renderable[];
+    public inventory: Inventory;
+    public spells: any[];
+    public stats: Stats;
+    public weapon: Weapon;
+
+    constructor(pos: Vector, size: Vector) {
         super(pos, size);
 
         this.speed = new Vector(0, 0);
         this.maxSpeed = size.x / 10;
-        this.direction = 0;
 
         this.sprites = [
             // img, scale, startFrame, frameCount, framesX, framesY, speed
@@ -57,7 +65,7 @@ class Player extends BaseActor {
         return 'Me';
     }
 
-    update(dt) {
+    update(dt: number) {
         if (this.locked) {
             return;
         }
@@ -65,10 +73,10 @@ class Player extends BaseActor {
         this.pos.x += this.speed.x;
         this.pos.y += this.speed.y;
 
-        super.update();
+        super.update(dt);
     }
 
-    draw(ctx) {
+    draw(ctx: CanvasRenderingContext2D) {
         super.draw(ctx);
 
         ctx.save();
@@ -79,7 +87,7 @@ class Player extends BaseActor {
         ctx.restore();
     }
 
-    move(key) {
+    move(key: string) {
         switch(key) {
             case 'ArrowLeft':
                 this.speed.x = -this.maxSpeed;
@@ -101,7 +109,7 @@ class Player extends BaseActor {
         this.changeDirection();
     }
 
-    stop(key) {
+    stop(key: string) {
         if (key === 'ArrowLeft' && this.speed.x < 0) {
             this.speed.x = 0;
         }
@@ -140,7 +148,7 @@ class Player extends BaseActor {
         }
     }
 
-    register() {
+    register(): object {
         return {
             keydown: e => {
                 if (e.key.match(/Arrow/)) {
@@ -148,7 +156,7 @@ class Player extends BaseActor {
                 }
             },
 
-            keyup: e =>{
+            keyup: e => {
                 if (e.key.match(/Arrow/)) {
                     this.stop(e.key);
                 }

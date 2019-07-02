@@ -19,7 +19,6 @@ export default class Enemy extends BaseActor {
     public defeated: boolean;
     protected sprite: Renderable;
     protected sprites: Renderable[];
-    public direction: number;
 
     constructor(obj, player: BaseActor) {
         super(

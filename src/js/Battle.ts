@@ -6,11 +6,11 @@ import Enemy from "./actors/Enemy";
 
 export default class Battle {
 
-    protected player: Player;
-    protected enemy: Enemy;
-    public active: boolean;
-    protected playersTurn: boolean;
     protected battleMenu: BattleMenu;
+    protected enemy: Enemy;
+    protected player: Player;
+    protected playersTurn: boolean;
+    public active: boolean;
 
     constructor(player, enemy) {
         this.active = true;
