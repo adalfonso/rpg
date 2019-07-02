@@ -3,9 +3,16 @@ import BaseActor from './BaseActor';
 import Vector from '../Vector';
 import Dialogue from '../Dialogue';
 import { handler } from '../app';
+import Player from './Player.js';
 
 export default class NPC extends BaseActor {
-    constructor(obj, player) {
+
+    protected name: string;
+    protected data: any;
+    protected dialogue: Dialogue;
+    protected playerRef: Player;
+
+    constructor(obj, player: Player) {
         super(
             new Vector(obj.x, obj.y),
             new Vector(obj.width, obj.height)
@@ -25,15 +32,15 @@ export default class NPC extends BaseActor {
         }
 
         this.name = name;
-        this.npc = npc;
+        this.data = npc;
         this.dialogue = null;
         this.playerRef = player;
 
         handler.register(this);
     }
 
-    get dialogueName() {
-        return this.npc.display_name;
+    get dialogueName(): string {
+        return this.data.display_name;
     }
 
     speak() {
@@ -41,10 +48,10 @@ export default class NPC extends BaseActor {
            return;
         }
 
-        this.dialogue = new Dialogue(this.npc.default.speech, this, this.playerRef);
+        this.dialogue = new Dialogue(this.data.default.speech, this, this.playerRef);
     }
 
-    update(dt, player) {
+    update(dt: number) {
         if (this.dialogue && this.dialogue.done) {
             this.dialogue = null;
 
@@ -53,13 +60,13 @@ export default class NPC extends BaseActor {
         }
     }
 
-    draw(ctx, offset) {
+    draw(ctx: CanvasRenderingContext2D, offset: Vector) {
         if (this.dialogue) {
             this.dialogue.draw(ctx, offset);
         }
     }
 
-    register() {
+    register(): object {
         return {
             keyup: e => {
                 if (e.key === ' ' || e.key === 'Enter') {

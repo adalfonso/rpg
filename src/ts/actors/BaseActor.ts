@@ -5,16 +5,16 @@ import Stats from '../Stats';
 
 class BaseActor {
 
-    public pos: Vector;
     protected lastPos: Vector;
+    protected locked: boolean;
+    protected savedDirection: number;
     protected savedPos: Vector;
     protected size: Vector;
-    public direction: number;
-    protected savedDirection: number;
-    public inDialogue: boolean;
-    protected locked: boolean;
-    protected weapon: Weapon;
     protected stats: Stats;
+    protected weapon: Weapon;
+    public direction: number;
+    public inDialogue: boolean;
+    public pos: Vector;
 
     constructor(pos: Vector, size: Vector) {
         this.pos = pos.times(config.scale);
@@ -31,7 +31,7 @@ class BaseActor {
 
     }
 
-    draw(ctx: CanvasRenderingContext2D) {
+    draw(ctx: CanvasRenderingContext2D, offset?: Vector) {
         if (config.debug) {
             this.debugDraw(ctx);
         }

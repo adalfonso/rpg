@@ -3,7 +3,7 @@ const path = require('path');
 
 module.exports = {
 	entry: [
-		'./src/js/app.ts',
+		'./src/ts/app.ts',
 		'./src/scss/app.scss'
 	],
 
