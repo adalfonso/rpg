@@ -2,10 +2,10 @@ import Player from './actors/Player';
 import tileset from '../img/dungeon_sheet.png';
 import Map from './inanimates/Map';
 import config from './config';
-import Vector from './Vector';
 import Dialogue from './Dialogue';
 import BaseInanimate from './inanimates/BaseInanimate';
 import BaseActor from './actors/BaseActor';
+import Enemy from './actors/Enemy';
 
 class Level {
     protected inanimates: BaseInanimate[];
@@ -48,6 +48,13 @@ class Level {
     update(dt: number) {
         this.entities.forEach(entity => {
             entity.update(dt);
+
+            if (
+                entity instanceof Enemy &&
+                entity.collidesWith(this.player)
+            ) {
+                entity.fight(this.player);
+            }
         });
 
         this.dialogues.forEach((dialogue, index) => {

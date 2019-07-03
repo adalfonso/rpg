@@ -57,7 +57,7 @@ export default class Map {
                     this.npcs.push(new NPC(obj, player));
 
                 } else if (layer.name === 'enemies') {
-                    this.enemies.push(new Enemy(obj, player));
+                    this.enemies.push(new Enemy(obj));
 
                 } else if (layer.name === 'config') {
                     this.config = obj.properties;
