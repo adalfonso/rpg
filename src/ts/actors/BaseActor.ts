@@ -3,7 +3,7 @@ import Vector from "../Vector";
 import Weapon from '../item/Weapon';
 import Stats from '../Stats';
 
-class BaseActor {
+abstract class BaseActor {
 
     protected lastPos: Vector;
     protected locked: boolean;
@@ -111,6 +111,8 @@ class BaseActor {
             this.unlock();
         }
     }
+
+    abstract get dialogueName();
 
     // Combat Methods
 

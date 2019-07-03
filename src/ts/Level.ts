@@ -14,15 +14,11 @@ class Level {
     public player: Player;
     public map: Map;
 
-    constructor(json) {
+    constructor(json, player: Player) {
+        this.player = player;
         this.inanimates = [];
         this.actors = [];
         this.dialogues = [];
-
-        this.player = new Player(
-            new Vector(75, 75),
-            new Vector(36, 64)
-        );
 
         this.reload(json);
 

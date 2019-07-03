@@ -11,14 +11,14 @@ import { handler } from '../app';
 let sprites = { knight: knight };
 
 export default class Enemy extends BaseActor {
-    protected type: string;
     protected data: any;
     protected dialogue: Dialogue;
     protected playerRef: BaseActor;
-    public stats: Stats;
-    public defeated: boolean;
     protected sprite: Renderable;
     protected sprites: Renderable[];
+    protected type: string;
+    public defeated: boolean;
+    public stats: Stats;
 
     constructor(obj, player: BaseActor) {
         super(

@@ -4,19 +4,20 @@ import Vector from './Vector';
 import StartMenu from './menu/StartMenu';
 import Battle from './Battle';
 import { handler } from './app';
+import Player from './actors/Player';
 
 class Game {
-    height: number;
-    levelNumber: number;
-    state: string;
-    states: string[];
-    width: number;
-
-    battle: Battle;
-    level: Level;
-    menu: StartMenu;
-    offset: Vector;
-    resolution: Vector;
+    protected battle: Battle;
+    protected height: number;
+    protected level: Level;
+    protected levelNumber: number;
+    protected menu: StartMenu;
+    protected player: Player;
+    protected resolution: Vector;
+    protected state: string;
+    protected states: string[];
+    protected width: number;
+    public offset: Vector;
 
     constructor(width: number, height: number) {
         this.resolution = new Vector(width, height);
@@ -38,6 +39,11 @@ class Game {
 
         this.menu = new StartMenu();
 
+        this.player = new Player(
+            new Vector(75, 75),
+            new Vector(36, 64)
+        );
+
         handler.register(this);
     }
 
@@ -49,14 +55,14 @@ class Game {
     }
 
     start() {
-        this.level = new Level(levels[0][0]);
+        this.level = new Level(levels[0][0], this.player);
     }
 
     update(dt: number) {
         if (this.menu.active) {
             this.lock('start-menu');
 
-        } else if (this.level.player.inventory.active) {
+        } else if (this.player.inventory.active) {
             this.lock('inventory');
 
         } else if (this.battle) {
@@ -88,8 +94,8 @@ class Game {
             this.offset.x = 0;
             this.offset.y = 0;
         } else {
-            this.offset.x = this.width / 2 - this.level.player.pos.x;
-            this.offset.y = this.height / 2 - this.level.player.pos.y;
+            this.offset.x = this.width / 2 - this.player.pos.x;
+            this.offset.y = this.height / 2 - this.player.pos.y;
         }
     }
 
@@ -100,11 +106,11 @@ class Game {
 
     lock(state: string) {
         this.state = state;
-        this.level.player.lock();
+        this.player.lock();
     }
 
     unlock() {
-        this.level.player.unlock();
+        this.player.unlock();
         this.state = 'playing';
     }
 

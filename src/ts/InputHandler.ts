@@ -1,4 +1,3 @@
-
 export default class InputHandler {
     protected events: object;
     protected customEvents: object;

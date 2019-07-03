@@ -48,7 +48,7 @@ export default class NPC extends BaseActor {
            return;
         }
 
-        this.dialogue = new Dialogue(this.data.default.speech, this, this.playerRef);
+        this.dialogue = new Dialogue(this.data.default.speech, this, [this.playerRef]);
     }
 
     update(dt: number) {

@@ -6,8 +6,8 @@ import InputHandler from './InputHandler';
 
 export default class Dialogue {
     protected texts: string[];
-    protected entity: any;
-    protected player: any;
+    protected speaker: BaseActor;
+    protected actors: BaseActor[];
     protected currentText: string;
 
     protected waiting: boolean;
@@ -17,10 +17,10 @@ export default class Dialogue {
     protected frameLength: number;
     protected timeStore: number;
 
-    constructor(texts: string[], entity: BaseActor, player: BaseActor = entity) {
+    constructor(texts: string[], speaker: BaseActor, actors: BaseActor[]) {
         this.texts = texts;
-        this.entity = entity;
-        this.player = player;
+        this.speaker = speaker;
+        this.actors = actors;
         this.currentText = '';
 
         this.index = 0;
@@ -29,12 +29,11 @@ export default class Dialogue {
 
         this.frameLength = 1000 / 24;
         this.timeStore = 0;
-        this.entity.lock();
-        this.entity.inDialogue = true;
-        this.player.lock();
-        this.player.inDialogue = true;
+
+        this.actors.push(this.speaker);
 
         handler.register(this);
+        this.start();
     }
 
     update(dt: number) {
@@ -63,11 +62,25 @@ export default class Dialogue {
         ctx.fillStyle = '#FFF';
 
         ctx.fillText(
-            this.entity.dialogueName + ': ' + this.currentText,
+            this.speaker.dialogueName + ': ' + this.currentText,
             0, 0
         );
 
         ctx.restore();
+    }
+
+    start() {
+        this.actors.forEach(a => {
+            a.lock();
+            a.inDialogue = true;
+        });
+    }
+
+    stop() {
+        this.actors.forEach(a => {
+            a.unlock();
+            a.inDialogue = false;
+        });
     }
 
     register(): object {
@@ -79,6 +92,7 @@ export default class Dialogue {
 
                 if (this.done) {
                     handler.unregister(this);
+                    this.stop();
                 }
             }
         };
@@ -96,10 +110,6 @@ export default class Dialogue {
             this.waiting = false;
         } else {
             this.done = true;
-            this.entity.inDialogue = false;
-            this.entity.unlock();
-            this.player.inDialogue = false;
-            this.player.unlock();
         }
     }
 }
