@@ -81,6 +81,8 @@ export default class Dialogue {
             a.unlock();
             a.inDialogue = false;
         });
+
+        handler.unregister(this);
     }
 
     register(): object {
@@ -91,7 +93,6 @@ export default class Dialogue {
                 }
 
                 if (this.done) {
-                    handler.unregister(this);
                     this.stop();
                 }
             }

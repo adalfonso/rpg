@@ -129,8 +129,6 @@ export default class Battle {
                     // Handle death
 
                 } else if (this.enemy.stats.hp <= 0) {
-                    this.enemy.defeated = true;
-
                     this.player.stats.gainExperience(
                         this.enemy.stats.givesExperience
                     );
@@ -138,7 +136,7 @@ export default class Battle {
                     this.player.restorePos();
                     this.enemy.restorePos();
 
-                    this.active = false;
+                    this.stop();
 
                 } else {
                     this.cycle();
@@ -147,8 +145,10 @@ export default class Battle {
         }
     }
 
-    end() {
+    stop() {
         this.enemy.defeated = true;
         this.active = false;
+        handler.unregister(this);
+        this.battleMenu.stop();
     }
 }

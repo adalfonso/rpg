@@ -105,6 +105,10 @@ export default class BaseMenu {
         };
     }
 
+    stop() {
+        handler.unregister(this);
+    }
+
     get currentOption() {
         return this.selected[this.selected.length - 1];
     }
