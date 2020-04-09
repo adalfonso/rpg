@@ -1,17 +1,27 @@
 export default class Vector {
-    public x: number;
-    public y: number;
+  /**
+   * Create a new vector instance
+   *
+   * @param {number} x x-coordinate
+   * @param {number} y y-coordinate
+   */
+  constructor(public x: number, public y: number) {}
 
-    constructor(x: number, y: number) {
-        this.x = x;
-        this.y = y;
-    }
+  /**
+   * Create a copy of this vector
+   *
+   * @return {Vector} The copied vector
+   */
+  copy(): Vector {
+    return new Vector(this.x, this.y);
+  }
 
-    copy(): Vector {
-        return new Vector(this.x, this.y);
-    }
-
-    times(mult: number): Vector {
-        return new Vector(this.x * mult, this.y * mult);
-    }
+  /**
+   * Multiply by a factor to generate a new vector
+   *
+   * @param {number} factor Factor to multiply by
+   */
+  times(factor: number): Vector {
+    return new Vector(this.x * factor, this.y * factor);
+  }
 }

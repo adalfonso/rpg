@@ -1,136 +1,133 @@
 import Renderable from "../Renderable";
 import PlayerClip from "./PlayerClip";
-import NPC from '../actors/NPC';
-import Enemy from '../actors/Enemy';
+import NPC from "../actors/NPC";
+import Enemy from "../actors/Enemy";
 import Portal from "./Portal";
 import Vector from "../Vector";
-import config from '../config';
-import { handler } from '../app';
+import config from "../config";
+import { bus } from "../app";
 import Player from "../actors/Player";
 
 export default class Map {
+  protected config: object;
+  protected data: any;
+  protected player: Player;
+  protected playerClips: PlayerClip[];
+  protected portals: Portal[];
+  protected pos: Vector;
+  protected renderable: Renderable;
+  protected scale: number;
+  public enemies: Enemy[];
+  public npcs: NPC[];
+  public playerStarts: object;
 
-    protected config: object;
-    protected data: any;
-    protected player: Player;
-    protected playerClips: PlayerClip[];
-    protected portals: Portal[];
-    protected pos: Vector;
-    protected renderable: Renderable;
-    protected scale: number;
-    public enemies: Enemy[];
-    public npcs: NPC[];
-    public playerStarts: object;
+  constructor(data: object, img: string, player: Player) {
+    this.data = data;
+    this.player = player;
+    this.pos = new Vector(0, 0);
+    this.scale = config.scale;
+    this.config = {};
 
-    constructor (data: object, img: string, player: Player) {
-        this.data = data;
-        this.player = player;
-        this.pos = new Vector(0, 0);
-        this.scale = config.scale;
-        this.config = {};
+    this.renderable = new Renderable(img, this.scale, 0, 240, 24, 10, 0);
 
-        this.renderable = new Renderable(img, this.scale, 0, 240, 24, 10, 0);
+    this.playerClips = [];
+    this.portals = [];
+    this.npcs = [];
+    this.enemies = [];
+    this.playerStarts = {};
 
-        this.playerClips = [];
-        this.portals = [];
-        this.npcs = [];
-        this.enemies = [];
-        this.playerStarts = {};
+    this.data.layers.forEach((layer) => {
+      if (layer.type !== "objectgroup") {
+        return;
+      }
 
-        this.data.layers.forEach(layer => {
-            if (layer.type !== 'objectgroup') {
-                return;
-            }
+      layer.objects.forEach((obj) => {
+        let pos: Vector = new Vector(obj.x * this.scale, obj.y * this.scale);
+        let size: Vector = new Vector(
+          obj.width * this.scale,
+          obj.height * this.scale
+        );
+        let match: boolean = layer.name.match(/^player_start_(\d+\.\d+)$/);
 
-            layer.objects.forEach(obj => {
-                let pos: Vector = new Vector(obj.x * this.scale, obj.y * this.scale);
-                let size: Vector = new Vector(obj.width * this.scale, obj.height * this.scale);
-                let match: boolean = layer.name.match(/^player_start_(\d+\.\d+)$/);
+        if (layer.name === "collision") {
+          this.playerClips.push(new PlayerClip(pos, size));
+        } else if (layer.name === "portal") {
+          this.portals.push(new Portal(pos, size, layer));
+        } else if (layer.name === "npcs") {
+          this.npcs.push(new NPC(obj, player));
+        } else if (layer.name === "enemies") {
+          this.enemies.push(new Enemy(obj));
+        } else if (layer.name === "config") {
+          this.config = obj.properties;
+        } else if (match) {
+          this.playerStarts[match[1]] = obj;
+        }
+      });
+    });
+  }
 
-                if (layer.name === 'collision') {
-                    this.playerClips.push(new PlayerClip(pos, size));
+  update(dt: number) {
+    let events = [];
 
-                } else if (layer.name === 'portal') {
-                    this.portals.push(new Portal(pos, size, layer));
+    this.playerClips.forEach((clip: PlayerClip) => {
+      let collision = this.player.collidesWith(clip);
 
-                } else if (layer.name === 'npcs') {
-                    this.npcs.push(new NPC(obj, player));
+      if (collision) {
+        this.player.backstep(collision);
+      }
+    });
 
-                } else if (layer.name === 'enemies') {
-                    this.enemies.push(new Enemy(obj));
+    this.portals.forEach((portal: Portal) => {
+      let collision = this.player.collidesWith(portal);
 
-                } else if (layer.name === 'config') {
-                    this.config = obj.properties;
-
-                } else if (match) {
-                    this.playerStarts[match[1]] = obj;
-                }
-            });
+      if (collision) {
+        events.push({
+          type: "enter_portal",
+          obj: portal,
         });
-    }
+      }
+    });
 
-    update(dt: number) {
-        let events = [];
+    return events;
+  }
 
-        this.playerClips.forEach((clip: PlayerClip) => {
-            let collision = this.player.collidesWith(clip);
+  draw(ctx: CanvasRenderingContext2D, overPlayer: boolean = false) {
+    this.data.layers.forEach((layer) => {
+      if (layer.type !== "tilelayer") {
+        return;
+      }
 
-            if (collision) {
-                this.player.backstep(collision);
-            }
-        });
+      if (overPlayer && layer.name !== "above_player") {
+        return;
+      }
 
-        this.portals.forEach((portal: Portal) => {
-            let collision = this.player.collidesWith(portal);
+      if (!overPlayer && layer.name === "above_player") {
+        return;
+      }
 
-            if (collision) {
-               events.push({
-                   type: 'enter_portal',
-                   obj: portal
-               });
-            }
-        });
+      let x: number = 0,
+        y: number = 0;
 
-        return events;
-    }
+      layer.data.forEach((value, index: number) => {
+        this.renderable.frame = value - 1;
 
-    draw(ctx:CanvasRenderingContext2D, overPlayer: boolean = false) {
-        this.data.layers.forEach(layer => {
-            if (layer.type !== 'tilelayer') {
-                return;
-            }
+        x = index % layer.width;
+        y = Math.floor(index / layer.width);
 
-            if (overPlayer && layer.name !== 'above_player') {
-                return;
-            }
+        ctx.save();
+        ctx.translate(
+          this.pos.x + x * this.renderable.subWidth * this.renderable.scale,
+          this.pos.y + y * this.renderable.subHeight * this.renderable.scale
+        );
 
-            if (!overPlayer && layer.name === 'above_player') {
-                return;
-            }
+        this.renderable.draw(ctx);
 
-            let x: number = 0,
-                y: number = 0;
+        ctx.restore();
+      });
+    });
+  }
 
-            layer.data.forEach((value, index: number) => {
-                this.renderable.frame = value - 1;
-
-                x = index % layer.width;
-                y = Math.floor(index / layer.width);
-
-                ctx.save();
-                ctx.translate(
-                    this.pos.x + x * this.renderable.subWidth * this.renderable.scale,
-                    this.pos.y + y * this.renderable.subHeight * this.renderable.scale
-                );
-
-                this.renderable.draw(ctx);
-
-                ctx.restore();
-            });
-        });
-    }
-
-    destruct() {
-        this.npcs.forEach(npc => handler.unregister(npc));
-    }
+  destruct() {
+    this.npcs.forEach((npc) => bus.unregister(npc));
+  }
 }

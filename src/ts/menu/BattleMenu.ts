@@ -1,111 +1,109 @@
-import BaseMenu from './BaseMenu';
-import Vector from '../Vector';
+import BaseMenu from "./BaseMenu";
+import Vector from "../Vector";
+import Eventful from "../Eventful";
 
-export default class BattleMenu extends BaseMenu {
+export default class BattleMenu extends BaseMenu implements Eventful {
+  constructor(...args) {
+    super(args);
+  }
 
-    constructor(...args) {
-        super(args);
-    }
+  draw(ctx: CanvasRenderingContext2D, size: Vector, offset: Vector, entity?) {
+    ctx.save();
+    ctx.font = "12px Arial";
 
-    draw(ctx:CanvasRenderingContext2D, size: Vector, offset: Vector, entity?) {
-        ctx.save();
-        ctx.font = '12px Arial';
+    let tileSize = new Vector(72, 24);
+    let tilePadding = new Vector(8, 0);
 
-        let tileSize = new Vector(72, 24);
-        let tilePadding = new Vector(8, 0);
+    ctx.translate(
+      offset.x + entity.pos.x - (tileSize.x + tilePadding.x) * this.menu.length,
+      offset.y + entity.pos.y + entity.size.y + tileSize.y
+    );
 
-        ctx.translate(
-            offset.x + entity.pos.x - (tileSize.x + tilePadding.x) * this.menu.length,
-            offset.y + entity.pos.y + entity.size.y + tileSize.y
-        );
+    this.menu.forEach((option) => {
+      let isSelected = option === this.selected[0];
 
-        this.menu.forEach(option => {
-            let isSelected = option === this.selected[0];
+      ctx.translate(tileSize.x + tilePadding.x, 0);
 
-            ctx.translate(tileSize.x + tilePadding.x, 0);
+      ctx.font = "12px Arial";
+      ctx.fillStyle = "#fff";
 
-            ctx.font = '12px Arial';
-            ctx.fillStyle = '#fff';
+      if (option === this.selected[0]) {
+        ctx.fillStyle = "#ddd";
+        ctx.strokeRect(0, 0, tileSize.x, tileSize.y);
+      }
 
-            if (option === this.selected[0]) {
-                ctx.fillStyle = '#ddd';
-                ctx.strokeRect(0, 0, tileSize.x, tileSize.y);
-            }
+      if (option === this.currentOption) {
+        ctx.font = "bold 12px Arial";
+      }
 
-            if (option === this.currentOption) {
-                ctx.font = 'bold 12px Arial';
-            }
+      ctx.fillRect(0, 0, tileSize.x, tileSize.y);
+      ctx.fillStyle = "#000";
+      ctx.fillText(option.type, 4, 4 + 12);
 
-            ctx.fillRect(0, 0, tileSize.x , tileSize.y);
-            ctx.fillStyle = '#000';
-            ctx.fillText(option.type, 4, 4 + 12);
+      if (isSelected && option.menu && option.menu.length) {
+        option.menu.forEach((subOption, index) => {
+          ctx.save();
 
-            if (isSelected && option.menu && option.menu.length) {
-                option.menu.forEach((subOption, index) => {
-                    ctx.save();
+          if (subOption === this.currentOption) {
+            ctx.font = "bold 12px Arial";
+          } else {
+            ctx.font = "12px Arial";
+          }
 
-                    if (subOption === this.currentOption) {
-                        ctx.font = 'bold 12px Arial';
-                    } else {
-                        ctx.font = '12px Arial';
-                    }
+          let desc = subOption.name ? subOption.name : subOption;
 
-                    let desc = subOption.name ? subOption.name : subOption;
-
-                    ctx.translate(0, 18 * (index + 1) + 6);
-                    ctx.fillText(desc, 0, 16);
-                    ctx.restore();
-                });
-            }
+          ctx.translate(0, 18 * (index + 1) + 6);
+          ctx.fillText(desc, 0, 16);
+          ctx.restore();
         });
+      }
+    });
 
-        ctx.restore();
-    }
+    ctx.restore();
+  }
 
-    register() {
-        return {
-            keyup: e => {
-                let menu = this.currentMenu;
-                let option = this.currentOption;
+  register() {
+    return {
+      keyup: (e) => {
+        let menu = this.currentMenu;
+        let option = this.currentOption;
 
-                switch(e.key) {
-                    case 'ArrowDown':
-                        if (this.hasSubMenu()) {
-                            this.select();
-
-                        } else if (this.selected.length > 1) {
-                            this.next();
-                        }
-                    break;
-
-                    case 'ArrowUp':
-                        if (option === menu[0]) {
-                            this.back();
-
-                        } else if (this.selected.length > 1) {
-                            this.previous();
-                        }
-                    break;
-
-                    case 'ArrowLeft':
-                        if (this.selected.length === 1) {
-                            this.previous();
-                        }
-                    break;
-
-                    case 'ArrowRight':
-                        if (this.selected.length === 1) {
-                            this.next();
-                        }
-                    break;
-
-                    case 'Enter':
-                        if (typeof option.use === 'function') {
-                            option.use();
-                        }
-                    break;
-                }
+        switch (e.key) {
+          case "ArrowDown":
+            if (this.hasSubMenu()) {
+              this.select();
+            } else if (this.selected.length > 1) {
+              this.next();
             }
+            break;
+
+          case "ArrowUp":
+            if (option === menu[0]) {
+              this.back();
+            } else if (this.selected.length > 1) {
+              this.previous();
+            }
+            break;
+
+          case "ArrowLeft":
+            if (this.selected.length === 1) {
+              this.previous();
+            }
+            break;
+
+          case "ArrowRight":
+            if (this.selected.length === 1) {
+              this.next();
+            }
+            break;
+
+          case "Enter":
+            if (typeof option.use === "function") {
+              option.use();
+            }
+            break;
         }
-    }
+      },
+    };
+  }
 }
