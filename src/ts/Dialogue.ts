@@ -4,8 +4,9 @@ import Player from "./actors/Player";
 import Vector from "./Vector";
 import InputHandler from "./EventBus";
 import Eventful from "./Eventful";
+import Drawable from "./Drawable";
 
-export default class Dialogue implements Eventful {
+export default class Dialogue implements Eventful, Drawable {
   protected texts: string[];
   protected speaker: BaseActor;
   protected actors: BaseActor[];
@@ -58,7 +59,14 @@ export default class Dialogue implements Eventful {
     }
   }
 
-  draw(ctx: CanvasRenderingContext2D, offset: Vector) {
+  /**
+   * Draw game and all underlying entities
+   *
+   * @param {CanvasRenderingContext2D} ctx        Render context
+   * @param {Vector}                   offset     Render position offset
+   * @param {Vector}                   resolution Render resolution
+   */
+  draw(ctx: CanvasRenderingContext2D, offset: Vector, resolution: Vector) {
     ctx.save();
     ctx.translate(32 - offset.x, 48 - offset.y);
     ctx.font = "30px Arial";

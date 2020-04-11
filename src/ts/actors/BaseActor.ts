@@ -2,13 +2,15 @@ import config from "../config";
 import Vector from "../Vector";
 import Weapon from "../item/Weapon";
 import Stats from "../Stats";
+import Drawable from "../Drawable";
+import Lockable from "./Lockable";
 
-abstract class BaseActor {
+abstract class BaseActor implements Drawable, Lockable {
   protected lastPos: Vector;
-  protected locked: boolean;
+  public locked: boolean;
   protected savedDirection: number;
   protected savedPos: Vector;
-  protected size: Vector;
+  private _size: Vector;
   protected stats: Stats;
   protected weapon: Weapon;
   public direction: number;
@@ -17,7 +19,7 @@ abstract class BaseActor {
 
   constructor(pos: Vector, size: Vector) {
     this.pos = pos.times(config.scale);
-    this.size = size;
+    this._size = size;
     this.direction = 0;
     this.inDialogue = false;
     this.locked = false;
@@ -28,7 +30,14 @@ abstract class BaseActor {
 
   update(dt: number) {}
 
-  draw(ctx: CanvasRenderingContext2D, offset?: Vector) {
+  /**
+   * Draw game and all underlying entities
+   *
+   * @param {CanvasRenderingContext2D} ctx        Render context
+   * @param {Vector}                   offset     Render position offset
+   * @param {Vector}                   resolution Render resolution
+   */
+  draw(ctx: CanvasRenderingContext2D, offset: Vector, resolution: Vector) {
     if (config.debug) {
       this.debugDraw(ctx);
     }
@@ -37,19 +46,39 @@ abstract class BaseActor {
     this.lastPos.y = this.pos.y;
   }
 
+  get size(): Vector {
+    return this._size;
+  }
+
   debugDraw(ctx: CanvasRenderingContext2D) {
     ctx.fillStyle = "#F99";
-    ctx.fillRect(this.pos.x, this.pos.y, this.size.x, this.size.y);
+    ctx.fillRect(this.pos.x, this.pos.y, this._size.x, this._size.y);
   }
 
-  lock() {
+  /**
+   * Lock the menu
+   *
+   * @return {boolean} If unlock was successful
+   */
+  public lock(): boolean {
     this.locked = true;
+
+    return true;
   }
 
-  unlock() {
+  /**
+   * Unlock the menu
+   *
+   * @return {boolean} If unlock was successful
+   */
+  public unlock(): boolean {
     if (!this.inDialogue) {
       this.locked = false;
+
+      return true;
     }
+
+    return false;
   }
 
   // Positioning Methods
@@ -93,8 +122,8 @@ abstract class BaseActor {
 
   collisionPoint(prev: boolean = false): Vector {
     return new Vector(
-      (prev ? this.lastPos.x : this.pos.x) + this.size.x * 0.5,
-      (prev ? this.lastPos.y : this.pos.y) + this.size.y * 0.8
+      (prev ? this.lastPos.x : this.pos.x) + this._size.x * 0.5,
+      (prev ? this.lastPos.y : this.pos.y) + this._size.y * 0.8
     );
   }
 

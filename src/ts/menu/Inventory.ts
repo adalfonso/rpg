@@ -1,8 +1,10 @@
 import BaseMenu from "./BaseMenu";
 import Vector from "../Vector";
 import Eventful from "../Eventful";
+import Drawable from "../Drawable";
+import Weapon from "../item/Weapon";
 
-export default class Inventory extends BaseMenu implements Eventful {
+export default class Inventory extends BaseMenu implements Eventful, Drawable {
   protected equipped: object;
 
   constructor() {
@@ -32,6 +34,31 @@ export default class Inventory extends BaseMenu implements Eventful {
       armor: null,
       spell: null,
     };
+
+    // TODO: move this elsewhere. This is temporary.
+    this.store(
+      new Weapon({
+        name: "Basic Sword",
+        description: "A basic bish sword.",
+        damage: 3,
+      })
+    );
+
+    this.store(
+      new Weapon({
+        name: "Mace",
+        description: "An effing mace. Watch out!",
+        damage: 10,
+      })
+    );
+
+    this.store(
+      new Weapon({
+        name: "Pole Arm",
+        description: "Swift and strong.",
+        damage: 5,
+      })
+    );
   }
 
   store(item) {
@@ -42,11 +69,22 @@ export default class Inventory extends BaseMenu implements Eventful {
       .menu.push(item);
   }
 
-  draw(ctx: CanvasRenderingContext2D, size: Vector, offset: Vector) {
+  /**
+   * Draw game and all underlying entities
+   *
+   * @param {CanvasRenderingContext2D} ctx        Render context
+   * @param {Vector}                   offset     Render position offset
+   * @param {Vector}                   resolution Render resolution
+   */
+  draw(ctx: CanvasRenderingContext2D, offset: Vector, resolution: Vector) {
+    if (!this.active) {
+      return;
+    }
+
     ctx.save();
     ctx.translate(-offset.x, -offset.y);
     ctx.fillStyle = "rgba(200, 200, 200, .96)";
-    ctx.fillRect(0, 0, size.x, size.y);
+    ctx.fillRect(0, 0, resolution.x, resolution.y);
     ctx.fillStyle = "#75A";
     ctx.textAlign = "left";
 
@@ -92,8 +130,8 @@ export default class Inventory extends BaseMenu implements Eventful {
       super.register(),
       {
         keyup: (e) => {
-          if (e.key === "i") {
-            this.active = !this.active;
+          if (e.key === "i" && !this.locked) {
+            this.active ? this.close() : this.open();
           }
         },
       },

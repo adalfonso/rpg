@@ -1,18 +1,18 @@
 import BaseActor from "./BaseActor";
 import sprite from "../../img/player-new.png";
 import Renderable from "../Renderable";
-import Inventory from "../menu/Inventory";
 import Weapon from "../item/Weapon";
 import Vector from "../Vector";
 import Stats from "../Stats";
 import { bus } from "../app";
 import Eventful from "../Eventful";
+import Drawable from "../Drawable";
+import Lockable from "./Lockable";
 
-class Player extends BaseActor implements Eventful {
+class Player extends BaseActor implements Eventful, Drawable, Lockable {
   protected maxSpeed: number;
   protected speed: Vector;
   protected sprites: Renderable[];
-  public inventory: Inventory;
   public spells: any[];
   public stats: Stats;
   public weapon: Weapon;
@@ -46,8 +46,6 @@ class Player extends BaseActor implements Eventful {
       spd: 1,
     });
 
-    this.inventory = new Inventory();
-
     this.weapon = null;
     this.spells = [];
 
@@ -76,8 +74,15 @@ class Player extends BaseActor implements Eventful {
     super.update(dt);
   }
 
-  draw(ctx: CanvasRenderingContext2D) {
-    super.draw(ctx);
+  /**
+   * Draw game and all underlying entities
+   *
+   * @param {CanvasRenderingContext2D} ctx        Render context
+   * @param {Vector}                   offset     Render position offset
+   * @param {Vector}                   resolution Render resolution
+   */
+  draw(ctx: CanvasRenderingContext2D, offset: Vector, resolution: Vector) {
+    super.draw(ctx, offset, resolution);
 
     ctx.save();
     ctx.translate(this.pos.x, this.pos.y);
@@ -162,30 +167,6 @@ class Player extends BaseActor implements Eventful {
   }
 
   init() {
-    this.inventory.store(
-      new Weapon({
-        name: "Basic Sword",
-        description: "A basic bish sword.",
-        damage: 3,
-      })
-    );
-
-    this.inventory.store(
-      new Weapon({
-        name: "Mace",
-        description: "An effing mace. Watch out!",
-        damage: 10,
-      })
-    );
-
-    this.inventory.store(
-      new Weapon({
-        name: "Pole Arm",
-        description: "Swift and strong.",
-        damage: 5,
-      })
-    );
-
     this.weapon = new Weapon({
       name: "Basic Sword",
       description: "A basic bish sword.",

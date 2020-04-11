@@ -1,13 +1,21 @@
 import BaseMenu from "./BaseMenu";
 import Vector from "../Vector";
 import Eventful from "../Eventful";
+import Drawable from "../Drawable";
 
-export default class BattleMenu extends BaseMenu implements Eventful {
+export default class BattleMenu extends BaseMenu implements Eventful, Drawable {
   constructor(...args) {
     super(args);
   }
 
-  draw(ctx: CanvasRenderingContext2D, size: Vector, offset: Vector, entity?) {
+  /**
+   * Draw game and all underlying entities
+   *
+   * @param {CanvasRenderingContext2D} ctx        Render context
+   * @param {Vector}                   offset     Render position offset
+   * @param {Vector}                   resolution Render resolution
+   */
+  draw(ctx: CanvasRenderingContext2D, offset: Vector, resolution: Vector) {
     ctx.save();
     ctx.font = "12px Arial";
 
@@ -15,8 +23,8 @@ export default class BattleMenu extends BaseMenu implements Eventful {
     let tilePadding = new Vector(8, 0);
 
     ctx.translate(
-      offset.x + entity.pos.x - (tileSize.x + tilePadding.x) * this.menu.length,
-      offset.y + entity.pos.y + entity.size.y + tileSize.y
+      offset.x - (tileSize.x + tilePadding.x) * this.menu.length,
+      offset.y + tileSize.y
     );
 
     this.menu.forEach((option) => {
@@ -62,7 +70,7 @@ export default class BattleMenu extends BaseMenu implements Eventful {
     ctx.restore();
   }
 
-  register() {
+  register(): object {
     return {
       keyup: (e) => {
         let menu = this.currentMenu;

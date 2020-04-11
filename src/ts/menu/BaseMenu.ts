@@ -1,19 +1,71 @@
 import { bus } from "../app";
+import { lcFirst } from "../util";
 import Vector from "../Vector";
 import Eventful from "../Eventful";
+import Drawable from "../Drawable";
+import Lockable from "../actors/Lockable";
 
-export default class BaseMenu implements Eventful {
+export default abstract class BaseMenu implements Eventful, Drawable, Lockable {
   protected menu: any;
   protected selected: any[];
+  public locked: boolean;
   public active: Boolean;
 
   constructor(menu) {
     this.menu = menu;
     this.selected = [];
-    this.active = true;
     this.selected.push(this.menu[0]);
 
     bus.register(this);
+  }
+
+  /**
+   * Open the menu
+   */
+  public open() {
+    this.active = true;
+    bus.emit(`menu.${lcFirst(this.constructor.name)}.open`);
+  }
+
+  /**
+   * Close the menu
+   */
+  public close() {
+    this.active = false;
+    bus.emit(`menu.${lcFirst(this.constructor.name)}.close`);
+  }
+
+  /**
+   * Lock the menu
+   *
+   * @return {boolean} If unlock was successful
+   */
+  public lock(): boolean {
+    this.locked = true;
+
+    return true;
+  }
+
+  /**
+   * Unlock the menu
+   *
+   * @return {boolean} If unlock was successful
+   */
+  public unlock(): boolean {
+    this.locked = false;
+
+    return true;
+  }
+
+  /**
+   * Completely remove the menu
+   */
+  destroy() {
+    if (this.active) {
+      this.close();
+    }
+
+    bus.unregister(this);
   }
 
   select() {
@@ -31,7 +83,7 @@ export default class BaseMenu implements Eventful {
       return this.selected.pop();
     }
 
-    this.active = false;
+    this.close();
   }
 
   previous() {
@@ -70,7 +122,14 @@ export default class BaseMenu implements Eventful {
     return current.menu && current.menu.length;
   }
 
-  draw(ctx: CanvasRenderingContext2D, size: Vector, offset: Vector) {}
+  /**
+   * Draw game and all underlying entities
+   *
+   * @param {CanvasRenderingContext2D} ctx        Render context
+   * @param {Vector}                   offset     Render position offset
+   * @param {Vector}                   resolution Render resolution
+   */
+  draw(ctx: CanvasRenderingContext2D, offset: Vector, resolution: Vector) {}
 
   register(): object {
     return {
@@ -80,7 +139,7 @@ export default class BaseMenu implements Eventful {
         }
 
         if (e.key === "Escape") {
-          return (this.active = false);
+          return this.close();
         }
 
         switch (e.key) {
@@ -101,10 +160,6 @@ export default class BaseMenu implements Eventful {
         }
       },
     };
-  }
-
-  stop() {
-    bus.unregister(this);
   }
 
   get currentOption() {

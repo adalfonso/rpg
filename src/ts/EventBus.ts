@@ -1,7 +1,7 @@
 import Eventful from "./Eventful";
 
 export default class EventBus {
-  protected _events: object = {};
+  private events: object = {};
 
   /**
    * Register an entity on the event bus
@@ -11,10 +11,11 @@ export default class EventBus {
   public register(target: Eventful) {
     let events = target.register();
 
+    // An array here indicates that a classes's parents events are included
     if (Array.isArray(events)) {
-      events.forEach((event) => this._install(target, event));
+      events.forEach((event) => this.install(target, event));
     } else {
-      this._install(target, events);
+      this.install(target, events);
     }
   }
 
@@ -24,8 +25,8 @@ export default class EventBus {
    * @param {Eventful} target Eventful entity
    */
   public unregister(target: Eventful) {
-    for (let event in this._events) {
-      this._events[event] = this._events[event].filter((e) => {
+    for (let event in this.events) {
+      this.events[event] = this.events[event].filter((e) => {
         return e.target !== target;
       });
     }
@@ -42,23 +43,24 @@ export default class EventBus {
   }
 
   /**
+   * Install a list of events for a target Eventful entity on the event bus
    *
-   * @param target
-   * @param events
+   * @param {Eventful} target Eventful entity
+   * @param {object}   events A list of event callbacks
    */
-  private _install(target: Eventful, events: object) {
+  private install(target: Eventful, events: object) {
     for (let event in events) {
-      if (!this._events.hasOwnProperty(event)) {
-        this._events[event] = [];
+      if (!this.events.hasOwnProperty(event)) {
+        this.events[event] = [];
 
         window.addEventListener(event, (e) => {
-          this._events[event].forEach((ev) => {
+          this.events[event].forEach((ev) => {
             ev.handle(e, this);
           });
         });
       }
 
-      this._events[event].push({
+      this.events[event].push({
         target: target,
         handle: events[event],
       });

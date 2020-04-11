@@ -5,8 +5,9 @@ import Dialogue from "../Dialogue";
 import { bus } from "../app";
 import Player from "./Player.js";
 import Eventful from "../Eventful";
+import Drawable from "../Drawable";
 
-export default class NPC extends BaseActor implements Eventful {
+export default class NPC extends BaseActor implements Eventful, Drawable {
   protected name: string;
   protected data: any;
   protected dialogue: Dialogue;
@@ -53,9 +54,16 @@ export default class NPC extends BaseActor implements Eventful {
     }
   }
 
-  draw(ctx: CanvasRenderingContext2D, offset: Vector) {
+  /**
+   * Draw game and all underlying entities
+   *
+   * @param {CanvasRenderingContext2D} ctx        Render context
+   * @param {Vector}                   offset     Render position offset
+   * @param {Vector}                   resolution Render resolution
+   */
+  draw(ctx: CanvasRenderingContext2D, offset: Vector, resolution: Vector) {
     if (this.dialogue) {
-      this.dialogue.draw(ctx, offset);
+      this.dialogue.draw(ctx, offset, resolution);
     }
   }
 

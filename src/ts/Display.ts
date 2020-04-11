@@ -8,7 +8,7 @@ import Vector from "./Vector";
  * In static mode, entites render relative to a (0,0) origin point.
  * In dynamic mode, entites render relative to another entity. e.g. the player
  *
- * @enum {RenderMode}
+ * @enum {RenderMode} RenderMode
  */
 enum RenderMode {
   Static,
@@ -21,21 +21,21 @@ class Display {
    *
    * @prop {Game} game
    */
-  protected game: Game;
+  private game: Game;
 
   /**
    * Main rendering context
    *
    * @prop {CanvasRenderingContext2D} ctx
    */
-  protected ctx: CanvasRenderingContext2D;
+  private ctx: CanvasRenderingContext2D;
 
   /**
    * Temporary rendering context
    *
    * @prop {CanvasRenderingContext2D} buffer
    */
-  protected buffer: CanvasRenderingContext2D;
+  private buffer: CanvasRenderingContext2D;
 
   /**
    * Original width/height of display
@@ -61,9 +61,9 @@ class Display {
   /**
    * Whether the contents of the display move dependently on a center point
    *
-   * @prop {RenderMode} _renderMode;
+   * @prop {RenderMode} renderMode;
    */
-  private _renderMode: RenderMode;
+  private renderMode: RenderMode;
 
   /**
    * Create a new display instance
@@ -78,7 +78,7 @@ class Display {
     this.height = aspectRatio.y;
     this.game = game;
 
-    this._renderMode = RenderMode.Dynamic;
+    this.renderMode = RenderMode.Dynamic;
 
     this.ctx = canvas.getContext("2d");
     this.buffer = document.createElement("canvas").getContext("2d");
@@ -168,11 +168,11 @@ class Display {
    *
    * @return {object} Events to register
    */
-  register() {
+  register(): object {
     return {
       resize: (e) => this.resizetoWindow(),
-      battleStart: (e) => (this._renderMode = RenderMode.Static),
-      battleEnd: (e) => (this._renderMode = RenderMode.Dynamic),
+      "battle.start": (e) => (this.renderMode = RenderMode.Static),
+      "battle.end": (e) => (this.renderMode = RenderMode.Dynamic),
     };
   }
 
@@ -182,11 +182,11 @@ class Display {
    * @prop {Vector} offset
    */
   get offset(): Vector {
-    if (this._renderMode === RenderMode.Static) {
+    if (this.renderMode === RenderMode.Static) {
       return new Vector(0, 0);
     }
 
-    let center = this.game.getPlayerPosition();
+    let center = this.game.renderPoint;
 
     return new Vector(this.width / 2 - center.x, this.height / 2 - center.y);
   }

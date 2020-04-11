@@ -4,8 +4,9 @@ import { bus } from "./app";
 import Player from "./actors/Player";
 import Enemy from "./actors/Enemy";
 import Eventful from "./Eventful";
+import Drawable from "./Drawable";
 
-export default class Battle implements Eventful {
+export default class Battle implements Eventful, Drawable {
   protected battleMenu: BattleMenu;
   protected enemy: Enemy;
   protected player: Player;
@@ -66,10 +67,16 @@ export default class Battle implements Eventful {
 
   update(dt: number) {}
 
-  draw(ctx: CanvasRenderingContext2D, size: Vector) {
-    let width: number = size.x;
-    let height: number = size.y;
-    let offset: Vector = new Vector(width / 2 - 128 - 64, height / 2 - 64 - 64);
+  /**
+   * Draw game and all underlying entities
+   *
+   * @param {CanvasRenderingContext2D} ctx        Render context
+   * @param {Vector}                   offset     Render position offset
+   * @param {Vector}                   resolution Render resolution
+   */
+  draw(ctx: CanvasRenderingContext2D, offset: Vector, resolution: Vector) {
+    let width: number = resolution.x;
+    let height: number = resolution.y;
 
     ctx.save();
     ctx.fillStyle = "#ccc";
@@ -82,8 +89,8 @@ export default class Battle implements Eventful {
 
     ctx.translate(offset.x, offset.y);
 
-    this.player.draw(ctx);
-    this.enemy.draw(ctx);
+    this.player.draw(ctx, offset, resolution);
+    this.enemy.draw(ctx, offset, resolution);
 
     ctx.restore();
 
@@ -91,7 +98,12 @@ export default class Battle implements Eventful {
     this.drawEnemyUiBar(ctx, width, height);
 
     if (this.playersTurn) {
-      this.battleMenu.draw(ctx, new Vector(0, 0), offset, this.player);
+      let playerOffset = offset.plus(
+        this.player.pos.x,
+        this.player.pos.y + this.player.size.y
+      );
+
+      this.battleMenu.draw(ctx, playerOffset, resolution);
     }
   }
 
@@ -144,7 +156,8 @@ export default class Battle implements Eventful {
   stop() {
     this.enemy.defeated = true;
     this.active = false;
+    bus.emit("battle.end");
     bus.unregister(this);
-    this.battleMenu.stop();
+    this.battleMenu.destroy();
   }
 }

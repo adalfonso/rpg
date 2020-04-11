@@ -8,10 +8,11 @@ import knight from "../../img/enemies/knight.png";
 import Stats from "../Stats";
 import { bus } from "../app";
 import Player from "./Player.js";
+import Drawable from "../Drawable";
 
 let sprites = { knight: knight };
 
-export default class Enemy extends BaseActor {
+export default class Enemy extends BaseActor implements Drawable {
   protected data: any;
   protected dialogue: Dialogue;
   protected sprite: Renderable;
@@ -62,7 +63,7 @@ export default class Enemy extends BaseActor {
       return;
     }
 
-    bus.emit("battleStart", {
+    bus.emit("battle.start", {
       player: player,
       enemy: this,
     });
@@ -70,12 +71,19 @@ export default class Enemy extends BaseActor {
 
   update(dt: number) {}
 
-  draw(ctx: CanvasRenderingContext2D) {
+  /**
+   * Draw game and all underlying entities
+   *
+   * @param {CanvasRenderingContext2D} ctx        Render context
+   * @param {Vector}                   offset     Render position offset
+   * @param {Vector}                   resolution Render resolution
+   */
+  draw(ctx: CanvasRenderingContext2D, offset: Vector, resolution: Vector) {
     if (this.defeated) {
       return;
     }
 
-    super.draw(ctx);
+    super.draw(ctx, offset, resolution);
 
     ctx.save();
     ctx.translate(this.pos.x, this.pos.y);
