@@ -28,7 +28,14 @@ export default class Map {
     this.scale = config.scale;
     this.config = {};
 
-    this.renderable = new Renderable(img, this.scale, 0, 240, 24, 10, 0);
+    this.renderable = new Renderable(
+      img,
+      this.scale,
+      0,
+      240,
+      new Vector(24, 10),
+      0
+    );
 
     this.playerClips = [];
     this.portals = [];
@@ -92,6 +99,10 @@ export default class Map {
   }
 
   draw(ctx: CanvasRenderingContext2D, overPlayer: boolean = false) {
+    if (!this.renderable.ready) {
+      return;
+    }
+
     this.data.layers.forEach((layer) => {
       if (layer.type !== "tilelayer") {
         return;
@@ -105,22 +116,21 @@ export default class Map {
         return;
       }
 
-      let x: number = 0,
-        y: number = 0;
+      let r = this.renderable;
 
       layer.data.forEach((value, index: number) => {
-        this.renderable.frame = value - 1;
+        r.frame = value - 1;
 
-        x = index % layer.width;
-        y = Math.floor(index / layer.width);
+        let x: number = index % layer.width;
+        let y: number = Math.floor(index / layer.width);
 
         ctx.save();
         ctx.translate(
-          this.pos.x + x * this.renderable.subWidth * this.renderable.scale,
-          this.pos.y + y * this.renderable.subHeight * this.renderable.scale
+          this.pos.x + x * r.spriteSize.x * r.scale,
+          this.pos.y + y * r.spriteSize.y * r.scale
         );
 
-        this.renderable.draw(ctx);
+        r.draw(ctx);
 
         ctx.restore();
       });

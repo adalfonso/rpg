@@ -1,4 +1,4 @@
-import Stats from "@/Stats";
+import StatsManager from "@/Stats";
 import Vector from "@/Vector";
 import Weapon from "@/item/Weapon";
 import config from "@/config";
@@ -10,7 +10,7 @@ abstract class BaseActor implements Drawable, Lockable {
   protected savedDirection: number;
   protected savedPos: Vector;
   private _size: Vector;
-  protected stats: Stats;
+  protected stats: StatsManager;
   protected weapon: Weapon;
   public direction: number;
   public inDialogue: boolean;

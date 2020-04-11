@@ -1,6 +1,6 @@
 import BaseActor from "./BaseActor";
 import Renderable from "@/Renderable";
-import Stats from "@/Stats";
+import StatsManager from "@/Stats";
 import Vector from "@/Vector";
 import Weapon from "@/item/Weapon";
 import sprite from "@img/player-new.png";
@@ -12,7 +12,7 @@ class Player extends BaseActor implements Eventful, Drawable, Lockable {
   protected speed: Vector;
   protected sprites: Renderable[];
   public spells: any[];
-  public stats: Stats;
+  public stats: StatsManager;
   public weapon: Weapon;
 
   constructor(pos: Vector, size: Vector) {
@@ -28,14 +28,14 @@ class Player extends BaseActor implements Eventful, Drawable, Lockable {
       // new Renderable(sprite, 1, 9, 7, 9, 4, 8),
       // new Renderable(sprite, 1, 19, 7, 9, 4, 8),
       // new Renderable(sprite, 1, 27, 7, 9, 4, 8)
-      new Renderable(sprite, 2, 0, 0, 1, 4, 8),
-      new Renderable(sprite, 2, 3, 0, 1, 4, 8),
-      new Renderable(sprite, 2, 2, 0, 1, 4, 8),
-      new Renderable(sprite, 2, 0, 0, 1, 4, 8),
-      new Renderable(sprite, 2, 1, 0, 1, 4, 8),
+      new Renderable(sprite, 2, 0, 0, new Vector(1, 4), 8),
+      new Renderable(sprite, 2, 3, 0, new Vector(1, 4), 8),
+      new Renderable(sprite, 2, 2, 0, new Vector(1, 4), 8),
+      new Renderable(sprite, 2, 0, 0, new Vector(1, 4), 8),
+      new Renderable(sprite, 2, 1, 0, new Vector(1, 4), 8),
     ];
 
-    this.stats = new Stats({
+    this.stats = new StatsManager({
       hp: 10,
       atk: 2,
       def: 0,

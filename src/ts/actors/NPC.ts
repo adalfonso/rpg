@@ -1,10 +1,10 @@
 import BaseActor from "./BaseActor";
-import Dialogue from "../Dialogue";
+import Dialogue from "@/Dialogue";
 import Player from "./Player.js";
-import Vector from "../Vector";
+import Vector from "@/Vector";
 import npcs from "./npcs.json";
-import { Drawable, Eventful } from "../interfaces";
-import { bus } from "../app";
+import { Drawable, Eventful } from "@/interfaces";
+import { bus } from "@/app";
 
 export default class NPC extends BaseActor implements Eventful, Drawable {
   protected name: string;

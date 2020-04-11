@@ -139,7 +139,7 @@ export default class Battle implements Eventful, Drawable {
         if (this.player.stats.hp <= 0) {
           // Handle death
         } else if (this.enemy.stats.hp <= 0) {
-          this.player.stats.gainExperience(this.enemy.stats.givesExperience);
+          this.player.stats.gainExp(this.enemy.stats.givesExp);
 
           this.player.restorePos();
           this.enemy.restorePos();

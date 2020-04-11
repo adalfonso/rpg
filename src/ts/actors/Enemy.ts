@@ -2,7 +2,7 @@ import BaseActor from "./BaseActor";
 import Dialogue from "@/Dialogue";
 import Player from "./Player.js";
 import Renderable from "@/Renderable";
-import Stats from "@/Stats";
+import StatsManager from "@/Stats";
 import Vector from "@/Vector";
 import enemies from "./enemies.json";
 import knight from "@img/enemies/knight.png";
@@ -18,7 +18,7 @@ export default class Enemy extends BaseActor implements Drawable {
   protected sprites: Renderable[];
   protected type: string;
   public defeated: boolean;
-  public stats: Stats;
+  public stats: StatsManager;
 
   constructor(obj) {
     super(new Vector(obj.x, obj.y), new Vector(obj.width, obj.height));
@@ -36,18 +36,18 @@ export default class Enemy extends BaseActor implements Drawable {
     this.type = type;
     this.data = enemy;
     this.dialogue = null;
-    this.stats = new Stats(enemy.default.stats);
+    this.stats = new StatsManager(enemy.default.stats);
     this.defeated = false;
 
     let sprite = sprites[this.type];
 
     this.sprites = [
       // img, scale, startFrame, frameCount, framesX, framesY, speed
-      new Renderable(sprite, 2, 0, 0, 1, 4, 8),
-      new Renderable(sprite, 2, 3, 0, 1, 4, 8),
-      new Renderable(sprite, 2, 2, 0, 1, 4, 8),
-      new Renderable(sprite, 2, 0, 0, 1, 4, 8),
-      new Renderable(sprite, 2, 1, 0, 1, 4, 8),
+      new Renderable(sprite, 2, 0, 0, new Vector(1, 4), 8),
+      new Renderable(sprite, 2, 3, 0, new Vector(1, 4), 8),
+      new Renderable(sprite, 2, 2, 0, new Vector(1, 4), 8),
+      new Renderable(sprite, 2, 0, 0, new Vector(1, 4), 8),
+      new Renderable(sprite, 2, 1, 0, new Vector(1, 4), 8),
     ];
 
     this.direction = 4;

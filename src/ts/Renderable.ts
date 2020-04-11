@@ -1,67 +1,151 @@
-export default class Renderable {
-  protected img: HTMLImageElement;
-  public frame: number;
-  protected startFrame: number;
-  protected frameCount: number;
-  protected framesX: number;
-  protected framesY: number;
-  protected animTime: number;
-  protected speed: number;
-  public scale: number;
-  public subHeight: number;
-  public subWidth: number;
+import Vector from "./Vector";
 
+export default class Renderable {
+  /**
+   * Image element to render
+   *
+   * @prop {HTMLImageElement} img
+   */
+  private img: HTMLImageElement;
+
+  /**
+   * Current frame in animation sequence
+   *
+   * @prop {number} frame
+   */
+  public frame: number;
+
+  /**
+   * Starting frame in animation sequence
+   *
+   * @prop {number} startFrame
+   */
+  private startFrame: number;
+
+  /**
+   * Total number of frames in animation sequence
+   *
+   * @prop {number} frameCount
+   */
+  private frameCount: number;
+
+  /**
+   * Vector of columns/rows in animation sequence
+   *
+   * @prop {number} gridRatio
+   */
+  private gridRatio: Vector;
+
+  /**
+   * Unix time at which the next animation frame should render
+   *
+   * @prop {number} nextAnimationTimestamp
+   */
+  private nextAnimationTimestamp: number;
+
+  /**
+   * Number of frames to render in a second
+   *
+   * @prop {number} fps
+   */
+  private fps: number;
+
+  /**
+   * Scale at which to render the image
+   *
+   * @prop {number} scale
+   */
+  public scale: number;
+
+  /**
+   * Size of sub-panel in the sprite sheet - the effective dimensions of sprite
+   *
+   * @prop {number} spriteSize
+   */
+  public spriteSize: Vector;
+
+  /**
+   * If the image has loaded. This is needed because HTMLImageElement.complete
+   * is set before the onload event takes place.
+   *
+   */
+  public ready: boolean = false;
+
+  /**
+   * Create a new Renderable instance
+   *
+   * @param {string} src        Source path of image element to render
+   * @param {number} scale      Scale at which to render the image
+   * @param {number} startFrame Starting frame in animation sequence
+   * @param {number} frameCount Total number of frames in animation sequence
+   * @param {number} gridRatio  Vector of columns/rows in animation sequence
+   * @param {number} fps        Number of frames to render in a second
+   */
   constructor(
-    img: string,
+    src: string,
     scale: number = 1,
     startFrame: number = 0,
     frameCount: number = 9,
-    framesX: number = 9,
-    framesY: number = 4,
-    speed: number = 1
+    gridRatio: Vector = new Vector(9, 4),
+    fps: number = 30
   ) {
     this.img = new Image();
-    this.img.src = img;
+    this.img.src = src;
     this.scale = scale;
     this.frame = startFrame;
     this.startFrame = startFrame;
     this.frameCount = frameCount;
-    this.framesX = framesX;
-    this.framesY = framesY;
-    this.speed = speed;
-    this.animTime = new Date().getTime();
+    this.gridRatio = gridRatio;
+    this.fps = fps;
+    this.nextAnimationTimestamp = new Date().getTime();
 
     this.img.onload = () => {
-      this.subWidth = this.img.width / this.framesX;
-      this.subHeight = this.img.height / this.framesY;
+      this.spriteSize = new Vector(
+        this.img.width / this.gridRatio.x,
+        this.img.height / this.gridRatio.y
+      );
+
+      this.ready = true;
     };
   }
 
-  draw(ctx: CanvasRenderingContext2D) {
-    let t = new Date().getTime();
-
-    if (t >= this.animTime) {
-      this.frame++;
-      this.animTime = t + 1000 / this.speed;
+  /**
+   * Render the image
+   *
+   * @param {CanvasRenderingContext2D} ctx Render Context
+   */
+  public draw(ctx: CanvasRenderingContext2D) {
+    if (!this.ready) {
+      return;
     }
 
+    let now = new Date().getTime();
+
+    // Move to the next frame
+    if (now >= this.nextAnimationTimestamp) {
+      this.frame++;
+      this.nextAnimationTimestamp = now + 1000 / this.fps;
+    }
+
+    // Reset to starting frame
     if (this.frame > this.startFrame + this.frameCount) {
       this.frame = this.startFrame;
     }
 
-    let posX: number = (this.frame % this.framesX) * this.subWidth;
-    let posY: number = Math.floor(this.frame / this.framesX) * this.subHeight;
+    let posX: number = (this.frame % this.gridRatio.x) * this.spriteSize.x;
+    let posY: number =
+      Math.floor(this.frame / this.gridRatio.x) * this.spriteSize.y;
 
     ctx.drawImage(
       this.img,
       posX,
       posY,
-      this.subWidth,
-      this.subHeight,
+      this.spriteSize.x,
+      this.spriteSize.y,
       0,
       0,
-      this.subWidth * this.scale,
-      this.subHeight * this.scale
+      this.spriteSize.x * this.scale,
+      this.spriteSize.y * this.scale
     );
   }
 }
