@@ -1,4 +1,4 @@
-import Eventful from "./Eventful";
+import { Eventful } from "./interfaces";
 
 export default class EventBus {
   private events: object = {};

@@ -1,14 +1,13 @@
-import enemies from "./enemies.json";
 import BaseActor from "./BaseActor";
-import Vector from "../Vector";
 import Dialogue from "../Dialogue";
-import Renderable from "../Renderable";
-
-import knight from "../../img/enemies/knight.png";
-import Stats from "../Stats";
-import { bus } from "../app";
 import Player from "./Player.js";
-import Drawable from "../Drawable";
+import Renderable from "../Renderable";
+import Stats from "../Stats";
+import Vector from "../Vector";
+import enemies from "./enemies.json";
+import knight from "../../img/enemies/knight.png";
+import { Drawable } from "../interfaces";
+import { bus } from "../app";
 
 let sprites = { knight: knight };
 

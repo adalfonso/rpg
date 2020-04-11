@@ -1,11 +1,11 @@
-import Player from "./actors/Player";
-import tileset from "../img/dungeon_sheet.png";
-import Map from "./inanimates/Map";
-import config from "./config";
-import Dialogue from "./Dialogue";
-import BaseInanimate from "./inanimates/BaseInanimate";
 import BaseActor from "./actors/BaseActor";
+import BaseInanimate from "./inanimates/BaseInanimate";
+import Dialogue from "./Dialogue";
 import Enemy from "./actors/Enemy";
+import Map from "./inanimates/Map";
+import Player from "./actors/Player";
+import config from "./config";
+import tileset from "../img/dungeon_sheet.png";
 
 class Level {
   protected inanimates: BaseInanimate[];

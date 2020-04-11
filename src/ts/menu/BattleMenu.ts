@@ -1,7 +1,6 @@
 import BaseMenu from "./BaseMenu";
 import Vector from "../Vector";
-import Eventful from "../Eventful";
-import Drawable from "../Drawable";
+import { Drawable, Eventful } from "../interfaces";
 
 export default class BattleMenu extends BaseMenu implements Eventful, Drawable {
   constructor(...args) {

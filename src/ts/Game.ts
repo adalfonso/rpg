@@ -1,13 +1,12 @@
-import Level from "./Level";
-import levels from "./levels/levels";
-import Vector from "./Vector";
-import StartMenu from "./menu/StartMenu";
 import Battle from "./Battle";
-import { bus } from "./app";
-import Player from "./actors/Player";
-import Eventful from "./Eventful";
-import Drawable from "./Drawable";
 import Inventory from "./menu/Inventory";
+import Level from "./Level";
+import Player from "./actors/Player";
+import StartMenu from "./menu/StartMenu";
+import Vector from "./Vector";
+import levels from "./levels/levels";
+import { Drawable, Eventful } from "./interfaces";
+import { bus } from "./app";
 
 /**
  * Different states a game can be in

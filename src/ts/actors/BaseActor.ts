@@ -1,9 +1,8 @@
-import config from "../config";
+import Stats from "../Stats";
 import Vector from "../Vector";
 import Weapon from "../item/Weapon";
-import Stats from "../Stats";
-import Drawable from "../Drawable";
-import Lockable from "../Lockable";
+import config from "../config";
+import { Drawable, Lockable } from "../interfaces";
 
 abstract class BaseActor implements Drawable, Lockable {
   protected lastPos: Vector;

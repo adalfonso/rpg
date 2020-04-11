@@ -1,6 +1,6 @@
-import { bus } from "./app";
 import Game from "./Game";
 import Vector from "./Vector";
+import { bus } from "./app";
 
 /**
  * Different modes for rendering the display

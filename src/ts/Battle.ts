@@ -1,10 +1,9 @@
 import BattleMenu from "./menu/BattleMenu";
-import Vector from "./Vector";
-import { bus } from "./app";
-import Player from "./actors/Player";
 import Enemy from "./actors/Enemy";
-import Eventful from "./Eventful";
-import Drawable from "./Drawable";
+import Player from "./actors/Player";
+import Vector from "./Vector";
+import { Drawable, Eventful } from "./interfaces";
+import { bus } from "./app";
 
 export default class Battle implements Eventful, Drawable {
   protected battleMenu: BattleMenu;

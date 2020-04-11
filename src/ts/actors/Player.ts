@@ -1,13 +1,11 @@
 import BaseActor from "./BaseActor";
-import sprite from "../../img/player-new.png";
 import Renderable from "../Renderable";
-import Weapon from "../item/Weapon";
-import Vector from "../Vector";
 import Stats from "../Stats";
+import Vector from "../Vector";
+import Weapon from "../item/Weapon";
+import sprite from "../../img/player-new.png";
+import { Drawable, Eventful, Lockable } from "../interfaces";
 import { bus } from "../app";
-import Eventful from "../Eventful";
-import Drawable from "../Drawable";
-import Lockable from "../Lockable";
 
 class Player extends BaseActor implements Eventful, Drawable, Lockable {
   protected maxSpeed: number;

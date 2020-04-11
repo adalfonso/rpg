@@ -1,10 +1,8 @@
-import { bus } from "./app";
 import BaseActor from "./actors/BaseActor";
-import Player from "./actors/Player";
-import Vector from "./Vector";
 import InputHandler from "./EventBus";
-import Eventful from "./Eventful";
-import Drawable from "./Drawable";
+import Vector from "./Vector";
+import { Drawable, Eventful } from "./interfaces";
+import { bus } from "./app";
 
 export default class Dialogue implements Eventful, Drawable {
   protected texts: string[];
