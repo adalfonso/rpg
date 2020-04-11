@@ -1,15 +1,15 @@
 {
-    "knight": {
-        "display_name": "Knight",
-        "default": {
-            "stats" : {
-                "hp": 5,
-                "atk": 2,
-                "def": 0,
-                "sp_atk": 0,
-                "sp_def": 0,
-                "spd" : 0
-            }
-        }
+  "knight": {
+    "display_name": "Knight",
+    "default": {
+      "stats": {
+        "hp": 5,
+        "atk": 2,
+        "def": 0,
+        "sp_atk": 0,
+        "sp_def": 0,
+        "spd": 0
+      }
     }
+  }
 }

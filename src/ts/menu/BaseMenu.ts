@@ -3,7 +3,7 @@ import { lcFirst } from "../util";
 import Vector from "../Vector";
 import Eventful from "../Eventful";
 import Drawable from "../Drawable";
-import Lockable from "../actors/Lockable";
+import Lockable from "../Lockable";
 
 export default abstract class BaseMenu implements Eventful, Drawable, Lockable {
   protected menu: any;

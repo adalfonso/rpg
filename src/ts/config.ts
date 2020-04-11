@@ -1,4 +1,4 @@
 export default {
-    debug: false,
-    scale: 3
+  debug: false,
+  scale: 3,
 };

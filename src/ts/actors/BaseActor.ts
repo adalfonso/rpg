@@ -3,7 +3,7 @@ import Vector from "../Vector";
 import Weapon from "../item/Weapon";
 import Stats from "../Stats";
 import Drawable from "../Drawable";
-import Lockable from "./Lockable";
+import Lockable from "../Lockable";
 
 abstract class BaseActor implements Drawable, Lockable {
   protected lastPos: Vector;

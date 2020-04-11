@@ -7,7 +7,7 @@ import Stats from "../Stats";
 import { bus } from "../app";
 import Eventful from "../Eventful";
 import Drawable from "../Drawable";
-import Lockable from "./Lockable";
+import Lockable from "../Lockable";
 
 class Player extends BaseActor implements Eventful, Drawable, Lockable {
   protected maxSpeed: number;
