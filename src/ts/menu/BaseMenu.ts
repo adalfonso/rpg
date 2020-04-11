@@ -1,7 +1,7 @@
-import { bus } from "../app";
-import { lcFirst } from "../util";
-import Vector from "../Vector";
-import { Drawable, Eventful, Lockable } from "../interfaces";
+import { bus } from "@/app";
+import { lcFirst } from "@/util";
+import Vector from "@/Vector";
+import { Drawable, Eventful, Lockable } from "@/interfaces";
 
 export default abstract class BaseMenu implements Eventful, Drawable, Lockable {
   protected menu: any;

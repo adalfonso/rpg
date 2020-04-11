@@ -5,7 +5,7 @@ import Enemy from "./actors/Enemy";
 import Map from "./inanimates/Map";
 import Player from "./actors/Player";
 import config from "./config";
-import tileset from "../img/dungeon_sheet.png";
+import tileset from "@img/dungeon_sheet.png";
 
 class Level {
   protected inanimates: BaseInanimate[];

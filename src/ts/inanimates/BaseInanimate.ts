@@ -1,5 +1,5 @@
-import Vector from "../Vector";
-import config from "../config";
+import Vector from "@/Vector";
+import config from "@/config";
 
 export default class BaseInanimate {
   public pos: Vector;

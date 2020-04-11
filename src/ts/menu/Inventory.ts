@@ -1,7 +1,7 @@
 import BaseMenu from "./BaseMenu";
-import Vector from "../Vector";
-import Weapon from "../item/Weapon";
-import { Drawable, Eventful } from "../interfaces";
+import Vector from "@src/ts/Vector";
+import Weapon from "@/item/Weapon";
+import { Drawable, Eventful } from "@/interfaces";
 
 export default class Inventory extends BaseMenu implements Eventful, Drawable {
   protected equipped: object;

@@ -1,4 +1,4 @@
-import { bus } from "../app";
+import { bus } from "@/app";
 
 export default class Weapon {
   protected type: string;

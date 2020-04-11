@@ -1,13 +1,13 @@
 {
-    "compilerOptions": {
-        "outDir": "./built",
-        "allowJs": true,
-        "target": "es6",
-        "resolveJsonModule": true,
-        "esModuleInterop": true,
-        "moduleResolution": "node",
-    },
-    "include": [
-        "./src/**/*"
-    ]
+  "compilerOptions": {
+    "outDir": "./built",
+    "allowJs": true,
+    "target": "es6",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "baseUrl": ".",
+    "paths": { "@src*": ["src/*"], "@*": ["src/ts*"], "@img/*": ["src/img/*"] }
+  },
+  "include": ["./src/**/*"]
 }

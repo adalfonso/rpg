@@ -1,6 +1,6 @@
 import BaseMenu from "./BaseMenu";
-import Vector from "../Vector";
-import { Drawable } from "../interfaces";
+import Vector from "@/Vector";
+import { Drawable } from "@/interfaces";
 
 export default class StartMenu extends BaseMenu implements Drawable {
   constructor() {

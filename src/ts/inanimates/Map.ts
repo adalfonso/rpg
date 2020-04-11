@@ -1,12 +1,12 @@
-import Enemy from "../actors/Enemy";
-import NPC from "../actors/NPC";
-import Player from "../actors/Player";
+import Enemy from "@/actors/Enemy";
+import NPC from "@/actors/NPC";
+import Player from "@/actors/Player";
 import PlayerClip from "./PlayerClip";
 import Portal from "./Portal";
-import Renderable from "../Renderable";
+import Renderable from "@/Renderable";
 import Vector from "../Vector";
-import config from "../config";
-import { bus } from "../app";
+import config from "@/config";
+import { bus } from "@/app";
 
 export default class Map {
   protected config: object;
