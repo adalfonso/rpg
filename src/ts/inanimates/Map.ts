@@ -121,13 +121,15 @@ export default class Map {
       layer.data.forEach((value, index: number) => {
         r.frame = value - 1;
 
-        let x: number = index % layer.width;
-        let y: number = Math.floor(index / layer.width);
+        let tile = new Vector(
+          index % layer.width,
+          Math.floor(index / layer.width)
+        );
 
         ctx.save();
+
         ctx.translate(
-          this.pos.x + x * r.spriteSize.x * r.scale,
-          this.pos.y + y * r.spriteSize.y * r.scale
+          ...tile.times(r.spriteSize).times(r.scale).plus(this.pos).toArray()
         );
 
         r.draw(ctx);

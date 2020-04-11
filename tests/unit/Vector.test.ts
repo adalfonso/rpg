@@ -27,13 +27,13 @@ describe("Vector", () => {
 
   it("plus", () => {
     [
-      [new Sut(0, 0), 4, 5, new Sut(4, 5)],
-      [new Sut(2, 4), 1, 3, new Sut(3, 7)],
-      [new Sut(-5, -100), 200, -300, new Sut(195, -400)],
-    ].forEach((data: [Sut, number, number, Sut]) => {
-      let [sut, x, y, expected] = data;
+      [new Sut(0, 0), new Sut(4, 5), new Sut(4, 5)],
+      [new Sut(2, 4), new Sut(1, 3), new Sut(3, 7)],
+      [new Sut(-5, -100), new Sut(200, -300), new Sut(195, -400)],
+    ].forEach((data: [Sut, Sut, Sut]) => {
+      let [sut, input, expected] = data;
 
-      expect(sut.plus(x, y)).to.deep.equal(expected);
+      expect(sut.plus(input)).to.deep.equal(expected);
     });
   });
 
@@ -42,10 +42,23 @@ describe("Vector", () => {
       [new Sut(0, 0), 4, new Sut(0, 0)],
       [new Sut(2, 4), 1.5, new Sut(3, 6)],
       [new Sut(-5, -100), -1, new Sut(5, 100)],
-    ].forEach((data: [Sut, number, Sut]) => {
-      let [sut, factor, expected] = data;
+      [new Sut(3, 3), new Sut(0, 1), new Sut(0, 3)],
+      [new Sut(2, 4), new Sut(1.5, -10), new Sut(3, -40)],
+    ].forEach((data: [Sut, Sut | number, Sut]) => {
+      let [sut, input, expected] = data;
 
-      expect(sut.times(factor)).to.deep.equal(expected);
+      expect(sut.times(input)).to.deep.equal(expected);
+    });
+  });
+
+  it("toArray", () => {
+    [
+      [new Sut(0, 0), [0, 0]],
+      [new Sut(2, 4), [2, 4]],
+    ].forEach((data: [Sut, [number, number]]) => {
+      let [sut, expected] = data;
+
+      expect(sut.toArray()).to.deep.equal(expected);
     });
   });
 });

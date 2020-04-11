@@ -98,8 +98,7 @@ export default class Battle implements Eventful, Drawable {
 
     if (this.playersTurn) {
       let playerOffset = offset.plus(
-        this.player.pos.x,
-        this.player.pos.y + this.player.size.y
+        new Vector(this.player.pos.x, this.player.pos.y + this.player.size.y)
       );
 
       this.battleMenu.draw(ctx, playerOffset, resolution);

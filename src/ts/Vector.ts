@@ -23,24 +23,36 @@ class Vector {
   /**
    * Add to vector to generate a new vector
    *
-   * @param  {number} x Scalar to add
-   * @param  {number} y Scalar to add
+   * @param  {Vector} addend Value to add
    *
    * @return {Vector}   New vector
    */
-  plus(x: number, y: number): Vector {
-    return new Vector(this.x + x, this.y + y);
+  plus(addend: Vector): Vector {
+    return new Vector(this.x + addend.x, this.y + addend.y);
   }
 
   /**
    * Multiply by a factor to generate a new vector
    *
-   * @param  {number} factor Factor to multiply by
+   * @param  {Vecetor | number} factor Factor to multiply by
    *
-   * @return {Vector}        New Vector
+   * @return {Vector}                  New Vector
    */
-  times(factor: number): Vector {
-    return new Vector(this.x * factor, this.y * factor);
+  times(factor: Vector | number): Vector {
+    if (typeof factor === "number") {
+      return new Vector(this.x * factor, this.y * factor);
+    }
+
+    return new Vector(this.x * factor.x, this.y * factor.y);
+  }
+
+  /**
+   * Convert to an array
+   *
+   * @return {[number, number]} Resulting array
+   */
+  toArray(): [number, number] {
+    return [this.x, this.y];
   }
 }
 
