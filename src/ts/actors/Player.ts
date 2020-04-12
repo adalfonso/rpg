@@ -1,4 +1,4 @@
-import BaseActor from "./BaseActor";
+import Actor from "./Actor";
 import Renderable from "@/Renderable";
 import StatsManager from "@/Stats";
 import Vector from "@/Vector";
@@ -7,7 +7,7 @@ import sprite from "@img/player-new.png";
 import { Drawable, Eventful, Lockable } from "@/interfaces";
 import { bus } from "@/app";
 
-class Player extends BaseActor implements Eventful, Drawable, Lockable {
+class Player extends Actor implements Eventful, Drawable, Lockable {
   protected maxSpeed: number;
   protected speed: Vector;
   protected sprites: Renderable[];

@@ -1,4 +1,12 @@
-{ "height":20,
+{ "compressionlevel":-1,
+ "editorsettings":
+    {
+     "export":
+        {
+         "target":"."
+        }
+    },
+ "height":20,
  "infinite":false,
  "layers":[
         {
@@ -27,41 +35,13 @@
         }, 
         {
          "draworder":"topdown",
-         "id":6,
-         "name":"player_start_0.0",
-         "objects":[
-                {
-                 "height":24,
-                 "id":14,
-                 "name":"",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":8,
-                 "x":309,
-                 "y":8
-                }],
-         "opacity":1,
-         "type":"objectgroup",
-         "visible":true,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "draworder":"topdown",
          "id":14,
-         "name":"npcs",
+         "name":"npc",
          "objects":[
                 {
                  "height":16,
                  "id":37,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"name",
-                         "type":"string",
-                         "value":"murdoc"
-                        }],
+                 "name":"murdoc",
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -78,20 +58,14 @@
         {
          "draworder":"topdown",
          "id":15,
-         "name":"enemies",
+         "name":"enemy",
          "objects":[
                 {
                  "height":20,
                  "id":38,
                  "name":"",
-                 "properties":[
-                        {
-                         "name":"type",
-                         "type":"string",
-                         "value":"knight"
-                        }],
                  "rotation":0,
-                 "type":"",
+                 "type":"knight",
                  "visible":true,
                  "width":10,
                  "x":288,
@@ -106,18 +80,29 @@
         {
          "draworder":"topdown",
          "id":8,
-         "name":"player_start_0.2",
+         "name":"entry",
          "objects":[
                 {
                  "height":24,
                  "id":16,
-                 "name":"",
+                 "name":"0.2",
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":8,
                  "x":92,
                  "y":288
+                }, 
+                {
+                 "height":24,
+                 "id":43,
+                 "name":"0.0",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":8,
+                 "x":309,
+                 "y":8
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -145,7 +130,7 @@
         {
          "draworder":"topdown",
          "id":3,
-         "name":"collision",
+         "name":"clip",
          "objects":[
                 {
                  "height":126,
@@ -331,45 +316,6 @@
         }, 
         {
          "draworder":"topdown",
-         "id":5,
-         "name":"portal",
-         "objects":[
-                {
-                 "height":8,
-                 "id":11,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"portal_to",
-                         "type":"string",
-                         "value":"1.0"
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":22,
-                 "x":302,
-                 "y":0
-                }],
-         "opacity":1,
-         "properties":[
-                {
-                 "name":"portal_from",
-                 "type":"string",
-                 "value":"0.1"
-                }, 
-                {
-                 "name":"portal_to",
-                 "type":"string",
-                 "value":"0.0"
-                }],
-         "type":"objectgroup",
-         "visible":true,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "draworder":"topdown",
          "id":9,
          "name":"portal",
          "objects":[
@@ -379,9 +325,14 @@
                  "name":"",
                  "properties":[
                         {
-                         "name":"portal_to",
+                         "name":"from",
                          "type":"string",
-                         "value":"1.0"
+                         "value":"0.1"
+                        }, 
+                        {
+                         "name":"to",
+                         "type":"string",
+                         "value":"0.2"
                         }],
                  "rotation":0,
                  "type":"",
@@ -389,19 +340,30 @@
                  "width":32,
                  "x":80,
                  "y":312
-                }],
-         "opacity":1,
-         "properties":[
-                {
-                 "name":"portal_from",
-                 "type":"string",
-                 "value":"0.1"
                 }, 
                 {
-                 "name":"portal_to",
-                 "type":"string",
-                 "value":"0.2"
+                 "height":8,
+                 "id":42,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"from",
+                         "type":"string",
+                         "value":"0.1"
+                        }, 
+                        {
+                         "name":"to",
+                         "type":"string",
+                         "value":"0.0"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":22,
+                 "x":302,
+                 "y":0
                 }],
+         "opacity":1,
          "type":"objectgroup",
          "visible":true,
          "x":0,
@@ -411,7 +373,7 @@
  "nextobjectid":39,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.2.3",
+ "tiledversion":"1.3.3",
  "tileheight":16,
  "tilesets":[
         {

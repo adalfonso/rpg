@@ -1,7 +1,7 @@
 import Vector from "@/Vector";
 import config from "@/config";
 
-export default class BaseInanimate {
+abstract class Inanimate {
   public pos: Vector;
   public size: Vector;
 
@@ -19,3 +19,5 @@ export default class BaseInanimate {
     }
   }
 }
+
+export default Inanimate;

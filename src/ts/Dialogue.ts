@@ -1,4 +1,4 @@
-import BaseActor from "./actors/BaseActor";
+import Actor from "./actors/Actor";
 import InputHandler from "./EventBus";
 import Vector from "./Vector";
 import { Drawable, Eventful } from "./interfaces";
@@ -6,8 +6,8 @@ import { bus } from "./app";
 
 export default class Dialogue implements Eventful, Drawable {
   protected texts: string[];
-  protected speaker: BaseActor;
-  protected actors: BaseActor[];
+  protected speaker: Actor;
+  protected actors: Actor[];
   protected currentText: string;
 
   protected waiting: boolean;
@@ -17,7 +17,7 @@ export default class Dialogue implements Eventful, Drawable {
   protected frameLength: number;
   protected timeStore: number;
 
-  constructor(texts: string[], speaker: BaseActor, actors: BaseActor[]) {
+  constructor(texts: string[], speaker: Actor, actors: Actor[]) {
     this.texts = texts;
     this.speaker = speaker;
     this.actors = actors;
@@ -84,8 +84,8 @@ export default class Dialogue implements Eventful, Drawable {
 
   stop() {
     this.actors.forEach((a) => {
-      a.unlock();
       a.inDialogue = false;
+      a.unlock();
     });
 
     bus.unregister(this);

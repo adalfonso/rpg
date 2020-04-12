@@ -46,6 +46,11 @@ class Game implements Eventful, Drawable {
    */
   private menu: StartMenu;
 
+  /**
+   * Inventory menu
+   *
+   * @prop {Inventory} inventory
+   */
   private inventory: Inventory;
 
   /**
@@ -78,19 +83,6 @@ class Game implements Eventful, Drawable {
   }
 
   /**
-   * Load a new level instance
-   * TODO: define the below game object better, it's too broad.
-   *
-   * @param {object} event A game event
-   */
-  private loadLevel(event: any) {
-    let match = event.obj.portal_to.match(/^(\d+)\.(\d+)$/);
-    let level = levels[parseInt(match[1])][parseInt(match[2])];
-    let portal = event.obj;
-    this.level.reload(level, portal);
-  }
-
-  /**
    * Hacky method to initiate the game at the first level
    * TODO: Create a better way to load a game state instead of a static level
    */
@@ -112,13 +104,7 @@ class Game implements Eventful, Drawable {
       return;
     }
 
-    let events = this.level.update(dt);
-
-    events.forEach((event) => {
-      if ((event.type = "enter_portal")) {
-        this.loadLevel(event);
-      }
-    });
+    this.level.update(dt);
   }
 
   /**
@@ -129,15 +115,7 @@ class Game implements Eventful, Drawable {
    * @param {Vector}                   resolution Render resolution
    */
   draw(ctx: CanvasRenderingContext2D, offset: Vector, resolution: Vector) {
-    // Draw parts of map behind the player
-    this.level.map.draw(ctx);
-
-    this.level.entities.forEach((entity) => {
-      entity.draw(ctx, offset, resolution);
-    });
-
-    // Draw remaining parts of map above the player
-    this.level.map.draw(ctx, true);
+    this.level.draw(ctx, offset, resolution);
 
     if (this.hasActiveBattle()) {
       let battleOffset = new Vector(

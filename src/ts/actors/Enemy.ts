@@ -1,4 +1,4 @@
-import BaseActor from "./BaseActor";
+import Actor from "./Actor";
 import Dialogue from "@/Dialogue";
 import Player from "./Player.js";
 import Renderable from "@/Renderable";
@@ -11,7 +11,7 @@ import { bus } from "@/app";
 
 let sprites = { knight: knight };
 
-export default class Enemy extends BaseActor implements Drawable {
+class Enemy extends Actor implements Drawable {
   protected data: any;
   protected dialogue: Dialogue;
   protected sprite: Renderable;
@@ -23,7 +23,7 @@ export default class Enemy extends BaseActor implements Drawable {
   constructor(obj) {
     super(new Vector(obj.x, obj.y), new Vector(obj.width, obj.height));
 
-    let type = obj.properties.filter((prop) => prop.name === "type")[0].value;
+    let type = obj.type;
 
     let enemy = enemies[type];
 
@@ -91,3 +91,5 @@ export default class Enemy extends BaseActor implements Drawable {
     ctx.restore();
   }
 }
+
+export default Enemy;

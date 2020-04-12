@@ -1,4 +1,12 @@
-{ "height":18,
+{ "compressionlevel":-1,
+ "editorsettings":
+    {
+     "export":
+        {
+         "target":"."
+        }
+    },
+ "height":18,
  "infinite":false,
  "layers":[
         {
@@ -17,7 +25,7 @@
          "data":[6, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 8, 30, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 32, 54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 56, 54, 0, 0, 0, 0, 238, 238, 238, 238, 0, 0, 0, 0, 0, 0, 56, 54, 0, 0, 238, 238, 238, 238, 238, 238, 0, 0, 0, 0, 238, 238, 56, 54, 0, 0, 238, 238, 238, 238, 238, 238, 0, 0, 0, 0, 238, 238, 56, 54, 0, 0, 238, 238, 238, 238, 238, 238, 0, 0, 0, 0, 238, 238, 56, 54, 0, 0, 238, 238, 238, 238, 238, 238, 0, 0, 0, 0, 238, 238, 56, 54, 0, 0, 238, 238, 238, 238, 238, 238, 0, 0, 0, 0, 238, 238, 56, 54, 0, 0, 238, 238, 238, 238, 238, 238, 0, 0, 0, 0, 238, 238, 56, 54, 0, 0, 238, 238, 238, 238, 238, 238, 0, 0, 0, 0, 238, 238, 56, 54, 0, 0, 238, 238, 238, 238, 238, 238, 0, 0, 0, 0, 238, 238, 56, 54, 0, 0, 238, 238, 0, 238, 238, 238, 0, 0, 0, 0, 238, 238, 56, 54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 56, 54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 56, 78, 79, 79, 79, 79, 79, 10, 0, 0, 9, 79, 79, 79, 79, 79, 80, 26, 26, 26, 26, 26, 26, 54, 0, 0, 56, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 54, 0, 0, 56, 26, 26, 26, 26, 26, 26],
          "height":18,
          "id":20,
-         "name":"walls",
+         "name":"wall",
          "opacity":1,
          "type":"tilelayer",
          "visible":true,
@@ -27,41 +35,30 @@
         }, 
         {
          "draworder":"topdown",
-         "id":10,
-         "name":"player_start_0.1",
-         "objects":[
-                {
-                 "height":20,
-                 "id":46,
-                 "name":"",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":8,
-                 "x":124,
-                 "y":260
-                }],
-         "opacity":1,
-         "type":"objectgroup",
-         "visible":true,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "draworder":"topdown",
          "id":11,
-         "name":"player_start_0.0",
+         "name":"entry",
          "objects":[
                 {
                  "height":32,
                  "id":44,
-                 "name":"",
+                 "name":"origin",
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":12,
                  "x":122,
                  "y":112
+                }, 
+                {
+                 "height":20,
+                 "id":56,
+                 "name":"0.1",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":8,
+                 "x":124,
+                 "y":260
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -95,25 +92,25 @@
                  "height":8,
                  "id":29,
                  "name":"",
+                 "properties":[
+                        {
+                         "name":"from",
+                         "type":"string",
+                         "value":"0.0"
+                        }, 
+                        {
+                         "name":"to",
+                         "type":"string",
+                         "value":"0.1"
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":40,
-                 "x":108,
+                 "width":52,
+                 "x":102,
                  "y":280
                 }],
          "opacity":1,
-         "properties":[
-                {
-                 "name":"portal_from",
-                 "type":"string",
-                 "value":"0.0"
-                }, 
-                {
-                 "name":"portal_to",
-                 "type":"string",
-                 "value":"0.1"
-                }],
          "type":"objectgroup",
          "visible":true,
          "x":0,
@@ -122,7 +119,7 @@
         {
          "draworder":"topdown",
          "id":5,
-         "name":"collision",
+         "name":"clip",
          "objects":[
                 {
                  "height":32,
@@ -208,10 +205,10 @@
          "y":0
         }],
  "nextlayerid":21,
- "nextobjectid":56,
+ "nextobjectid":57,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.2.3",
+ "tiledversion":"1.3.3",
  "tileheight":16,
  "tilesets":[
         {

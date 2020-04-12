@@ -4,7 +4,7 @@ import Weapon from "@/item/Weapon";
 import config from "@/config";
 import { Drawable, Lockable } from "@/interfaces";
 
-abstract class BaseActor implements Drawable, Lockable {
+abstract class Actor implements Drawable, Lockable {
   protected lastPos: Vector;
   public locked: boolean;
   protected savedDirection: number;
@@ -71,6 +71,7 @@ abstract class BaseActor implements Drawable, Lockable {
    * @return {boolean} If unlock was successful
    */
   public unlock(): boolean {
+    // Do not unlock the actor while they are still in dialog
     if (!this.inDialogue) {
       this.locked = false;
 
@@ -144,7 +145,7 @@ abstract class BaseActor implements Drawable, Lockable {
 
   // Combat Methods
 
-  attack(target: BaseActor, weapon?: Weapon) {
+  attack(target: Actor, weapon?: Weapon) {
     if (!weapon && this.weapon) {
       weapon = this.weapon;
     }
@@ -160,4 +161,4 @@ abstract class BaseActor implements Drawable, Lockable {
   }
 }
 
-export default BaseActor;
+export default Actor;

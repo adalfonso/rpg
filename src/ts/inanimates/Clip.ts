@@ -1,7 +1,7 @@
-import BaseInanimate from "./BaseInanimate";
+import Inanimate from "./Inanimate";
 import Vector from "@/Vector";
 
-export default class PlayerClip extends BaseInanimate {
+export default class Clip extends Inanimate {
   public pos: Vector;
   public size: Vector;
 

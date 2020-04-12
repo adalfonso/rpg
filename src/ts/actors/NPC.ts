@@ -1,4 +1,4 @@
-import BaseActor from "./BaseActor";
+import Actor from "./Actor";
 import Dialogue from "@/Dialogue";
 import Player from "./Player.js";
 import Vector from "@/Vector";
@@ -6,7 +6,7 @@ import npcs from "./npcs.json";
 import { Drawable, Eventful } from "@/interfaces";
 import { bus } from "@/app";
 
-export default class NPC extends BaseActor implements Eventful, Drawable {
+class NPC extends Actor implements Eventful, Drawable {
   protected name: string;
   protected data: any;
   protected dialogue: Dialogue;
@@ -15,7 +15,7 @@ export default class NPC extends BaseActor implements Eventful, Drawable {
   constructor(obj, player: Player) {
     super(new Vector(obj.x, obj.y), new Vector(obj.width, obj.height));
 
-    let name = obj.properties.filter((prop) => prop.name === "name")[0].value;
+    let name = obj.name;
 
     let npc = npcs[name];
 
@@ -76,3 +76,5 @@ export default class NPC extends BaseActor implements Eventful, Drawable {
     };
   }
 }
+
+export default NPC;
