@@ -4,26 +4,84 @@ import Vector from "./Vector";
 import { Drawable, Eventful } from "./interfaces";
 import { bus } from "./app";
 
-export default class Dialogue implements Eventful, Drawable {
-  protected texts: string[];
-  protected speaker: Actor;
-  protected actors: Actor[];
-  protected currentText: string;
+class Dialogue implements Eventful, Drawable {
+  /**
+   * Listing of all text lines in the dialogue
+   *
+   * @prop {string[]} texts
+   */
+  private texts: string[];
 
-  protected waiting: boolean;
+  /**
+   * Actor speaking the dialogue
+   *
+   * @prop {Actor} speaker
+   */
+  private speaker: Actor;
+
+  /**
+   * All actors participating in the dialogue
+   *
+   * @prop {actors[]} actors
+   */
+  private actors: Actor[];
+
+  /**
+   * Text currently output to the screen
+   *
+   * @prop {string} currentText
+   */
+
+  private currentText: string;
+
+  /**
+   * Texts index that is currently rendering
+   *
+   * @prop {number} currentIndex
+   */
+  private currentIndex: number;
+
+  /**
+   * A waiting state denotes one line of text as fully rendered and is waiting
+   * for user input to render the next line
+   *
+   * @prop {boolean} waiting
+   */
+  private waiting: boolean;
+
+  /**
+   * Done denotes that all texts have been full rendered
+   *
+   * @prop {boolean} done
+   */
   public done: boolean;
 
-  protected index: number;
-  protected frameLength: number;
-  protected timeStore: number;
+  /**
+   * The length of time in milliseconds between the rendering of each letter
+   *
+   * @prop {number} frameLength
+   */
+  private frameLength: number;
 
+  /**
+   * A bank of how many seconds have passed since the last rendering
+   */
+  private timeStore: number;
+
+  /**
+   * Create a new dialogue isntance
+   *
+   * @param {string[]} texts   Listing of all text lines in the dialogue
+   * @param {Actor}    speaker Actor speaking the dialogue
+   * @param {Actor[]}  actors  All actors in the dialogue, excluding the speaker
+   */
   constructor(texts: string[], speaker: Actor, actors: Actor[]) {
     this.texts = texts;
     this.speaker = speaker;
     this.actors = actors;
     this.currentText = "";
 
-    this.index = 0;
+    this.currentIndex = 0;
     this.waiting = false;
     this.done = false;
 
@@ -32,28 +90,38 @@ export default class Dialogue implements Eventful, Drawable {
 
     this.actors.push(this.speaker);
 
-    bus.register(this);
     this.start();
   }
 
+  /**
+   * Update the current state of the dialogue
+   *
+   * @param {number} dt Delta time
+   */
   update(dt: number) {
+    // Waiting for user input, don't update
     if (this.waiting) {
       return;
     }
 
     this.timeStore += dt;
 
-    while (this.timeStore > this.frameLength) {
-      this.currentText = this.texts[this.index].substring(
-        0,
-        this.currentText.length + 1
-      );
-
-      this.timeStore -= this.frameLength;
+    if (this.timeStore < this.frameLength) {
+      return;
     }
 
-    if (this.currentText === this.texts[this.index]) {
-      return (this.waiting = true);
+    let endChar =
+      Math.min(
+        this.texts[this.currentIndex].length,
+        Math.floor(this.timeStore / this.frameLength) + this.currentText.length
+      ) + 1;
+
+    this.currentText = this.texts[this.currentIndex].substring(0, endChar);
+
+    this.timeStore = this.timeStore % this.frameLength;
+
+    if (this.currentText === this.texts[this.currentIndex]) {
+      this.waiting = true;
     }
   }
 
@@ -75,13 +143,21 @@ export default class Dialogue implements Eventful, Drawable {
     ctx.restore();
   }
 
+  /**
+   * Begin the dialogue
+   */
   start() {
     this.actors.forEach((a) => {
-      a.lock();
       a.inDialogue = true;
+      a.lock();
     });
+
+    bus.register(this);
   }
 
+  /**
+   * End the dialogue
+   */
   stop() {
     this.actors.forEach((a) => {
       a.inDialogue = false;
@@ -91,6 +167,11 @@ export default class Dialogue implements Eventful, Drawable {
     bus.unregister(this);
   }
 
+  /**
+   * Register events with the event bus
+   *
+   * @return {object} Events to register
+   */
   register(): object {
     return {
       keyup: (e: KeyboardEvent, handler: InputHandler) => {
@@ -105,13 +186,18 @@ export default class Dialogue implements Eventful, Drawable {
     };
   }
 
+  /**
+   * Move to the next line of text or end the dialogue
+   *
+   * @param {KeyboardEvent} e Keyboard event
+   */
   next(e: KeyboardEvent) {
     if (!this.waiting || this.done) {
       return;
     }
 
-    if (this.index + 1 < this.texts.length) {
-      this.index++;
+    if (this.currentIndex + 1 < this.texts.length) {
+      this.currentIndex++;
       this.timeStore = 0;
       this.currentText = "";
       this.waiting = false;
@@ -120,3 +206,5 @@ export default class Dialogue implements Eventful, Drawable {
     }
   }
 }
+
+export default Dialogue;
