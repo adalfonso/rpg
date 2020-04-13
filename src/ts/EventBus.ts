@@ -1,6 +1,11 @@
 import { Eventful } from "./interfaces";
 
 export default class EventBus {
+  /**
+   * Event store
+   *
+   * @prop {object} events
+   */
   private events: object = {};
 
   /**

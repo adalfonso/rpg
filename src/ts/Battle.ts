@@ -5,18 +5,55 @@ import Vector from "./Vector";
 import { Drawable, Eventful } from "./interfaces";
 import { bus } from "./app";
 
-export default class Battle implements Eventful, Drawable {
-  protected battleMenu: BattleMenu;
-  protected enemy: Enemy;
-  protected player: Player;
-  protected playersTurn: boolean;
+class Battle implements Eventful, Drawable {
+  /**
+   * Menu for the battle
+   *
+   * @prop {BattleMenu} battleMenu
+   */
+  private battleMenu: BattleMenu;
+
+  /**
+   * Enemy being fought
+   *
+   * @prop {Enemy} enemy
+   */
+  private enemy: Enemy;
+
+  /**
+   * Player instance
+   *
+   * @prop {Player} player
+   */
+  private player: Player;
+
+  /**
+   * If it is currently the player's turn
+   *
+   * @prop {boolean} playersTurn
+   */
+  private playersTurn: boolean;
+
+  /**
+   * If the battle is currently active
+   *
+   * @prop {boolean} active
+   */
   public active: boolean;
 
-  constructor(player, enemy) {
+  /**
+   * Create a new battle instance
+   *
+   * @param {Player} player Player in battle
+   * @param {Enemy}  enemy  Enemy in battle
+   */
+  constructor(player: Player, enemy: Enemy) {
     this.active = true;
 
     this.player = player;
     this.player.savePos();
+
+    // TODO: make these scale
     this.player.pos.x = 64;
     this.player.pos.y = 128;
     this.player.direction = 4;
@@ -35,6 +72,9 @@ export default class Battle implements Eventful, Drawable {
     bus.register(this);
   }
 
+  /**
+   * Run one cycle of the battle
+   */
   cycle() {
     this.playersTurn = !this.playersTurn;
 
@@ -43,6 +83,11 @@ export default class Battle implements Eventful, Drawable {
     }
   }
 
+  /**
+   * Create a new battle menu
+   *
+   * @return {BattleMenu} The battle menu
+   */
   getBattleMenu(): BattleMenu {
     return new BattleMenu(
       {
@@ -64,7 +109,14 @@ export default class Battle implements Eventful, Drawable {
     );
   }
 
-  update(dt: number) {}
+  /**
+   * Update the battle
+   *
+   * @param {number} dt Delta time
+   */
+  update(dt: number) {
+    // TODO: Utilize an update method
+  }
 
   /**
    * Draw game and all underlying entities
@@ -93,39 +145,71 @@ export default class Battle implements Eventful, Drawable {
 
     ctx.restore();
 
-    this.drawUiBar(ctx);
-    this.drawEnemyUiBar(ctx, width, height);
+    this.drawUiBar(ctx, resolution);
+    this.drawEnemyUiBar(ctx, resolution);
 
     if (this.playersTurn) {
-      let playerOffset = offset.plus(
-        new Vector(this.player.pos.x, this.player.pos.y + this.player.size.y)
-      );
+      let playerOffset = offset.plus(this.player.pos.plus(this.player.size));
 
       this.battleMenu.draw(ctx, playerOffset, resolution);
     }
   }
 
-  drawUiBar(ctx: CanvasRenderingContext2D) {
+  /**
+   * Draw the UI bar for the player
+   *
+   * @param {CanvasRenderingContext2D} ctx        Render context
+   * @param {Vector}                   resolution Render resolution
+   */
+  drawUiBar(ctx: CanvasRenderingContext2D, resolution: Vector) {
+    let uiBarSize = this.getUiBarSize(resolution);
+
     ctx.save();
     ctx.fillStyle = "#000";
-    ctx.fillRect(0, 0, 512, 48);
+    ctx.fillRect(0, 0, uiBarSize.x, uiBarSize.y);
     ctx.fillStyle = "#FFF";
     ctx.font = "20px Arial";
     ctx.fillText("HP : " + this.player.stats.hp, 16, 32);
     ctx.restore();
   }
 
-  drawEnemyUiBar(ctx: CanvasRenderingContext2D, width: number, height: number) {
+  /**
+   * Draw the UI bar for the enemy
+   *
+   * @param {CanvasRenderingContext2D} ctx        Render context
+   * @param {Vector}                   resolution Render resolution
+   */
+  drawEnemyUiBar(ctx: CanvasRenderingContext2D, resolution: Vector) {
+    let uiBarSize = this.getUiBarSize(resolution);
     ctx.save();
-    ctx.translate(width - 512, 0);
+    ctx.translate(resolution.x - uiBarSize.x, 0);
     ctx.fillStyle = "#000";
-    ctx.fillRect(0, 0, 512, 48);
+    ctx.fillRect(0, 0, uiBarSize.x, uiBarSize.y);
     ctx.fillStyle = "#FFF";
     ctx.font = "20px Arial";
     ctx.fillText("HP : " + this.enemy.stats.hp, 16, 32);
     ctx.restore();
   }
 
+  /**
+   * Get the size of the UI bar based on screen resolution
+   *
+   * @param  {Vector} resolution Current screen resolution
+   *
+   * @return {Vector}            Size of the UI bar
+   */
+  private getUiBarSize(resolution: Vector) {
+    return new Vector(
+      Math.round(resolution.x * 0.4),
+      Math.round(resolution.y * 0.07)
+    );
+  }
+
+  /**
+   * Register events with the event bus
+   *
+   * @return {object} Events to register
+   */
   register(): object {
     return {
       battleAction: (e) => {
@@ -151,6 +235,9 @@ export default class Battle implements Eventful, Drawable {
     };
   }
 
+  /**
+   * End the battle
+   */
   stop() {
     this.enemy.defeated = true;
     this.active = false;
@@ -159,3 +246,5 @@ export default class Battle implements Eventful, Drawable {
     this.battleMenu.destroy();
   }
 }
+
+export default Battle;
