@@ -1,8 +1,8 @@
-import BaseMenu from "./BaseMenu";
+import Menu from "./Menu";
 import Vector from "@/Vector";
 import { Drawable } from "@/interfaces";
 
-export default class StartMenu extends BaseMenu implements Drawable {
+export default class StartMenu extends Menu implements Drawable {
   constructor() {
     let menu = [
       {
