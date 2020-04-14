@@ -2,6 +2,7 @@ import Game from "./Game";
 import Display from "./Display";
 import EventBus from "./EventBus";
 import Vector from "./Vector";
+import { startAnimation } from "./util";
 
 export let bus: EventBus = new EventBus();
 
@@ -13,18 +14,10 @@ let canvas = <HTMLCanvasElement>document.getElementById("game");
 
 let game: Game = new Game();
 let display: Display = new Display(RESOLUTION, canvas, game);
-let lastTime: number = 0;
 
 game.start();
 
-function frame(timestamp: number) {
-  let dt: number = timestamp - lastTime;
-  lastTime = timestamp;
-
+startAnimation((dt) => {
   game.update(dt);
   display.draw();
-
-  requestAnimationFrame(frame);
-}
-
-requestAnimationFrame(frame);
+});

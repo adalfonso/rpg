@@ -1,6 +1,6 @@
 {
   "name": "game",
-  "version": "0.0.64",
+  "version": "0.0.66",
   "description": "",
   "main": "webpack.config.js",
   "scripts": {
@@ -29,7 +29,7 @@
     "node-sass": "^4.12.0",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.23.1",
-    "typescript": "^3.5.2",
+    "typescript": "^3.8",
     "webpack": "^4.35.2",
     "webpack-cli": "^3.3.5"
   },
