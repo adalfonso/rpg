@@ -2,7 +2,7 @@ import Vector from "@/Vector";
 import config from "@/config";
 
 /**
- * Inanimates are entities that interact with other entitys in the game, but
+ * Inanimates are entities that interact with other entities in the game, but
  * are stationary, and often invisible. e.g. clipping boundaries or portals.
  */
 abstract class Inanimate {
@@ -36,14 +36,14 @@ abstract class Inanimate {
    *
    * @param {number} dt Delta time
    */
-  update(dt: number) {}
+  public update(dt: number) {}
 
   /**
    * Draw the Inanimate
    *
    * @param {CanvasRenderingContext2D} ctx Render context
    */
-  draw(ctx: CanvasRenderingContext2D) {
+  public draw(ctx: CanvasRenderingContext2D) {
     if (config.debug) {
       ctx.strokeStyle = "#F00";
       ctx.strokeRect(this.pos.x, this.pos.y, this.size.x, this.size.y);
