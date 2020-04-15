@@ -7,24 +7,24 @@ import config from "@/config";
  */
 abstract class Inanimate {
   /**
-   * Position of the entity
+   * Position of the inanimate
    *
    * @prop {Vector} pos
    */
   public pos: Vector;
 
   /**
-   * Size of the entity
+   * Size of the inanimate
    *
    * @prop {Vector} size
    */
   public size: Vector;
 
   /**
-   * Create and inanimate-based instance
+   * Create an Inanimate-based instance
    *
-   * @param {Vector} pos  Position of the entity
-   * @param {Vector} size Size of the entity
+   * @param {Vector} pos  Position of the inanimate
+   * @param {Vector} size Size of the inanimate
    */
   constructor(pos?: Vector, size?: Vector) {
     this.pos = pos ?? new Vector(0, 0);
@@ -32,14 +32,14 @@ abstract class Inanimate {
   }
 
   /**
-   * Update the Inanimate
+   * Update the inanimate
    *
    * @param {number} dt Delta time
    */
   public update(dt: number) {}
 
   /**
-   * Draw the Inanimate
+   * Draw the inanimate
    *
    * @param {CanvasRenderingContext2D} ctx Render context
    */

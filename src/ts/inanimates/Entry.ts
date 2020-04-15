@@ -39,7 +39,7 @@ class Entry extends Inanimate {
   }
 
   /**
-   * Draw the Inanimate
+   * Draw the entry
    *
    * @param {CanvasRenderingContext2D} ctx Render context
    */
