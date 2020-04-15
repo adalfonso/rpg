@@ -1,81 +1,50 @@
 import Menu from "./Menu";
 import Vector from "@src/ts/Vector";
-import Weapon from "@/item/Weapon";
 import { Drawable, Eventful } from "@/interfaces";
+import Weapon from "@/item/Weapon";
 
-export default class Inventory extends Menu implements Eventful, Drawable {
-  protected equipped: object;
+/**
+ * Types allowed in the inventory menu
+ */
+type InventoryType = Weapon;
 
-  constructor() {
-    let menu = [
-      {
-        type: "item",
-        description: "Items",
-        menu: [],
-      },
-      {
-        type: "equipable",
-        description: "Equipment",
-        menu: [],
-      },
-      {
-        type: "special",
-        description: "Special",
-        menu: [],
-      },
-    ];
-
-    super(menu);
-    this.active = false;
-
-    this.equipped = {
-      weapon: null,
-      armor: null,
-      spell: null,
-    };
-
-    // TODO: move this elsewhere. This is temporary.
-    this.store(
-      new Weapon({
-        name: "Basic Sword",
-        description: "A basic bish sword.",
-        damage: 3,
-      })
-    );
-
-    this.store(
-      new Weapon({
-        name: "Mace",
-        description: "An effing mace. Watch out!",
-        damage: 10,
-      })
-    );
-
-    this.store(
-      new Weapon({
-        name: "Pole Arm",
-        description: "Swift and strong.",
-        damage: 5,
-      })
-    );
-  }
-
-  store(item) {
+/**
+ * Inventory is a menu for managing things such as items and equipment.
+ */
+class Inventory extends Menu implements Eventful, Drawable {
+  /**
+   * Store an item in the proper inventory submenu
+   *
+   * @param {InventoryType} item
+   */
+  public store(item: InventoryType) {
     this.menu
-      .filter((option) => {
-        return option.type === item.type;
+      .filter((submenu) => {
+        return submenu.type === item.type;
       })[0]
       .menu.push(item);
   }
 
   /**
-   * Draw game and all underlying entities
+   * Draw Inventory and all underlying entities.
+   *
+   * TODO: The current implementation is hard to understand due to the nested
+   * higher-order reductions. The goal here was to preserve the currently
+   * selected option's index in each menu, sum them, and then use the count to
+   * render each submenu horizontally-aligned with the selected option of the
+   * previous menu they stem from. At some point it may make more sense to use
+   * a series of Menu classes and render them separately, passing in a different
+   * offset to each one accordingly.
    *
    * @param {CanvasRenderingContext2D} ctx        Render context
    * @param {Vector}                   offset     Render position offset
    * @param {Vector}                   resolution Render resolution
    */
-  draw(ctx: CanvasRenderingContext2D, offset: Vector, resolution: Vector) {
+  public draw(
+    ctx: CanvasRenderingContext2D,
+    offset: Vector,
+    resolution: Vector
+  ) {
     if (!this.active) {
       return;
     }
@@ -87,25 +56,24 @@ export default class Inventory extends Menu implements Eventful, Drawable {
     ctx.fillStyle = "#75A";
     ctx.textAlign = "left";
 
-    let current = this.currentOption;
+    // Render each menu
+    this.selected.reduce((offsetIndexY, selectedMenuOption, menuIndex) => {
+      // Get the menu that the current selection belongs to
+      let currentMenu =
+        menuIndex > 0 ? this.selected[menuIndex - 1].menu : this.menu;
 
-    // Menu Tier
-    this.selected.reduce((subMenuOffset, selected, index) => {
-      let menu = index > 0 ? this.selected[index - 1].menu : this.menu;
-
-      return (
-        subMenuOffset +
-        // Menu menu
-        menu.reduce((subCarry, option, subIndex) => {
-          let pos = new Vector(
-            48 + 200 * index,
-            48 + 48 * (subIndex + subMenuOffset + 1)
+      // Render each option in the current menu
+      let selectedMenuOptionIndex = currentMenu.reduce(
+        (selectedMenuOptionIndex, option, menuOptionIndex) => {
+          let menuOptionPosition = new Vector(
+            48 + 200 * menuIndex,
+            48 + 48 * (menuOptionIndex + offsetIndexY + 1)
           );
 
           ctx.save();
           ctx.font = "24px Arial";
 
-          if (option === current) {
+          if (option === this.currentOption) {
             ctx.shadowColor = "#75A";
             ctx.shadowOffsetX = 2;
             ctx.shadowOffsetY = 2;
@@ -113,18 +81,33 @@ export default class Inventory extends Menu implements Eventful, Drawable {
             ctx.font = "bold 24px Arial";
           }
 
-          ctx.fillText(option.description, pos.x, pos.y);
+          ctx.fillText(
+            option.description,
+            menuOptionPosition.x,
+            menuOptionPosition.y
+          );
           ctx.restore();
 
-          return subCarry + (option === selected ? subIndex : 0);
-        }, 0)
+          return (
+            selectedMenuOptionIndex +
+            (option === selectedMenuOption ? menuOptionIndex : 0)
+          );
+        },
+        0
       );
+
+      return offsetIndexY + selectedMenuOptionIndex;
     }, 0);
 
     ctx.restore();
   }
 
-  register(): object {
+  /**
+   * Register events with the event bus
+   *
+   * @return {object} Events to register
+   */
+  public register(): object {
     return [
       super.register(),
       {
@@ -137,3 +120,5 @@ export default class Inventory extends Menu implements Eventful, Drawable {
     ];
   }
 }
+
+export default Inventory;

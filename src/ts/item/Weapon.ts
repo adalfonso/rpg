@@ -1,7 +1,7 @@
 import { bus } from "@/app";
 
 export default class Weapon {
-  protected type: string;
+  public type: string;
   public damage: number;
   public name: string;
   public description: string;

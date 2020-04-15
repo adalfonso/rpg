@@ -71,7 +71,7 @@ class Enemy extends Actor implements Drawable {
   update(dt: number) {}
 
   /**
-   * Draw game and all underlying entities
+   * Draw Enemy and all underlying entities
    *
    * @param {CanvasRenderingContext2D} ctx        Render context
    * @param {Vector}                   offset     Render position offset

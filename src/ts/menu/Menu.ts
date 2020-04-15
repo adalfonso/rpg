@@ -166,13 +166,17 @@ abstract class Menu implements Eventful, Drawable, Lockable {
   }
 
   /**
-   * Draw game and all underlying entities
+   * Draw Menu and all underlying entities
    *
    * @param {CanvasRenderingContext2D} ctx        Render context
    * @param {Vector}                   offset     Render position offset
    * @param {Vector}                   resolution Render resolution
    */
-  draw(ctx: CanvasRenderingContext2D, offset: Vector, resolution: Vector) {}
+  public draw(
+    ctx: CanvasRenderingContext2D,
+    offset: Vector,
+    resolution: Vector
+  ) {}
 
   /**
    * Register events with the event bus.
@@ -185,7 +189,7 @@ abstract class Menu implements Eventful, Drawable, Lockable {
    *
    * @return {object} Events to register
    */
-  register(): object {
+  public register(): object {
     return {
       keyup: (e) => {
         if (!this.active) {

@@ -54,7 +54,7 @@ class NPC extends Actor implements Eventful, Drawable {
   }
 
   /**
-   * Draw game and all underlying entities
+   * Draw NPC and all underlying entities
    *
    * @param {CanvasRenderingContext2D} ctx        Render context
    * @param {Vector}                   offset     Render position offset

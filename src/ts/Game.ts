@@ -7,6 +7,8 @@ import Vector from "./Vector";
 import levels from "./levels/levels";
 import { Drawable, Eventful } from "./interfaces";
 import { bus } from "./app";
+import { menus, weapons } from "./config";
+import Weapon from "./item/Weapon";
 
 /**
  * Different states a game can be in
@@ -73,8 +75,14 @@ class Game implements Eventful, Drawable {
   constructor() {
     this.state = GameState.Play;
 
-    this.menu = new StartMenu();
-    this.inventory = new Inventory();
+    this.menu = new StartMenu(menus.startMenu);
+    this.inventory = new Inventory(menus.inventory);
+
+    // TODO: When game state can be saved, move this into a game loading class
+    weapons.forEach((weapon) => {
+      this.inventory.store(new Weapon(weapon));
+    });
+
     this.player = new Player(new Vector(75, 75), new Vector(36, 64));
 
     bus.register(this);
@@ -95,7 +103,7 @@ class Game implements Eventful, Drawable {
    *
    * @param {number} dt Delta time since last update
    */
-  update(dt: number) {
+  public update(dt: number) {
     if (this.battle) {
       this.battle.update(dt);
     }
@@ -114,7 +122,11 @@ class Game implements Eventful, Drawable {
    * @param {Vector}                   offset     Render position offset
    * @param {Vector}                   resolution Render resolution
    */
-  draw(ctx: CanvasRenderingContext2D, offset: Vector, resolution: Vector) {
+  public draw(
+    ctx: CanvasRenderingContext2D,
+    offset: Vector,
+    resolution: Vector
+  ) {
     this.level.draw(ctx, offset, resolution);
 
     if (this.hasActiveBattle()) {
@@ -135,7 +147,7 @@ class Game implements Eventful, Drawable {
    *
    * @param {GameState} state The game state to active
    */
-  lock(state: GameState) {
+  private lock(state: GameState) {
     if (this.state === GameState.Play) {
       this.state = state;
       this.player.lock();
@@ -151,7 +163,7 @@ class Game implements Eventful, Drawable {
    *
    * @param {GameState} state The game to deactivate
    */
-  unlock(state: GameState) {
+  private unlock(state: GameState) {
     if (this.state === state) {
       this.player.unlock();
       this.inventory.unlock();
@@ -164,7 +176,7 @@ class Game implements Eventful, Drawable {
    *
    * @return {object} Events to register
    */
-  register(): object {
+  public register(): object {
     return {
       "battle.start": (e) => {
         /**
@@ -204,7 +216,7 @@ class Game implements Eventful, Drawable {
    *
    * @return {boolean} If a battle is underway
    */
-  hasActiveBattle(): boolean {
+  private hasActiveBattle(): boolean {
     return this.battle !== null && this.battle.active;
   }
 }

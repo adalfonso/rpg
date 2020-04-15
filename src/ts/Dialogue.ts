@@ -98,7 +98,7 @@ class Dialogue implements Eventful, Drawable {
    *
    * @param {number} dt Delta time
    */
-  update(dt: number) {
+  public update(dt: number) {
     // Waiting for user input, don't update
     if (this.waiting) {
       return;
@@ -126,13 +126,17 @@ class Dialogue implements Eventful, Drawable {
   }
 
   /**
-   * Draw game and all underlying entities
+   * Draw Dialogue and all underlying entities
    *
    * @param {CanvasRenderingContext2D} ctx        Render context
    * @param {Vector}                   offset     Render position offset
    * @param {Vector}                   resolution Render resolution
    */
-  draw(ctx: CanvasRenderingContext2D, offset: Vector, resolution: Vector) {
+  public draw(
+    ctx: CanvasRenderingContext2D,
+    offset: Vector,
+    resolution: Vector
+  ) {
     ctx.save();
     ctx.translate(32 - offset.x, 48 - offset.y);
     ctx.font = "30px Arial";
@@ -144,35 +148,11 @@ class Dialogue implements Eventful, Drawable {
   }
 
   /**
-   * Begin the dialogue
-   */
-  start() {
-    this.actors.forEach((a) => {
-      a.inDialogue = true;
-      a.lock();
-    });
-
-    bus.register(this);
-  }
-
-  /**
-   * End the dialogue
-   */
-  stop() {
-    this.actors.forEach((a) => {
-      a.inDialogue = false;
-      a.unlock();
-    });
-
-    bus.unregister(this);
-  }
-
-  /**
    * Register events with the event bus
    *
    * @return {object} Events to register
    */
-  register(): object {
+  public register(): object {
     return {
       keyup: (e: KeyboardEvent, handler: InputHandler) => {
         if (e.key === "Enter") {
@@ -187,11 +167,35 @@ class Dialogue implements Eventful, Drawable {
   }
 
   /**
+   * Begin the dialogue
+   */
+  private start() {
+    this.actors.forEach((a) => {
+      a.inDialogue = true;
+      a.lock();
+    });
+
+    bus.register(this);
+  }
+
+  /**
+   * End the dialogue
+   */
+  private stop() {
+    this.actors.forEach((a) => {
+      a.inDialogue = false;
+      a.unlock();
+    });
+
+    bus.unregister(this);
+  }
+
+  /**
    * Move to the next line of text or end the dialogue
    *
    * @param {KeyboardEvent} e Keyboard event
    */
-  next(e: KeyboardEvent) {
+  private next(e: KeyboardEvent) {
     if (!this.waiting || this.done) {
       return;
     }

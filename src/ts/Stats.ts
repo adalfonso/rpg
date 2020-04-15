@@ -142,7 +142,7 @@ export default class StatManager {
    *
    * @param {number} dmg Amount of damage
    */
-  endure(dmg: number) {
+  public endure(dmg: number) {
     this.dmg += dmg;
   }
 
@@ -151,7 +151,7 @@ export default class StatManager {
    *
    * @param {number} exp Points of experience earned
    */
-  gainExp(exp: number) {
+  public gainExp(exp: number) {
     this.exp += exp;
   }
 }

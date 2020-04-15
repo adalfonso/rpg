@@ -73,64 +73,61 @@ class Battle implements Eventful, Drawable {
   }
 
   /**
-   * Run one cycle of the battle
-   */
-  cycle() {
-    this.playersTurn = !this.playersTurn;
-
-    if (!this.playersTurn) {
-      bus.emit("battleAction", this);
-    }
-  }
-
-  /**
-   * Create a new battle menu
-   *
-   * @return {BattleMenu} The battle menu
-   */
-  getBattleMenu(): BattleMenu {
-    return new BattleMenu(
-      {
-        type: "Items",
-        menu: [],
-      },
-      {
-        type: "Attack",
-        menu: this.player.weapon ? [this.player.weapon] : [],
-      },
-      {
-        type: "Spells",
-        menu: this.player.spells,
-      },
-      {
-        type: "Other",
-        menu: ["Defend", "Run Away"],
-      }
-    );
-  }
-
-  /**
    * Update the battle
    *
    * @param {number} dt Delta time
    */
-  update(dt: number) {
+  public update(dt: number) {
     // TODO: Utilize an update method
   }
 
   /**
-   * Draw game and all underlying entities
+   * Register events with the event bus
+   *
+   * @return {object} Events to register
+   */
+  public register(): object {
+    return {
+      battleAction: (e) => {
+        if (this.playersTurn) {
+          this.player.attack(this.enemy, e.attack);
+        } else {
+          this.enemy.attack(this.player);
+        }
+
+        if (this.player.stats.hp <= 0) {
+          // Handle death
+        } else if (this.enemy.stats.hp <= 0) {
+          this.player.stats.gainExp(this.enemy.stats.givesExp);
+
+          this.player.restorePos();
+          this.enemy.restorePos();
+
+          this.stop();
+        } else {
+          this.cycle();
+        }
+      },
+    };
+  }
+
+  /**
+   * Draw Battle and all underlying entities
    *
    * @param {CanvasRenderingContext2D} ctx        Render context
    * @param {Vector}                   offset     Render position offset
    * @param {Vector}                   resolution Render resolution
    */
-  draw(ctx: CanvasRenderingContext2D, offset: Vector, resolution: Vector) {
+  public draw(
+    ctx: CanvasRenderingContext2D,
+    offset: Vector,
+    resolution: Vector
+  ) {
     let width: number = resolution.x;
     let height: number = resolution.y;
 
     ctx.save();
-    ctx.fillStyle = "#ccc";
+    ctx.fillStyle = "#CCC";
     ctx.fillRect(0, 0, width, height);
     ctx.fillStyle = "#FFF";
     ctx.textAlign = "center";
@@ -161,7 +158,7 @@ class Battle implements Eventful, Drawable {
    * @param {CanvasRenderingContext2D} ctx        Render context
    * @param {Vector}                   resolution Render resolution
    */
-  drawUiBar(ctx: CanvasRenderingContext2D, resolution: Vector) {
+  private drawUiBar(ctx: CanvasRenderingContext2D, resolution: Vector) {
     let uiBarSize = this.getUiBarSize(resolution);
 
     ctx.save();
@@ -179,7 +176,7 @@ class Battle implements Eventful, Drawable {
    * @param {CanvasRenderingContext2D} ctx        Render context
    * @param {Vector}                   resolution Render resolution
    */
-  drawEnemyUiBar(ctx: CanvasRenderingContext2D, resolution: Vector) {
+  private drawEnemyUiBar(ctx: CanvasRenderingContext2D, resolution: Vector) {
     let uiBarSize = this.getUiBarSize(resolution);
     ctx.save();
     ctx.translate(resolution.x - uiBarSize.x, 0);
@@ -206,39 +203,46 @@ class Battle implements Eventful, Drawable {
   }
 
   /**
-   * Register events with the event bus
-   *
-   * @return {object} Events to register
+   * Run one cycle of the battle
    */
-  register(): object {
-    return {
-      battleAction: (e) => {
-        if (this.playersTurn) {
-          this.player.attack(this.enemy, e.attack);
-        } else {
-          this.enemy.attack(this.player);
-        }
+  private cycle() {
+    this.playersTurn = !this.playersTurn;
 
-        if (this.player.stats.hp <= 0) {
-          // Handle death
-        } else if (this.enemy.stats.hp <= 0) {
-          this.player.stats.gainExp(this.enemy.stats.givesExp);
+    if (!this.playersTurn) {
+      bus.emit("battleAction", this);
+    }
+  }
 
-          this.player.restorePos();
-          this.enemy.restorePos();
-
-          this.stop();
-        } else {
-          this.cycle();
-        }
+  /**
+   * Create a new battle menu
+   *
+   * @return {BattleMenu} The battle menu
+   */
+  private getBattleMenu(): BattleMenu {
+    return new BattleMenu(
+      {
+        type: "Items",
+        menu: [],
       },
-    };
+      {
+        type: "Attack",
+        menu: this.player.weapon ? [this.player.weapon] : [],
+      },
+      {
+        type: "Spells",
+        menu: this.player.spells,
+      },
+      {
+        type: "Other",
+        menu: ["Defend", "Run Away"],
+      }
+    );
   }
 
   /**
    * End the battle
    */
-  stop() {
+  private stop() {
     this.enemy.defeated = true;
     this.active = false;
     bus.emit("battle.end");

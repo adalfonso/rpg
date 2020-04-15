@@ -27,16 +27,20 @@ abstract class Actor implements Drawable, Lockable {
     this.savedDirection = this.direction;
   }
 
-  update(dt: number) {}
+  public update(dt: number) {}
 
   /**
-   * Draw game and all underlying entities
+   * Draw Actor and all underlying entities
    *
    * @param {CanvasRenderingContext2D} ctx        Render context
    * @param {Vector}                   offset     Render position offset
    * @param {Vector}                   resolution Render resolution
    */
-  draw(ctx: CanvasRenderingContext2D, offset: Vector, resolution: Vector) {
+  public draw(
+    ctx: CanvasRenderingContext2D,
+    offset: Vector,
+    resolution: Vector
+  ) {
     if (config.debug) {
       this.debugDraw(ctx);
     }

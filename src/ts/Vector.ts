@@ -16,7 +16,7 @@ class Vector {
    *
    * @return {Vector} The copied vector
    */
-  copy(): Vector {
+  public copy(): Vector {
     return new Vector(this.x, this.y);
   }
 
@@ -27,7 +27,7 @@ class Vector {
    *
    * @return {Vector}   New vector
    */
-  plus(addend: Vector): Vector {
+  public plus(addend: Vector): Vector {
     return new Vector(this.x + addend.x, this.y + addend.y);
   }
 
@@ -38,7 +38,7 @@ class Vector {
    *
    * @return {Vector}                  New Vector
    */
-  times(factor: Vector | number): Vector {
+  public times(factor: Vector | number): Vector {
     if (typeof factor === "number") {
       return new Vector(this.x * factor, this.y * factor);
     }
@@ -51,7 +51,7 @@ class Vector {
    *
    * @return {[number, number]} Resulting array
    */
-  toArray(): [number, number] {
+  public toArray(): [number, number] {
     return [this.x, this.y];
   }
 }

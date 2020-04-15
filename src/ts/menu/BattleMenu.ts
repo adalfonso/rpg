@@ -8,7 +8,7 @@ export default class BattleMenu extends Menu implements Eventful, Drawable {
   }
 
   /**
-   * Draw game and all underlying entities
+   * Draw BattleMenu and all underlying entities
    *
    * @param {CanvasRenderingContext2D} ctx        Render context
    * @param {Vector}                   offset     Render position offset

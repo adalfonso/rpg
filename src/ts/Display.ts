@@ -91,7 +91,7 @@ class Display {
   /**
    * Set up buffer canvas and then hand off to game instance for drawing.
    */
-  draw() {
+  public draw() {
     let offset = this.offset;
 
     this.buffer.clearRect(0, 0, this.width, this.height);
@@ -120,7 +120,7 @@ class Display {
   /**
    * Determine if a canvas resize is imminent based on window's width
    */
-  resizetoWindow(): void {
+  private resizetoWindow(): void {
     // Does the view port fit a full-width render?
     if (window.innerWidth >= this.aspectRatio.x) {
       return this.resizeCanvases();
@@ -147,7 +147,7 @@ class Display {
    * @param {number} width  New canvas width
    * @param {number} height New canvas height
    */
-  resizeCanvases(
+  private resizeCanvases(
     width: number = this.aspectRatio.x,
     height: number = this.aspectRatio.y
   ): void {
@@ -168,7 +168,7 @@ class Display {
    *
    * @return {object} Events to register
    */
-  register(): object {
+  public register(): object {
     return {
       resize: (e) => this.resizetoWindow(),
       "battle.start": (e) => (this.renderMode = RenderMode.Static),

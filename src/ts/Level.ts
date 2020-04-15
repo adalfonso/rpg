@@ -158,7 +158,7 @@ class Level implements Drawable {
    *
    * @param {number} dt Delta time
    */
-  update(dt: number) {
+  public update(dt: number) {
     let events = [];
 
     [this.player, ...this.entities].forEach((entity) => {

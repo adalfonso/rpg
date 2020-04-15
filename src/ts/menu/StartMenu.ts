@@ -2,34 +2,24 @@ import Menu from "./Menu";
 import Vector from "@/Vector";
 import { Drawable } from "@/interfaces";
 
-export default class StartMenu extends Menu implements Drawable {
-  constructor() {
-    let menu = [
-      {
-        type: "start",
-        description: "Press Enter to Start!",
-        action: (menu) => {
-          menu.close();
-        },
-      },
-      {
-        type: "load",
-        description: "Load Saved State (doesn't work yet)",
-        action: (menu) => {},
-      },
-    ];
-
-    super(menu);
-  }
-
+/**
+ * Start menu is the first menu to load when the game starts up. It is
+ * responsible for higher level game functions like saving, changing settings,
+ * and loading levels
+ */
+class StartMenu extends Menu implements Drawable {
   /**
-   * Draw game and all underlying entities
+   * Draw StartMenu and all underlying entities
    *
    * @param {CanvasRenderingContext2D} ctx        Render context
    * @param {Vector}                   offset     Render position offset
    * @param {Vector}                   resolution Render resolution
    */
-  draw(ctx: CanvasRenderingContext2D, offset: Vector, resolution: Vector) {
+  public draw(
+    ctx: CanvasRenderingContext2D,
+    offset: Vector,
+    resolution: Vector
+  ) {
     if (!this.active) {
       return false;
     }
@@ -41,7 +31,7 @@ export default class StartMenu extends Menu implements Drawable {
     ctx.fillStyle = "#FFF";
     ctx.textAlign = "center";
 
-    this.menu.forEach((option, index) => {
+    this.menu.forEach((_option, index) => {
       let current = this.menu[index];
       let selected = current === this.currentOption;
 
@@ -65,3 +55,5 @@ export default class StartMenu extends Menu implements Drawable {
     ctx.restore();
   }
 }
+
+export default StartMenu;
