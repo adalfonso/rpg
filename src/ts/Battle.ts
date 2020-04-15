@@ -219,7 +219,7 @@ class Battle implements Eventful, Drawable {
    * @return {BattleMenu} The battle menu
    */
   private getBattleMenu(): BattleMenu {
-    return new BattleMenu(
+    return new BattleMenu([
       {
         type: "Items",
         menu: [],
@@ -235,8 +235,8 @@ class Battle implements Eventful, Drawable {
       {
         type: "Other",
         menu: ["Defend", "Run Away"],
-      }
-    );
+      },
+    ]);
   }
 
   /**

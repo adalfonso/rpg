@@ -2,11 +2,11 @@ import Menu from "./Menu";
 import Vector from "@/Vector";
 import { Drawable, Eventful } from "@/interfaces";
 
-export default class BattleMenu extends Menu implements Eventful, Drawable {
-  constructor(...args) {
-    super(args);
-  }
-
+/**
+ * A BattleMenu is used by the player to access battle-level fixtures such as
+ * items, attack, and spells.
+ */
+class BattleMenu extends Menu implements Eventful, Drawable {
   /**
    * Draw BattleMenu and all underlying entities
    *
@@ -14,7 +14,11 @@ export default class BattleMenu extends Menu implements Eventful, Drawable {
    * @param {Vector}                   offset     Render position offset
    * @param {Vector}                   resolution Render resolution
    */
-  draw(ctx: CanvasRenderingContext2D, offset: Vector, resolution: Vector) {
+  public draw(
+    ctx: CanvasRenderingContext2D,
+    offset: Vector,
+    _resolution: Vector
+  ) {
     ctx.save();
     ctx.font = "12px Arial";
 
@@ -47,7 +51,7 @@ export default class BattleMenu extends Menu implements Eventful, Drawable {
       ctx.fillStyle = "#000";
       ctx.fillText(option.type, 4, 4 + 12);
 
-      if (isSelected && option.menu && option.menu.length) {
+      if (isSelected && option.menu?.length) {
         option.menu.forEach((subOption, index) => {
           ctx.save();
 
@@ -57,7 +61,7 @@ export default class BattleMenu extends Menu implements Eventful, Drawable {
             ctx.font = "12px Arial";
           }
 
-          let desc = subOption.name ? subOption.name : subOption;
+          let desc = subOption.name ?? subOption;
 
           ctx.translate(0, 18 * (index + 1) + 6);
           ctx.fillText(desc, 0, 16);
@@ -69,7 +73,7 @@ export default class BattleMenu extends Menu implements Eventful, Drawable {
     ctx.restore();
   }
 
-  register(): object {
+  public register(): object {
     return {
       keyup: (e) => {
         let menu = this.currentMenu;
@@ -114,3 +118,5 @@ export default class BattleMenu extends Menu implements Eventful, Drawable {
     };
   }
 }
+
+export default BattleMenu;
