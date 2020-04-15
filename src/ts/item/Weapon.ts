@@ -23,7 +23,7 @@ export default class Weapon {
   public type: string = "equipable";
 
   /**
-   * The amount of damage a weapoon deals
+   * The amount of damage a weapon deals
    *
    * @prop {number} damage
    */
@@ -55,7 +55,7 @@ export default class Weapon {
   }
 
   /**
-   * Emit a battleAction event to the battle with the weapon
+   * Emit a battleAction event with the weapon
    */
   public use() {
     bus.emit("battleAction", this);
