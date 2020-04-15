@@ -63,19 +63,49 @@ class Level implements Drawable {
   }
 
   /**
-   * Clean up residual data from previous level
+   * Update all fixtures of the level
+   *
+   * @param {number} dt Delta time
    */
-  private cleanup() {
-    // Remove event listeners from NPC
-    // TODO: Tie this to an interface because there might be more Eventful
-    // resources to cause memory leaks.
+  public update(dt: number) {
+    let events = [];
 
-    this.entities
-      .filter((e) => e instanceof NPC)
-      .forEach((e) => bus.unregister(e));
+    [this.player, ...this.entities].forEach((entity) => {
+      entity.update(dt);
 
-    this.entities = [];
-    this.entries = {};
+      if (entity instanceof Enemy && entity.collidesWith(this.player)) {
+        entity.fight(this.player);
+      }
+
+      if (entity instanceof Clip) {
+        let collision = this.player.collidesWith(entity);
+
+        if (collision) {
+          this.player.backstep(collision);
+        }
+      }
+
+      if (entity instanceof Portal) {
+        let collision = this.player.collidesWith(entity);
+
+        if (collision) {
+          events.push({
+            type: "enter_portal",
+            ref: entity,
+          });
+        }
+      }
+    });
+
+    // TODO: Fix potential bug where running this.load() on the first event
+    // wipes out level fixtures that are referenced on later events.
+    events.forEach((event) => {
+      if ((event.type = "enter_portal")) {
+        let match = event.ref.to.match(/^(\d+)\.(\d+)$/);
+        let level = levels[parseInt(match[1])][parseInt(match[2])];
+        this.load(level, event.ref);
+      }
+    });
   }
 
   /**
@@ -125,6 +155,22 @@ class Level implements Drawable {
   }
 
   /**
+   * Clean up residual data from previous level
+   */
+  private cleanup() {
+    // Remove event listeners from NPC
+    // TODO: Tie this to an interface because there might be more Eventful
+    // resources to cause memory leaks.
+
+    this.entities
+      .filter((e) => e instanceof NPC)
+      .forEach((e) => bus.unregister(e));
+
+    this.entities = [];
+    this.entries = {};
+  }
+
+  /**
    * Load a single entity from the layer
    *
    * @param {string} layer  Layer name
@@ -151,52 +197,6 @@ class Level implements Drawable {
         this.entities.push(new Enemy(entity));
         break;
     }
-  }
-
-  /**
-   * Update all fixtures of the level
-   *
-   * @param {number} dt Delta time
-   */
-  public update(dt: number) {
-    let events = [];
-
-    [this.player, ...this.entities].forEach((entity) => {
-      entity.update(dt);
-
-      if (entity instanceof Enemy && entity.collidesWith(this.player)) {
-        entity.fight(this.player);
-      }
-
-      if (entity instanceof Clip) {
-        let collision = this.player.collidesWith(entity);
-
-        if (collision) {
-          this.player.backstep(collision);
-        }
-      }
-
-      if (entity instanceof Portal) {
-        let collision = this.player.collidesWith(entity);
-
-        if (collision) {
-          events.push({
-            type: "enter_portal",
-            ref: entity,
-          });
-        }
-      }
-    });
-
-    // TODO: Fix potential bug where running this.load() on the first event
-    // wipes out level fixtures that are referenced on later events.
-    events.forEach((event) => {
-      if ((event.type = "enter_portal")) {
-        let match = event.ref.to.match(/^(\d+)\.(\d+)$/);
-        let level = levels[parseInt(match[1])][parseInt(match[2])];
-        this.load(level, event.ref);
-      }
-    });
   }
 }
 

@@ -91,11 +91,12 @@ class Game implements Eventful, Drawable {
   }
 
   /**
-   * Hacky method to initiate the game at the first level
-   * TODO: Create a better way to load a game state instead of a static level
+   * Get the focal point that the game revolves around, the player.
+   *
+   * @returns {Vector} Focal point of the game
    */
-  public start() {
-    this.level = new Level(levels[0][0], this.player);
+  get renderPoint(): Vector {
+    return new Vector(this.player.pos.x, this.player.pos.y);
   }
 
   /**
@@ -143,35 +144,6 @@ class Game implements Eventful, Drawable {
   }
 
   /**
-   * Lock player movement when non-play state is requested
-   *
-   * @param {GameState} state The game state to active
-   */
-  private lock(state: GameState) {
-    if (this.state === GameState.Play) {
-      this.state = state;
-      this.player.lock();
-
-      if (state !== GameState.Inventory) {
-        this.inventory.lock();
-      }
-    }
-  }
-
-  /**
-   * Unlock player movement if a current state is active
-   *
-   * @param {GameState} state The game to deactivate
-   */
-  private unlock(state: GameState) {
-    if (this.state === state) {
-      this.player.unlock();
-      this.inventory.unlock();
-      this.state = GameState.Play;
-    }
-  }
-
-  /**
    * Register events with the event bus
    *
    * @return {object} Events to register
@@ -203,12 +175,40 @@ class Game implements Eventful, Drawable {
   }
 
   /**
-   * Get the focal point that the game revolves around, the player.
-   *
-   * @returns {Vector} Focal point of the game
+   * Hacky method to initiate the game at the first level
+   * TODO: Create a better way to load a game state instead of a static level
    */
-  get renderPoint(): Vector {
-    return new Vector(this.player.pos.x, this.player.pos.y);
+  public start() {
+    this.level = new Level(levels[0][0], this.player);
+  }
+
+  /**
+   * Lock player movement when non-play state is requested
+   *
+   * @param {GameState} state The game state to active
+   */
+  private lock(state: GameState) {
+    if (this.state === GameState.Play) {
+      this.state = state;
+      this.player.lock();
+
+      if (state !== GameState.Inventory) {
+        this.inventory.lock();
+      }
+    }
+  }
+
+  /**
+   * Unlock player movement if a current state is active
+   *
+   * @param {GameState} state The game to deactivate
+   */
+  private unlock(state: GameState) {
+    if (this.state === state) {
+      this.player.unlock();
+      this.inventory.unlock();
+      this.state = GameState.Play;
+    }
   }
 
   /**

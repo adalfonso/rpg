@@ -82,36 +82,6 @@ class Battle implements Eventful, Drawable {
   }
 
   /**
-   * Register events with the event bus
-   *
-   * @return {object} Events to register
-   */
-  public register(): object {
-    return {
-      battleAction: (e) => {
-        if (this.playersTurn) {
-          this.player.attack(this.enemy, e.attack);
-        } else {
-          this.enemy.attack(this.player);
-        }
-
-        if (this.player.stats.hp <= 0) {
-          // Handle death
-        } else if (this.enemy.stats.hp <= 0) {
-          this.player.stats.gainExp(this.enemy.stats.givesExp);
-
-          this.player.restorePos();
-          this.enemy.restorePos();
-
-          this.stop();
-        } else {
-          this.cycle();
-        }
-      },
-    };
-  }
-
-  /**
    * Draw Battle and all underlying entities
    *
    * @param {CanvasRenderingContext2D} ctx        Render context
@@ -189,17 +159,33 @@ class Battle implements Eventful, Drawable {
   }
 
   /**
-   * Get the size of the UI bar based on screen resolution
+   * Register events with the event bus
    *
-   * @param  {Vector} resolution Current screen resolution
-   *
-   * @return {Vector}            Size of the UI bar
+   * @return {object} Events to register
    */
-  private getUiBarSize(resolution: Vector) {
-    return new Vector(
-      Math.round(resolution.x * 0.4),
-      Math.round(resolution.y * 0.07)
-    );
+  public register(): object {
+    return {
+      battleAction: (e) => {
+        if (this.playersTurn) {
+          this.player.attack(this.enemy, e.attack);
+        } else {
+          this.enemy.attack(this.player);
+        }
+
+        if (this.player.stats.hp <= 0) {
+          // Handle death
+        } else if (this.enemy.stats.hp <= 0) {
+          this.player.stats.gainExp(this.enemy.stats.givesExp);
+
+          this.player.restorePos();
+          this.enemy.restorePos();
+
+          this.stop();
+        } else {
+          this.cycle();
+        }
+      },
+    };
   }
 
   /**
@@ -211,6 +197,31 @@ class Battle implements Eventful, Drawable {
     if (!this.playersTurn) {
       bus.emit("battleAction", this);
     }
+  }
+
+  /**
+   * End the battle
+   */
+  private stop() {
+    this.enemy.defeated = true;
+    this.active = false;
+    bus.emit("battle.end");
+    bus.unregister(this);
+    this.battleMenu.destroy();
+  }
+
+  /**
+   * Get the size of the UI bar based on screen resolution
+   *
+   * @param  {Vector} resolution Current screen resolution
+   *
+   * @return {Vector}            Size of the UI bar
+   */
+  private getUiBarSize(resolution: Vector) {
+    return new Vector(
+      Math.round(resolution.x * 0.4),
+      Math.round(resolution.y * 0.07)
+    );
   }
 
   /**
@@ -237,17 +248,6 @@ class Battle implements Eventful, Drawable {
         menu: ["Defend", "Run Away"],
       },
     ]);
-  }
-
-  /**
-   * End the battle
-   */
-  private stop() {
-    this.enemy.defeated = true;
-    this.active = false;
-    bus.emit("battle.end");
-    bus.unregister(this);
-    this.battleMenu.destroy();
   }
 }
 

@@ -51,6 +51,81 @@ abstract class Menu implements Eventful, Drawable, Lockable {
   }
 
   /**
+   * Get the current selected menu option
+   *
+   * @prop {mixed} currentOption Currently selected menu option
+   */
+  get currentOption() {
+    return this.selected[this.selected.length - 1];
+  }
+
+  /**
+   * Get the current list of menu options being displayed.
+   *
+   * @prop {any[]} currentMenu Currently selected menu
+   */
+  get currentMenu() {
+    return this.selected.length > 1
+      ? this.selected[this.selected.length - 2].menu
+      : this.menu;
+  }
+
+  /**
+   * Draw Menu and all underlying entities
+   *
+   * @param {CanvasRenderingContext2D} ctx        Render context
+   * @param {Vector}                   offset     Render position offset
+   * @param {Vector}                   resolution Render resolution
+   */
+  public draw(
+    ctx: CanvasRenderingContext2D,
+    offset: Vector,
+    resolution: Vector
+  ) {}
+
+  /**
+   * Register events with the event bus.
+   *
+   * TODO: This menu is vertical orientation, with sub-classes left to override
+   * how key codes are interpreted. This is bad design. Perhaps there should be
+   * further extractions for more generic sub-classes. Additionaly menus with
+   * sub-menus may benefit from parsing the sub-menus as actual menu instances
+   * instead of using an object literal.
+   *
+   * @return {object} Events to register
+   */
+  public register(): object {
+    return {
+      keyup: (e) => {
+        if (!this.active) {
+          return;
+        }
+
+        if (e.key === "Escape") {
+          return this.close();
+        }
+
+        switch (e.key) {
+          case "ArrowRight":
+          case "Enter":
+            this.select();
+            break;
+          case "ArrowLeft":
+          case "Backspace":
+            this.back();
+            break;
+          case "ArrowUp":
+            this.previous();
+            break;
+          case "ArrowDown":
+            this.next();
+            break;
+        }
+      },
+    };
+  }
+
+  /**
    * Open the menu
    */
   public open() {
@@ -163,81 +238,6 @@ abstract class Menu implements Eventful, Drawable, Lockable {
     let current = this.currentOption;
 
     return current.menu?.length;
-  }
-
-  /**
-   * Draw Menu and all underlying entities
-   *
-   * @param {CanvasRenderingContext2D} ctx        Render context
-   * @param {Vector}                   offset     Render position offset
-   * @param {Vector}                   resolution Render resolution
-   */
-  public draw(
-    ctx: CanvasRenderingContext2D,
-    offset: Vector,
-    resolution: Vector
-  ) {}
-
-  /**
-   * Register events with the event bus.
-   *
-   * TODO: This menu is vertical orientation, with sub-classes left to override
-   * how key codes are interpreted. This is bad design. Perhaps there should be
-   * further extractions for more generic sub-classes. Additionaly menus with
-   * sub-menus may benefit from parsing the sub-menus as actual menu instances
-   * instead of using an object literal.
-   *
-   * @return {object} Events to register
-   */
-  public register(): object {
-    return {
-      keyup: (e) => {
-        if (!this.active) {
-          return;
-        }
-
-        if (e.key === "Escape") {
-          return this.close();
-        }
-
-        switch (e.key) {
-          case "ArrowRight":
-          case "Enter":
-            this.select();
-            break;
-          case "ArrowLeft":
-          case "Backspace":
-            this.back();
-            break;
-          case "ArrowUp":
-            this.previous();
-            break;
-          case "ArrowDown":
-            this.next();
-            break;
-        }
-      },
-    };
-  }
-
-  /**
-   * Get the current selected menu option
-   *
-   * @prop {mixed} currentOption Currently selected menu option
-   */
-  get currentOption() {
-    return this.selected[this.selected.length - 1];
-  }
-
-  /**
-   * Get the current list of menu options being displayed.
-   *
-   * @prop {any[]} currentMenu Currently selected menu
-   */
-  get currentMenu() {
-    return this.selected.length > 1
-      ? this.selected[this.selected.length - 2].menu
-      : this.menu;
   }
 }
 

@@ -89,6 +89,30 @@ class Display {
   }
 
   /**
+   * The drawing offset relative to the current render mode
+   *
+   * @prop {Vector} offset
+   */
+  get offset(): Vector {
+    if (this.renderMode === RenderMode.Static) {
+      return new Vector(0, 0);
+    }
+
+    let center = this.game.renderPoint;
+
+    return new Vector(this.width / 2 - center.x, this.height / 2 - center.y);
+  }
+
+  /**
+   * The current resolution
+   *
+   * @prop {Vector} resolution
+   */
+  get resolution() {
+    return new Vector(this.width, this.height);
+  }
+
+  /**
    * Set up buffer canvas and then hand off to game instance for drawing.
    */
   public draw() {
@@ -115,6 +139,19 @@ class Display {
       this.ctx.canvas.width,
       this.ctx.canvas.height
     );
+  }
+
+  /**
+   * Register events with the event bus
+   *
+   * @return {object} Events to register
+   */
+  public register(): object {
+    return {
+      resize: (e) => this.resizetoWindow(),
+      "battle.start": (e) => (this.renderMode = RenderMode.Static),
+      "battle.end": (e) => (this.renderMode = RenderMode.Dynamic),
+    };
   }
 
   /**
@@ -161,43 +198,6 @@ class Display {
 
     this.width = width;
     this.height = height;
-  }
-
-  /**
-   * Register events with the event bus
-   *
-   * @return {object} Events to register
-   */
-  public register(): object {
-    return {
-      resize: (e) => this.resizetoWindow(),
-      "battle.start": (e) => (this.renderMode = RenderMode.Static),
-      "battle.end": (e) => (this.renderMode = RenderMode.Dynamic),
-    };
-  }
-
-  /**
-   * The drawing offset relative to the current render mode
-   *
-   * @prop {Vector} offset
-   */
-  get offset(): Vector {
-    if (this.renderMode === RenderMode.Static) {
-      return new Vector(0, 0);
-    }
-
-    let center = this.game.renderPoint;
-
-    return new Vector(this.width / 2 - center.x, this.height / 2 - center.y);
-  }
-
-  /**
-   * The current resolution
-   *
-   * @prop {Vector} resolution
-   */
-  get resolution() {
-    return new Vector(this.width, this.height);
   }
 }
 

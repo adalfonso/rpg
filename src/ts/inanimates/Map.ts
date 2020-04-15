@@ -54,7 +54,7 @@ class Map {
    *
    * @param {CanvasRenderingContext2D} ctx Rendering context
    */
-  draw(ctx: CanvasRenderingContext2D) {
+  public draw(ctx: CanvasRenderingContext2D) {
     if (!this.renderable.ready) {
       return;
     }

@@ -13,19 +13,6 @@ type InventoryType = Weapon;
  */
 class Inventory extends Menu implements Eventful, Drawable {
   /**
-   * Store an item in the proper inventory submenu
-   *
-   * @param {InventoryType} item
-   */
-  public store(item: InventoryType) {
-    this.menu
-      .filter((submenu) => {
-        return submenu.type === item.type;
-      })[0]
-      .menu.push(item);
-  }
-
-  /**
    * Draw Inventory and all underlying entities.
    *
    * TODO: The current implementation is hard to understand due to the nested
@@ -118,6 +105,19 @@ class Inventory extends Menu implements Eventful, Drawable {
         },
       },
     ];
+  }
+
+  /**
+   * Store an item in the proper inventory submenu
+   *
+   * @param {InventoryType} item
+   */
+  public store(item: InventoryType) {
+    this.menu
+      .filter((submenu) => {
+        return submenu.type === item.type;
+      })[0]
+      .menu.push(item);
   }
 }
 
