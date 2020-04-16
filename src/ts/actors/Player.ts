@@ -7,21 +7,67 @@ import sprite from "@img/player-new.png";
 import { Drawable, Eventful, Lockable } from "@/interfaces";
 import { bus } from "@/app";
 
+/**
+ * A Player is the main entity of the game.
+ */
 class Player extends Actor implements Eventful, Drawable, Lockable {
-  protected maxSpeed: number;
-  protected speed: Vector;
-  protected sprites: Renderable[];
+  /**
+   * The speed the player will move in any one direction
+   *
+   * @prop {number} baseSpeed
+   */
+  private baseSpeed: number;
+
+  /**
+   * The current speed of the player in x/y directions
+   *
+   * @prop {Vector} speed
+   */
+  private speed: Vector;
+
+  /**
+   * An array of renderables for each sprite of the players movement animation
+   *
+   * @prop {Renderable[]} sprites
+   */
+  private sprites: Renderable[];
+
+  /**
+   * Spells that the player knows
+   * TODO: Update this when spells are implemented
+   *
+   * @prop {any[]} spells
+   */
   public spells: any[];
+
+  /**
+   * A player's stats
+   *
+   * @prop {StatsManager} stats
+   */
   public stats: StatsManager;
+
+  /**
+   * The weapon currently equipped to the player
+   *
+   * @prop {Weapon} weapon
+   */
   public weapon: Weapon;
 
+  /**
+   * Create a new Player instance
+   *
+   * @param {Vector} pos  The player's position
+   * @param {Vector} size The player's size
+   */
   constructor(pos: Vector, size: Vector) {
     super(pos, size);
 
     this.speed = new Vector(0, 0);
-    this.maxSpeed = size.x / 10;
+    this.baseSpeed = size.x / 10;
 
     this.sprites = [
+      // Keep this example of an animated sprite until we actually use one
       // img, scale, startFrame, frameCount, framesX, framesY, speed
       // new Renderable(sprite, 1, 18, 0, 9, 4, 8),
       // new Renderable(sprite, 1, 1, 7, 9, 4, 8),
@@ -35,6 +81,7 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
       new Renderable(sprite, 2, 1, 0, new Vector(1, 4), 8),
     ];
 
+    // TODO: Hook this into a state loader instead of hardcoding
     this.stats = new StatsManager({
       hp: 10,
       atk: 2,
@@ -49,27 +96,33 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
 
     bus.register(this);
 
-    // Testing
+    // For testing purposes only
     this.init();
   }
 
-  get name() {
-    return "player";
-  }
-
+  /**
+   * Get the name used when rendering dialogue
+   *
+   * @prop {string} dialogueName
+   */
   get dialogueName() {
     return "Me";
   }
 
-  update(dt: number) {
+  /**
+   * Update the player
+   *
+   * @param {number} dt Delta time
+   */
+  public update(dt: number) {
     if (this.locked) {
       return;
     }
 
+    super.update(dt);
+
     this.pos.x += this.speed.x;
     this.pos.y += this.speed.y;
-
-    super.update(dt);
   }
 
   /**
@@ -79,7 +132,11 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
    * @param {Vector}                   offset     Render position offset
    * @param {Vector}                   resolution Render resolution
    */
-  draw(ctx: CanvasRenderingContext2D, offset: Vector, resolution: Vector) {
+  public draw(
+    ctx: CanvasRenderingContext2D,
+    offset: Vector,
+    resolution: Vector
+  ) {
     super.draw(ctx, offset, resolution);
 
     ctx.save();
@@ -90,29 +147,60 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
     ctx.restore();
   }
 
-  move(key: string) {
+  /**
+   * Register events with the event bus
+   *
+   * @return {object} Events to register
+   */
+  public register(): object {
+    return {
+      keydown: (e) => {
+        if (e.key.match(/Arrow/)) {
+          this.move(e.key);
+        }
+      },
+
+      keyup: (e) => {
+        if (e.key.match(/Arrow/)) {
+          this.stop(e.key);
+        }
+      },
+    };
+  }
+
+  /**
+   * Move the player
+   *
+   * @param {string} key The key that has been pressed
+   */
+  private move(key: string) {
     switch (key) {
       case "ArrowLeft":
-        this.speed.x = -this.maxSpeed;
+        this.speed.x = -this.baseSpeed;
         break;
 
       case "ArrowDown":
-        this.speed.y = this.maxSpeed;
+        this.speed.y = this.baseSpeed;
         break;
 
       case "ArrowRight":
-        this.speed.x = this.maxSpeed;
+        this.speed.x = this.baseSpeed;
         break;
 
       case "ArrowUp":
-        this.speed.y = -this.maxSpeed;
+        this.speed.y = -this.baseSpeed;
         break;
     }
 
     this.changeDirection();
   }
 
-  stop(key: string) {
+  /**
+   * Stop the player from moving
+   *
+   * @param {string} key The key that has been released
+   */
+  private stop(key: string) {
     if (key === "ArrowLeft" && this.speed.x < 0) {
       this.speed.x = 0;
     }
@@ -132,7 +220,10 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
     this.changeDirection();
   }
 
-  changeDirection() {
+  /**
+   * Change the direction the player is facing based on their speed
+   */
+  private changeDirection() {
     if (this.locked) {
       return;
     }
@@ -148,23 +239,10 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
     }
   }
 
-  register(): object {
-    return {
-      keydown: (e) => {
-        if (e.key.match(/Arrow/)) {
-          this.move(e.key);
-        }
-      },
-
-      keyup: (e) => {
-        if (e.key.match(/Arrow/)) {
-          this.stop(e.key);
-        }
-      },
-    };
-  }
-
-  init() {
+  /**
+   * Temporary function used for testing
+   */
+  private init() {
     this.weapon = new Weapon({
       name: "Basic Sword",
       description: "A basic bish sword.",
