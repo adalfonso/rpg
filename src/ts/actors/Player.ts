@@ -3,7 +3,7 @@ import Renderable from "@/Renderable";
 import StatsManager from "@/Stats";
 import Vector from "@/Vector";
 import Weapon from "@/item/Weapon";
-import sprite from "@img/player-new.png";
+import sprites from "@/sprites";
 import { Drawable, Eventful, Lockable } from "@/interfaces";
 import { bus } from "@/app";
 
@@ -65,6 +65,8 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
 
     this.speed = new Vector(0, 0);
     this.baseSpeed = size.x / 10;
+
+    let sprite = sprites.player;
 
     this.sprites = [
       // Keep this example of an animated sprite until we actually use one

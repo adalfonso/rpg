@@ -32,7 +32,8 @@ class NonPlayer extends Actor implements Eventful, Drawable {
   private collisions: Actor[] = [];
 
   /**
-   * Create a new non player instance
+   * Create a new NonPlayer instance
+   * TODO: handle sprites when they are available
    *
    * @param {object} data Info about the non-player
    */

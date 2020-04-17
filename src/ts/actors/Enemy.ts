@@ -5,41 +5,70 @@ import Renderable from "@/Renderable";
 import StatsManager from "@/Stats";
 import Vector from "@/Vector";
 import enemies from "./enemies.json";
-import knight from "@img/enemies/knight.png";
+import sprites from "@/sprites";
 import { Drawable } from "@/interfaces";
 import { bus } from "@/app";
 
-let sprites = { knight: knight };
-
+/**
+ * Main class for baddies
+ */
 class Enemy extends Actor implements Drawable {
-  protected data: any;
-  protected dialogue: Dialogue;
-  protected sprite: Renderable;
-  protected sprites: Renderable[];
-  protected type: string;
+  /**
+   * Info about the enemy
+   * TODO: Make the type of data more specific
+   *
+   * @prop {object} data
+   */
+  private data: any;
+
+  /**
+   * Dialogue that the enemy is the leader of
+   *
+   * @prop {Dialogue} dialogue
+   */
+  private dialogue: Dialogue;
+
+  /**
+   * An array of renderables for each sprite of the enemy's movement animation
+   *
+   * @prop {Renderable[]} sprites
+   */
+  private sprites: Renderable[];
+
+  /**
+   * If the enemy has been defeated
+   *
+   * @prop {boolean} defeated
+   */
   public defeated: boolean;
+
+  /**
+   * An enemy's stats
+   *
+   * @prop {StatsManager} stats
+   */
   public stats: StatsManager;
 
-  constructor(obj) {
-    super(new Vector(obj.x, obj.y), new Vector(obj.width, obj.height));
+  /**
+   * Create a new Enemy instance
+   *
+   * @param {object} data Info about the enemy
+   */
+  constructor(data) {
+    super(new Vector(data.x, data.y), new Vector(data.width, data.height));
 
-    let type = obj.type;
-
-    let enemy = enemies[type];
+    let enemy = enemies[data.type];
 
     if (!enemy) {
-      throw new Error(
-        "Enemy data for " + name + " is not defined in enemies.json"
-      );
+      throw new Error(`Enemy data for ${name} is not defined in enemies.json`);
     }
 
-    this.type = type;
     this.data = enemy;
     this.dialogue = null;
     this.stats = new StatsManager(enemy.default.stats);
     this.defeated = false;
 
-    let sprite = sprites[this.type];
+    let sprite = sprites[data.type];
 
     this.sprites = [
       // img, scale, startFrame, frameCount, framesX, framesY, speed
@@ -53,22 +82,21 @@ class Enemy extends Actor implements Drawable {
     this.direction = 4;
   }
 
+  /**
+   * Get the name used when rendering dialogue
+   *
+   * @prop {string} dialogueName
+   */
   get dialogueName(): string {
     return this.data.display_name;
   }
 
-  fight(player: Player) {
-    if (this.defeated) {
-      return;
-    }
-
-    bus.emit("battle.start", {
-      player: player,
-      enemy: this,
-    });
-  }
-
-  update(dt: number) {}
+  /**
+   * Update the enemy
+   *
+   * @param {number} dt Delta time
+   */
+  public update(dt: number) {}
 
   /**
    * Draw Enemy and all underlying entities
@@ -77,7 +105,11 @@ class Enemy extends Actor implements Drawable {
    * @param {Vector}                   offset     Render position offset
    * @param {Vector}                   resolution Render resolution
    */
-  draw(ctx: CanvasRenderingContext2D, offset: Vector, resolution: Vector) {
+  public draw(
+    ctx: CanvasRenderingContext2D,
+    offset: Vector,
+    resolution: Vector
+  ) {
     if (this.defeated) {
       return;
     }
@@ -89,6 +121,22 @@ class Enemy extends Actor implements Drawable {
     this.sprites[this.direction].draw(ctx);
 
     ctx.restore();
+  }
+
+  /**
+   * Start a fight with the player
+   *
+   * @param {Player} player Player to fight
+   */
+  public fight(player: Player) {
+    if (this.defeated) {
+      return;
+    }
+
+    bus.emit("battle.start", {
+      player: player,
+      enemy: this,
+    });
   }
 }
 
