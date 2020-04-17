@@ -154,7 +154,7 @@ class Dialogue implements Eventful, Drawable {
    */
   public register(): object {
     return {
-      keyup: (e: KeyboardEvent, handler: InputHandler) => {
+      keyup: (e: KeyboardEvent) => {
         if (e.key === "Enter") {
           this.next(e);
         }

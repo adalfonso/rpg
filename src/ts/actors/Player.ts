@@ -123,6 +123,10 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
 
     this.pos.x += this.speed.x;
     this.pos.y += this.speed.y;
+
+    if (Math.abs(this.speed.x) + Math.abs(this.speed.y)) {
+      bus.emit("player.move", { player: this });
+    }
   }
 
   /**

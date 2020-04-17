@@ -137,6 +137,7 @@ abstract class Menu implements Eventful, Drawable, Lockable {
    * Close the menu
    */
   public close() {
+    this.selected = [this.menu[0]];
     this.active = false;
     bus.emit(`menu.${lcFirst(this.constructor.name)}.close`);
   }

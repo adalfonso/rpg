@@ -71,8 +71,10 @@ class Game implements Eventful, Drawable {
 
   /**
    * Create a new game instance
+   *
+   * @param {Player} player Main player instance
    */
-  constructor() {
+  constructor(player: Player) {
     this.state = GameState.Play;
 
     this.menu = new StartMenu(menus.startMenu);
@@ -83,7 +85,7 @@ class Game implements Eventful, Drawable {
       this.inventory.store(new Weapon(weapon));
     });
 
-    this.player = new Player(new Vector(75, 75), new Vector(36, 64));
+    this.player = player;
 
     bus.register(this);
 

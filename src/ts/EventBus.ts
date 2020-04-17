@@ -60,7 +60,7 @@ export default class EventBus {
 
         window.addEventListener(event, (e) => {
           this.events[event].forEach((ev) => {
-            ev.handle(e, this);
+            ev.handle(e);
           });
         });
       }

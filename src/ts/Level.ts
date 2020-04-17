@@ -2,7 +2,7 @@ import Clip from "./inanimates/Clip";
 import Enemy from "./actors/Enemy";
 import Entry from "./inanimates/Entry";
 import Map from "./inanimates/Map";
-import NPC from "./actors/NPC";
+import NonPlayer from "./actors/NonPlayer";
 import Player from "./actors/Player";
 import Portal from "./inanimates/Portal";
 import Vector from "./Vector";
@@ -158,12 +158,12 @@ class Level implements Drawable {
    * Clean up residual data from previous level
    */
   private cleanup() {
-    // Remove event listeners from NPC
+    // Remove event listeners from non-players
     // TODO: Tie this to an interface because there might be more Eventful
     // resources to cause memory leaks.
 
     this.entities
-      .filter((e) => e instanceof NPC)
+      .filter((e) => e instanceof NonPlayer)
       .forEach((e) => bus.unregister(e));
 
     this.entities = [];
@@ -191,7 +191,7 @@ class Level implements Drawable {
         this.entries[entity.name] = new Entry(pos, size, entity);
         break;
       case "npc":
-        this.entities.push(new NPC(entity, this.player));
+        this.entities.push(new NonPlayer(entity));
         break;
       case "enemy":
         this.entities.push(new Enemy(entity));
