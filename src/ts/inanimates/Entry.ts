@@ -6,20 +6,6 @@ import Vector from "@/Vector";
  */
 class Entry extends Inanimate {
   /**
-   * Position of the entry
-   *
-   * @prop {Vector} pos
-   */
-  public pos: Vector;
-
-  /**
-   * Size of the entry
-   *
-   * @prop {Vector} size
-   */
-  public size: Vector;
-
-  /**
    * Name of the entry. A reference which usually corresponds to the area from
    * where the entity previously was.
    */
@@ -28,14 +14,14 @@ class Entry extends Inanimate {
   /**
    * Create a new Entry instance
    *
-   * @param {Vector} pos  The entry's position
-   * @param {Vector} size The entry's size
-   * @param {object} obj  Data object with more information about the entry
+   * @param {Vector} position The entry's position
+   * @param {Vector} size     The entry's size
+   * @param {object} data     Info about the entry
    */
-  constructor(pos: Vector, size: Vector, obj) {
-    super(pos, size);
+  constructor(position: Vector, size: Vector, data) {
+    super(position, size);
 
-    this.name = obj.name;
+    this.name = data.name;
   }
 
   /**

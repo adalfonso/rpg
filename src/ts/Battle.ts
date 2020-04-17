@@ -51,18 +51,16 @@ class Battle implements Eventful, Drawable {
     this.active = true;
 
     this.player = player;
-    this.player.savePos();
+    this.player.savePosition();
 
     // TODO: make these scale
-    this.player.pos.x = 64;
-    this.player.pos.y = 128;
+    this.player.position = new Vector(64, 128);
     this.player.direction = 4;
     this.player.lock();
 
     this.enemy = enemy;
-    this.enemy.savePos();
-    this.enemy.pos.x = 256 + 64;
-    this.enemy.pos.y = 0;
+    this.enemy.savePosition();
+    this.enemy.position = new Vector(256 + 64, 0);
     this.enemy.direction = 2;
     this.enemy.lock();
 
@@ -116,7 +114,9 @@ class Battle implements Eventful, Drawable {
     this.drawEnemyUiBar(ctx, resolution);
 
     if (this.playersTurn) {
-      let playerOffset = offset.plus(this.player.pos.plus(this.player.size));
+      let playerOffset = offset
+        .plus(this.player.position)
+        .plus(this.player.size);
 
       this.battleMenu.draw(ctx, playerOffset, resolution);
     }
@@ -177,8 +177,8 @@ class Battle implements Eventful, Drawable {
         } else if (this.enemy.stats.hp <= 0) {
           this.player.stats.gainExp(this.enemy.stats.givesExp);
 
-          this.player.restorePos();
-          this.enemy.restorePos();
+          this.player.restorePosition();
+          this.enemy.restorePosition();
 
           this.stop();
         } else {

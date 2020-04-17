@@ -7,20 +7,6 @@ import Vector from "@/Vector";
  */
 class Portal extends Inanimate {
   /**
-   * Coordinates of the portal
-   *
-   * @prop {Vector} pos
-   */
-  public pos: Vector;
-
-  /**
-   * Size of the portal
-   *
-   * @prop {Vector} size
-   */
-  public size: Vector;
-
-  /**
    * Reference to the current area's name
    *
    * @prop {string} from
@@ -37,14 +23,14 @@ class Portal extends Inanimate {
   /**
    * Create a new Portal instance
    *
-   * @param {Vector} pos
-   * @param {Vector} size
-   * @param obj
+   * @param {Vector} position Position of the portal
+   * @param {Vector} size     Size of the portal
+   * @param {object} data     Info about the portal
    */
-  constructor(pos: Vector, size: Vector, obj) {
-    super(pos, size);
+  constructor(position: Vector, size: Vector, data) {
+    super(position, size);
 
-    if (!obj.properties) {
+    if (!data.properties) {
       throw "Cannot from from/to when creating portal.";
     }
 
@@ -53,7 +39,7 @@ class Portal extends Inanimate {
      * TODO: Input should be more concise. At some point wrap map data in some
      * class so we can make assumptions about the input data.
      */
-    obj.properties.forEach((prop) => {
+    data.properties.forEach((prop) => {
       this[prop.name] = prop.value;
     });
   }

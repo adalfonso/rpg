@@ -151,7 +151,7 @@ class Level implements Drawable {
     let entry = portal ? this.entries[portal.from] : this.entries.origin;
 
     // Relocate player when level is loaded
-    this.player.pos = entry.pos;
+    this.player.moveTo(entry.position);
   }
 
   /**
@@ -177,18 +177,18 @@ class Level implements Drawable {
    * @param {any}    entity Entity data
    */
   private loadEntity(layer: string, entity: any) {
-    let pos = new Vector(entity.x, entity.y).times(config.scale);
+    let position = new Vector(entity.x, entity.y).times(config.scale);
     let size = new Vector(entity.width, entity.height).times(config.scale);
 
     switch (layer) {
       case "clip":
-        this.entities.push(new Clip(pos, size));
+        this.entities.push(new Clip(position, size));
         break;
       case "portal":
-        this.entities.push(new Portal(pos, size, entity));
+        this.entities.push(new Portal(position, size, entity));
         break;
       case "entry":
-        this.entries[entity.name] = new Entry(pos, size, entity);
+        this.entries[entity.name] = new Entry(position, size, entity);
         break;
       case "npc":
         this.entities.push(new NonPlayer(entity));

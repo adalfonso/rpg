@@ -6,27 +6,13 @@ import Vector from "@/Vector";
  */
 class Clip extends Inanimate {
   /**
-   * Position of the clip
-   *
-   * @prop {Vector} pos
-   */
-  public pos: Vector;
-
-  /**
-   * Size of the clip
-   *
-   * @prop {Vector} size
-   */
-  public size: Vector;
-
-  /**
    * Create a new clip instance
    *
-   * @param {Vector} pos  The clip's position
-   * @param {Vector} size The clip's size
+   * @param {Vector} position The clip's position
+   * @param {Vector} size     The clip's size
    */
-  constructor(pos: Vector, size: Vector) {
-    super(pos, size);
+  constructor(position: Vector, size: Vector) {
+    super(position, size);
   }
 
   /**

@@ -11,7 +11,7 @@ abstract class Inanimate {
    *
    * @prop {Vector} pos
    */
-  public pos: Vector;
+  public position: Vector;
 
   /**
    * Size of the inanimate
@@ -23,11 +23,11 @@ abstract class Inanimate {
   /**
    * Create an Inanimate-based instance
    *
-   * @param {Vector} pos  Position of the inanimate
-   * @param {Vector} size Size of the inanimate
+   * @param {Vector} position  Position of the inanimate
+   * @param {Vector} size      Size of the inanimate
    */
-  constructor(pos?: Vector, size?: Vector) {
-    this.pos = pos ?? new Vector(0, 0);
+  constructor(position?: Vector, size?: Vector) {
+    this.position = position ?? new Vector(0, 0);
     this.size = size ?? new Vector(0, 0);
   }
 
@@ -46,7 +46,12 @@ abstract class Inanimate {
   public draw(ctx: CanvasRenderingContext2D) {
     if (config.debug) {
       ctx.strokeStyle = "#F00";
-      ctx.strokeRect(this.pos.x, this.pos.y, this.size.x, this.size.y);
+      ctx.strokeRect(
+        this.position.x,
+        this.position.y,
+        this.size.x,
+        this.size.y
+      );
     }
   }
 }

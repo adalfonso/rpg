@@ -98,7 +98,7 @@ class Game implements Eventful, Drawable {
    * @returns {Vector} Focal point of the game
    */
   get renderPoint(): Vector {
-    return new Vector(this.player.pos.x, this.player.pos.y);
+    return this.player.position.copy();
   }
 
   /**

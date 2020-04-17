@@ -41,27 +41,13 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
   public spells: any[];
 
   /**
-   * A player's stats
-   *
-   * @prop {StatsManager} stats
-   */
-  public stats: StatsManager;
-
-  /**
-   * The weapon currently equipped to the player
-   *
-   * @prop {Weapon} weapon
-   */
-  public weapon: Weapon;
-
-  /**
    * Create a new Player instance
    *
-   * @param {Vector} pos  The player's position
-   * @param {Vector} size The player's size
+   * @param {Vector} position  The player's position
+   * @param {Vector} size      The player's size
    */
-  constructor(pos: Vector, size: Vector) {
-    super(pos, size);
+  constructor(position: Vector, size: Vector) {
+    super(position, size);
 
     this.speed = new Vector(0, 0);
     this.baseSpeed = size.x / 10;
@@ -123,8 +109,7 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
 
     super.update(dt);
 
-    this.pos.x += this.speed.x;
-    this.pos.y += this.speed.y;
+    this.moveTo(this.position.plus(this.speed));
 
     if (Math.abs(this.speed.x) + Math.abs(this.speed.y)) {
       bus.emit("player.move", { player: this });
@@ -146,7 +131,7 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
     super.draw(ctx, offset, resolution);
 
     ctx.save();
-    ctx.translate(this.pos.x, this.pos.y);
+    ctx.translate(this.position.x, this.position.y);
 
     this.sprites[this.direction].draw(ctx);
 
@@ -162,7 +147,7 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
     return {
       keydown: (e) => {
         if (e.key.match(/Arrow/)) {
-          this.move(e.key);
+          this.changeSpeed(e.key);
         }
       },
 
@@ -175,11 +160,11 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
   }
 
   /**
-   * Move the player
+   * Change the player's speed
    *
    * @param {string} key The key that has been pressed
    */
-  private move(key: string) {
+  private changeSpeed(key: string) {
     switch (key) {
       case "ArrowLeft":
         this.speed.x = -this.baseSpeed;

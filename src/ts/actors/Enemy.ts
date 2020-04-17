@@ -43,13 +43,6 @@ class Enemy extends Actor implements Drawable {
   public defeated: boolean;
 
   /**
-   * An enemy's stats
-   *
-   * @prop {StatsManager} stats
-   */
-  public stats: StatsManager;
-
-  /**
    * Create a new Enemy instance
    *
    * @param {object} data Info about the enemy
@@ -117,7 +110,7 @@ class Enemy extends Actor implements Drawable {
     super.draw(ctx, offset, resolution);
 
     ctx.save();
-    ctx.translate(this.pos.x, this.pos.y);
+    ctx.translate(this.position.x, this.position.y);
     this.sprites[this.direction].draw(ctx);
 
     ctx.restore();
