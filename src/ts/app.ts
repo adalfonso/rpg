@@ -1,15 +1,10 @@
 import Game from "./Game";
-import Display from "./Display";
-import EventBus from "./EventBus";
+import Display from "./ui/Display";
 import Vector from "./Vector";
-import { startAnimation } from "./util";
+import { startAnimation } from "./Util/util";
 import Player from "./actors/Player";
 
-export const bus: EventBus = new EventBus();
-export const player: Player = new Player(
-  new Vector(75, 75),
-  new Vector(36, 64)
-);
+const player: Player = new Player(new Vector(75, 75), new Vector(36, 64));
 
 const GAME_WIDTH: number = 1280;
 const GAME_HEIGHT: number = 720;

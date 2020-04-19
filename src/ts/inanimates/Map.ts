@@ -31,6 +31,9 @@ class Map {
   /**
    * Create a new Map instance
    *
+   * TODO: Some of the Renderable params should come from a MapTemplate,
+   * especially frameCount and gridRatio;
+   *
    * @param {object} layers Layer data
    * @param {string} img    Source path for sprite sheet
    */
@@ -43,8 +46,8 @@ class Map {
       img,
       this.scale,
       0,
-      240,
-      new Vector(24, 10),
+      256,
+      new Vector(16, 16),
       0
     );
   }

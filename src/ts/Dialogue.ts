@@ -1,8 +1,7 @@
 import Actor from "./actors/Actor";
-import InputHandler from "./EventBus";
 import Vector from "./Vector";
 import { Drawable, Eventful } from "./interfaces";
-import { bus } from "./app";
+import { bus } from "@/EventBus";
 
 class Dialogue implements Eventful, Drawable {
   /**

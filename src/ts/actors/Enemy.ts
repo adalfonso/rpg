@@ -5,9 +5,9 @@ import Renderable from "@/Renderable";
 import StatsManager from "@/Stats";
 import Vector from "@/Vector";
 import enemies from "./enemies.json";
-import sprites from "@/sprites";
 import { Drawable } from "@/interfaces";
-import { bus } from "@/app";
+import { bus } from "@/EventBus";
+import { getImagePath } from "@src/ts/Util/util";
 
 /**
  * Main class for baddies
@@ -61,15 +61,16 @@ class Enemy extends Actor implements Drawable {
     this.stats = new StatsManager(enemy.default.stats);
     this.defeated = false;
 
-    let sprite = sprites[data.type];
+    let sprite = getImagePath(enemy.ui.sprite);
+    let ratio = new Vector(enemy.ui.frames.x, enemy.ui.frames.y);
 
     this.sprites = [
       // img, scale, startFrame, frameCount, framesX, framesY, speed
-      new Renderable(sprite, 2, 0, 0, new Vector(1, 4), 8),
-      new Renderable(sprite, 2, 3, 0, new Vector(1, 4), 8),
-      new Renderable(sprite, 2, 2, 0, new Vector(1, 4), 8),
-      new Renderable(sprite, 2, 0, 0, new Vector(1, 4), 8),
-      new Renderable(sprite, 2, 1, 0, new Vector(1, 4), 8),
+      new Renderable(sprite, enemy.ui.scale, 0, 8, ratio, enemy.ui.fps),
+      new Renderable(sprite, enemy.ui.scale, 0, 8, ratio, enemy.ui.fps),
+      new Renderable(sprite, enemy.ui.scale, 0, 8, ratio, enemy.ui.fps),
+      new Renderable(sprite, enemy.ui.scale, 0, 8, ratio, enemy.ui.fps),
+      new Renderable(sprite, enemy.ui.scale, 0, 8, ratio, enemy.ui.fps),
     ];
 
     this.direction = 4;

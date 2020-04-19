@@ -3,7 +3,7 @@ import Dialogue from "@/Dialogue";
 import Vector from "@/Vector";
 import npcs from "./npcs.json";
 import { Drawable, Eventful } from "@/interfaces";
-import { bus } from "@/app";
+import { bus } from "@/EventBus";
 
 /**
  * * NonPlayer is a non-playable character.

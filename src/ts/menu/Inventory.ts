@@ -1,5 +1,5 @@
 import Menu from "./Menu";
-import Vector from "@src/ts/Vector";
+import Vector from "@/Vector";
 import { Drawable, Eventful } from "@/interfaces";
 import Weapon from "@/item/Weapon";
 

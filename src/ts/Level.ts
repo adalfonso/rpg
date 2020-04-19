@@ -7,10 +7,11 @@ import Player from "./actors/Player";
 import Portal from "./inanimates/Portal";
 import Vector from "./Vector";
 import config from "./config";
-import tileset from "@img/dungeon_sheet.png";
-import { Drawable } from "./interfaces";
-import { bus } from "./app";
 import levels from "./levels/levels";
+import { Drawable } from "./interfaces";
+import { bus } from "@/EventBus";
+import { getImagePath } from "@src/ts/Util/util";
+import { prototype } from "mocha";
 
 /**
  * Level represents a discrete area of the game that warrents it's own domain.
@@ -101,8 +102,11 @@ class Level implements Drawable {
     // wipes out level fixtures that are referenced on later events.
     events.forEach((event) => {
       if ((event.type = "enter_portal")) {
-        let match = event.ref.to.match(/^(\d+)\.(\d+)$/);
-        let level = levels[parseInt(match[1])][parseInt(match[2])];
+        let level = levels[event.ref.to];
+
+        if (!level) {
+          throw new Error(`Unable to locate level json for "${event.ref.to}".`);
+        }
         this.load(level, event.ref);
       }
     });
@@ -137,9 +141,15 @@ class Level implements Drawable {
   public load(template, portal?: Portal) {
     this.cleanup();
 
+    let tileSource = this.getTemplateProperty(template, "tile_source");
+
+    if (!tileSource) {
+      throw new Error(`Unable to find tile source when loading map.`);
+    }
+
     this.map = new Map(
       template.layers.filter((layer) => layer.type === "tilelayer"),
-      tileset
+      getImagePath(`tileset.${tileSource}`)
     );
 
     template.layers
@@ -149,6 +159,12 @@ class Level implements Drawable {
       });
 
     let entry = portal ? this.entries[portal.from] : this.entries.origin;
+
+    if (!entry) {
+      throw new Error(
+        "Unable to find origin entry point when loading player onto map."
+      );
+    }
 
     // Relocate player when level is loaded
     this.player.moveTo(entry.position);
@@ -197,6 +213,24 @@ class Level implements Drawable {
         this.entities.push(new Enemy(entity));
         break;
     }
+  }
+
+  /**
+   * Get the value of a custom property from level data
+   *
+   * TODO: Move this to a template loader class once it exists
+   *
+   * @param  {object} template Level data
+   * @param  {string} property Property name to locate
+   *
+   * @return {mixed}           Property's value
+   */
+  private getTemplateProperty(template: any, property: string): string {
+    let properties = template.properties ?? [];
+
+    return properties
+      .filter((prop) => prop.name === property)
+      .map((prop) => prop.value)[0];
   }
 }
 

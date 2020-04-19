@@ -10,6 +10,11 @@
         "sp_def": 0,
         "spd": 0
       }
+    },
+    "ui": {
+      "sprite": "characters.knight",
+      "frames": { "x": 8, "y": 1 },
+      "scale": 4
     }
   }
 }

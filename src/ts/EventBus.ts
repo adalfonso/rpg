@@ -1,12 +1,32 @@
 import { Eventful } from "./interfaces";
 
-export default class EventBus {
+class EventBus {
+  /**
+   * Singleton instance
+   *
+   * @prop {EventBus} instance
+   */
+  private static instance: EventBus;
+
   /**
    * Event store
    *
    * @prop {object} events
    */
   private events: object = {};
+
+  /**
+   * Create a new instance or get the shared instance
+   *
+   * @return {EventBus} Shared instance
+   */
+  public static getInstance() {
+    if (!EventBus.instance) {
+      EventBus.instance = new EventBus();
+    }
+
+    return EventBus.instance;
+  }
 
   /**
    * Register an entity on the event bus
@@ -72,3 +92,12 @@ export default class EventBus {
     }
   }
 }
+
+/**
+ * Event bus singleton
+ *
+ * @const {EventBus} bus
+ */
+export const bus: EventBus = EventBus.getInstance();
+
+export default EventBus;

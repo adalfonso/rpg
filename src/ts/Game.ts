@@ -4,11 +4,11 @@ import Level from "./Level";
 import Player from "./actors/Player";
 import StartMenu from "./menu/StartMenu";
 import Vector from "./Vector";
+import Weapon from "./item/Weapon";
 import levels from "./levels/levels";
 import { Drawable, Eventful } from "./interfaces";
-import { bus } from "./app";
+import { bus } from "@/EventBus";
 import { menus, weapons } from "./config";
-import Weapon from "./item/Weapon";
 
 /**
  * Different states a game can be in
@@ -181,7 +181,7 @@ class Game implements Eventful, Drawable {
    * TODO: Create a better way to load a game state instead of a static level
    */
   public start() {
-    this.level = new Level(levels[0][0], this.player);
+    this.level = new Level(levels.sandbox_0, this.player);
   }
 
   /**

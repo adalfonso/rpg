@@ -3,9 +3,9 @@ import Renderable from "@/Renderable";
 import StatsManager from "@/Stats";
 import Vector from "@/Vector";
 import Weapon from "@/item/Weapon";
-import sprites from "@/sprites";
 import { Drawable, Eventful, Lockable } from "@/interfaces";
-import { bus } from "@/app";
+import { bus } from "@/EventBus";
+import { getImagePath } from "@src/ts/Util/util";
 
 /**
  * A Player is the main entity of the game.
@@ -52,7 +52,7 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
     this.speed = new Vector(0, 0);
     this.baseSpeed = size.x / 10;
 
-    let sprite = sprites.player;
+    let sprite = getImagePath("characters.player");
 
     this.sprites = [
       // Keep this example of an animated sprite until we actually use one

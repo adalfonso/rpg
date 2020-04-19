@@ -1,4 +1,4 @@
-import { bus } from "@/app";
+import { bus } from "@/EventBus";
 
 /**
  * Standard infomation that a weapon must have

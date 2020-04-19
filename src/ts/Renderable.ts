@@ -1,4 +1,5 @@
 import Vector from "./Vector";
+import config from "./config";
 
 export default class Renderable {
   /**
@@ -83,11 +84,11 @@ export default class Renderable {
    */
   constructor(
     src: string,
-    scale: number = 1,
+    scale: number = config.scale,
     startFrame: number = 0,
     frameCount: number = 9,
     gridRatio: Vector = new Vector(9, 4),
-    fps: number = 30
+    fps: number = 10
   ) {
     this.img = new Image();
     this.img.src = src;
@@ -128,7 +129,7 @@ export default class Renderable {
     }
 
     // Reset to starting frame
-    if (this.frame > this.startFrame + this.frameCount) {
+    if (this.frame >= this.startFrame + this.frameCount) {
       this.frame = this.startFrame;
     }
 

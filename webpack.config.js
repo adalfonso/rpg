@@ -1,4 +1,5 @@
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const { TsConfigPathsPlugin } = require("awesome-typescript-loader");
 const path = require("path");
 
 module.exports = {
@@ -10,12 +11,8 @@ module.exports = {
   },
 
   resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "src/ts"),
-      "@src": path.resolve(__dirname, "src"),
-      "@img": path.resolve(__dirname, "src/img"),
-    },
-    extensions: [".ts", ".js", ".json"],
+    extensions: [".ts", ".js", ".json", ".png"],
+    plugins: [new TsConfigPathsPlugin()],
   },
 
   module: {

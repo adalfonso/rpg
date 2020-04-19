@@ -1,3 +1,5 @@
+import manifest from "@img/manifest";
+
 /**
  * Lowercase the first character of a string
  *
@@ -25,4 +27,20 @@ export const startAnimation: Function = (callback: Function) => {
   };
 
   requestAnimationFrame(frame);
+};
+
+/**
+ * Retrieve image path from a dot-separated string
+ *
+ * @param  {string} resource Dot-separated string
+ *
+ * @return {string}          Image path
+ */
+export const getImagePath = (resource: string): string => {
+  return resource.split(".").reduce((carry: any, key: string) => {
+    if (!carry[key]) {
+      throw new Error(`Cannot find resource: ${key}`);
+    }
+    return carry[key];
+  }, manifest);
 };
