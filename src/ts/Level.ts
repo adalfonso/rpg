@@ -1,17 +1,16 @@
 import Clip from "./inanimates/Clip";
 import Enemy from "./actors/Enemy";
-import Entry from "./inanimates/Entry";
+import LevelTemplate from "./LevelTemplate";
 import Map from "./inanimates/Map";
 import NonPlayer from "./actors/NonPlayer";
 import Player from "./actors/Player";
 import Portal from "./inanimates/Portal";
 import Vector from "./Vector";
-import config from "./config";
 import levels from "./levels/levels";
 import { Drawable } from "./interfaces";
 import { bus } from "@/EventBus";
-import { getImagePath } from "@src/ts/Util/util";
-import { prototype } from "mocha";
+import { getImagePath } from "@src/ts/Util/loaders";
+import Entry from "./inanimates/Entry";
 
 /**
  * Level represents a discrete area of the game that warrents it's own domain.
@@ -36,7 +35,7 @@ class Level implements Drawable {
   private map: Map;
 
   /**
-   * Entry points that an entity has to the level
+   * Entry points that an fixture has to the level
    * TODO: Better solution for typing these
    *
    * @prop {any} entries
@@ -44,12 +43,12 @@ class Level implements Drawable {
   private entries: any;
 
   /**
-   * A mix of entities that interact in the level
+   * A mix of fixtures that interact in the level
    * TODO: Better solution for typing these
    *
-   * @prop {any[]} entities
+   * @prop {any[]} fixtures
    */
-  private entities: any[] = [];
+  private fixtures: any[] = [];
 
   /**
    * Create a new level instance
@@ -57,7 +56,7 @@ class Level implements Drawable {
    * @param {object} template Object loaded from json containing level data
    * @param {Player} player   Main player instance
    */
-  constructor(template, player: Player) {
+  constructor(template: LevelTemplate, player: Player) {
     this.player = player;
 
     this.load(template);
@@ -71,35 +70,26 @@ class Level implements Drawable {
   public update(dt: number) {
     let events = [];
 
-    [this.player, ...this.entities].forEach((entity) => {
-      entity.update(dt);
+    // TODO: Look into a adding a method to these classes that interacts with the
+    //       player
+    [this.player, ...this.fixtures].forEach((fixture) => {
+      fixture.update(dt);
+      let playerCollision = this.player.collidesWith(fixture);
 
-      if (entity instanceof Enemy && entity.collidesWith(this.player)) {
-        entity.fight(this.player);
-      }
-
-      if (entity instanceof Clip) {
-        let collision = this.player.collidesWith(entity);
-
-        if (collision) {
-          this.player.backstep(collision);
-        }
-      }
-
-      if (entity instanceof Portal) {
-        let collision = this.player.collidesWith(entity);
-
-        if (collision) {
-          events.push({
-            type: "enter_portal",
-            ref: entity,
-          });
-        }
+      if (fixture instanceof Enemy && fixture.collidesWith(this.player)) {
+        fixture.fight(this.player);
+      } else if (fixture instanceof Clip && playerCollision) {
+        this.player.backstep(playerCollision);
+      } else if (fixture instanceof Portal && playerCollision) {
+        events.push({
+          type: "enter_portal",
+          ref: fixture,
+        });
       }
     });
 
     // TODO: Fix potential bug where running this.load() on the first event
-    // wipes out level fixtures that are referenced on later events.
+    //       wipes out level fixtures that are referenced on later events.
     events.forEach((event) => {
       if ((event.type = "enter_portal")) {
         let level = levels[event.ref.to];
@@ -107,13 +97,14 @@ class Level implements Drawable {
         if (!level) {
           throw new Error(`Unable to locate level json for "${event.ref.to}".`);
         }
-        this.load(level, event.ref);
+
+        this.load(new LevelTemplate(level), event.ref);
       }
     });
   }
 
   /**
-   * Draw map and level entities
+   * Draw map and level fixtures
    *
    * @param {CanvasRenderingContext2D} ctx        Render context
    * @param {Vector}                   offset     Render position offset
@@ -126,8 +117,8 @@ class Level implements Drawable {
   ) {
     this.map.draw(ctx);
 
-    [this.player, ...this.entities].forEach((entity) => {
-      entity.draw(ctx, offset, resolution);
+    [this.player, ...this.fixtures].forEach((fixture) => {
+      fixture.draw(ctx, offset, resolution);
     });
   }
 
@@ -135,30 +126,20 @@ class Level implements Drawable {
    * Load a level template. If there is a referenced portal, move player to
    * corresponding entry point.
    *
-   * @param {LevelData} template Level details json
+   * @param {LevelTemplate} template Level details json
    * @param {Portal}    portal   Starting portal
    */
-  public load(template, portal?: Portal) {
+  public load(template: LevelTemplate, portal?: Portal) {
     this.cleanup();
 
-    let tileSource = this.getTemplateProperty(template, "tile_source");
+    let tileSet = getImagePath(`tileset.${template.tileSource}`);
 
-    if (!tileSource) {
-      throw new Error(`Unable to find tile source when loading map.`);
-    }
+    this.map = new Map(template.tiles, tileSet);
 
-    this.map = new Map(
-      template.layers.filter((layer) => layer.type === "tilelayer"),
-      getImagePath(`tileset.${tileSource}`)
-    );
+    this.entries = template.entries;
+    this.fixtures = template.fixtures;
 
-    template.layers
-      .filter((layer) => layer.type === "objectgroup")
-      .forEach((layer) => {
-        layer.objects.forEach((entity) => this.loadEntity(layer.name, entity));
-      });
-
-    let entry = portal ? this.entries[portal.from] : this.entries.origin;
+    let entry: Entry = portal ? this.entries[portal.from] : this.entries.origin;
 
     if (!entry) {
       throw new Error(
@@ -176,61 +157,14 @@ class Level implements Drawable {
   private cleanup() {
     // Remove event listeners from non-players
     // TODO: Tie this to an interface because there might be more Eventful
-    // resources to cause memory leaks.
+    //       resources to cause memory leaks.
 
-    this.entities
+    this.fixtures
       .filter((e) => e instanceof NonPlayer)
       .forEach((e) => bus.unregister(e));
 
-    this.entities = [];
+    this.fixtures = [];
     this.entries = {};
-  }
-
-  /**
-   * Load a single entity from the layer
-   *
-   * @param {string} layer  Layer name
-   * @param {any}    entity Entity data
-   */
-  private loadEntity(layer: string, entity: any) {
-    let position = new Vector(entity.x, entity.y).times(config.scale);
-    let size = new Vector(entity.width, entity.height).times(config.scale);
-
-    switch (layer) {
-      case "clip":
-        this.entities.push(new Clip(position, size));
-        break;
-      case "portal":
-        this.entities.push(new Portal(position, size, entity));
-        break;
-      case "entry":
-        this.entries[entity.name] = new Entry(position, size, entity);
-        break;
-      case "npc":
-        this.entities.push(new NonPlayer(entity));
-        break;
-      case "enemy":
-        this.entities.push(new Enemy(entity));
-        break;
-    }
-  }
-
-  /**
-   * Get the value of a custom property from level data
-   *
-   * TODO: Move this to a template loader class once it exists
-   *
-   * @param  {object} template Level data
-   * @param  {string} property Property name to locate
-   *
-   * @return {mixed}           Property's value
-   */
-  private getTemplateProperty(template: any, property: string): string {
-    let properties = template.properties ?? [];
-
-    return properties
-      .filter((prop) => prop.name === property)
-      .map((prop) => prop.value)[0];
   }
 }
 

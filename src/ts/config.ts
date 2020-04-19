@@ -1,6 +1,6 @@
 export default {
   debug: false,
-  scale: 3,
+  scale: 2,
 };
 
 export const menus = {

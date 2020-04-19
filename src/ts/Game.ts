@@ -1,6 +1,7 @@
 import Battle from "./Battle";
 import Inventory from "./menu/Inventory";
 import Level from "./Level";
+import LevelTemplate from "./LevelTemplate";
 import Player from "./actors/Player";
 import StartMenu from "./menu/StartMenu";
 import Vector from "./Vector";
@@ -181,7 +182,7 @@ class Game implements Eventful, Drawable {
    * TODO: Create a better way to load a game state instead of a static level
    */
   public start() {
-    this.level = new Level(levels.sandbox_0, this.player);
+    this.level = new Level(new LevelTemplate(levels.sandbox_0), this.player);
   }
 
   /**

@@ -7,7 +7,7 @@ import Vector from "@/Vector";
 import enemies from "./enemies.json";
 import { Drawable } from "@/interfaces";
 import { bus } from "@/EventBus";
-import { getImagePath } from "@src/ts/Util/util";
+import { getImagePath } from "@src/ts/Util/loaders";
 
 /**
  * Main class for baddies
