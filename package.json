@@ -1,7 +1,7 @@
 {
-  "name": "game",
-  "version": "0.0.81",
-  "description": "",
+  "name": "rpg",
+  "version": "0.0.82",
+  "description": "An RPG of some sort... we'll see.",
   "main": "webpack.config.js",
   "scripts": {
     "dev": "webpack --progress --hide-modules --mode development",
@@ -11,7 +11,7 @@
     "test": "mocha -r ts-node/register -r tsconfig-paths/register -r jsdom-global/register tests/**/*.test.ts",
     "coverage": "nyc -r lcov -e .ts -x \"*.test.ts\" npm run test"
   },
-  "author": "",
+  "author": "Anthony Dalfonso <anthonyjdalfonso@gmail.com>",
   "license": "BSD",
   "devDependencies": {
     "@babel/core": "^7.4.5",
