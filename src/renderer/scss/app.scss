@@ -1,0 +1,13 @@
+body {
+  background: #eee;
+  margin: 0;
+
+  #main {
+    display: flex;
+  }
+
+  canvas {
+    margin: auto;
+    background: #000;
+  }
+}

@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import Sut from "../../src/ts/EventBus";
+import Sut from "../../src/renderer/ts/EventBus";
 
 describe("EventBus", () => {
   it("register", () => {

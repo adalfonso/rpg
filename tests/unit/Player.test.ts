@@ -1,6 +1,6 @@
-// import { expect } from "chai";
-// import Sut from "../../src/ts/actors/Player";
-// import Vector from "../../src/ts/Vector";
+import { expect } from "chai";
+import Sut from "../../src/renderer/ts/actors/Player";
+import Vector from "../../src/common/Vector";
 
 /**
  * TODO: Cannot currently run these test because tsconfig-paths is unable to

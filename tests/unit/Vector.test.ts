@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import Sut from "../../src/ts/Vector";
+import Sut from "../../src/common/Vector";
 
 describe("Vector", () => {
   it("new", () => {

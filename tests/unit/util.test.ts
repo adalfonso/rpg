@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { lcFirst } from "../../src/ts/Util/util";
+import { lcFirst } from "../../src/renderer/ts/Util/util";
 
 describe("util", () => {
   it("lcFirst", () => {

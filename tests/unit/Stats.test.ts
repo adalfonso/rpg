@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import Sut from "../../src/ts/Stats";
+import Sut from "../../src/renderer/ts/Stats";
 
 describe("StatManager", () => {
   it("stat accessors (hp, atk, def, sp_atk, sp_def, spd)", () => {
