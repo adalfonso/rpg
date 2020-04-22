@@ -30,7 +30,7 @@ describe("Vector", () => {
       [new Sut(0, 0), new Sut(4, 5), new Sut(4, 5)],
       [new Sut(2, 4), new Sut(1, 3), new Sut(3, 7)],
       [new Sut(-5, -100), new Sut(200, -300), new Sut(195, -400)],
-    ].forEach((data: [Sut, Sut, Sut]) => {
+    ].forEach((data: Sut[]) => {
       let [sut, input, expected] = data;
 
       expect(sut.plus(input)).to.deep.equal(expected);

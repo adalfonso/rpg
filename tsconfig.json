@@ -1,0 +1,22 @@
+{
+  "extends": "./node_modules/electron-webpack/tsconfig-base.json",
+
+  "compilerOptions": {
+    "noImplicitAny": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "strictPropertyInitialization": false,
+    "noImplicitReturns": false,
+    "strictNullChecks": false,
+    "strictFunctionTypes": false,
+
+    "resolveJsonModule": true,
+
+    "baseUrl": ".",
+    "paths": {
+      "@common/*": ["./src/common/*"],
+      "@/*": ["./src/renderer/ts/*"],
+      "@img/*": ["./src/renderer/img/*"]
+    }
+  }
+}

@@ -1,34 +1,73 @@
 import { app, BrowserWindow } from "electron";
-import __basedir from "../basepath";
-import { RESOLUTION } from "../common/common";
+import * as path from "path";
+import { format as formatUrl } from "url";
+import { resolution } from "../common/common";
 
-let mainWindow: Electron.BrowserWindow;
+const isDevelopment = process.env.NODE_ENV !== "production";
 
-function createWindow() {
-  mainWindow = new BrowserWindow({
-    width: RESOLUTION.x,
-    height: RESOLUTION.y,
+// global reference to mainWindow (necessary to prevent window from being garbage collected)
+let mainWindow;
+
+if (module.hot) {
+  module.hot.accept();
+}
+
+function createMainWindow() {
+  const window = new BrowserWindow({
+    webPreferences: { nodeIntegration: true },
+    width: resolution.x,
+    height: resolution.y,
     useContentSize: true,
   });
 
-  mainWindow.loadFile("./dist/index.html");
-  mainWindow.setMenu(null);
+  window.setMenu(null);
 
-  mainWindow.on("closed", () => {
-    mainWindow = null as any;
+  if (isDevelopment) {
+    window.webContents.openDevTools();
+  }
+
+  if (isDevelopment) {
+    window.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`);
+  } else {
+    window.loadURL(
+      formatUrl({
+        pathname: path.join(__dirname, "index.html"),
+        protocol: "file",
+        slashes: true,
+      })
+    );
+  }
+
+  window.on("closed", () => {
+    mainWindow = null;
   });
+
+  window.webContents.on("devtools-opened", () => {
+    window.focus();
+    setImmediate(() => {
+      window.focus();
+    });
+  });
+
+  return window;
 }
 
-app.whenReady().then(createWindow);
-
+// quit application when all windows are closed
 app.on("window-all-closed", () => {
+  // on macOS it is common for applications to stay open until the user explicitly quits
   if (process.platform !== "darwin") {
     app.quit();
   }
 });
 
 app.on("activate", () => {
+  // on macOS it is common to re-create a window even after all windows have been closed
   if (mainWindow === null) {
-    createWindow();
+    mainWindow = createMainWindow();
   }
+});
+
+// create main BrowserWindow when electron is ready
+app.on("ready", () => {
+  mainWindow = createMainWindow();
 });

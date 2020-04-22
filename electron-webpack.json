@@ -1,0 +1,10 @@
+{
+  "commonSourceDirectory": "src/common",
+  "staticSourceDirectory": "src/static",
+  "title": true,
+  "renderer": {
+    "sourceDirectory": "src/renderer",
+    "template": "src/renderer/index.html",
+    "webpackConfig": "src/renderer/webpack.config.js"
+  }
+}

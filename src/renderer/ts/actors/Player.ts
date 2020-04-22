@@ -5,7 +5,7 @@ import Vector from "@common/Vector";
 import Weapon from "@/item/Weapon";
 import { Drawable, Eventful, Lockable } from "@/interfaces";
 import { bus } from "@/EventBus";
-import { getImagePath } from "@src/ts/Util/loaders";
+import { getImagePath } from "@/Util/loaders";
 
 /**
  * A Player is the main entity of the game.

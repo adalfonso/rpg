@@ -34,7 +34,7 @@ class Vector {
   /**
    * Multiply by a factor to generate a new vector
    *
-   * @param  {Vecetor | number} factor Factor to multiply by
+   * @param  {Vector | number} factor Factor to multiply by
    *
    * @return {Vector}                  New Vector
    */

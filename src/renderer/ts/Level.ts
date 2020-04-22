@@ -9,7 +9,7 @@ import Vector from "@common/Vector";
 import levels from "./levels/levels";
 import { Drawable } from "./interfaces";
 import { bus } from "@/EventBus";
-import { getImagePath } from "@src/ts/Util/loaders";
+import { getImagePath } from "@/Util/loaders";
 import Entry from "./inanimates/Entry";
 
 /**

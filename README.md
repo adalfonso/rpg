@@ -5,6 +5,12 @@ This is currently in development.
 To setup, run:
 
 ```bash
-$ npm install
-$ npm start
+$ yarn install
+$ yarn dev
+```
+
+Running unit tests:
+
+```bash
+$ yarn test
 ```
