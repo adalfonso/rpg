@@ -1,9 +1,9 @@
 import { expect } from "chai";
-import Sut from "../../src/renderer/ts/LevelTemplate";
+import Sut from "@/LevelTemplate";
 import example from "../assets/example.json";
 
 describe("LevelTemplate", () => {
-  it("should parse template json", () => {
+  it("parses template json", () => {
     let sut = new Sut(example);
 
     expect(2).to.equal(sut.tiles.length);

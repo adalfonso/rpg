@@ -1,4 +1,4 @@
-import StatsManager from "@/Stats";
+import StatManager from "@/StatManager";
 import Vector from "@common/Vector";
 import Weapon from "@/item/Weapon";
 import config from "@/config";
@@ -67,9 +67,9 @@ abstract class Actor implements Drawable, Lockable {
   /**
    * An actor's stats
    *
-   * @prop {StatsManager} stats
+   * @prop {StatManager} stats
    */
-  public stats: StatsManager;
+  public stats: StatManager;
 
   /**
    * The weapon currently equipped to the actor

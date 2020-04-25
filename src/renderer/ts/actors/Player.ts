@@ -1,6 +1,6 @@
 import Actor from "./Actor";
 import Renderable from "@/Renderable";
-import StatsManager from "@/Stats";
+import StatManager from "@/StatManager";
 import Vector from "@common/Vector";
 import Weapon from "@/item/Weapon";
 import { Drawable, Eventful, Lockable } from "@/interfaces";
@@ -70,7 +70,7 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
     ];
 
     // TODO: Hook this into a state loader instead of hardcoding
-    this.stats = new StatsManager({
+    this.stats = new StatManager({
       hp: 10,
       atk: 2,
       def: 0,

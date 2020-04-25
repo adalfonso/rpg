@@ -2,7 +2,7 @@ import Actor from "./Actor";
 import Dialogue from "@/Dialogue";
 import Player from "./Player.js";
 import Renderable from "@/Renderable";
-import StatsManager from "@/Stats";
+import StatManager from "@/StatManager";
 import Vector from "@common/Vector";
 import enemies from "./enemies.json";
 import { Drawable } from "@/interfaces";
@@ -58,7 +58,7 @@ class Enemy extends Actor implements Drawable {
 
     this.data = enemy;
     this.dialogue = null;
-    this.stats = new StatsManager(enemy.default.stats);
+    this.stats = new StatManager(enemy.default.stats);
     this.defeated = false;
 
     let sprite = getImagePath(enemy.ui.sprite);
