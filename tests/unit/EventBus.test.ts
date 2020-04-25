@@ -13,13 +13,13 @@ describe("EventBus", () => {
     it("registers a fixture with the event bus", () => {
       let sut = getSut();
 
-      let fooFired = 0;
+      let fooValue = 0;
 
       let foo = {
         register: () => {
           return {
             foo: (e) => {
-              fooFired++;
+              fooValue++;
             },
           };
         },
@@ -27,11 +27,11 @@ describe("EventBus", () => {
 
       sut.register(foo);
 
-      expect(fooFired).to.equal(0);
+      expect(fooValue).to.equal(0);
 
       sut.emit("foo");
 
-      expect(fooFired).to.equal(1);
+      expect(fooValue).to.equal(1);
     });
   });
 
@@ -39,13 +39,13 @@ describe("EventBus", () => {
     it("unregisters a fixture from the event bus", () => {
       let sut = getSut();
 
-      let fooFired = 0;
+      let fooValue = 0;
 
       let foo = {
         register: () => {
           return {
             foo: (e) => {
-              fooFired++;
+              fooValue++;
             },
           };
         },
@@ -53,13 +53,13 @@ describe("EventBus", () => {
 
       sut.register(foo);
 
-      expect(fooFired).to.equal(0);
+      expect(fooValue).to.equal(0);
 
       sut.emit("foo");
       sut.unregister(foo);
       sut.emit("foo");
 
-      expect(fooFired).to.equal(1);
+      expect(fooValue).to.equal(1);
     });
   });
 
@@ -67,8 +67,8 @@ describe("EventBus", () => {
     it("emits an event and detects it elsewhere", () => {
       let sut = getSut();
 
-      let fooFired = 0;
-      let barFired = 0;
+      let fooValue = 0;
+      let barValue = 0;
       let emittedDetails = false;
 
       let foo = {
@@ -76,15 +76,16 @@ describe("EventBus", () => {
           return [
             {
               foo: (e) => {
-                fooFired++;
+                fooValue = 5;
               },
             },
             {
               foo: (e) => {
-                fooFired += 10;
+                fooValue += 10;
 
-                if (e.detail.bar === bar) {
+                if (e.detail.bar === barValue) {
                   emittedDetails = true;
+                  fooValue += barValue;
                 }
               },
             },
@@ -96,8 +97,12 @@ describe("EventBus", () => {
         register: () => {
           return {
             bar: (e) => {
-              barFired++;
-              sut.emit("foo", { bar: bar });
+              if (barValue !== 10) {
+                barValue = 10;
+              } else {
+                barValue = 100;
+              }
+              sut.emit("foo", { bar: barValue });
             },
           };
         },
@@ -106,14 +111,14 @@ describe("EventBus", () => {
       sut.register(foo);
       sut.register(bar);
 
-      expect(fooFired).to.equal(0);
-      expect(barFired).to.equal(0);
+      expect(fooValue).to.equal(0);
+      expect(barValue).to.equal(0);
 
       sut.emit("bar");
       sut.emit("bar");
 
-      expect(fooFired).to.equal(22);
-      expect(barFired).to.equal(2);
+      expect(fooValue).to.equal(115);
+      expect(barValue).to.equal(100);
       expect(emittedDetails).to.be.true;
     });
   });
