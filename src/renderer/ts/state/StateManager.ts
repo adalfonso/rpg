@@ -158,12 +158,14 @@ class StateManager {
       .readFile(this.parseFileDestination(destination), "UTF-8")
       .then((contents: string) => {
         this.data = JSON.parse(contents);
-        this.lastLoadedFrom = destination;
         bus.emit("file.load");
       })
       .catch((err) => {
         console.log(`Could not load state from "${destination}".`);
         this.save(destination);
+      })
+      .finally(() => {
+        this.lastLoadedFrom = destination;
       });
   }
 
