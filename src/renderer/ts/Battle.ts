@@ -203,7 +203,7 @@ class Battle implements Eventful, Drawable {
    * End the battle
    */
   private stop() {
-    this.enemy.defeated = true;
+    this.enemy.kill();
     this.active = false;
     bus.emit("battle.end");
     bus.unregister(this);

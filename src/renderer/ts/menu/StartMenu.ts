@@ -1,6 +1,7 @@
 import Menu from "./Menu";
 import Vector from "@common/Vector";
 import { Drawable } from "@/interfaces";
+import { bus } from "@/EventBus";
 
 /**
  * Start menu is the first menu to load when the game starts up. It is
@@ -53,6 +54,47 @@ class StartMenu extends Menu implements Drawable {
     });
 
     ctx.restore();
+  }
+
+  /**
+   * Register events with the event bus
+   *
+   * @return {object} Events to register
+   */
+  public register(): object {
+    return {
+      keyup: (e) => {
+        if (e.key === "Escape" && !this.locked) {
+          this.active ? this.close() : this.open();
+        }
+
+        if (!this.active) {
+          return;
+        }
+
+        switch (e.key) {
+          case "Enter":
+            this.select();
+            break;
+          case "ArrowUp":
+            this.previous();
+            break;
+          case "ArrowDown":
+            this.next();
+            break;
+        }
+      },
+      "state.saved": (e) => {
+        this.close();
+      },
+    };
+  }
+
+  /**
+   * Trigger the game state to save.
+   */
+  private saveState() {
+    bus.emit("state.save");
   }
 }
 

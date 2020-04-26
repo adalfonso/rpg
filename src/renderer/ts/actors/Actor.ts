@@ -406,7 +406,7 @@ abstract class Actor implements Drawable, Lockable {
    * @return {object} Current state of the actor
    */
   protected getState(): object {
-    return { type: this.data.type, ...this.stats.export() };
+    return { type: this.data.type, dmg: this.stats.dmg, lvl: this.stats.lvl };
   }
 
   /**

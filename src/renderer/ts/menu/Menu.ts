@@ -28,7 +28,7 @@ abstract class Menu implements Eventful, Drawable, Lockable {
    *
    * @prop {boolean} locked
    */
-  public locked: boolean;
+  public locked: boolean = false;
 
   /**
    * If the menu is currently active

@@ -29,6 +29,13 @@ class StateManager {
   private static instance: StateManager;
 
   /**
+   * Create a new StateManager instance
+   */
+  constructor() {
+    bus.register(this);
+  }
+
+  /**
    * Create a new instance or get the shared instance
    *
    * @return {StateManager} Shared instance
@@ -39,6 +46,19 @@ class StateManager {
     }
 
     return StateManager.instance;
+  }
+
+  /**
+   * Register events with the event bus
+   *
+   * @return {object} Events to register
+   */
+  public register(): object {
+    return {
+      "state.save": (e) => {
+        this.save();
+      },
+    };
   }
 
   /**
@@ -137,7 +157,7 @@ class StateManager {
     return fs
       .writeFile(destination, this.toJson())
       .then(() => {
-        bus.emit("state.save");
+        bus.emit("state.saved");
       })
       .catch((err) => {
         console.log(`Could not save state to "${destination}".`);

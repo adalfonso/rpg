@@ -38,7 +38,7 @@ export default class StatManager {
    *
    * @prop {number} _dmg
    */
-  private _dmg: number;
+  private _dmg: number = 0;
 
   /**
    * Amount of experience points the entity has gained between levels
@@ -95,6 +95,15 @@ export default class StatManager {
     }
 
     this._lvl = lvl;
+  }
+
+  /**
+   * Get the current damage
+   *
+   * @return {number} Current damage
+   */
+  get dmg(): number {
+    return this._dmg;
   }
 
   /**
@@ -187,26 +196,6 @@ export default class StatManager {
    */
   public endure(dmg: number) {
     this._dmg += Math.max(1, dmg - this.def);
-  }
-
-  /**
-   * Get stats data
-   *
-   * @return {object} Stats data
-   */
-  public export(): object {
-    return {
-      dmg: this._dmg,
-      lvl: this._lvl,
-      stats: {
-        hp: this.baseStats.hp,
-        atk: this.baseStats.atk,
-        def: this.baseStats.def,
-        sp_atk: this.baseStats.sp_atk,
-        sp_def: this.baseStats.sp_def,
-        spd: this.baseStats.spd,
-      },
-    };
   }
 
   /**

@@ -7,15 +7,17 @@ export const menus = {
   startMenu: [
     {
       type: "start",
-      description: "Press Enter to Start!",
+      description: "Start Game!",
       action: (menu) => {
         menu.close();
       },
     },
     {
-      type: "load",
-      description: "Load Saved State (doesn't work yet)",
-      action: (menu) => {},
+      type: "save",
+      description: "Save Game",
+      action: (menu) => {
+        menu.saveState();
+      },
     },
   ],
   inventory: [

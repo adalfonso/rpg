@@ -5,6 +5,7 @@ import StatManager from "@/StatManager";
 import Vector from "@common/Vector";
 import { Drawable } from "@/interfaces";
 import { bus } from "@/EventBus";
+import StateManager from "@/state/StateManager";
 
 /**
  * Main class for baddies
@@ -103,6 +104,15 @@ class Enemy extends Actor implements Drawable {
       player: player,
       enemy: this,
     });
+  }
+
+  /**
+   * Kill off the enemy
+   */
+  public kill() {
+    this.defeated = true;
+
+    StateManager.getInstance().mergeByRef(`enemies.${this.id}.defeated`, true);
   }
 
   /**
