@@ -47,12 +47,17 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
    * @param {Vector} size      The player's size
    */
   constructor(position: Vector, size: Vector) {
-    super(position, size, { name: "player" });
+    super(position, size, { name: "Me", type: "player" });
 
     this.speed = new Vector(0, 0);
     this.baseSpeed = size.x / 10;
 
-    let sprite = getImagePath("characters.player");
+    const UI = this.config.ui;
+
+    let fps = UI.fps;
+    let ratio = new Vector(UI.frames.x, UI.frames.y);
+    let scale = UI.scale;
+    let sprite = getImagePath(UI.sprite);
 
     this.sprites = [
       // Keep this example of an animated sprite until we actually use one
@@ -62,26 +67,16 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
       // new Renderable(sprite, 1, 9, 7, 9, 4, 8),
       // new Renderable(sprite, 1, 19, 7, 9, 4, 8),
       // new Renderable(sprite, 1, 27, 7, 9, 4, 8)
-      new Renderable(sprite, 2, 0, 0, new Vector(1, 4), 8),
-      new Renderable(sprite, 2, 3, 0, new Vector(1, 4), 8),
-      new Renderable(sprite, 2, 2, 0, new Vector(1, 4), 8),
-      new Renderable(sprite, 2, 0, 0, new Vector(1, 4), 8),
-      new Renderable(sprite, 2, 1, 0, new Vector(1, 4), 8),
+      new Renderable(sprite, scale, 0, 0, ratio, fps),
+      new Renderable(sprite, scale, 3, 0, ratio, fps),
+      new Renderable(sprite, scale, 2, 0, ratio, fps),
+      new Renderable(sprite, scale, 0, 0, ratio, fps),
+      new Renderable(sprite, scale, 1, 0, ratio, fps),
     ];
 
-    // Load default player stats
-    // TODO: this into a config
-    this.stats = new StatManager({
-      hp: 10,
-      atk: 2,
-      def: 0,
-      sp_atk: 0,
-      sp_def: 0,
-      spd: 1,
-    });
-
-    this.weapon = null;
     this.spells = [];
+    this.stats = new StatManager(this.config.baseStats);
+    this.weapon = null;
 
     this.resolveState(this.id);
 
@@ -89,15 +84,6 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
 
     // For testing purposes only
     this.init();
-  }
-
-  /**
-   * Get the name used when rendering dialogue
-   *
-   * @prop {string} dialogueName
-   */
-  get dialogueName() {
-    return "Me";
   }
 
   /**

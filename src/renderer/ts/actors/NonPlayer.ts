@@ -1,7 +1,6 @@
 import Actor from "./Actor";
 import Dialogue from "@/Dialogue";
 import Vector from "@common/Vector";
-import npcs from "./npcs.json";
 import { Drawable, Eventful } from "@/interfaces";
 import { bus } from "@/EventBus";
 
@@ -9,21 +8,6 @@ import { bus } from "@/EventBus";
  * * NonPlayer is a non-playable character.
  */
 class NonPlayer extends Actor implements Eventful, Drawable {
-  /**
-   * Info about the non-player
-   * TODO: Make the type of data more specific
-   *
-   * @prop {object} data
-   */
-  private data: any;
-
-  /**
-   * Dialogue that the non-player is the leader of
-   *
-   * @prop {Dialogue} dialogue
-   */
-  private dialogue: Dialogue;
-
   /**
    * Entities that were recently collided with
    *
@@ -44,27 +28,9 @@ class NonPlayer extends Actor implements Eventful, Drawable {
       data
     );
 
-    let npc = npcs[data.name];
-
-    if (!npc) {
-      throw new Error("NPC data for " + name + " is not defined in npcs.json");
-    }
-
-    this.data = npc;
-    this.dialogue = null;
-
     this.resolveState(`nonPlayers.${this.id}`);
 
     bus.register(this);
-  }
-
-  /**
-   * Get the name used when rendering dialogue
-   *
-   * @prop {string} dialogueName
-   */
-  get dialogueName(): string {
-    return this.data.display_name;
   }
 
   /**
@@ -138,7 +104,7 @@ class NonPlayer extends Actor implements Eventful, Drawable {
       return;
     }
 
-    this.dialogue = new Dialogue(this.data.default.speech, this, actors);
+    this.dialogue = new Dialogue(this.data.speech, this, actors);
   }
 }
 

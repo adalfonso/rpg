@@ -31,7 +31,7 @@ export default class StatManager {
    *
    * @prop {number} lvl
    */
-  private lvl: number;
+  private _lvl: number;
 
   /**
    * Amount of damage currently inflicted on the entity
@@ -52,7 +52,14 @@ export default class StatManager {
    *
    * @prop {Stats} stats
    */
-  private stats: Stats;
+  private baseStats: Stats;
+
+  /**
+   * Multiplier used to expand the range that base stats take
+   *
+   * @prop {number} multiplier
+   */
+  private multiplier: number = 2.5;
 
   /**
    * Create a new StatsManager instance
@@ -60,11 +67,34 @@ export default class StatManager {
    * @param {Stats} stats Base stats for an entity
    */
   constructor(stats: Stats) {
-    this.stats = stats;
+    this.baseStats = stats;
 
-    this.lvl = 1;
+    // Default to 5
+    this._lvl = 5;
     this.exp = 0;
     this.dmg = 0;
+  }
+
+  /**
+   * Get the current level
+   *
+   * @return {number} Current level stat
+   */
+  get lvl(): number {
+    return this._lvl;
+  }
+
+  /**
+   * Set the level stat
+   *
+   * @param {number} lvl Level to set
+   */
+  set lvl(lvl: number) {
+    if (lvl < 1 || lvl > 100 || !Number.isInteger(lvl)) {
+      throw new Error(`Invalid input when setting lvl stat: ${lvl}`);
+    }
+
+    this._lvl = lvl;
   }
 
   /**
@@ -73,7 +103,7 @@ export default class StatManager {
    * @return {number} Current health stat
    */
   get hp(): number {
-    return Math.max(0, this.stats.hp - this.dmg);
+    return Math.max(0, this.currentStatValue(this.baseStats.hp) - this.dmg);
   }
 
   /**
@@ -82,7 +112,7 @@ export default class StatManager {
    * @return {number} Current physical attack stat
    */
   get atk(): number {
-    return this.stats.atk;
+    return this.currentStatValue(this.baseStats.atk);
   }
 
   /**
@@ -91,7 +121,7 @@ export default class StatManager {
    * @return {number} Current physical defense stat
    */
   get def(): number {
-    return this.stats.def;
+    return this.currentStatValue(this.baseStats.def);
   }
 
   /**
@@ -100,7 +130,7 @@ export default class StatManager {
    * @return {number} Current magic attack stat
    */
   get sp_atk(): number {
-    return this.stats.sp_atk;
+    return this.currentStatValue(this.baseStats.sp_atk);
   }
 
   /**
@@ -109,7 +139,7 @@ export default class StatManager {
    * @return {number} Current magic defense stat
    */
   get sp_def(): number {
-    return this.stats.sp_def;
+    return this.currentStatValue(this.baseStats.sp_def);
   }
 
   /**
@@ -118,7 +148,7 @@ export default class StatManager {
    * @return {number} Current speed stat
    */
   get spd(): number {
-    return this.stats.spd;
+    return this.currentStatValue(this.baseStats.spd);
   }
 
   /**
@@ -127,13 +157,13 @@ export default class StatManager {
    * @return {number} Experience yield
    */
   get givesExp(): number {
-    return (
-      this.stats.hp +
-      this.stats.atk +
-      this.stats.def +
-      this.stats.sp_atk +
-      this.stats.sp_def +
-      this.stats.spd
+    return this.currentStatValue(
+      this.baseStats.hp +
+        this.baseStats.atk +
+        this.baseStats.def +
+        this.baseStats.sp_atk +
+        this.baseStats.sp_def +
+        this.baseStats.spd
     );
   }
 
@@ -143,7 +173,7 @@ export default class StatManager {
    * @param {number} dmg Amount of damage
    */
   public endure(dmg: number) {
-    this.dmg += dmg;
+    this.dmg += Math.max(1, dmg - this.def);
   }
 
   /**
@@ -153,5 +183,16 @@ export default class StatManager {
    */
   public gainExp(exp: number) {
     this.exp += exp;
+  }
+
+  /**
+   * Adjust a base stat based on current conditions
+   *
+   * @param  {number} baseStat Base state to adjust
+   *
+   * @return {number}          Adjusted stat value
+   */
+  private currentStatValue(baseStat: number): number {
+    return Math.floor(((baseStat * this._lvl) / 100) * this.multiplier);
   }
 }

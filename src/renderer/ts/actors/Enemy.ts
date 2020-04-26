@@ -1,10 +1,8 @@
 import Actor from "./Actor";
-import Dialogue from "@/Dialogue";
 import Player from "./Player.js";
 import Renderable from "@/Renderable";
 import StatManager from "@/StatManager";
 import Vector from "@common/Vector";
-import enemies from "./enemies.json";
 import { Drawable } from "@/interfaces";
 import { bus } from "@/EventBus";
 import { getImagePath } from "@/Util/loaders";
@@ -13,21 +11,6 @@ import { getImagePath } from "@/Util/loaders";
  * Main class for baddies
  */
 class Enemy extends Actor implements Drawable {
-  /**
-   * Info about the enemy
-   * TODO: Make the type of data more specific
-   *
-   * @prop {object} data
-   */
-  private data: any;
-
-  /**
-   * Dialogue that the enemy is the leader of
-   *
-   * @prop {Dialogue} dialogue
-   */
-  private dialogue: Dialogue;
-
   /**
    * An array of renderables for each sprite of the enemy's movement animation
    *
@@ -54,41 +37,30 @@ class Enemy extends Actor implements Drawable {
       data
     );
 
-    let enemy = enemies[data.type];
-
-    if (!enemy) {
-      throw new Error(`Enemy data for ${name} is not defined in enemies.json`);
-    }
-
-    this.data = enemy;
-    this.dialogue = null;
-    this.stats = new StatManager(enemy.default.stats);
+    this.stats = new StatManager(this.config.baseStats);
     this.defeated = false;
 
-    let sprite = getImagePath(enemy.ui.sprite);
-    let ratio = new Vector(enemy.ui.frames.x, enemy.ui.frames.y);
+    const UI = this.config.ui;
+
+    let fps = UI.fps;
+    let ratio = new Vector(UI.frames.x, UI.frames.y);
+    let scale = UI.scale;
+    let sprite = getImagePath(UI.sprite);
 
     this.sprites = [
       // img, scale, startFrame, frameCount, framesX, framesY, speed
-      new Renderable(sprite, enemy.ui.scale, 0, 8, ratio, enemy.ui.fps),
-      new Renderable(sprite, enemy.ui.scale, 0, 8, ratio, enemy.ui.fps),
-      new Renderable(sprite, enemy.ui.scale, 0, 8, ratio, enemy.ui.fps),
-      new Renderable(sprite, enemy.ui.scale, 0, 8, ratio, enemy.ui.fps),
-      new Renderable(sprite, enemy.ui.scale, 0, 8, ratio, enemy.ui.fps),
+      new Renderable(sprite, scale, 0, 8, ratio, fps),
+      new Renderable(sprite, scale, 0, 8, ratio, fps),
+      new Renderable(sprite, scale, 0, 8, ratio, fps),
+      new Renderable(sprite, scale, 0, 8, ratio, fps),
+      new Renderable(sprite, scale, 0, 8, ratio, fps),
     ];
 
     this.direction = 4;
 
-    this.resolveState(`enemies.${this.id}`);
-  }
+    this.stats = new StatManager(this.config.baseStats);
 
-  /**
-   * Get the name used when rendering dialogue
-   *
-   * @prop {string} dialogueName
-   */
-  get dialogueName(): string {
-    return this.data.display_name;
+    this.resolveState(`enemies.${this.id}`);
   }
 
   /**

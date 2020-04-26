@@ -1,10 +1,12 @@
+import Dialogue from "@/Dialogue";
+import Inanimate from "@/inanimates/Inanimate";
 import StatManager from "@/StatManager";
+import StateManager from "@/state/StateManager";
 import Vector from "@common/Vector";
 import Weapon from "@/item/Weapon";
+import actors from "./actors.json";
 import config from "@/config";
 import { Drawable, Lockable } from "@/interfaces";
-import Inanimate from "@/inanimates/Inanimate";
-import StateManager from "@/state/StateManager";
 
 /**
  * Collision information with another entity
@@ -66,6 +68,27 @@ abstract class Actor implements Drawable, Lockable {
   protected id: string;
 
   /**
+   * Level-related info about the actor
+   *
+   * @prop {object} data
+   */
+  protected data: any;
+
+  /**
+   * Game-related info about the actor
+   *
+   * @prop {object} config
+   */
+  protected config: any;
+
+  /**
+   * Dialogue that the actor is the leader of
+   *
+   * @prop {Dialogue} dialogue
+   */
+  protected dialogue: Dialogue = null;
+
+  /**
    * Current position of the actor
    *
    * @prop {Vector} _position
@@ -116,9 +139,22 @@ abstract class Actor implements Drawable, Lockable {
    * @param {object} data     Additional info about the actor
    */
   constructor(position: Vector, size: Vector, data: any) {
+    let actorType = this.constructor.name;
+
     if (!data?.name) {
+      throw new Error(`Missing unique identifier for ${actorType}.`);
+    }
+
+    if (!data?.type) {
+      throw new Error(`Missing "type" for ${actorType}.`);
+    }
+
+    this.data = data;
+    this.config = actors[data.type];
+
+    if (!this.config) {
       throw new Error(
-        `Missing unique identifier for ${this.constructor.name}.`
+        `Config data for ${actorType} is not defined in actors.json`
       );
     }
 
@@ -147,7 +183,9 @@ abstract class Actor implements Drawable, Lockable {
    *
    * @prop {string} dialogueName
    */
-  abstract get dialogueName(): string;
+  get dialogueName(): string {
+    return this.data.display_name;
+  }
 
   /**
    * Resolve the current state of the actor in comparison to the game state
@@ -166,8 +204,8 @@ abstract class Actor implements Drawable, Lockable {
       return;
     }
 
-    if (stateManagerData?.stats) {
-      this.stats = new StatManager(stateManagerData.stats);
+    if (stateManagerData?.lvl) {
+      this.stats.lvl = stateManagerData.lvl;
     }
   }
 
