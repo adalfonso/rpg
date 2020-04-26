@@ -359,16 +359,18 @@ abstract class Actor implements Drawable, Lockable {
    *
    * TODO: Tie the ref to the actor better, it's currently a little loosey goosey
    *
-   * @param {string} ref Reference to where in the state the actor is stored
+   * @param  {string} ref Reference to where in the state the actor is stored
+   *
+   * @return {object}     Actor data as stored in the state
    */
-  protected resolveState(ref: string) {
+  protected resolveState(ref: string): any {
     const state = StateManager.getInstance();
 
     let stateManagerData = state.get(ref);
 
     if (stateManagerData === undefined) {
       state.mergeByRef(ref, this.getState());
-      return;
+      return state.get(ref);
     }
 
     if (stateManagerData?.lvl) {
@@ -378,6 +380,8 @@ abstract class Actor implements Drawable, Lockable {
     if (stateManagerData?.dmg) {
       this.stats.dmg = stateManagerData.dmg;
     }
+
+    return stateManagerData;
   }
 
   /**

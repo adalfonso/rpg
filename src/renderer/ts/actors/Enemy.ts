@@ -104,6 +104,32 @@ class Enemy extends Actor implements Drawable {
       enemy: this,
     });
   }
+
+  /**
+   * Resolve the current state of the enemy in comparison to the game state
+   *
+   * @param  {string} ref Reference to where in the state the enemy is stored
+   *
+   * @return {object}     Enemy data as stored in the state
+   */
+  protected resolveState(ref: string): any {
+    let stateManagerData = super.resolveState(ref);
+
+    if (stateManagerData?.defeated) {
+      this.defeated = stateManagerData.defeated;
+    }
+
+    return stateManagerData;
+  }
+
+  /**
+   * Get current state of the enemy for export to a state manager
+   *
+   * @return {object} Current state of the enemy
+   */
+  protected getState(): object {
+    return { ...super.getState(), defeated: this.defeated };
+  }
 }
 
 export default Enemy;
