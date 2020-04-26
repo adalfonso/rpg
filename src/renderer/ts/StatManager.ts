@@ -36,9 +36,9 @@ export default class StatManager {
   /**
    * Amount of damage currently inflicted on the entity
    *
-   * @prop {number} dmg
+   * @prop {number} _dmg
    */
-  private dmg: number;
+  private _dmg: number;
 
   /**
    * Amount of experience points the entity has gained between levels
@@ -72,7 +72,7 @@ export default class StatManager {
     // Default to 5
     this._lvl = 5;
     this.exp = 0;
-    this.dmg = 0;
+    this._dmg = 0;
   }
 
   /**
@@ -98,12 +98,25 @@ export default class StatManager {
   }
 
   /**
+   * Set the damage amount
+   *
+   * @param {number} dmg Damage to set
+   */
+  set dmg(dmg: number) {
+    if (dmg < 0 || !Number.isInteger(dmg)) {
+      throw new Error(`Invalid input when setting dmg stat: ${dmg}`);
+    }
+
+    this._dmg = dmg;
+  }
+
+  /**
    * Get the current health stat
    *
    * @return {number} Current health stat
    */
   get hp(): number {
-    return Math.max(0, this.currentStatValue(this.baseStats.hp) - this.dmg);
+    return Math.max(0, this.currentStatValue(this.baseStats.hp) - this._dmg);
   }
 
   /**
@@ -173,7 +186,27 @@ export default class StatManager {
    * @param {number} dmg Amount of damage
    */
   public endure(dmg: number) {
-    this.dmg += Math.max(1, dmg - this.def);
+    this._dmg += Math.max(1, dmg - this.def);
+  }
+
+  /**
+   * Get stats data
+   *
+   * @return {object} Stats data
+   */
+  public export(): object {
+    return {
+      dmg: this._dmg,
+      lvl: this._lvl,
+      stats: {
+        hp: this.baseStats.hp,
+        atk: this.baseStats.atk,
+        def: this.baseStats.def,
+        sp_atk: this.baseStats.sp_atk,
+        sp_def: this.baseStats.sp_def,
+        spd: this.baseStats.spd,
+      },
+    };
   }
 
   /**

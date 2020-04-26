@@ -72,7 +72,7 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
     this.stats = new StatManager(this.config.baseStats);
     this.weapon = null;
 
-    this.resolveState(this.id);
+    this.resolveState(this.data.type);
 
     bus.register(this);
 

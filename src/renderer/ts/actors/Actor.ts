@@ -374,6 +374,10 @@ abstract class Actor implements Drawable, Lockable {
     if (stateManagerData?.lvl) {
       this.stats.lvl = stateManagerData.lvl;
     }
+
+    if (stateManagerData?.dmg) {
+      this.stats.dmg = stateManagerData.dmg;
+    }
   }
 
   /**
@@ -398,17 +402,7 @@ abstract class Actor implements Drawable, Lockable {
    * @return {object} Current state of the actor
    */
   protected getState(): object {
-    return {
-      damage: 0,
-      stats: {
-        hp: this.stats.hp,
-        atk: this.stats.atk,
-        def: this.stats.def,
-        sp_atk: this.stats.sp_atk,
-        sp_def: this.stats.sp_def,
-        spd: this.stats.spd,
-      },
-    };
+    return this.stats.export();
   }
 
   /**
