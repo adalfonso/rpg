@@ -5,7 +5,6 @@ import Vector from "@common/Vector";
 import Weapon from "@/item/Weapon";
 import { Drawable, Eventful, Lockable } from "@/interfaces";
 import { bus } from "@/EventBus";
-import { getImagePath } from "@/Util/loaders";
 
 /**
  * A Player is the main entity of the game.
@@ -52,12 +51,7 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
     this.speed = new Vector(0, 0);
     this.baseSpeed = size.x / 10;
 
-    const UI = this.config.ui;
-
-    let fps = UI.fps;
-    let ratio = new Vector(UI.frames.x, UI.frames.y);
-    let scale = UI.scale;
-    let sprite = getImagePath(UI.sprite);
+    let { fps, ratio, scale, sprite } = this.getUiInfo();
 
     this.sprites = [
       // Keep this example of an animated sprite until we actually use one

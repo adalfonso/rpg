@@ -7,6 +7,8 @@ import Weapon from "@/item/Weapon";
 import actors from "./actors.json";
 import config from "@/config";
 import { Drawable, Lockable } from "@/interfaces";
+import { RenderData } from "@/Renderable";
+import { getImagePath } from "@/Util/loaders";
 
 /**
  * Collision information with another entity
@@ -188,47 +190,6 @@ abstract class Actor implements Drawable, Lockable {
   }
 
   /**
-   * Resolve the current state of the actor in comparison to the game state
-   *
-   * TODO: Tie the ref to the actor better, it's currently a little loosey goosey
-   *
-   * @param {string} ref Reference to where in the state the actor is stored
-   */
-  protected resolveState(ref: string) {
-    const state = StateManager.getInstance();
-
-    let stateManagerData = state.get(ref);
-
-    if (stateManagerData === undefined) {
-      state.mergeByRef(ref, this.getState());
-      return;
-    }
-
-    if (stateManagerData?.lvl) {
-      this.stats.lvl = stateManagerData.lvl;
-    }
-  }
-
-  /**
-   * Get current state of the actor for export to a state manager
-   *
-   * @return {object} Current state of the actor
-   */
-  protected getState(): object {
-    return {
-      damage: 0,
-      stats: {
-        hp: this.stats.hp,
-        atk: this.stats.atk,
-        def: this.stats.def,
-        sp_atk: this.stats.sp_atk,
-        sp_def: this.stats.sp_def,
-        spd: this.stats.spd,
-      },
-    };
-  }
-
-  /**
    * Update the actor
    *
    * @param {number} dt Delta time
@@ -394,8 +355,66 @@ abstract class Actor implements Drawable, Lockable {
   }
 
   /**
+   * Resolve the current state of the actor in comparison to the game state
+   *
+   * TODO: Tie the ref to the actor better, it's currently a little loosey goosey
+   *
+   * @param {string} ref Reference to where in the state the actor is stored
+   */
+  protected resolveState(ref: string) {
+    const state = StateManager.getInstance();
+
+    let stateManagerData = state.get(ref);
+
+    if (stateManagerData === undefined) {
+      state.mergeByRef(ref, this.getState());
+      return;
+    }
+
+    if (stateManagerData?.lvl) {
+      this.stats.lvl = stateManagerData.lvl;
+    }
+  }
+
+  /**
+   * Get render info from an actor's config
+   *
+   * @return {RenderData} Inputs for a renderable
+   */
+  protected getUiInfo(): RenderData {
+    const UI = this.config.ui;
+
+    return {
+      fps: UI.fps,
+      ratio: new Vector(UI.frames.x, UI.frames.y),
+      scale: UI.scale,
+      sprite: getImagePath(UI.sprite),
+    };
+  }
+
+  /**
+   * Get current state of the actor for export to a state manager
+   *
+   * @return {object} Current state of the actor
+   */
+  protected getState(): object {
+    return {
+      damage: 0,
+      stats: {
+        hp: this.stats.hp,
+        atk: this.stats.atk,
+        def: this.stats.def,
+        sp_atk: this.stats.sp_atk,
+        sp_def: this.stats.sp_def,
+        spd: this.stats.spd,
+      },
+    };
+  }
+
+  /**
    * Retrieve a coordinate within the area of the actor to consider as a
    * collision point.
+   *
    * TODO: Reconsider the hardcoded values here
    *
    * @param {boolean} prev Use previous position instead of current position

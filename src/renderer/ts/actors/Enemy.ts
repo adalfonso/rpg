@@ -5,7 +5,6 @@ import StatManager from "@/StatManager";
 import Vector from "@common/Vector";
 import { Drawable } from "@/interfaces";
 import { bus } from "@/EventBus";
-import { getImagePath } from "@/Util/loaders";
 
 /**
  * Main class for baddies
@@ -40,12 +39,7 @@ class Enemy extends Actor implements Drawable {
     this.stats = new StatManager(this.config.baseStats);
     this.defeated = false;
 
-    const UI = this.config.ui;
-
-    let fps = UI.fps;
-    let ratio = new Vector(UI.frames.x, UI.frames.y);
-    let scale = UI.scale;
-    let sprite = getImagePath(UI.sprite);
+    let { fps, ratio, scale, sprite } = this.getUiInfo();
 
     this.sprites = [
       // img, scale, startFrame, frameCount, framesX, framesY, speed

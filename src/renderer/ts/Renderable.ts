@@ -1,6 +1,18 @@
 import Vector from "@common/Vector";
 import config from "./config";
 
+/**
+ * Data fed to a Renderable instance
+ *
+ * @type {RenderData}
+ */
+export type RenderData = {
+  fps: number;
+  ratio: Vector;
+  scale: number;
+  sprite: string;
+};
+
 export default class Renderable {
   /**
    * Image element to render
