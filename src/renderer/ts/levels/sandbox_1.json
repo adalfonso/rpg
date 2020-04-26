@@ -1,4 +1,11 @@
 { "compressionlevel":-1,
+ "editorsettings":
+    {
+     "export":
+        {
+         "target":"."
+        }
+    },
  "height":18,
  "infinite":false,
  "layers":[
@@ -202,8 +209,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":6,
- "nextobjectid":15,
+ "nextlayerid":7,
+ "nextobjectid":19,
  "orientation":"orthogonal",
  "properties":[
         {
@@ -217,7 +224,7 @@
  "tilesets":[
         {
          "firstgid":1,
-         "source":"C:\/Users\/Anthony\/Desktop\/assets\/dungeon_walls.tsx"
+         "source":"..\/..\/..\/..\/..\/assets\/dungeon_walls.tsx"
         }],
  "tilewidth":16,
  "type":"map",

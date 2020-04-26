@@ -4,6 +4,7 @@ import Weapon from "@/item/Weapon";
 import config from "@/config";
 import { Drawable, Lockable } from "@/interfaces";
 import Inanimate from "@/inanimates/Inanimate";
+import StateManager from "@/state/StateManager";
 
 /**
  * Collision information with another entity
@@ -58,6 +59,13 @@ abstract class Actor implements Drawable, Lockable {
   private _size: Vector;
 
   /**
+   * Unique identifier
+   *
+   * @prop {string} id
+   */
+  protected id: string;
+
+  /**
    * Current position of the actor
    *
    * @prop {Vector} _position
@@ -103,10 +111,18 @@ abstract class Actor implements Drawable, Lockable {
   /**
    * Create a new Actor-based instance
    *
-   * @param {vector} position
-   * @param {size}   size
+   * @param {Vector} position Positon of the actor
+   * @param {Vector} size     Size of the actor
+   * @param {object} data     Additional info about the actor
    */
-  constructor(position: Vector, size: Vector) {
+  constructor(position: Vector, size: Vector, data: any) {
+    if (!data?.name) {
+      throw new Error(
+        `Missing unique identifier for ${this.constructor.name}.`
+      );
+    }
+
+    this.id = data.name;
     this.position = position.times(config.scale);
     this._size = size;
     this.direction = 0;
@@ -132,6 +148,47 @@ abstract class Actor implements Drawable, Lockable {
    * @prop {string} dialogueName
    */
   abstract get dialogueName(): string;
+
+  /**
+   * Resolve the current state of the actor in comparison to the game state
+   *
+   * TODO: Tie the ref to the actor better, it's currently a little loosey goosey
+   *
+   * @param {string} ref Reference to where in the state the actor is stored
+   */
+  protected resolveState(ref: string) {
+    const state = StateManager.getInstance();
+
+    let stateManagerData = state.get(ref);
+
+    if (stateManagerData === undefined) {
+      state.mergeByRef(ref, this.getState());
+      return;
+    }
+
+    if (stateManagerData?.stats) {
+      this.stats = new StatManager(stateManagerData.stats);
+    }
+  }
+
+  /**
+   * Get current state of the actor for export to a state manager
+   *
+   * @return {object} Current state of the actor
+   */
+  protected getState(): object {
+    return {
+      damage: 0,
+      stats: {
+        hp: this.stats.hp,
+        atk: this.stats.atk,
+        def: this.stats.def,
+        sp_atk: this.stats.sp_atk,
+        sp_def: this.stats.sp_def,
+        spd: this.stats.spd,
+      },
+    };
+  }
 
   /**
    * Update the actor

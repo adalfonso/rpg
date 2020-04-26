@@ -1,4 +1,6 @@
 import { merge } from "@/Util/util";
+import { promises as fs } from "fs";
+import { bus } from "@/EventBus";
 
 /**
  * StateManager is an intermediary between an on-disk JSON store and objects
@@ -11,6 +13,13 @@ class StateManager {
    * @prop {object} data
    */
   private data: object = {};
+
+  /**
+   * Location the state was last loaded from
+   *
+   * @prop {string} lastLoadedFrom
+   */
+  private lastLoadedFrom: string;
 
   /**
    * Singleton instance
@@ -33,6 +42,23 @@ class StateManager {
   }
 
   /**
+   * Retrieve data from the state based on a key lookup
+   *
+   * @param  {string} ref Lookup key
+   *
+   * @return {any}        Data stored at the reference
+   */
+  public get(ref: string): any {
+    try {
+      return ref.split(".").reduce((current, key) => {
+        return current[key];
+      }, this.data);
+    } catch (e) {
+      return undefined;
+    }
+  }
+
+  /**
    * Merge data into the state. Any duplicate (non-object) values will be
    * overwritten by the new data.
    *
@@ -40,6 +66,27 @@ class StateManager {
    */
   public merge(data: object) {
     this.data = merge(this.data, data);
+  }
+
+  /**
+   * Merge data into the state via reference string
+   *
+   * @param {string} ref  Reference string
+   * @param {any}    data Data to merge in
+   */
+  public mergeByRef(ref: string, data: any) {
+    let obj = {};
+
+    ref.split(".").reduce((carry, key, index, array) => {
+      if (index + 1 < array.length) {
+        carry[key] = {};
+      } else {
+        carry[key] = data;
+      }
+      return carry[key];
+    }, obj);
+
+    this.merge(obj);
   }
 
   /**
@@ -75,6 +122,60 @@ class StateManager {
         `Warning: Tried to remove a non-existent reference from the state manager: ${ref}`
       );
     }
+  }
+
+  /**
+   * Save the state to disk at a specified location
+   *
+   * @param  {string} destination Disk location to save the state at
+   *
+   * @return {Promise<void>} Promise for write operation
+   */
+  public save(destination: string = this.lastLoadedFrom): Promise<void> {
+    destination = this.parseFileDestination(destination);
+
+    return fs
+      .writeFile(destination, this.toJson())
+      .then(() => {
+        bus.emit("state.save");
+      })
+      .catch((err) => {
+        console.log(`Could not save state to "${destination}".`);
+      });
+  }
+
+  /**
+   * Load game state from a location on disk
+   *
+   * @param  {string} destination Disk location to load the state from
+   *
+   * @return {Promise<string | void>} Promise for read operation
+   */
+  public load(destination: string): Promise<string | void> {
+    destination = this.parseFileDestination(destination);
+
+    return fs
+      .readFile(this.parseFileDestination(destination), "UTF-8")
+      .then((contents: string) => {
+        this.data = JSON.parse(contents);
+        this.lastLoadedFrom = destination;
+        bus.emit("file.load");
+      })
+      .catch((err) => {
+        console.log(`Could not load state from "${destination}".`);
+        this.save(destination);
+      });
+  }
+
+  /**
+   * Make sure the destination is a json file
+   *
+   * @param  {string} destination Destination path
+   *
+   * @return {string}             Formatted destination path;
+   */
+  private parseFileDestination(destination: string): string {
+    return /\.json$/.test(destination) ? destination : destination + ".json";
   }
 }
 

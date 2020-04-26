@@ -38,7 +38,11 @@ class NonPlayer extends Actor implements Eventful, Drawable {
    * @param {object} data Info about the non-player
    */
   constructor(data) {
-    super(new Vector(data.x, data.y), new Vector(data.width, data.height));
+    super(
+      new Vector(data.x, data.y),
+      new Vector(data.width, data.height),
+      data
+    );
 
     let npc = npcs[data.name];
 
@@ -48,6 +52,8 @@ class NonPlayer extends Actor implements Eventful, Drawable {
 
     this.data = npc;
     this.dialogue = null;
+
+    this.resolveState(`nonPlayers.${this.id}`);
 
     bus.register(this);
   }

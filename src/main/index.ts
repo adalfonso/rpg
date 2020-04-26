@@ -8,10 +8,6 @@ const isDevelopment = process.env.NODE_ENV !== "production";
 // global reference to mainWindow (necessary to prevent window from being garbage collected)
 let mainWindow;
 
-if (module.hot) {
-  module.hot.accept();
-}
-
 function createMainWindow() {
   const window = new BrowserWindow({
     webPreferences: { nodeIntegration: true },

@@ -1,4 +1,11 @@
 { "compressionlevel":-1,
+ "editorsettings":
+    {
+     "export":
+        {
+         "target":"P:\/game\/src\/ts\/levels"
+        }
+    },
  "height":32,
  "infinite":false,
  "layers":[
@@ -198,41 +205,8 @@
          "objects":[
                 {
                  "height":32.75,
-                 "id":16,
-                 "name":"knight",
-                 "rotation":0,
-                 "type":"knight",
-                 "visible":true,
-                 "width":14.25,
-                 "x":62.125,
-                 "y":65.375
-                }, 
-                {
-                 "height":32.75,
-                 "id":17,
-                 "name":"knight",
-                 "rotation":0,
-                 "type":"knight",
-                 "visible":true,
-                 "width":14.25,
-                 "x":181.875,
-                 "y":67.875
-                }, 
-                {
-                 "height":32.75,
-                 "id":19,
-                 "name":"knight",
-                 "rotation":0,
-                 "type":"knight",
-                 "visible":true,
-                 "width":14.25,
-                 "x":298.625,
-                 "y":70.875
-                }, 
-                {
-                 "height":32.75,
                  "id":22,
-                 "name":"knight",
+                 "name":"knight2",
                  "rotation":0,
                  "type":"knight",
                  "visible":true,
@@ -243,7 +217,7 @@
                 {
                  "height":32.75,
                  "id":24,
-                 "name":"knight",
+                 "name":"knight1",
                  "rotation":0,
                  "type":"knight",
                  "visible":true,
@@ -254,7 +228,7 @@
                 {
                  "height":32.75,
                  "id":25,
-                 "name":"knight",
+                 "name":"knight0",
                  "rotation":0,
                  "type":"knight",
                  "visible":true,
@@ -269,7 +243,7 @@
          "y":0
         }],
  "nextlayerid":9,
- "nextobjectid":26,
+ "nextobjectid":28,
  "orientation":"orthogonal",
  "properties":[
         {
@@ -283,7 +257,7 @@
  "tilesets":[
         {
          "firstgid":1,
-         "source":"C:\/Users\/Anthony\/Desktop\/assets\/dungeon_walls.tsx"
+         "source":"assets\/dungeon_walls.tsx"
         }],
  "tilewidth":16,
  "type":"map",

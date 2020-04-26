@@ -48,7 +48,11 @@ class Enemy extends Actor implements Drawable {
    * @param {object} data Info about the enemy
    */
   constructor(data) {
-    super(new Vector(data.x, data.y), new Vector(data.width, data.height));
+    super(
+      new Vector(data.x, data.y),
+      new Vector(data.width, data.height),
+      data
+    );
 
     let enemy = enemies[data.type];
 
@@ -74,6 +78,8 @@ class Enemy extends Actor implements Drawable {
     ];
 
     this.direction = 4;
+
+    this.resolveState(`enemies.${this.id}`);
   }
 
   /**

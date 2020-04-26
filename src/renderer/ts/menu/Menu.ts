@@ -88,7 +88,7 @@ abstract class Menu implements Eventful, Drawable, Lockable {
    *
    * TODO: This menu is vertical orientation, with sub-classes left to override
    * how key codes are interpreted. This is bad design. Perhaps there should be
-   * further extractions for more generic sub-classes. Additionaly menus with
+   * further abstractions for more generic sub-classes. Additionaly menus with
    * sub-menus may benefit from parsing the sub-menus as actual menu instances
    * instead of using an object literal.
    *

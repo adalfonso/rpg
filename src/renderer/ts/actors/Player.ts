@@ -47,7 +47,7 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
    * @param {Vector} size      The player's size
    */
   constructor(position: Vector, size: Vector) {
-    super(position, size);
+    super(position, size, { name: "player" });
 
     this.speed = new Vector(0, 0);
     this.baseSpeed = size.x / 10;
@@ -69,7 +69,8 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
       new Renderable(sprite, 2, 1, 0, new Vector(1, 4), 8),
     ];
 
-    // TODO: Hook this into a state loader instead of hardcoding
+    // Load default player stats
+    // TODO: this into a config
     this.stats = new StatManager({
       hp: 10,
       atk: 2,
@@ -81,6 +82,8 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
 
     this.weapon = null;
     this.spells = [];
+
+    this.resolveState(this.id);
 
     bus.register(this);
 

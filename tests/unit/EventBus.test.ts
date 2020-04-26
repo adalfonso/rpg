@@ -83,7 +83,7 @@ describe("EventBus", () => {
               foo: (e) => {
                 fooValue += 10;
 
-                if (e.detail.bar === barValue) {
+                if (e.detail?.bar === barValue) {
                   emittedDetails = true;
                   fooValue += barValue;
                 }

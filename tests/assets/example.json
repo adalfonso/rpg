@@ -3,7 +3,7 @@
     {
      "export":
         {
-         "target":"."
+         "target":"P:\/game\/tests\/assets"
         }
     },
  "height":6,
@@ -206,7 +206,7 @@
                 {
                  "height":24,
                  "id":7,
-                 "name":"",
+                 "name":"knight0",
                  "rotation":0,
                  "type":"knight",
                  "visible":true,
@@ -235,7 +235,7 @@
  "tilesets":[
         {
          "firstgid":1,
-         "source":"C:\/Users\/Anthony\/Desktop\/assets\/dungeon_walls.tsx"
+         "source":"assets\/dungeon_walls.tsx"
         }],
  "tilewidth":16,
  "type":"map",
