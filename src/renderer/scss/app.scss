@@ -1,3 +1,8 @@
+@font-face {
+  font-family: Minecraftia;
+  src: url(../font/Minecraftia-Regular.ttf);
+}
+
 body {
   background: #eee;
   margin: 0;
@@ -9,5 +14,10 @@ body {
   canvas {
     margin: auto;
     background: #000;
+  }
+
+  .preload-font {
+    font-family: Minecraftia;
+    visibility: hidden;
   }
 }

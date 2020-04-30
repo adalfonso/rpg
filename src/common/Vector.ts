@@ -25,10 +25,21 @@ class Vector {
    *
    * @param  {Vector} addend Value to add
    *
-   * @return {Vector}   New vector
+   * @return {Vector}        New vector
    */
   public plus(addend: Vector): Vector {
     return new Vector(this.x + addend.x, this.y + addend.y);
+  }
+
+  /**
+   * Subtract a vector to generate a new vector
+   *
+   * @param  {Vector} subtrahend Value to subtract
+   *
+   * @return {Vector}            New vector
+   */
+  public minus(subtrahend: Vector): Vector {
+    return new Vector(this.x - subtrahend.x, this.y - subtrahend.y);
   }
 
   /**

@@ -1,15 +1,16 @@
-import Actor from "./actors/Actor";
+import Actor from "../actors/Actor";
+import TextStream from "./TextStream";
 import Vector from "@common/Vector";
-import { Drawable, Eventful } from "./interfaces";
+import { Drawable, Eventful } from "../interfaces";
 import { bus } from "@/EventBus";
 
 class Dialogue implements Eventful, Drawable {
   /**
-   * Listing of all text lines in the dialogue
+   * Used to split the current text out for a line-by-line rendering
    *
-   * @prop {string[]} texts
+   * @prop {TextStream} stream
    */
-  private texts: string[];
+  private stream: TextStream;
 
   /**
    * Actor speaking the dialogue
@@ -26,21 +27,6 @@ class Dialogue implements Eventful, Drawable {
   private actors: Actor[];
 
   /**
-   * Text currently output to the screen
-   *
-   * @prop {string} currentText
-   */
-
-  private currentText: string;
-
-  /**
-   * Texts index that is currently rendering
-   *
-   * @prop {number} currentIndex
-   */
-  private currentIndex: number;
-
-  /**
    * A waiting state denotes one line of text as fully rendered and is waiting
    * for user input to render the next line
    *
@@ -49,7 +35,7 @@ class Dialogue implements Eventful, Drawable {
   private waiting: boolean;
 
   /**
-   * Done denotes that all texts have been full rendered
+   * Done denotes that all texts have been fully rendered
    *
    * @prop {boolean} done
    */
@@ -68,26 +54,25 @@ class Dialogue implements Eventful, Drawable {
   private timeStore: number;
 
   /**
-   * Create a new dialogue isntance
+   * Create a new Dialogue instance
    *
-   * @param {string[]} texts   Listing of all text lines in the dialogue
-   * @param {Actor}    speaker Actor speaking the dialogue
-   * @param {Actor[]}  actors  All actors in the dialogue, excluding the speaker
+   * @param {TextStream} pool    Tool for drawing partial lines in the dialogue
+   * @param {Actor}      speaker Actor speaking the dialogue
+   * @param {Actor[]}    actors  All actors in dialogue, excluding the speaker
    */
-  constructor(texts: string[], speaker: Actor, actors: Actor[]) {
-    this.texts = texts;
+  constructor(stream: TextStream, speaker: Actor, actors: Actor[]) {
+    this.stream = stream;
     this.speaker = speaker;
     this.actors = actors;
-    this.currentText = "";
-
-    this.currentIndex = 0;
     this.waiting = false;
     this.done = false;
 
     this.frameLength = 1000 / 24;
     this.timeStore = 0;
 
-    this.actors.push(this.speaker);
+    if (this.speaker) {
+      this.actors.push(this.speaker);
+    }
 
     this.start();
   }
@@ -109,19 +94,11 @@ class Dialogue implements Eventful, Drawable {
       return;
     }
 
-    let endChar =
-      Math.min(
-        this.texts[this.currentIndex].length,
-        Math.floor(this.timeStore / this.frameLength) + this.currentText.length
-      ) + 1;
+    let frames = Math.floor(this.timeStore / this.frameLength);
 
-    this.currentText = this.texts[this.currentIndex].substring(0, endChar);
+    this.waiting = this.stream.tick(frames);
 
     this.timeStore = this.timeStore % this.frameLength;
-
-    if (this.currentText === this.texts[this.currentIndex]) {
-      this.waiting = true;
-    }
   }
 
   /**
@@ -136,12 +113,21 @@ class Dialogue implements Eventful, Drawable {
     offset: Vector,
     resolution: Vector
   ) {
-    ctx.save();
-    ctx.translate(32 - offset.x, 48 - offset.y);
-    ctx.font = "30px Arial";
-    ctx.fillStyle = "#FFF";
+    let margin = new Vector(20, 20);
+    let size = new Vector(resolution.x - 2 * margin.x, 130);
 
-    ctx.fillText(this.speaker.dialogueName + ": " + this.currentText, 0, 0);
+    let position = new Vector(
+      margin.x - offset.x,
+      resolution.y - offset.y - size.y - margin.y
+    );
+
+    ctx.save();
+
+    ctx.translate(position.x, position.y);
+    ctx.fillStyle = "#EEE";
+    ctx.fillRect(0, 0, size.x, size.y);
+
+    this.drawText(ctx, new Vector(0, 0), resolution.minus(margin.times(2)));
 
     ctx.restore();
   }
@@ -199,14 +185,61 @@ class Dialogue implements Eventful, Drawable {
       return;
     }
 
-    if (this.currentIndex + 1 < this.texts.length) {
-      this.currentIndex++;
-      this.timeStore = 0;
-      this.currentText = "";
-      this.waiting = false;
-    } else {
+    if (this.stream.isDone()) {
       this.done = true;
+    } else {
+      this.stream.next();
+      this.timeStore = 0;
+      this.waiting = false;
     }
+  }
+
+  /**
+   * Draw text
+   *
+   * @param {CanvasRenderingContext2D} ctx        Render context
+   * @param {Vector}                   offset     Render position offset
+   * @param {Vector}                   resolution Render resolution
+   */
+  private drawText(
+    ctx: CanvasRenderingContext2D,
+    offset: Vector,
+    resolution: Vector
+  ) {
+    let lineHeight = 52;
+    let padding = new Vector(20, 20);
+
+    ctx.save();
+
+    ctx.font = "32px Minecraftia";
+    ctx.textAlign = "left";
+
+    // Reset text stream on first render
+    if (this.stream.isEmpty()) {
+      let prefix = this.speaker ? this.speaker.dialogueName + ": " : "";
+
+      this.stream.fillBuffer(ctx, resolution.minus(padding.times(2)), prefix);
+    }
+
+    ctx.translate(offset.x + padding.x, offset.y + padding.y);
+    ctx.fillStyle = "#333";
+    ctx.font = "32px Minecraftia";
+    ctx.textAlign = "left";
+
+    let lines = this.stream.read();
+    let fragment = this.stream.fragment;
+
+    // Print each line in the buffer
+    for (let i = 0; i < lines.length; i++) {
+      let text = fragment.length < lines[i].length ? fragment : lines[i];
+
+      ctx.translate(0, lineHeight);
+      ctx.fillText(text.trim(), 0, 0);
+
+      fragment = fragment.substr(text.length);
+    }
+
+    ctx.restore();
   }
 }
 

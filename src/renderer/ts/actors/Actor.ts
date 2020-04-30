@@ -1,4 +1,4 @@
-import Dialogue from "@/Dialogue";
+import Dialogue from "@/ui/Dialogue";
 import Inanimate from "@/inanimates/Inanimate";
 import StatManager from "@/StatManager";
 import StateManager from "@/state/StateManager";
@@ -186,7 +186,7 @@ abstract class Actor implements Drawable, Lockable {
    * @prop {string} dialogueName
    */
   get dialogueName(): string {
-    return this.data.display_name;
+    return this.config.display_name;
   }
 
   /**

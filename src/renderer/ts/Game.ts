@@ -142,7 +142,6 @@ class Game implements Eventful, Drawable {
     }
 
     this.menu.draw(ctx, offset, resolution);
-
     this.inventory.draw(ctx, offset, resolution);
   }
 

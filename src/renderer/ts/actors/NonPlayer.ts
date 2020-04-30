@@ -1,5 +1,5 @@
 import Actor from "./Actor";
-import Dialogue from "@/Dialogue";
+import Dialogue from "@/ui/Dialogue";
 import Vector from "@common/Vector";
 import { Drawable, Eventful } from "@/interfaces";
 import { bus } from "@/EventBus";

@@ -41,6 +41,20 @@ describe("Vector", () => {
     });
   });
 
+  describe("minus", () => {
+    it("subtracts one vector from another", () => {
+      [
+        [new Sut(0, 0), new Sut(4, 5), new Sut(-4, -5)],
+        [new Sut(2, 4), new Sut(1, 3), new Sut(1, 1)],
+        [new Sut(-5, -100), new Sut(200, -300), new Sut(-205, 200)],
+      ].forEach((data: Sut[]) => {
+        let [sut, input, expected] = data;
+
+        expect(sut.minus(input)).to.deep.equal(expected);
+      });
+    });
+  });
+
   describe("times", () => {
     it("multiplies a vector by a scalar", () => {
       [
