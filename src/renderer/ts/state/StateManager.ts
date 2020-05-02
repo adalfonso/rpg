@@ -41,9 +41,7 @@ class StateManager {
    * @return {StateManager} Shared instance
    */
   public static getInstance() {
-    if (!StateManager.instance) {
-      StateManager.instance = new StateManager();
-    }
+    StateManager.instance = StateManager.instance ?? new StateManager();
 
     return StateManager.instance;
   }

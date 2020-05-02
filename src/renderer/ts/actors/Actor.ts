@@ -1,6 +1,6 @@
 import Dialogue from "@/ui/Dialogue";
 import Inanimate from "@/inanimates/Inanimate";
-import StatManager from "@/StatManager";
+import Stats from "@/Stats";
 import StateManager from "@/state/StateManager";
 import Vector from "@common/Vector";
 import Weapon from "@/item/Weapon";
@@ -91,6 +91,13 @@ abstract class Actor implements Drawable, Lockable {
   protected dialogue: Dialogue = null;
 
   /**
+   * If the actor is locked from updating
+   *
+   * @prop {boolean} locked
+   */
+  protected locked: boolean;
+
+  /**
    * Current position of the actor
    *
    * @prop {Vector} _position
@@ -100,9 +107,9 @@ abstract class Actor implements Drawable, Lockable {
   /**
    * An actor's stats
    *
-   * @prop {StatManager} stats
+   * @prop {Stats} stats
    */
-  public stats: StatManager;
+  public stats: Stats;
 
   /**
    * The weapon currently equipped to the actor
@@ -125,13 +132,6 @@ abstract class Actor implements Drawable, Lockable {
    * @prop {boolean} inDialogue
    */
   public inDialogue: boolean;
-
-  /**
-   * If the actor is locked from updating
-   *
-   * @prop {boolean} locked
-   */
-  public locked: boolean;
 
   /**
    * Create a new Actor-based instance
@@ -373,13 +373,11 @@ abstract class Actor implements Drawable, Lockable {
       return state.get(ref);
     }
 
-    if (stateManagerData?.lvl) {
-      this.stats.lvl = stateManagerData.lvl;
-    }
-
-    if (stateManagerData?.dmg) {
-      this.stats.dmg = stateManagerData.dmg;
-    }
+    ["lvl", "exp", "dmg"].forEach((stat) => {
+      if (stateManagerData?.[stat]) {
+        this.stats[stat] = stateManagerData[stat];
+      }
+    });
 
     return stateManagerData;
   }

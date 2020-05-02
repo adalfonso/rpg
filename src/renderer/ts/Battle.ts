@@ -1,17 +1,26 @@
 import BattleMenu from "./menu/BattleMenu";
+import Dialogue from "./ui/Dialogue";
 import Enemy from "./actors/Enemy";
 import Player from "./actors/Player";
+import TextStream from "./ui/TextStream";
 import Vector from "@common/Vector";
-import { Drawable, Eventful } from "./interfaces";
+import { Drawable, Eventful, Lockable } from "./interfaces";
 import { bus } from "@/EventBus";
 
-class Battle implements Eventful, Drawable {
+class Battle implements Eventful, Drawable, Lockable {
   /**
    * Menu for the battle
    *
-   * @prop {BattleMenu} battleMenu
+   * @prop {BattleMenu} menu
    */
-  private battleMenu: BattleMenu;
+  private menu: BattleMenu;
+
+  /**
+   * Dialogue in the battle
+   *
+   * @prop {Dialogue} dialogue
+   */
+  private dialogue: Dialogue = null;
 
   /**
    * Enemy being fought
@@ -33,6 +42,13 @@ class Battle implements Eventful, Drawable {
    * @prop {boolean} playersTurn
    */
   private playersTurn: boolean;
+
+  /**
+   * If the battle is locked
+   *
+   * @prop {boolean} locked
+   */
+  private locked: boolean = false;
 
   /**
    * If the battle is currently active
@@ -65,7 +81,7 @@ class Battle implements Eventful, Drawable {
     this.enemy.lock();
 
     this.playersTurn = this.player.stats.spd > this.enemy.stats.spd;
-    this.battleMenu = this.getBattleMenu();
+    this.menu = this.getBattleMenu();
 
     bus.register(this);
   }
@@ -76,7 +92,18 @@ class Battle implements Eventful, Drawable {
    * @param {number} dt Delta time
    */
   public update(dt: number) {
-    // TODO: Utilize an update method
+    if (this.dialogue) {
+      this.dialogue.update(dt);
+    }
+
+    if (this.dialogue?.done) {
+      this.dialogue = null;
+
+      // End battle after exp/lvl growth dialogue has ended
+      if (this.isDone()) {
+        this.stop();
+      }
+    }
   }
 
   /**
@@ -118,8 +145,108 @@ class Battle implements Eventful, Drawable {
         .plus(this.player.position)
         .plus(this.player.size);
 
-      this.battleMenu.draw(ctx, playerOffset, resolution);
+      this.menu.draw(ctx, playerOffset, resolution);
     }
+
+    if (this.dialogue) {
+      this.dialogue.draw(ctx, undefined, resolution);
+    }
+  }
+
+  /**
+   * Register events with the event bus
+   *
+   * @return {object} Events to register
+   */
+  public register(): object {
+    return {
+      battleAction: (e) => {
+        if (this.playersTurn) {
+          this.player.attack(this.enemy, e.attack);
+        } else {
+          this.enemy.attack(this.player);
+        }
+
+        if (this.player.stats.hp <= 0) {
+          // TODO: Handle player's death
+        } else if (this.enemy.stats.hp <= 0) {
+          this.player.gainExp(this.enemy.stats.givesExp);
+        } else {
+          this.cycle();
+        }
+      },
+      "stats.gainExp": (e) => {
+        let name = this.player.dialogueName;
+        let exp = e.detail.exp;
+        let lvl = e.detail.lvl;
+        let dialogue = [`${name} gained ${exp} exp.`];
+
+        if (lvl) {
+          dialogue.push(`${name} grew to level ${lvl}!`);
+        }
+
+        let stream = new TextStream(dialogue);
+
+        this.dialogue = new Dialogue(stream, this.player, [this.enemy]);
+        this.lock();
+      },
+    };
+  }
+
+  /**
+   * Lock the battle and its menu
+   *
+   * @return {boolean} If the lock was successful
+   */
+  public lock(): boolean {
+    this.locked = true;
+    return this.menu.lock();
+  }
+
+  /**
+   * Unlock the battle and its menu
+   *
+   * @return {boolean} If the unlock was successful
+   */
+  public unlock(): boolean {
+    this.locked = false;
+    return this.menu.unlock();
+  }
+
+  /**
+   * Determine if the battle is done
+   *
+   * @return {boolean} If the battle is done
+   */
+  private isDone() {
+    return this.player.stats.hp <= 0 || this.enemy.stats.hp <= 0;
+  }
+
+  /**
+   * Run one cycle of the battle
+   */
+  private cycle() {
+    this.playersTurn = !this.playersTurn;
+
+    if (!this.playersTurn) {
+      bus.emit("battleAction", this);
+    }
+  }
+
+  /**
+   * End the battle
+   */
+  private stop() {
+    this.unlock();
+    this.player.restorePosition();
+    this.enemy.restorePosition();
+    this.enemy.kill();
+
+    bus.emit("battle.end");
+    bus.unregister(this);
+
+    this.menu.destroy();
+    this.active = false;
   }
 
   /**
@@ -159,58 +286,6 @@ class Battle implements Eventful, Drawable {
   }
 
   /**
-   * Register events with the event bus
-   *
-   * @return {object} Events to register
-   */
-  public register(): object {
-    return {
-      battleAction: (e) => {
-        if (this.playersTurn) {
-          this.player.attack(this.enemy, e.attack);
-        } else {
-          this.enemy.attack(this.player);
-        }
-
-        if (this.player.stats.hp <= 0) {
-          // Handle death
-        } else if (this.enemy.stats.hp <= 0) {
-          this.player.stats.gainExp(this.enemy.stats.givesExp);
-
-          this.player.restorePosition();
-          this.enemy.restorePosition();
-
-          this.stop();
-        } else {
-          this.cycle();
-        }
-      },
-    };
-  }
-
-  /**
-   * Run one cycle of the battle
-   */
-  private cycle() {
-    this.playersTurn = !this.playersTurn;
-
-    if (!this.playersTurn) {
-      bus.emit("battleAction", this);
-    }
-  }
-
-  /**
-   * End the battle
-   */
-  private stop() {
-    this.enemy.kill();
-    this.active = false;
-    bus.emit("battle.end");
-    bus.unregister(this);
-    this.battleMenu.destroy();
-  }
-
-  /**
    * Get the size of the UI bar based on screen resolution
    *
    * @param  {Vector} resolution Current screen resolution
@@ -226,6 +301,8 @@ class Battle implements Eventful, Drawable {
 
   /**
    * Create a new battle menu
+   *
+   * TODO: consider moving this to a factory
    *
    * @return {BattleMenu} The battle menu
    */

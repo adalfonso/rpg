@@ -26,8 +26,6 @@ export interface Eventful {
  * @interface
  */
 export interface Lockable {
-  locked: boolean;
-
   lock(): boolean;
 
   unlock(): boolean;

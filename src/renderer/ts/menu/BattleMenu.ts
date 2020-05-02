@@ -76,6 +76,10 @@ class BattleMenu extends Menu implements Eventful, Drawable {
   public register(): object {
     return {
       keyup: (e) => {
+        if (this.locked) {
+          return;
+        }
+
         let menu = this.currentMenu;
         let option = this.currentOption;
 

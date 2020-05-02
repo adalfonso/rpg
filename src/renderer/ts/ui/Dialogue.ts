@@ -110,7 +110,7 @@ class Dialogue implements Eventful, Drawable {
    */
   public draw(
     ctx: CanvasRenderingContext2D,
-    offset: Vector,
+    offset: Vector = new Vector(0, 0),
     resolution: Vector
   ) {
     let margin = new Vector(20, 20);

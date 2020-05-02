@@ -1,7 +1,7 @@
 import Actor from "./Actor";
 import Player from "./Player.js";
 import Renderable from "@/Renderable";
-import StatManager from "@/StatManager";
+import Stats from "@/Stats";
 import Vector from "@common/Vector";
 import { Drawable } from "@/interfaces";
 import { bus } from "@/EventBus";
@@ -37,7 +37,7 @@ class Enemy extends Actor implements Drawable {
       data
     );
 
-    this.stats = new StatManager(this.config.baseStats);
+    this.stats = new Stats(this.config.baseStats);
     this.defeated = false;
 
     let { fps, ratio, scale, sprite } = this.getUiInfo();
@@ -53,7 +53,7 @@ class Enemy extends Actor implements Drawable {
 
     this.direction = 4;
 
-    this.stats = new StatManager(this.config.baseStats);
+    this.stats = new Stats(this.config.baseStats);
 
     this.resolveState(`enemies.${this.id}`);
   }

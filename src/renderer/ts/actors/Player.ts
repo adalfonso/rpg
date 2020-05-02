@@ -1,10 +1,11 @@
 import Actor from "./Actor";
 import Renderable from "@/Renderable";
-import StatManager from "@/StatManager";
+import Stats from "@/Stats";
 import Vector from "@common/Vector";
 import Weapon from "@/item/Weapon";
 import { Drawable, Eventful, Lockable } from "@/interfaces";
 import { bus } from "@/EventBus";
+import StateManager from "@/state/StateManager";
 
 /**
  * A Player is the main entity of the game.
@@ -69,7 +70,7 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
     ];
 
     this.spells = [];
-    this.stats = new StatManager(this.config.baseStats);
+    this.stats = new Stats(this.config.baseStats);
     this.weapon = null;
 
     this.resolveState(this.data.type);
@@ -140,6 +141,17 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
         }
       },
     };
+  }
+
+  /**
+   * Gain experience points
+   *
+   * @param {number} exp Number of experience points to gain
+   */
+  public gainExp(exp: number) {
+    this.stats.gainExp(exp);
+
+    StateManager.getInstance().mergeByRef("player", this.getState());
   }
 
   /**
@@ -222,6 +234,15 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
       description: "A basic bish sword.",
       damage: 1,
     });
+  }
+
+  /**
+   * Get current state of the player for export to a state manager
+   *
+   * @return {object} Current state of the player
+   */
+  protected getState(): object {
+    return { ...super.getState(), exp: this.stats.exp };
   }
 }
 

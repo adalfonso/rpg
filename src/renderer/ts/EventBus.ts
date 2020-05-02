@@ -21,9 +21,7 @@ class EventBus {
    * @return {EventBus} Shared instance
    */
   public static getInstance() {
-    if (!EventBus.instance) {
-      EventBus.instance = new EventBus();
-    }
+    EventBus.instance = EventBus.instance ?? new EventBus();
 
     return EventBus.instance;
   }

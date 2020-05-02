@@ -1,7 +1,9 @@
+import { bus } from "./EventBus";
+
 /**
  * Anatomy of an entity's stats
  *
- * @type {Stats}
+ * @type {StatTemplate}
  *
  * @prop {number} hp     Base health
  * @prop {number} atk    Physical attack
@@ -10,7 +12,7 @@
  * @prop {number} sp_def Magic defense
  * @prop {number} spd    Speed
  */
-export type Stats = {
+export type StatTemplate = {
   hp: number;
   atk: number;
   def: number;
@@ -20,16 +22,30 @@ export type Stats = {
 };
 
 /**
- * StatsManager is in charge of maintaining the progression of an entity
- * thoughout the game. It increases the entity's abilities through stats and
- * serves battle functions by increasing the experience of the subject and
- * yielding experience points to other entitites that defeat the subject
+ * Modifier to scale experience calculations down to a certain range
+ *
+ * @constant {number} EXP_MODIFER
  */
-export default class StatManager {
+const EXP_MODIFIER = 0.05;
+
+/**
+ * Max attainable level
+ *
+ * @constant {number} MAX_LEVEL
+ */
+const MAX_LEVEL = 100;
+
+/**
+ * Stats is in charge of maintaining the progression of an entity thoughout the
+ * game. It increases the entity's abilities through stats and serves battle
+ * functions by increasing the experience of the subject and yielding experience
+ * points to other entitites that defeat the subject.
+ */
+export default class Stats {
   /**
    * Experience level of the entity
    *
-   * @prop {number} lvl
+   * @prop {number} _lvl
    */
   private _lvl: number;
 
@@ -43,16 +59,16 @@ export default class StatManager {
   /**
    * Amount of experience points the entity has gained between levels
    *
-   * @prop {number} exp
+   * @prop {number} _exp
    */
-  private exp: number;
+  private _exp: number;
 
   /**
    * Base stats of an entity
    *
-   * @prop {Stats} stats
+   * @prop {StatTemplate} baseStats
    */
-  private baseStats: Stats;
+  private baseStats: StatTemplate;
 
   /**
    * Multiplier used to expand the range that base stats take
@@ -62,16 +78,16 @@ export default class StatManager {
   private multiplier: number = 2.5;
 
   /**
-   * Create a new StatsManager instance
+   * Create a new Stats instance
    *
-   * @param {Stats} stats Base stats for an entity
+   * @param {StatTemplate} stats Base stats for an entity
    */
-  constructor(stats: Stats) {
+  constructor(stats: StatTemplate) {
     this.baseStats = stats;
 
     // Default to 5
     this._lvl = 5;
-    this.exp = 0;
+    this._exp = 0;
     this._dmg = 0;
   }
 
@@ -87,7 +103,11 @@ export default class StatManager {
   /**
    * Set the level stat
    *
-   * @param {number} lvl Level to set
+   * NOTE: This is used to manually set the lvl. Lvl is normally increased as a
+   * result of gainExp().
+   *
+   * @param {number} lvl Lev
+   * el to set
    */
   set lvl(lvl: number) {
     if (lvl < 1 || lvl > 100 || !Number.isInteger(lvl)) {
@@ -109,6 +129,9 @@ export default class StatManager {
   /**
    * Set the damage amount
    *
+   * NOTE: This is used to manually set the dmg. If enduring dmg via battle or
+   * some game mechanism, use endure().
+   *
    * @param {number} dmg Damage to set
    */
   set dmg(dmg: number) {
@@ -117,6 +140,31 @@ export default class StatManager {
     }
 
     this._dmg = dmg;
+  }
+
+  /**
+   * Get the amount of experience points
+   *
+   * @return {number} Current experience points
+   */
+  get exp(): number {
+    return this._exp;
+  }
+
+  /**
+   * Set the experience stat
+   *
+   * NOTE: This is used to manually set the exp. If gaining exp via battle or
+   * some game mechanism, use gainExp().
+   *
+   * @param {number} lvl Level to set
+   */
+  set exp(exp: number) {
+    if (exp < 0 || !Number.isInteger(exp) || exp > this.expToNextLevel()) {
+      throw new Error(`Invalid input when setting exp stat: ${exp}`);
+    }
+
+    this._exp = exp;
   }
 
   /**
@@ -202,9 +250,41 @@ export default class StatManager {
    * Increase the subject's experience points
    *
    * @param {number} exp Points of experience earned
+   *
+   * @emits stats.gainExp
    */
   public gainExp(exp: number) {
-    this.exp += exp;
+    this._exp += exp;
+
+    let detail = {
+      exp: exp,
+      lvl: null,
+      manager: this,
+    };
+
+    while (this.gainLevel()) {
+      detail.lvl = this._lvl;
+    }
+
+    bus.emit("stats.gainExp", detail);
+  }
+
+  /**
+   * Gain a level if the experience has been earned
+   *
+   * @return {boolean} If a level increased
+   */
+  private gainLevel(): boolean {
+    let experienceNeeded = this.expToNextLevel();
+
+    if (this._exp < experienceNeeded) {
+      return false;
+    }
+
+    this._exp -= experienceNeeded;
+    this._lvl++;
+
+    return true;
   }
 
   /**
@@ -216,5 +296,31 @@ export default class StatManager {
    */
   private currentStatValue(baseStat: number): number {
     return Math.floor(((baseStat * this._lvl) / 100) * this.multiplier);
+  }
+
+  /**
+   * Get the amount of experience required to grow a level
+   *
+   * @param {number} lvl Level to grow
+   */
+  private expToNextLevel(lvl = this._lvl): number {
+    if (this._lvl >= MAX_LEVEL) {
+      return Infinity;
+    }
+
+    return Math.ceil(
+      Math.pow(lvl, 1.5) * this.getBaseStateTotal() * EXP_MODIFIER
+    );
+  }
+
+  /**
+   * Sum all the base stats
+   *
+   * @return {number} Total of base stats
+   */
+  private getBaseStateTotal(): number {
+    return Object.keys(this.baseStats).reduce((carry, stat) => {
+      return carry + this.baseStats[stat];
+    }, 0);
   }
 }

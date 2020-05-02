@@ -27,11 +27,11 @@ class Portal extends Inanimate {
    * @param {Vector} size     Size of the portal
    * @param {object} data     Info about the portal
    */
-  constructor(position: Vector, size: Vector, data) {
+  constructor(position: Vector, size: Vector, data: any) {
     super(position, size);
 
     if (!data.properties) {
-      throw "Cannot from from/to when creating portal.";
+      throw "Cannot find from/to when creating portal.";
     }
 
     /**
