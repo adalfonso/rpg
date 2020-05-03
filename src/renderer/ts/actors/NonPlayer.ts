@@ -80,7 +80,9 @@ class NonPlayer extends Actor implements Eventful, Drawable {
         const player = e.detail?.player;
 
         if (!player) {
-          throw "Player missing on player.move event as tracked by non-player.";
+          throw new Error(
+            "Player missing on player.move event as tracked by non-player."
+          );
         }
 
         if (this.collidesWith(player)) {

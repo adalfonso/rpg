@@ -1,11 +1,11 @@
 {
   "empanada": {
-    "type": "healing",
+    "type": "item",
     "description": "A tasty treat!",
     "value": 0.25
   },
   "water": {
-    "type": "healing",
+    "type": "item",
     "description": "For the thirsty.",
     "value": 0.5
   },

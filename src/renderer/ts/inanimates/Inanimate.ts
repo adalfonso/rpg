@@ -55,8 +55,10 @@ abstract class Inanimate {
    * @param {CanvasRenderingContext2D} ctx Render context
    */
   protected debugDraw(ctx: CanvasRenderingContext2D) {
+    ctx.save();
     ctx.strokeStyle = "#F00";
     ctx.strokeRect(this.position.x, this.position.y, this.size.x, this.size.y);
+    ctx.restore();
   }
 }
 

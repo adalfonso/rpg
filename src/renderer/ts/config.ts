@@ -27,8 +27,13 @@ export const menus = {
       menu: [],
     },
     {
-      type: "equipable",
-      description: "Equipment",
+      type: "weapon",
+      description: "Weapons",
+      menu: [],
+    },
+    {
+      type: "armor",
+      description: "Armor",
       menu: [],
     },
     {
@@ -38,21 +43,3 @@ export const menus = {
     },
   ],
 };
-
-export const weapons = [
-  {
-    name: "Basic Sword",
-    description: "A basic bish sword.",
-    damage: 3,
-  },
-  {
-    name: "Mace",
-    description: "An effing mace. Watch out!",
-    damage: 10,
-  },
-  {
-    name: "Pole Arm",
-    description: "Swift and strong.",
-    damage: 5,
-  },
-];

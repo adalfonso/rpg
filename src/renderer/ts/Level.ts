@@ -1,16 +1,17 @@
 import Clip from "./inanimates/Clip";
 import Enemy from "./actors/Enemy";
-import LevelTemplate from "./LevelTemplate";
+import Entry from "./inanimates/Entry";
+import Item from "./inanimates/Item";
 import Map from "./inanimates/Map";
 import NonPlayer from "./actors/NonPlayer";
 import Player from "./actors/Player";
 import Portal from "./inanimates/Portal";
+import Template, { LevelFixture } from "./LevelTemplate";
 import Vector from "@common/Vector";
 import levels from "./levels/levels";
-import { Drawable } from "./interfaces";
+import { Drawable, Eventful } from "./interfaces";
 import { bus } from "@/EventBus";
-import { getImagePath } from "@/Util/loaders";
-import Entry from "./inanimates/Entry";
+import { getImagePath } from "@/util/util";
 
 /**
  * Level represents a discrete area of the game that warrents it's own domain.
@@ -46,9 +47,9 @@ class Level implements Drawable {
    * A mix of fixtures that interact in the level
    * TODO: Better solution for typing these
    *
-   * @prop {any[]} fixtures
+   * @prop {LevelFixture[]} fixtures
    */
-  private fixtures: any[] = [];
+  private fixtures: LevelFixture[] = [];
 
   /**
    * Create a new level instance
@@ -56,7 +57,7 @@ class Level implements Drawable {
    * @param {object} template Object loaded from json containing level data
    * @param {Player} player   Main player instance
    */
-  constructor(template: LevelTemplate, player: Player) {
+  constructor(template: Template, player: Player) {
     this.player = player;
 
     this.load(template);
@@ -72,12 +73,17 @@ class Level implements Drawable {
 
     // TODO: Look into a adding a method to these classes that interacts with the
     //       player
+
+    // TODO: This is getting out of control. Add some sort of collision handler.
     [this.player, ...this.fixtures].forEach((fixture) => {
       fixture.update(dt);
       let playerCollision = this.player.collidesWith(fixture);
 
       if (fixture instanceof Enemy && fixture.collidesWith(this.player)) {
         fixture.fight(this.player);
+        if (fixture.defeated) {
+          this.removeFixture(fixture);
+        }
       } else if (fixture instanceof Clip && playerCollision) {
         this.player.backstep(playerCollision);
       } else if (fixture instanceof Portal && playerCollision) {
@@ -85,6 +91,10 @@ class Level implements Drawable {
           type: "enter_portal",
           ref: fixture,
         });
+      } else if (fixture instanceof Item && playerCollision) {
+        bus.emit("item.obtain", { item: fixture });
+        fixture.obtain();
+        this.removeFixture(fixture);
       }
     });
 
@@ -98,7 +108,7 @@ class Level implements Drawable {
           throw new Error(`Unable to locate level json for "${event.ref.to}".`);
         }
 
-        this.load(new LevelTemplate(level), event.ref);
+        this.load(new Template(level), event.ref);
       }
     });
   }
@@ -126,10 +136,10 @@ class Level implements Drawable {
    * Load a level template. If there is a referenced portal, move player to
    * corresponding entry point.
    *
-   * @param {LevelTemplate} template Level details json
-   * @param {Portal}    portal   Starting portal
+   * @param {Template} template Level details json
+   * @param {Portal}   portal   Starting portal
    */
-  public load(template: LevelTemplate, portal?: Portal) {
+  public load(template: Template, portal?: Portal) {
     this.cleanup();
 
     let tileSet = getImagePath(`tileset.${template.tileSource}`);
@@ -156,15 +166,24 @@ class Level implements Drawable {
    */
   private cleanup() {
     // Remove event listeners from non-players
+
     // TODO: Tie this to an interface because there might be more Eventful
     //       resources to cause memory leaks.
-
     this.fixtures
       .filter((e) => e instanceof NonPlayer)
-      .forEach((e) => bus.unregister(e));
+      .forEach((e) => bus.unregister(<Eventful>e));
 
     this.fixtures = [];
     this.entries = {};
+  }
+
+  /**
+   * Remove a fixture
+   *
+   * @param {LevelFixture} fixture Fixture to remove
+   */
+  private removeFixture(fixture: LevelFixture) {
+    this.fixtures = this.fixtures.filter((f) => f !== fixture);
   }
 }
 

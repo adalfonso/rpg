@@ -1,17 +1,43 @@
+import Item from "@/item/Item";
 import Menu from "./Menu";
+import StateManager from "@/state/StateManager";
 import Vector from "@common/Vector";
 import { Drawable, Eventful } from "@/interfaces";
-import Weapon from "@/item/Weapon";
-
-/**
- * Types allowed in the inventory menu
- */
-type InventoryType = Weapon;
 
 /**
  * Inventory is a menu for managing things such as items and equipment.
  */
 class Inventory extends Menu implements Eventful, Drawable {
+  /**
+   * Create an Inventory instance
+   *
+   * @param {any[]} menu Menu options
+   */
+  constructor(menu: any) {
+    super(menu);
+
+    this.resolveState(`inventory`);
+  }
+
+  /**
+   * Get current state of the inventory for export to a state manager
+   *
+   * @return {object} Current state of the inventory
+   */
+  get state(): object {
+    const getSubMenu = (type) =>
+      this.menu.filter((subMenu) => subMenu.type === type)[0]?.menu ?? [];
+
+    return {
+      menu: {
+        item: getSubMenu("item").map((i) => i.type),
+        weapon: getSubMenu("weapon").map((i) => i.type),
+        armor: getSubMenu("armor").map((i) => i.type),
+        special: getSubMenu("special").map((i) => i.type),
+      },
+    };
+  }
+
   /**
    * Draw Inventory and all underlying entities.
    *
@@ -103,6 +129,17 @@ class Inventory extends Menu implements Eventful, Drawable {
             this.active ? this.close() : this.open();
           }
         },
+        "item.obtain": (e) => {
+          let item = e.detail?.item;
+
+          if (!item) {
+            throw new Error(
+              `Inventory unable to detect item on "item.obtain: event.`
+            );
+          }
+
+          this.store(new Item(item.type));
+        },
       },
     ];
   }
@@ -110,14 +147,61 @@ class Inventory extends Menu implements Eventful, Drawable {
   /**
    * Store an item in the proper inventory submenu
    *
-   * @param {InventoryType} item
+   * @param {Item} item
    */
-  public store(item: InventoryType) {
+  public store(item: Item) {
     this.menu
-      .filter((submenu) => {
-        return submenu.type === item.type;
+      .filter((subMenu) => {
+        return subMenu.type === item.category;
       })[0]
       .menu.push(item);
+
+    this.updateState();
+  }
+
+  /**
+   * Resolve the current state of the inventory in comparison to the game state
+   *
+   * @param  {string} ref Reference to where in the state the inventory is stored
+   *
+   * @return {object}     Inventory data as stored in the state
+   */
+  private resolveState(ref: string): any {
+    const state = StateManager.getInstance();
+
+    let stateManagerData = state.get(ref);
+
+    if (stateManagerData === undefined) {
+      state.mergeByRef(ref, this.state);
+      return state.get(ref);
+    }
+
+    ["item", "weapon", "armor", "spell"].forEach((menuType) => {
+      let subMenu = stateManagerData?.menu?.[menuType] ?? [];
+
+      subMenu.forEach((item) => {
+        let subMenu: any = this.menu.filter((subMenu) => {
+          return subMenu.type === menuType;
+        });
+
+        if (!subMenu.length) {
+          return;
+        }
+
+        subMenu[0].menu.push(new Item(item));
+      });
+    });
+
+    return stateManagerData;
+  }
+
+  /**
+   * Update the inventory in the state
+   */
+  private updateState() {
+    let state = StateManager.getInstance();
+    state.remove("inventory");
+    state.mergeByRef("inventory", this.state);
   }
 }
 

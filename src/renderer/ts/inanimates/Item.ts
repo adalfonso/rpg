@@ -1,18 +1,18 @@
 import Inanimate from "./Inanimate";
-import Vector from "@common/Vector";
-import items from "@/item/items.json";
 import StateManager from "@/state/StateManager";
+import Vector from "@common/Vector";
+import { ucFirst } from "@/util/util";
 
 /**
- * A clip is an area of the map that entities cannot traverse. e.g. a wall.
+ * An item laying on the ground
  */
 class Item extends Inanimate {
   /**
    * Unique identifier
    *
-   * @prop {string} id
+   * @prop {string} _id
    */
-  private id: string;
+  private _id: string;
 
   /**
    * If the item was picked up
@@ -22,12 +22,20 @@ class Item extends Inanimate {
   private _obtained: boolean = false;
 
   /**
-   * Create a new clip instance
+   * The type of item
    *
-   * @param {Vector} position The clip's position
-   * @param {Vector} size     The clip's size
+   * @prop {string} _type
    */
-  constructor(position: Vector, size: Vector, data) {
+  private _type: string;
+
+  /**
+   * Create a new Item instance
+   *
+   * @param {Vector} position The item's position
+   * @param {Vector} size     The item's size
+   * @param {object} data     Additional info about the item
+   */
+  constructor(position: Vector, size: Vector, data: any) {
     super(position, size);
 
     if (!data?.name) {
@@ -38,19 +46,19 @@ class Item extends Inanimate {
       throw new Error(`Missing "type" for item.`);
     }
 
-    this.id = data.name;
+    this._type = data.type;
+    this._id = data.name;
 
-    this.resolveState(`items.${this.id}`);
+    this.resolveState(`items.${this._id}`);
   }
 
   /**
-   * Draw the clip
+   * The type of item
    *
-   * @param {CanvasRenderingContext2D} ctx Render context
+   * @return {string} The type of item
    */
-  public draw(ctx: CanvasRenderingContext2D) {
-    super.draw(ctx);
-    super.debugDraw(ctx);
+  get type(): string {
+    return this._type;
   }
 
   /**
@@ -63,6 +71,28 @@ class Item extends Inanimate {
   }
 
   /**
+   * Get the name used for the item when rendering dialogue
+   *
+   * @return {string} Name used for item when rendering dialogue
+   */
+  get dialogueName(): string {
+    return this.type
+      .split("_")
+      .map((s) => ucFirst(s))
+      .join(" ");
+  }
+
+  /**
+   * Draw the item
+   *
+   * @param {CanvasRenderingContext2D} ctx Render context
+   */
+  public draw(ctx: CanvasRenderingContext2D) {
+    super.draw(ctx);
+    super.debugDraw(ctx);
+  }
+
+  /**
    * Pick up the item
    */
   public obtain() {
@@ -71,6 +101,8 @@ class Item extends Inanimate {
     }
 
     this._obtained = true;
+
+    StateManager.getInstance().mergeByRef(`items.${this._id}`, this.getState());
   }
 
   /**

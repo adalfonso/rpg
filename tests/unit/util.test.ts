@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { lcFirst, merge } from "@/Util/util";
+import { lcFirst, ucFirst, merge, cloneByStringify } from "@/util/util";
 
 describe("util", () => {
   describe("lcFirst", () => {
@@ -12,6 +12,20 @@ describe("util", () => {
         let [input, expected] = data;
 
         expect(lcFirst(input)).to.equal(expected);
+      });
+    });
+  });
+
+  describe("ucFirst", () => {
+    it("lowercases the first character of a string", () => {
+      [
+        ["cat", "Cat"],
+        ["CAT", "CAT"],
+        ["cAt", "CAt"],
+      ].forEach((data) => {
+        let [input, expected] = data;
+
+        expect(ucFirst(input)).to.equal(expected);
       });
     });
   });
@@ -158,6 +172,25 @@ describe("util", () => {
       };
 
       expect(merged).to.deep.equal(expected);
+    });
+  });
+
+  describe("cloneByStringify", () => {
+    it("clones a basic object", () => {
+      let input = {
+        number: 1,
+        boolean: true,
+        empty: null,
+        nested: {
+          nestedProp: "nestedProp",
+        },
+        array: [1, 2, 3, 4, true, "TRUE"],
+      };
+
+      let clone = cloneByStringify(input);
+
+      expect(input).to.deep.equal(clone);
+      expect(input).to.not.equal(clone);
     });
   });
 });

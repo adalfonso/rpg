@@ -12,7 +12,7 @@ import config from "./config";
  *
  * @type {LevelFixture}
  */
-type LevelFixture = Clip | Enemy | Portal | NonPlayer | Entry;
+export type LevelFixture = Clip | Enemy | Portal | NonPlayer | Entry | Item;
 
 /**
  * LevelTemplate parses level json and provides easier acces to data

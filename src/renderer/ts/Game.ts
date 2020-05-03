@@ -1,15 +1,16 @@
 import Battle from "./Battle";
+import Dialogue from "./ui/Dialogue";
 import Inventory from "./menu/Inventory";
 import Level from "./Level";
 import LevelTemplate from "./LevelTemplate";
 import Player from "./actors/Player";
 import StartMenu from "./menu/StartMenu";
+import TextStream from "./ui/TextStream";
 import Vector from "@common/Vector";
-import Weapon from "./item/Weapon";
 import levels from "./levels/levels";
 import { Drawable, Eventful } from "./interfaces";
 import { bus } from "@/EventBus";
-import { menus, weapons } from "./config";
+import { menus } from "./config";
 
 /**
  * Different states a game can be in
@@ -22,6 +23,7 @@ enum GameState {
   Pause,
   Inventory,
   Battle,
+  Dialogue,
 }
 
 /**
@@ -38,9 +40,17 @@ class Game implements Eventful, Drawable {
 
   /**
    * Current level instance
+   *
    * @prop {Level} level
    */
   private level: Level;
+
+  /**
+   * General game dialogue
+   *
+   * @prop {Dialogue} dialogue
+   */
+  private dialogue: Dialogue = null;
 
   /**
    * Main game menu
@@ -81,11 +91,6 @@ class Game implements Eventful, Drawable {
     this.menu = new StartMenu(menus.startMenu);
     this.inventory = new Inventory(menus.inventory);
 
-    // TODO: When game state can be saved, move this into a game loading class
-    weapons.forEach((weapon) => {
-      this.inventory.store(new Weapon(weapon));
-    });
-
     this.player = player;
 
     bus.register(this);
@@ -110,6 +115,15 @@ class Game implements Eventful, Drawable {
   public update(dt: number) {
     if (this.battle) {
       this.battle.update(dt);
+    }
+
+    if (this.dialogue) {
+      this.dialogue.update(dt);
+    }
+
+    if (this.dialogue?.done) {
+      this.dialogue = null;
+      this.unlock(GameState.Dialogue);
     }
 
     if (this.state !== GameState.Play) {
@@ -143,6 +157,10 @@ class Game implements Eventful, Drawable {
 
     this.menu.draw(ctx, offset, resolution);
     this.inventory.draw(ctx, offset, resolution);
+
+    if (this.dialogue) {
+      this.dialogue.draw(ctx, offset, resolution);
+    }
   }
 
   /**
@@ -173,6 +191,28 @@ class Game implements Eventful, Drawable {
       "menu.inventory.close": (e) => this.unlock(GameState.Inventory),
       "menu.startMenu.open": (e) => this.lock(GameState.StartMenu),
       "menu.startMenu.close": (e) => this.unlock(GameState.StartMenu),
+      "item.obtain": (e) => {
+        let item = e.detail?.item;
+
+        if (!item) {
+          throw new Error(
+            `Inventory unable to detect item on "item.obtain" event.`
+          );
+        }
+
+        let itemName = item.dialogueName;
+
+        let useVowel = ["a", "e", "i", "o", "u"].includes(
+          itemName[0].toLowerCase()
+        );
+
+        let stream = new TextStream([
+          `Picked up ${useVowel ? "an" : "a"} ${itemName}!`,
+        ]);
+
+        this.dialogue = new Dialogue(stream, this.player, []);
+        this.lock(GameState.Dialogue);
+      },
     };
   }
 

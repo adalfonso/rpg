@@ -8,7 +8,7 @@ import actors from "./actors.json";
 import config from "@/config";
 import { Drawable, Lockable } from "@/interfaces";
 import { RenderData } from "@/Renderable";
-import { getImagePath } from "@/Util/loaders";
+import { getImagePath } from "@/util/util";
 
 /**
  * Collision information with another entity
