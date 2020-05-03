@@ -57,6 +57,28 @@
         }, 
         {
          "draworder":"topdown",
+         "id":8,
+         "name":"item",
+         "objects":[
+                {
+                 "height":8,
+                 "id":12,
+                 "name":"water_0",
+                 "rotation":0,
+                 "type":"water",
+                 "visible":true,
+                 "width":8,
+                 "x":24,
+                 "y":64
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
          "id":3,
          "name":"clip",
          "objects":[
@@ -220,8 +242,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":8,
- "nextobjectid":12,
+ "nextlayerid":10,
+ "nextobjectid":13,
  "orientation":"orthogonal",
  "properties":[
         {
@@ -235,7 +257,7 @@
  "tilesets":[
         {
          "firstgid":1,
-         "source":"assets\/dungeon_walls.tsx"
+         "source":"..\/..\/..\/assets\/dungeon_walls.tsx"
         }],
  "tilewidth":16,
  "type":"map",

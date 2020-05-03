@@ -1,9 +1,10 @@
 import Clip from "./inanimates/Clip";
-import Entry from "./inanimates/Entry";
 import Enemy from "./actors/Enemy";
+import Entry from "./inanimates/Entry";
+import Item from "./inanimates/Item";
+import NonPlayer from "./actors/NonPlayer";
 import Portal from "./inanimates/Portal";
 import Vector from "@common/Vector";
-import NonPlayer from "./actors/NonPlayer";
 import config from "./config";
 
 /**
@@ -56,7 +57,7 @@ class LevelTemplate {
   constructor(json) {
     let layers = json.layers ?? [];
 
-    this._tiles = layers.filter((l) => l.type === "tilelayer");
+    this._tiles = this.getTileLayers(layers);
 
     if (!this._tiles.length) {
       throw new Error("Tile layers not found when loading map json.");
@@ -68,25 +69,27 @@ class LevelTemplate {
       throw new Error(`Unable to find tile source when loading template.`);
     }
 
-    let nonTiles = layers.filter((l) => l.type !== "tilelayer") ?? [];
-    let entries = nonTiles.filter((l) => l.name === "entry")[0]?.objects ?? [];
+    let objectGroups = this.getObjectGroups(layers);
+    let entries = objectGroups.entry?.objects ?? [];
 
     entries.forEach((e) => {
       this._entries[e.name] = this.createFixture("entry", e);
     });
 
-    ["clip", "enemy", "portal", "npc"].forEach((type) => {
-      let fixtures = nonTiles
-        .filter((layer) => layer.name === type)
-        .map((layer) => layer.objects)
-        .flat();
+    ["clip", "enemy", "portal", "npc", "item"].forEach((type) => {
+      let group = objectGroups[type] ?? { objects: [] };
+      let fixtures = group.objects.flat();
 
       if (!fixtures.length) {
         return;
       }
 
       fixtures.forEach((object) => {
-        this._fixtures.push(this.createFixture(type, object));
+        let fixture = this.createFixture(type, object);
+
+        if (fixture !== null) {
+          this._fixtures.push(fixture);
+        }
       });
     });
   }
@@ -157,7 +160,13 @@ class LevelTemplate {
       case "npc":
         return new NonPlayer(fixture);
       case "enemy":
-        return new Enemy(fixture);
+        let enemy = new Enemy(fixture);
+        return enemy.defeated ? null : enemy;
+      case "item":
+        let item = new Item(position, size, fixture);
+        return item.obtained ? null : item;
+      default:
+        throw new Error(`Unable to create fixture for object type "${type}".`);
     }
   }
 
@@ -175,6 +184,42 @@ class LevelTemplate {
     return properties
       .filter((prop) => prop.name === property)
       .map((prop) => prop.value)[0];
+  }
+
+  /**
+   * Get the tile layers from the level data
+   *
+   * @param  {object[]} layers Layer data
+   *
+   * @return {object}          Tile layers
+   */
+  private getTileLayers(layers: any[]): object[] {
+    return layers.filter((l) => l.type === "tilelayer");
+  }
+
+  /**
+   * Get the object groups from the level data
+   *
+   * @param  {object[]} layers Layer data
+   *
+   * @return {object}          Object groups
+   */
+  private getObjectGroups(layers: any[]): any {
+    let objectGroups: any = {};
+
+    layers.filter((l) => {
+      if (l.type !== "objectgroup") {
+        return;
+      }
+
+      if (objectGroups[l.name]) {
+        throw new Error(`Duplicate name for object layers: ${l.name}`);
+      }
+
+      objectGroups[l.name] = l;
+    });
+
+    return objectGroups;
   }
 }
 

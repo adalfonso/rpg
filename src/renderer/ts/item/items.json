@@ -1,0 +1,17 @@
+{
+  "empanada": {
+    "type": "healing",
+    "description": "A tasty treat!",
+    "value": 0.25
+  },
+  "water": {
+    "type": "healing",
+    "description": "For the thirsty.",
+    "value": 0.5
+  },
+  "big_sword": {
+    "type": "weapon",
+    "description": "A big ass word.",
+    "value": 15
+  }
+}

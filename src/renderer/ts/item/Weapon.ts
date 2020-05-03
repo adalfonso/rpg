@@ -58,6 +58,6 @@ export default class Weapon {
    * Emit a battleAction event with the weapon
    */
   public use() {
-    bus.emit("battleAction", this);
+    bus.emit("battle.action", this);
   }
 }

@@ -9,7 +9,7 @@ describe("LevelTemplate", () => {
     expect(2).to.equal(sut.tiles.length);
 
     expect(2).to.equal(Object.keys(sut.entries).length);
-    expect(8).to.equal(sut.fixtures.length);
+    expect(9).to.equal(sut.fixtures.length);
     expect("some_file_name").to.equal(sut.tileSource);
   });
 });
