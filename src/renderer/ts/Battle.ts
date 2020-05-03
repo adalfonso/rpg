@@ -84,6 +84,11 @@ class Battle implements Eventful, Drawable, Lockable {
     this.menu = this.getBattleMenu();
 
     bus.register(this);
+
+    // Force enemy to attack if it is their turn first
+    if (!this.playersTurn) {
+      bus.emit("battle.action");
+    }
   }
 
   /**
@@ -160,7 +165,7 @@ class Battle implements Eventful, Drawable, Lockable {
    */
   public register(): object {
     return {
-      battleAction: (e) => {
+      "battle.action": (e) => {
         if (this.playersTurn) {
           this.player.attack(this.enemy, e.attack);
         } else {
@@ -168,7 +173,9 @@ class Battle implements Eventful, Drawable, Lockable {
         }
 
         if (this.player.stats.hp <= 0) {
-          // TODO: Handle player's death
+          let stream = new TextStream(["You died!"]);
+          this.dialogue = new Dialogue(stream, this.player, [this.enemy]);
+          this.lock();
         } else if (this.enemy.stats.hp <= 0) {
           this.player.gainExp(this.enemy.stats.givesExp);
         } else {
@@ -229,7 +236,7 @@ class Battle implements Eventful, Drawable, Lockable {
     this.playersTurn = !this.playersTurn;
 
     if (!this.playersTurn) {
-      bus.emit("battleAction", this);
+      bus.emit("battle.action", this);
     }
   }
 

@@ -1,7 +1,7 @@
 import Dialogue from "@/ui/Dialogue";
 import Inanimate from "@/inanimates/Inanimate";
-import Stats from "@/Stats";
 import StateManager from "@/state/StateManager";
+import Stats from "@/Stats";
 import Vector from "@common/Vector";
 import Weapon from "@/item/Weapon";
 import actors from "./actors.json";
@@ -154,10 +154,18 @@ abstract class Actor implements Drawable, Lockable {
     this.data = data;
     this.config = actors[data.type];
 
+    if (this.config.baseStats) {
+      this.stats = new Stats(this.config.baseStats);
+    }
+
     if (!this.config) {
       throw new Error(
         `Config data for ${actorType} is not defined in actors.json`
       );
+    }
+
+    if (data.properties) {
+      this.assignCustomProperties(data.properties);
     }
 
     this.id = data.name;
@@ -420,6 +428,19 @@ abstract class Actor implements Drawable, Lockable {
       (prev ? this.lastPosition.x : this.position.x) + this.size.x * 0.5,
       (prev ? this.lastPosition.y : this.position.y) + this.size.y * 0.8
     );
+  }
+
+  /**
+   * Assign custom properties from the input data to the actor
+   *
+   * @param {object[]} props List of properties
+   */
+  private assignCustomProperties(props: any[]) {
+    let lvl = props.filter((prop) => prop.name === "lvl")[0]?.value;
+
+    if (lvl && this.stats) {
+      this.stats.lvl = +lvl;
+    }
   }
 
   /**

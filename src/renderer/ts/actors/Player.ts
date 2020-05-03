@@ -1,11 +1,10 @@
 import Actor from "./Actor";
 import Renderable from "@/Renderable";
-import Stats from "@/Stats";
+import StateManager from "@/state/StateManager";
 import Vector from "@common/Vector";
 import Weapon from "@/item/Weapon";
 import { Drawable, Eventful, Lockable } from "@/interfaces";
 import { bus } from "@/EventBus";
-import StateManager from "@/state/StateManager";
 
 /**
  * A Player is the main entity of the game.
@@ -70,7 +69,6 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
     ];
 
     this.spells = [];
-    this.stats = new Stats(this.config.baseStats);
     this.weapon = null;
 
     this.resolveState(this.data.type);

@@ -1,11 +1,10 @@
 import Actor from "./Actor";
 import Player from "./Player.js";
 import Renderable from "@/Renderable";
-import Stats from "@/Stats";
+import StateManager from "@/state/StateManager";
 import Vector from "@common/Vector";
 import { Drawable } from "@/interfaces";
 import { bus } from "@/EventBus";
-import StateManager from "@/state/StateManager";
 
 /**
  * Main class for baddies
@@ -37,7 +36,7 @@ class Enemy extends Actor implements Drawable {
       data
     );
 
-    this.stats = new Stats(this.config.baseStats);
+    this.direction = 4;
     this.defeated = false;
 
     let { fps, ratio, scale, sprite } = this.getUiInfo();
@@ -50,10 +49,6 @@ class Enemy extends Actor implements Drawable {
       new Renderable(sprite, scale, 0, 8, ratio, fps),
       new Renderable(sprite, scale, 0, 8, ratio, fps),
     ];
-
-    this.direction = 4;
-
-    this.stats = new Stats(this.config.baseStats);
 
     this.resolveState(`enemies.${this.id}`);
   }
