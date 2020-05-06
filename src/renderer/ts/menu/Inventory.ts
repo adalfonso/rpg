@@ -5,15 +5,26 @@ import Vector from "@common/Vector";
 import { Drawable, Eventful } from "@/interfaces";
 
 /**
+ * Template for a menu option
+ *
+ * @type {MenuOption}
+ */
+type MenuOption = {
+  type: string;
+  description: string;
+  menu: MenuOption[];
+};
+
+/**
  * Inventory is a menu for managing things such as items and equipment.
  */
 class Inventory extends Menu implements Eventful, Drawable {
   /**
    * Create an Inventory instance
    *
-   * @param {any[]} menu Menu options
+   * @param {MenuOption[]} menu Menu options
    */
-  constructor(menu: any) {
+  constructor(menu: MenuOption[]) {
     super(menu);
 
     this.resolveState(`inventory`);
@@ -41,22 +52,16 @@ class Inventory extends Menu implements Eventful, Drawable {
   /**
    * Draw Inventory and all underlying entities.
    *
-   * TODO: The current implementation is hard to understand due to the nested
-   * higher-order reductions. The goal here was to preserve the currently
-   * selected option's index in each menu, sum them, and then use the count to
-   * render each submenu horizontally-aligned with the selected option of the
-   * previous menu they stem from. At some point it may make more sense to use
-   * a series of Menu classes and render them separately, passing in a different
-   * offset to each one accordingly.
-   *
    * @param {CanvasRenderingContext2D} ctx        Render context
    * @param {Vector}                   offset     Render position offset
    * @param {Vector}                   resolution Render resolution
+   * @param {MenuOption[]}             menu       Target menu
    */
   public draw(
     ctx: CanvasRenderingContext2D,
     offset: Vector,
-    resolution: Vector
+    resolution: Vector,
+    menu = this.menu
   ) {
     if (!this.active) {
       return;
@@ -64,55 +69,93 @@ class Inventory extends Menu implements Eventful, Drawable {
 
     ctx.save();
     ctx.translate(-offset.x, -offset.y);
-    ctx.fillStyle = "rgba(200, 200, 200, .96)";
-    ctx.fillRect(0, 0, resolution.x, resolution.y);
-    ctx.fillStyle = "#75A";
-    ctx.textAlign = "left";
 
-    // Render each menu
-    this.selected.reduce((offsetIndexY, selectedMenuOption, menuIndex) => {
-      // Get the menu that the current selection belongs to
-      let currentMenu =
-        menuIndex > 0 ? this.selected[menuIndex - 1].menu : this.menu;
+    let margin = new Vector(60, 0);
 
-      // Render each option in the current menu
-      let selectedMenuOptionIndex = currentMenu.reduce(
-        (selectedMenuOptionIndex, option, menuOptionIndex) => {
-          let menuOptionPosition = new Vector(
-            48 + 200 * menuIndex,
-            48 + 48 * (menuOptionIndex + offsetIndexY + 1)
-          );
+    // Initial render
+    if (menu === this.menu) {
+      ctx.fillStyle = "#555";
+      ctx.fillRect(0, 0, resolution.x, resolution.y);
+      ctx.fillStyle = "#EEE";
+      ctx.textAlign = "left";
+      margin = new Vector(60, 90);
+    }
 
-          ctx.save();
-          ctx.font = "24px Arial";
+    ctx.translate(margin.x, margin.y);
 
-          if (option === this.currentOption) {
-            ctx.shadowColor = "#75A";
-            ctx.shadowOffsetX = 2;
-            ctx.shadowOffsetY = 2;
-            ctx.shadowBlur = 4;
-            ctx.font = "bold 24px Arial";
-          }
+    ctx.save();
+    ctx.font = "24px Minecraftia";
+    let widestText = this.getWidestMenuDescription(menu);
+    let textWidth = ctx.measureText(widestText).width;
+    ctx.restore();
 
-          ctx.fillText(
-            option.description,
-            menuOptionPosition.x,
-            menuOptionPosition.y
-          );
-          ctx.restore();
+    menu.forEach((option, index) => {
+      let spacing = index ? 50 : 0;
+      let isSelected = this.selected.includes(option);
+      let isMainSelection = option === this.currentOption;
 
-          return (
-            selectedMenuOptionIndex +
-            (option === selectedMenuOption ? menuOptionIndex : 0)
-          );
-        },
-        0
-      );
+      ctx.translate(0, spacing);
 
-      return offsetIndexY + selectedMenuOptionIndex;
-    }, 0);
+      ctx.save();
+
+      if (isSelected) {
+        ctx.shadowColor = "#000";
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 4;
+        ctx.shadowBlur = 0;
+        ctx.font = "bold 24px Minecraftia";
+      } else {
+        ctx.font = "24px Minecraftia";
+      }
+
+      if (isMainSelection) {
+        ctx.shadowColor = "#0AA";
+      }
+
+      let text = this.getOptionDescription(option);
+
+      ctx.fillText(text, 0, 0);
+      ctx.restore();
+
+      // Render sub-menu
+      if (isSelected && option.menu) {
+        let offset = new Vector(-textWidth, 0);
+        this.draw(ctx, offset, resolution, option.menu);
+      }
+    });
 
     ctx.restore();
+  }
+
+  /**
+   * Get the widest option description in the menu
+   *
+   * @param  {MenuOption} menu Target menu
+   *
+   * @return {string}          Widest description in the menu
+   */
+  private getWidestMenuDescription(menu: MenuOption[]): string {
+    return menu.reduce((widestMenuText, option) => {
+      let description = this.getOptionDescription(option);
+
+      return widestMenuText.length > description.length
+        ? widestMenuText
+        : description;
+    }, "");
+  }
+
+  /**
+   * Get the description of a MenuOption
+   *
+   * @param  {MenuOption} option Option to get description for
+   *
+   * @return {string}            Description
+   */
+  private getOptionDescription(option: MenuOption): string {
+    let subMenuCount = option.menu?.length ?? "";
+    subMenuCount = subMenuCount ? ` (${subMenuCount})` : "";
+
+    return option.description + subMenuCount;
   }
 
   /**
