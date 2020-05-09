@@ -32,14 +32,6 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
   private sprites: Renderable[];
 
   /**
-   * Spells that the player knows
-   * TODO: Update this when spells are implemented
-   *
-   * @prop {any[]} spells
-   */
-  public spells: any[];
-
-  /**
    * Create a new Player instance
    *
    * @param {Vector} position  The player's position
@@ -68,7 +60,6 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
       new Renderable(sprite, scale, 1, 0, ratio, fps),
     ];
 
-    this.spells = [];
     this.weapon = null;
 
     this.resolveState(this.data.type);
@@ -77,6 +68,17 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
 
     // For testing purposes only
     this.init();
+  }
+
+  /**
+   * Get the spells the player currently knows
+   *
+   * @return {Weapon[]} List of spells
+   */
+  get spells(): Weapon[] {
+    return this.moveSet
+      .filter((move) => move.level <= this.stats.lvl)
+      .map((spell) => new Weapon(spell));
   }
 
   /**
@@ -147,7 +149,14 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
    * @param {number} exp Number of experience points to gain
    */
   public gainExp(exp: number) {
-    this.stats.gainExp(exp);
+    let expData = this.stats.gainExp(exp);
+
+    let data = {
+      moveSet: this.moveSet,
+      ...expData,
+    };
+
+    bus.emit("actor.gainExp", data);
 
     StateManager.getInstance().mergeByRef("player", this.getState());
   }
@@ -230,7 +239,7 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
     this.weapon = new Weapon({
       name: "Basic Sword",
       description: "A basic bish sword.",
-      damage: 1,
+      damage: 5,
     });
   }
 

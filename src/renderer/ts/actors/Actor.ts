@@ -98,6 +98,13 @@ abstract class Actor implements Drawable, Lockable {
   protected locked: boolean;
 
   /**
+   * The actor's moves
+   *
+   * @prop {Weapon[]} moveSet
+   */
+  protected moveSet: Weapon[];
+
+  /**
    * Current position of the actor
    *
    * @prop {Vector} _position
@@ -177,6 +184,7 @@ abstract class Actor implements Drawable, Lockable {
     this.lastPosition = this.position.copy();
     this.savedPosition = this.position.copy();
     this.savedDirection = this.direction;
+    this.moveSet = actors[data.type]?.learnedMoves ?? [];
   }
 
   /**

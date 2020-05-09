@@ -14,7 +14,16 @@
       "frames": { "x": 1, "y": 4 },
       "scale": 2,
       "fps": 8
-    }
+    },
+    "learnedMoves": [
+      {
+        "level": 6,
+        "name": "Twister",
+        "description": "Do that twister!",
+        "damage": 13,
+        "special": true
+      }
+    ]
   },
   "knight": {
     "display_name": "Knight",

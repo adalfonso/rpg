@@ -256,17 +256,17 @@ export default class Stats {
   public gainExp(exp: number) {
     this._exp += exp;
 
-    let detail = {
+    let data = {
       exp: exp,
-      lvl: null,
+      levels: [],
       manager: this,
     };
 
     while (this.gainLevel()) {
-      detail.lvl = this._lvl;
+      data.levels.push(this._lvl);
     }
 
-    bus.emit("stats.gainExp", detail);
+    return data;
   }
 
   /**

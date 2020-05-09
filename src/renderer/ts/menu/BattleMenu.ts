@@ -20,7 +20,7 @@ class BattleMenu extends Menu implements Eventful, Drawable {
     _resolution: Vector
   ) {
     ctx.save();
-    ctx.font = "12px Arial";
+    ctx.font = "12px Minecraftia";
 
     let tileSize = new Vector(72, 24);
     let tilePadding = new Vector(8, 0);
@@ -35,7 +35,6 @@ class BattleMenu extends Menu implements Eventful, Drawable {
 
       ctx.translate(tileSize.x + tilePadding.x, 0);
 
-      ctx.font = "12px Arial";
       ctx.fillStyle = "#fff";
 
       if (option === this.selected[0]) {
@@ -43,27 +42,36 @@ class BattleMenu extends Menu implements Eventful, Drawable {
         ctx.strokeRect(0, 0, tileSize.x, tileSize.y);
       }
 
-      if (option === this.currentOption) {
-        ctx.font = "bold 12px Arial";
-      }
-
       ctx.fillRect(0, 0, tileSize.x, tileSize.y);
       ctx.fillStyle = "#000";
-      ctx.fillText(option.type, 4, 4 + 12);
+
+      ctx.save();
+
+      if (option === this.currentOption) {
+        ctx.shadowOffsetX = 1;
+        ctx.shadowOffsetY = 1;
+        ctx.shadowBlur = 0;
+        ctx.shadowColor = "#0DD";
+      }
+
+      ctx.fillText(option.type, 4, 4 + 20);
+
+      ctx.restore();
 
       if (isSelected && option.menu?.length) {
         option.menu.forEach((subOption, index) => {
           ctx.save();
 
           if (subOption === this.currentOption) {
-            ctx.font = "bold 12px Arial";
-          } else {
-            ctx.font = "12px Arial";
+            ctx.shadowOffsetX = 1;
+            ctx.shadowOffsetY = 1;
+            ctx.shadowBlur = 0;
+            ctx.shadowColor = "#0DD";
           }
 
           let desc = subOption.name ?? subOption;
 
-          ctx.translate(0, 18 * (index + 1) + 6);
+          ctx.translate(0, 18 * (index + 1) + 16);
           ctx.fillText(desc, 0, 16);
           ctx.restore();
         });

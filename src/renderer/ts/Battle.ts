@@ -182,15 +182,23 @@ class Battle implements Eventful, Drawable, Lockable {
           this.cycle();
         }
       },
-      "stats.gainExp": (e) => {
+      "actor.gainExp": (e) => {
         let name = this.player.dialogueName;
         let exp = e.detail.exp;
-        let lvl = e.detail.lvl;
+        let levels = e.detail.levels;
+        let lvl = null;
+        let moveSet = e.detail.moveSet;
         let dialogue = [`${name} gained ${exp} exp.`];
 
-        if (lvl) {
+        levels.forEach((lvl) => {
           dialogue.push(`${name} grew to level ${lvl}!`);
-        }
+
+          moveSet
+            .filter((move) => move.level === lvl)
+            .forEach((move) => {
+              dialogue.push(`${name} learned ${move.name}!`);
+            });
+        });
 
         let stream = new TextStream(dialogue);
 
