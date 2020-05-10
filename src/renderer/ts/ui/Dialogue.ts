@@ -185,7 +185,7 @@ class Dialogue implements Eventful, Drawable {
       return;
     }
 
-    if (this.stream.isDone()) {
+    if (this.stream.isDone) {
       this.done = true;
     } else {
       this.stream.next();
@@ -215,8 +215,8 @@ class Dialogue implements Eventful, Drawable {
     ctx.textAlign = "left";
 
     // Reset text stream on first render
-    if (this.stream.isEmpty()) {
-      let prefix = this.speaker ? this.speaker.dialogueName + ": " : "";
+    if (this.stream.isEmpty) {
+      let prefix = this.speaker ? this.speaker.displayAs + ": " : "";
 
       this.stream.fillBuffer(ctx, resolution.minus(padding.times(2)), prefix);
     }

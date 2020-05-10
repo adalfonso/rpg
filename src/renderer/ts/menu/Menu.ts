@@ -42,7 +42,7 @@ abstract class Menu implements Eventful, Drawable, Lockable {
    *
    * @param {any[]} menu Menu options
    */
-  constructor(menu) {
+  constructor(menu: any[]) {
     this.menu = menu;
     this.selected = [];
     this.selected.push(this.menu[0]);

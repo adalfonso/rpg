@@ -47,7 +47,7 @@ class StartMenu extends Menu implements Drawable {
       }
 
       ctx.fillText(
-        selected ? "▶ " + current.description : current.description,
+        selected ? "▶ " + current.displayAs : current.displayAs,
         resolution.x / 2,
         (resolution.y / (this.menu.length - index)) * 0.5
       );

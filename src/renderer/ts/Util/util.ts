@@ -83,12 +83,12 @@ export const startAnimation: Function = (callback: Function) => {
  * NOTE: Complex objects may not be preserved during string conversion. This
  * should only be used when the object is naturally JSON-like.
  *
- * @param  {object} obj Input
+ * @param  {any} input Input
  *
- * @return {object}     Output
+ * @return {any}       Output
  */
-export const cloneByStringify = (obj: object): object => {
-  return JSON.parse(JSON.stringify(obj));
+export const cloneByStringify = (input: any): any => {
+  return JSON.parse(JSON.stringify(input));
 };
 
 /**

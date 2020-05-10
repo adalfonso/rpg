@@ -7,14 +7,14 @@ export const menus = {
   startMenu: [
     {
       type: "start",
-      description: "Start Game!",
+      displayAs: "Start Game!",
       action: (menu) => {
         menu.close();
       },
     },
     {
       type: "save",
-      description: "Save Game",
+      displayAs: "Save Game",
       action: (menu) => {
         menu.saveState();
       },
@@ -23,22 +23,23 @@ export const menus = {
   inventory: [
     {
       type: "item",
-      description: "Items",
+      displayAs: "Items",
       menu: [],
     },
     {
       type: "weapon",
-      description: "Weapons",
+      displayAs: "Weapons",
+      equipable: true,
       menu: [],
     },
     {
       type: "armor",
-      description: "Armor",
+      displayAs: "Armor",
       menu: [],
     },
     {
       type: "special",
-      description: "Special",
+      displayAs: "Special",
       menu: [],
     },
   ],

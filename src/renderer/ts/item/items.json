@@ -10,8 +10,15 @@
     "value": 0.5
   },
   "big_sword": {
+    "displayAs": "Big Sword",
     "type": "weapon",
     "description": "A big ass word.",
     "value": 15
+  },
+  "empanada_weapon": {
+    "displayAs": "Empanada",
+    "type": "weapon",
+    "description": "It is a sharp disc that kills people that are in its way.",
+    "value": 50
   }
 }

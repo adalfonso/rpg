@@ -75,7 +75,7 @@ class Item extends Inanimate {
    *
    * @return {string} Name used for item when rendering dialogue
    */
-  get dialogueName(): string {
+  get displayAs(): string {
     return this.type
       .split("_")
       .map((s) => ucFirst(s))

@@ -1,6 +1,6 @@
 {
   "player": {
-    "display_name": "Me",
+    "displayAs": "Me",
     "baseStats": {
       "hp": 120,
       "atk": 125,
@@ -15,18 +15,18 @@
       "scale": 2,
       "fps": 8
     },
-    "learnedMoves": [
+    "moveSet": [
       {
         "level": 6,
-        "name": "Twister",
+        "displayAs": "Twister",
         "description": "Do that twister!",
-        "damage": 13,
+        "value": 13,
         "special": true
       }
     ]
   },
   "knight": {
-    "display_name": "Knight",
+    "displayAs": "Knight",
     "baseStats": {
       "hp": 80,
       "atk": 65,
@@ -42,7 +42,7 @@
     }
   },
   "murdoc": {
-    "display_name": "Murdoc",
+    "displayAs": "Murdoc",
     "speech": [
       "You look lost.",
       "What's that, you are lost?",

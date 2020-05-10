@@ -1,10 +1,10 @@
-import BattleMenu from "./menu/BattleMenu";
-import Dialogue from "./ui/Dialogue";
-import Enemy from "./actors/Enemy";
-import Player from "./actors/Player";
-import TextStream from "./ui/TextStream";
+import BattleMenu from "@/menu/BattleMenu";
+import Dialogue from "@/ui/Dialogue";
+import Enemy from "@/actors/Enemy";
+import Player from "@/actors/Player";
+import TextStream from "@/ui/TextStream";
 import Vector from "@common/Vector";
-import { Drawable, Eventful, Lockable } from "./interfaces";
+import { Drawable, Eventful, Lockable } from "@/interfaces";
 import { bus } from "@/EventBus";
 
 class Battle implements Eventful, Drawable, Lockable {
@@ -183,7 +183,7 @@ class Battle implements Eventful, Drawable, Lockable {
         }
       },
       "actor.gainExp": (e) => {
-        let name = this.player.dialogueName;
+        let name = this.player.displayAs;
         let exp = e.detail.exp;
         let levels = e.detail.levels;
         let lvl = null;
@@ -196,7 +196,7 @@ class Battle implements Eventful, Drawable, Lockable {
           moveSet
             .filter((move) => move.level === lvl)
             .forEach((move) => {
-              dialogue.push(`${name} learned ${move.name}!`);
+              dialogue.push(`${name} learned ${move.displayAs}!`);
             });
         });
 

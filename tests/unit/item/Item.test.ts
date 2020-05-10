@@ -4,12 +4,12 @@ import Vector from "@common/Vector";
 import { expect } from "chai";
 
 describe("Item", () => {
-  describe("get dialogueName", () => {
+  describe("get displayAs", () => {
     it("gets the dialogue name of the item", () => {
       let sut = getSut();
       let expected = "Big Sword";
 
-      expect(sut.dialogueName).to.equal(expected);
+      expect(sut.displayAs).to.equal(expected);
     });
   });
 });

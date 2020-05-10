@@ -69,10 +69,10 @@ class BattleMenu extends Menu implements Eventful, Drawable {
             ctx.shadowColor = "#0DD";
           }
 
-          let desc = subOption.name ?? subOption;
+          let displayAs = subOption.displayAs ?? subOption;
 
           ctx.translate(0, 18 * (index + 1) + 16);
-          ctx.fillText(desc, 0, 16);
+          ctx.fillText(displayAs, 0, 16);
           ctx.restore();
         });
       }

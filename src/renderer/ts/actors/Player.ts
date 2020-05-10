@@ -1,8 +1,9 @@
 import Actor from "./Actor";
 import Renderable from "@/Renderable";
+import Spell from "@/combat/Spell";
 import StateManager from "@/state/StateManager";
 import Vector from "@common/Vector";
-import Weapon from "@/item/Weapon";
+import Weapon from "@/combat/Weapon";
 import { Drawable, Eventful, Lockable } from "@/interfaces";
 import { bus } from "@/EventBus";
 
@@ -60,25 +61,9 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
       new Renderable(sprite, scale, 1, 0, ratio, fps),
     ];
 
-    this.weapon = null;
-
     this.resolveState(this.data.type);
 
     bus.register(this);
-
-    // For testing purposes only
-    this.init();
-  }
-
-  /**
-   * Get the spells the player currently knows
-   *
-   * @return {Weapon[]} List of spells
-   */
-  get spells(): Weapon[] {
-    return this.moveSet
-      .filter((move) => move.level <= this.stats.lvl)
-      .map((spell) => new Weapon(spell));
   }
 
   /**
@@ -139,6 +124,22 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
         if (e.key.match(/Arrow/)) {
           this.stop(e.key);
         }
+      },
+
+      "weapon.equip": (e) => {
+        let weapon = e.detail.weapon;
+
+        if (!weapon) {
+          throw new Error(
+            `Player unable to equip weapon because it is missing.`
+          );
+        }
+
+        if (!(weapon instanceof Weapon)) {
+          throw new Error(`Player unable to equip a non-weapon.`);
+        }
+
+        this.weapon = weapon;
       },
     };
   }
@@ -230,17 +231,6 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
     } else if (this.speed.y < 0) {
       this.direction = 1;
     }
-  }
-
-  /**
-   * Temporary function used for testing
-   */
-  private init() {
-    this.weapon = new Weapon({
-      name: "Basic Sword",
-      description: "A basic bish sword.",
-      damage: 5,
-    });
   }
 
   /**

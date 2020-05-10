@@ -1,31 +1,38 @@
+import TextBuffer from "./TextBuffer";
 import Vector from "@common/Vector";
 
+/**
+ * TextStream handles to usage of several TextBuffers to split text up for
+ * multi-line rendering.
+ */
 class TextStream {
   /**
    * Listing of all text lines
    *
-   * @prop {string[]} data
+   * @prop {string[]} _data
    */
-  private data: string[] = [];
+  private _data: string[] = [];
 
   /**
    * Current text to display
    *
-   * @prop {string} fragment
+   * @prop {string} _fragment
    */
   private _fragment: string = "";
 
   /**
    * Index of the data that is currently rendering
    *
-   * @prop {number} index
+   * @prop {number} _index
    */
-  private index: number = 0;
+  private _index: number = 0;
 
   /**
    * Buffer of current data split for line-by-line rendering
+   *
+   * @prop {TextBuffer} _buffer
    */
-  private buffer: string[] = [];
+  private _buffer: TextBuffer;
 
   /**
    * Create a new TextStream
@@ -33,7 +40,7 @@ class TextStream {
    * @param {string[]} data Listing of all text lines
    */
   constructor(data: string[]) {
-    this.data = data;
+    this._data = data;
   }
 
   /**
@@ -41,8 +48,29 @@ class TextStream {
    *
    * @return {string} fragment Current text fragment
    */
-  get fragment() {
+  get fragment(): string {
     return this._fragment;
+  }
+
+  /**
+   * Determine if the buffer is empty
+   *
+   * @return {boolean} If the buffer is empty
+   */
+  get isEmpty(): boolean {
+    return this._buffer ? this._buffer.isEmpty : true;
+  }
+
+  /**
+   * Determine if the stream has completed
+   *
+   * @return {boolean} If the stream has completed
+   */
+  get isDone(): boolean {
+    return (
+      this._index + 1 >= this._data.length &&
+      this._fragment === this._data[this._index]
+    );
   }
 
   /**
@@ -59,59 +87,18 @@ class TextStream {
     area: Vector,
     prefix: string = ""
   ) {
-    let text = prefix + this.data[this.index];
-    let words = text.split(/\s+/);
+    let text = prefix + this._data[this._index];
 
-    while (words.length) {
-      let wordsPerLine = 0;
-
-      for (let i = 0; i < words.length; i++) {
-        let tempText = words.slice(0, i + 1).join(" ");
-        let textWidth = ctx.measureText(tempText).width;
-
-        if (textWidth > area.x) {
-          this.buffer.push(words.slice(0, i).join(" "));
-          break;
-        } else if (i === words.length - 1) {
-          this.buffer.push(words.join(" "));
-          wordsPerLine++;
-          break;
-        }
-
-        wordsPerLine++;
-      }
-
-      words = words.slice(wordsPerLine);
-    }
-  }
-
-  /**
-   * Determine if the buffer is empty
-   *
-   * @return {boolean} If the buffer is empty
-   */
-  public isEmpty(): boolean {
-    return this.buffer.length === 0;
-  }
-
-  /**
-   * Determine if the stream has completed
-   *
-   * @return {boolean} If the stream has completed
-   */
-  public isDone(): boolean {
-    return (
-      this.index + 1 >= this.data.length &&
-      this._fragment === this.data[this.index]
-    );
+    this._buffer = new TextBuffer(text);
+    this._buffer.fill(ctx, area);
   }
 
   /**
    * Empty the buffer
    */
   public next() {
-    this.buffer = [];
-    this.index++;
+    this._buffer.clear();
+    this._index++;
     this._fragment = "";
   }
 
@@ -120,8 +107,8 @@ class TextStream {
    *
    * @return {string[]} Buffer contents
    */
-  public read() {
-    return this.buffer;
+  public read(): string[] {
+    return this._buffer.read();
   }
 
   /**
@@ -132,13 +119,13 @@ class TextStream {
    * @return {boolean}      If the current line is fully completed
    */
   public tick(ticks: number): boolean {
-    let lineLength = this.data[this.index].length;
+    let lineLength = this._data[this._index].length;
     let currentLength = ticks + this._fragment.length;
     let endCharIndex = Math.min(lineLength, currentLength) + 1;
 
-    this._fragment = this.data[this.index].substring(0, endCharIndex);
+    this._fragment = this._data[this._index].substring(0, endCharIndex);
 
-    return this._fragment === this.data[this.index];
+    return this._fragment === this._data[this._index];
   }
 }
 

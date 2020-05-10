@@ -1,4 +1,4 @@
-import Battle from "./Battle";
+import Battle from "./combat/Battle";
 import Dialogue from "./ui/Dialogue";
 import Inventory from "./menu/Inventory";
 import Level from "./Level";
@@ -200,7 +200,7 @@ class Game implements Eventful, Drawable {
           );
         }
 
-        let itemName = item.dialogueName;
+        let itemName = item.displayAs;
 
         let useVowel = ["a", "e", "i", "o", "u"].includes(
           itemName[0].toLowerCase()

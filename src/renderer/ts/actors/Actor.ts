@@ -1,9 +1,10 @@
 import Dialogue from "@/ui/Dialogue";
 import Inanimate from "@/inanimates/Inanimate";
+import Spell from "@/combat/Spell";
 import StateManager from "@/state/StateManager";
 import Stats from "@/Stats";
 import Vector from "@common/Vector";
-import Weapon from "@/item/Weapon";
+import Weapon from "@/combat/Weapon";
 import actors from "./actors.json";
 import config from "@/config";
 import { Drawable, Lockable } from "@/interfaces";
@@ -98,13 +99,6 @@ abstract class Actor implements Drawable, Lockable {
   protected locked: boolean;
 
   /**
-   * The actor's moves
-   *
-   * @prop {Weapon[]} moveSet
-   */
-  protected moveSet: Weapon[];
-
-  /**
    * Current position of the actor
    *
    * @prop {Vector} _position
@@ -184,7 +178,6 @@ abstract class Actor implements Drawable, Lockable {
     this.lastPosition = this.position.copy();
     this.savedPosition = this.position.copy();
     this.savedDirection = this.direction;
-    this.moveSet = actors[data.type]?.learnedMoves ?? [];
   }
 
   /**
@@ -199,10 +192,30 @@ abstract class Actor implements Drawable, Lockable {
   /**
    * Get the name used when rendering dialogue
    *
-   * @prop {string} dialogueName
+   * @prop {string} displayAs
    */
-  get dialogueName(): string {
-    return this.config.display_name;
+  get displayAs(): string {
+    return this.config.displayAs;
+  }
+
+  /**
+   * Get the move set of an actor
+   *
+   * @return {any[]}
+   */
+  get moveSet(): any[] {
+    return this.config.moveSet ?? [];
+  }
+
+  /**
+   * Get the spells the actor currently knows
+   *
+   * @return {Spell[]} List of spells
+   */
+  get spells(): Spell[] {
+    return this.moveSet
+      .filter((move) => move.level <= this.stats.lvl)
+      .map((spell) => new Spell(spell));
   }
 
   /**

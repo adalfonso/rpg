@@ -7,7 +7,7 @@ describe("TextStream", () => {
   describe("isDone", () => {
     it("it detects when the stream is not done", () => {
       let sut = getSut();
-      expect(sut.isDone()).to.be.false;
+      expect(sut.isDone).to.be.false;
     });
 
     // it("it detects the stream is done", () => {
@@ -25,7 +25,7 @@ describe("TextStream", () => {
   describe("isEmpty", () => {
     it("it detects the buffer is empty", () => {
       let sut = getSut();
-      expect(sut.isEmpty()).to.be.true;
+      expect(sut.isEmpty).to.be.true;
     });
     // it("it detects the buffer is full", () => {
     //   let sut = getSut();

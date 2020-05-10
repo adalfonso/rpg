@@ -45,20 +45,11 @@ class Item {
   }
 
   /**
-   * Get the item's description
-   *
-   * @return {string} The item's description
-   */
-  get description(): string {
-    return this.dialogueName;
-  }
-
-  /**
    * Get the name used when rendering dialogue
    *
    * @return {string} Name used when rendering dialogue
    */
-  get dialogueName(): string {
+  get displayAs(): string {
     return this._type
       .split("_")
       .map((s) => ucFirst(s))
