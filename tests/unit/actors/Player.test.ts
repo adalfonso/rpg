@@ -1,6 +1,7 @@
-import { expect } from "chai";
 import Sut from "@/actors/Player";
 import Vector from "@common/Vector";
+import { bus } from "@/EventBus";
+import { expect } from "chai";
 
 describe("Player", () => {
   describe("moveTo", () => {
@@ -10,6 +11,8 @@ describe("Player", () => {
       expect(sut.position).to.deep.equal({ x: 0, y: 0 });
       sut.moveTo(new Vector(1, 2));
       expect(sut.position).to.deep.equal({ x: 1, y: 2 });
+
+      bus.unregister(sut);
     });
   });
 });
