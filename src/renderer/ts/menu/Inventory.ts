@@ -363,7 +363,7 @@ class Inventory extends Menu implements Eventful, Drawable {
       .filter((subMenu) => {
         return subMenu.type === item.category;
       })[0]
-      .menu.push(item);
+      .menu.push(item.category === "weapon" ? new Weapon(item.type) : item);
 
     this.updateState();
   }
