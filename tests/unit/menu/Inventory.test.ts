@@ -2,7 +2,7 @@ import Item from "@/item/Item";
 import StateManager from "@/state/StateManager";
 import Sut from "@/menu/Inventory";
 import sinon from "sinon";
-import { cloneByStringify } from "@/util/util";
+import { cloneByStringify } from "@/util";
 import { expect } from "chai";
 import { menus } from "@/config";
 

@@ -11,7 +11,7 @@ import Vector from "@common/Vector";
 import levels from "./levels/levels";
 import { Drawable, Eventful } from "./interfaces";
 import { bus } from "@/EventBus";
-import { getImagePath } from "@/util/util";
+import { getImagePath } from "@/util";
 
 /**
  * Level represents a discrete area of the game that warrents it's own domain.

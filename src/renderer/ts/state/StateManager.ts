@@ -1,4 +1,4 @@
-import { merge } from "@/util/util";
+import { merge } from "@/util";
 import { promises as fs } from "fs";
 import { bus } from "@/EventBus";
 

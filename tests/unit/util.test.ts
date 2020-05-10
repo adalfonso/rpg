@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { lcFirst, ucFirst, merge, cloneByStringify } from "@/util/util";
+import { lcFirst, ucFirst, merge, cloneByStringify } from "@/util";
 
 describe("util", () => {
   describe("lcFirst", () => {

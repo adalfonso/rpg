@@ -5,7 +5,7 @@ import Player from "@/actors/Player";
 import StateManager from "@/state/StateManager";
 import Vector from "@common/Vector";
 import { resolution } from "@common/common";
-import { startAnimation } from "@/util/util";
+import { startAnimation } from "@/util";
 
 document.addEventListener("DOMContentLoaded", async (_event) => {
   const DEFAULT_SAVE_LOCATION = "./data/save_state.json";

@@ -1,7 +1,7 @@
 import Vector from "@common/Vector";
 import { Drawable, Eventful, Lockable } from "@/interfaces";
 import { bus } from "@/EventBus";
-import { lcFirst } from "@/util/util";
+import { lcFirst } from "@/util";
 
 /**
  * Menu is a visual UI that can be opened, closed, and traversed

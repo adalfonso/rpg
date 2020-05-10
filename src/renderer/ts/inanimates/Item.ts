@@ -1,7 +1,7 @@
 import Inanimate from "./Inanimate";
 import StateManager from "@/state/StateManager";
 import Vector from "@common/Vector";
-import { ucFirst } from "@/util/util";
+import { ucFirst } from "@/util";
 
 /**
  * An item laying on the ground

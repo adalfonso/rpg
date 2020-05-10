@@ -1,5 +1,5 @@
 import items from "@/item/items.json";
-import { ucFirst } from "@/util/util";
+import { ucFirst } from "@/util";
 
 /**
  * An item in the inventory
