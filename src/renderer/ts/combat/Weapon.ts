@@ -26,12 +26,22 @@ class Weapon extends CombatStrategy {
   private _isEquipped: boolean = false;
 
   /**
+   * The type of weapon (underscored name)
+   *
+   * @prop {string} _type
+   */
+
+  private _type: string;
+
+  /**
    * Create a new weapon instance
    *
    * @param {string} type Item type
    */
   constructor(type: string) {
     super(items[type]);
+
+    this._type = type;
   }
 
   /**
@@ -41,6 +51,15 @@ class Weapon extends CombatStrategy {
    */
   get isEquipped(): boolean {
     return this._isEquipped;
+  }
+
+  /**
+   * Get the weapon's type
+   *
+   * @return {string} The weapon's type
+   */
+  get type(): string {
+    return this._type;
   }
 
   /**
