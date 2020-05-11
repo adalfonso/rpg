@@ -65,6 +65,17 @@ class Vector {
   public toArray(): [number, number] {
     return [this.x, this.y];
   }
+
+  /**
+   * Return a new vector run thorugh a callback
+   *
+   * @param  {Function} callback Callback to apply
+   *
+   * @return {Vector} Resulting vector
+   */
+  public apply(callback: Function): Vector {
+    return new Vector(callback(this.x), callback(this.y));
+  }
 }
 
 export default Vector;

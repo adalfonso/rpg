@@ -12,7 +12,7 @@
     "ui": {
       "sprite": "characters.player",
       "frames": { "x": 1, "y": 4 },
-      "scale": 2,
+      "scale": 1,
       "fps": 8
     },
     "moveSet": [
@@ -38,7 +38,7 @@
     "ui": {
       "sprite": "characters.knight",
       "frames": { "x": 8, "y": 1 },
-      "scale": 4
+      "scale": 2
     }
   },
   "murdoc": {

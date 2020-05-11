@@ -422,7 +422,7 @@ abstract class Actor implements Drawable, Lockable {
     return {
       fps: UI.fps,
       ratio: new Vector(UI.frames.x, UI.frames.y),
-      scale: UI.scale,
+      scale: UI.scale * config.scale,
       sprite: getImagePath(UI.sprite),
     };
   }

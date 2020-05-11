@@ -92,4 +92,17 @@ describe("Vector", () => {
       });
     });
   });
+
+  describe("apply", () => {
+    it("it applies Math.round", () => {
+      [
+        [new Sut(1.1, 2.9), new Sut(1, 3)],
+        [new Sut(2, 4.5), new Sut(2, 5)],
+      ].forEach((data: [Sut, Sut]) => {
+        let [sut, expected] = data;
+
+        expect(sut.apply(Math.round)).to.deep.equal(expected);
+      });
+    });
+  });
 });

@@ -1,9 +1,9 @@
 import Actor from "./Actor";
 import Renderable from "@/Renderable";
-import Spell from "@/combat/Spell";
 import StateManager from "@/state/StateManager";
 import Vector from "@common/Vector";
 import Weapon from "@/combat/Weapon";
+import config from "@/config";
 import { Drawable, Eventful, Lockable } from "@/interfaces";
 import { bus } from "@/EventBus";
 
@@ -78,7 +78,17 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
 
     super.update(dt);
 
-    this.moveTo(this.position.plus(this.speed));
+    let speedModifier = 0.4;
+
+    // Reduce speed when traveling diagonally
+    if (this.speed.x * this.speed.y !== 0) {
+      speedModifier *= 0.75;
+    }
+
+    let distance = this.speed.times(config.scale).times(speedModifier);
+    let position = this.position.plus(distance).apply(Math.round);
+
+    this.moveTo(position);
 
     if (Math.abs(this.speed.x) + Math.abs(this.speed.y)) {
       bus.emit("player.move", { player: this });
