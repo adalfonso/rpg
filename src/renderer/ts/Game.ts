@@ -230,13 +230,18 @@ class Game implements Eventful, Drawable {
    * @param {GameState} state The game state to active
    */
   private lock(state: GameState) {
-    if (this.state === GameState.Play) {
-      this.state = state;
-      this.player.lock();
+    if (this.state !== GameState.Play) {
+      return;
+    }
 
-      if (state !== GameState.Inventory) {
-        this.inventory.lock();
-      }
+    this.state = state;
+    this.player.lock();
+
+    if (state !== GameState.Inventory) {
+      this.inventory.lock();
+    }
+    if (state !== GameState.StartMenu) {
+      this.menu.lock();
     }
   }
 
@@ -246,11 +251,13 @@ class Game implements Eventful, Drawable {
    * @param {GameState} state The game to deactivate
    */
   private unlock(state: GameState) {
-    if (this.state === state) {
-      this.player.unlock();
-      this.inventory.unlock();
-      this.state = GameState.Play;
+    if (this.state !== state) {
+      return;
     }
+    this.player.unlock();
+    this.inventory.unlock();
+    this.menu.unlock();
+    this.state = GameState.Play;
   }
 
   /**
