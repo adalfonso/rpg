@@ -1,9 +1,6 @@
-import Clip from "./inanimates/Clip";
-import Enemy from "./actors/Enemy";
+import CollisionHandler from "./CollisionHandler";
 import Entry from "./inanimates/Entry";
-import Item from "./inanimates/Item";
 import Map from "./inanimates/Map";
-import NonPlayer from "./actors/NonPlayer";
 import Player from "./actors/Player";
 import Portal from "./inanimates/Portal";
 import Template, { LevelFixture } from "./LevelTemplate";
@@ -45,22 +42,31 @@ class Level implements Drawable {
 
   /**
    * A mix of fixtures that interact in the level
-   * TODO: Better solution for typing these
    *
    * @prop {LevelFixture[]} fixtures
    */
   private fixtures: LevelFixture[] = [];
 
   /**
+   * Collision handler for player + fixtures
+   *
+   * @prop {CollisionHandler} collisionHandler
+   */
+  private collisionHandler: CollisionHandler;
+
+  /**
    * Create a new level instance
    *
-   * @param {object} template Object loaded from json containing level data
-   * @param {Player} player   Main player instance
+   * @param {object}           template Template loaded from level json
+   * @param {Player}           player   Main player instance
+   * @param {CollisionHandler} handler  Collision handler
    */
-  constructor(template: Template, player: Player) {
+  constructor(template: Template, player: Player, handler: CollisionHandler) {
     this.player = player;
+    this.collisionHandler = handler;
 
     this.load(template);
+    bus.register(this);
   }
 
   /**
@@ -69,48 +75,41 @@ class Level implements Drawable {
    * @param {number} dt Delta time
    */
   public update(dt: number) {
-    let events = [];
-
-    // TODO: Look into a adding a method to these classes that interacts with the
-    //       player
-
-    // TODO: This is getting out of control. Add some sort of collision handler.
-    [this.player, ...this.fixtures].forEach((fixture) => {
-      fixture.update(dt);
-      let playerCollision = this.player.collidesWith(fixture);
-
-      if (fixture instanceof Enemy && fixture.collidesWith(this.player)) {
-        fixture.fight(this.player);
-        if (fixture.defeated) {
-          this.removeFixture(fixture);
-        }
-      } else if (fixture instanceof Clip && playerCollision) {
-        this.player.backstep(playerCollision);
-      } else if (fixture instanceof Portal && playerCollision) {
-        events.push({
-          type: "enter_portal",
-          ref: fixture,
-        });
-      } else if (fixture instanceof Item && playerCollision) {
-        bus.emit("item.obtain", { item: fixture });
-        fixture.obtain();
-        this.removeFixture(fixture);
-      }
+    // Remove any stale fixtures that are returned
+    this.collisionHandler.update(dt).forEach((fixture) => {
+      this.removeFixture(fixture);
     });
 
-    // TODO: Fix potential bug where running this.load() on the first event
-    //       wipes out level fixtures that are referenced on later events.
-    events.forEach((event) => {
-      if ((event.type = "enter_portal")) {
-        let level = levels[event.ref.to];
+    // Reload fixtures incase any have been recently removed
+    this.collisionHandler.loadFixtures(this.fixtures);
+  }
+
+  /**
+   * Register events with the event bus
+   *
+   * @return {object} Events to register
+   */
+  public register(): object {
+    return {
+      "portal.enter": (e) => {
+        let portal = e.detail?.portal;
+
+        if (!portal) {
+          throw new Error(
+            `Could not find portal during "portal.enter" event as observed by "Level".`
+          );
+        }
+
+        let to = portal?.to;
+        let level = levels[to];
 
         if (!level) {
-          throw new Error(`Unable to locate level json for "${event.ref.to}".`);
+          throw new Error(`Unable to locate level json for "${to}".`);
         }
 
-        this.load(new Template(level), event.ref);
-      }
-    });
+        this.load(new Template(level), portal);
+      },
+    };
   }
 
   /**
@@ -148,6 +147,7 @@ class Level implements Drawable {
 
     this.entries = template.entries;
     this.fixtures = template.fixtures;
+    this.collisionHandler.loadFixtures(template.fixtures);
 
     let entry: Entry = portal ? this.entries[portal.from] : this.entries.origin;
 
@@ -165,14 +165,9 @@ class Level implements Drawable {
    * Clean up residual data from previous level
    */
   private cleanup() {
-    // Remove event listeners from non-players
-
-    // TODO: Tie this to an interface because there might be more Eventful
-    //       resources to cause memory leaks.
-    this.fixtures
-      .filter((e) => e instanceof NonPlayer)
-      .forEach((e) => bus.unregister(<Eventful>e));
-
+    // Force unregister every fixture, even if they aren't really eventful to
+    // prevent memory leaks.
+    this.fixtures.forEach((e) => bus.unregister(<Eventful>e));
     this.fixtures = [];
     this.entries = {};
   }

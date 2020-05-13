@@ -23,15 +23,6 @@ class Entry extends Inanimate {
 
     this.name = data.name;
   }
-
-  /**
-   * Draw the entry
-   *
-   * @param {CanvasRenderingContext2D} ctx Render context
-   */
-  public draw(ctx: CanvasRenderingContext2D) {
-    super.draw(ctx);
-  }
 }
 
 export default Entry;

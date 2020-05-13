@@ -86,7 +86,7 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
     }
 
     let distance = this.speed.times(config.scale).times(speedModifier);
-    let position = this.position.plus(distance).apply(Math.round);
+    let position = this.position.plus(distance);
 
     this.moveTo(position);
 

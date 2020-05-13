@@ -64,9 +64,10 @@ class StartMenu extends Menu implements Drawable {
   public register(): object {
     return {
       keyup: (e) => {
-        if(this.locked){
-          return
+        if (this.locked) {
+          return;
         }
+
         if (e.key === "Escape") {
           this.active ? this.close() : this.open();
         }

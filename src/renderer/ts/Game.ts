@@ -1,4 +1,5 @@
 import Battle from "./combat/Battle";
+import CollisionHandler from "./CollisionHandler";
 import Dialogue from "./ui/Dialogue";
 import Inventory from "./menu/Inventory";
 import Level from "./Level";
@@ -221,7 +222,11 @@ class Game implements Eventful, Drawable {
    * TODO: Create a better way to load a game state instead of a static level
    */
   public start() {
-    this.level = new Level(new LevelTemplate(levels.sandbox_0), this.player);
+    this.level = new Level(
+      new LevelTemplate(levels.sandbox_0),
+      this.player,
+      new CollisionHandler(this.player)
+    );
   }
 
   /**
@@ -240,6 +245,7 @@ class Game implements Eventful, Drawable {
     if (state !== GameState.Inventory) {
       this.inventory.lock();
     }
+
     if (state !== GameState.StartMenu) {
       this.menu.lock();
     }

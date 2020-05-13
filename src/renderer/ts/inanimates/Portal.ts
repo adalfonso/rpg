@@ -31,7 +31,7 @@ class Portal extends Inanimate {
     super(position, size);
 
     if (!data.properties) {
-      throw "Cannot find from/to when creating portal.";
+      throw new Error(`Cannot find "properties" object when creating portal.`);
     }
 
     /**
@@ -42,16 +42,10 @@ class Portal extends Inanimate {
     data.properties.forEach((prop) => {
       this[prop.name] = prop.value;
     });
-  }
 
-  /**
-   * Draw Portal and all underlying entities. Portals aren't drawn per se, but
-   * we can hand off drawing to the parent class in case a debug draw is needed.
-   *
-   * @param {CanvasRenderingContext2D} ctx Render context
-   */
-  public draw(ctx: CanvasRenderingContext2D) {
-    super.draw(ctx);
+    if (!this.from || !this.to) {
+      throw new Error("Cannot find from/to when creating portal.");
+    }
   }
 }
 

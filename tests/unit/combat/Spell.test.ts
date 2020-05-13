@@ -1,5 +1,4 @@
 import Sut from "@/combat/Spell";
-import { bus } from "@/EventBus";
 import { expect } from "chai";
 
 describe("Spell", () => {
