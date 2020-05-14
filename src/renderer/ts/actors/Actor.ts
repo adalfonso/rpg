@@ -470,8 +470,10 @@ abstract class Actor implements Drawable, Lockable {
    * @param {CanvasRenderingContext2D} ctx Render context
    */
   private debugDraw(ctx: CanvasRenderingContext2D) {
-    ctx.fillStyle = "#F99";
-    ctx.fillRect(this.position.x, this.position.y, this._size.x, this._size.y);
+    ctx.save();
+    ctx.strokeStyle = "#F00";
+    ctx.strokeRect(this.position.x, this.position.y, this.size.x, this.size.y);
+    ctx.restore();
   }
 }
 

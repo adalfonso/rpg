@@ -124,7 +124,7 @@ class Level implements Drawable {
     offset: Vector,
     resolution: Vector
   ) {
-    this.map.draw(ctx);
+    this.map.draw(ctx, offset, resolution);
 
     [this.player, ...this.fixtures].forEach((fixture) => {
       fixture.draw(ctx, offset, resolution);

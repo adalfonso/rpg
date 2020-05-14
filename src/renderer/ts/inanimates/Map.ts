@@ -55,28 +55,47 @@ class Map {
   /**
    * Draw all tiles through a renderable
    *
-   * @param {CanvasRenderingContext2D} ctx Rendering context
+   * @param {CanvasRenderingContext2D} ctx        Rendering context
+   * @param {Vector}                   offset     Render position offset
+   * @param {Vector}                   resolution Render resolution
    */
-  public draw(ctx: CanvasRenderingContext2D) {
+  public draw(
+    ctx: CanvasRenderingContext2D,
+    offset: Vector,
+    resolution: Vector
+  ) {
     if (!this.renderable.ready) {
       return;
     }
 
     let r = this.renderable;
+    let tileSize = r.spriteSize.times(r.scale);
 
     this.layers.forEach((layer) => {
       layer.data.forEach((value: number, index: number) => {
         r.frame = value - 1;
 
-        let tile = new Vector(
+        let tilePosition = new Vector(
           index % layer.width,
           Math.floor(index / layer.width)
-        );
+        ).times(tileSize);
 
-        ctx.save();
-        ctx.translate(...tile.times(r.spriteSize).times(r.scale).toArray());
+        let visible =
+          tilePosition.x + offset.x + tileSize.x >= 0 &&
+          tilePosition.x + offset.x <= resolution.x &&
+          tilePosition.y + offset.y + tileSize.y >= 0 &&
+          tilePosition.y + offset.y <= resolution.y;
+
+        // Don't render tiles that aren't visible
+        if (!visible) {
+          return;
+        }
+
+        ctx.translate(tilePosition.x, tilePosition.y);
+
         r.draw(ctx);
-        ctx.restore();
+
+        ctx.translate(-tilePosition.x, -tilePosition.y);
       });
     });
   }

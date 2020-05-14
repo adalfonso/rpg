@@ -109,12 +109,11 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
   ) {
     super.draw(ctx, offset, resolution);
 
-    ctx.save();
     ctx.translate(this.position.x, this.position.y);
 
     this.sprites[this.direction].draw(ctx);
 
-    ctx.restore();
+    ctx.translate(-this.position.x, -this.position.y);
   }
 
   /**

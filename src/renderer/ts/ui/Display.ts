@@ -31,13 +31,6 @@ class Display {
   private ctx: CanvasRenderingContext2D;
 
   /**
-   * Temporary rendering context
-   *
-   * @prop {CanvasRenderingContext2D} buffer
-   */
-  private buffer: CanvasRenderingContext2D;
-
-  /**
    * Original width/height of display
    *
    * @prop {Vector} aspectRatio
@@ -81,7 +74,6 @@ class Display {
     this.renderMode = RenderMode.Dynamic;
 
     this.ctx = canvas.getContext("2d");
-    this.buffer = document.createElement("canvas").getContext("2d");
 
     this.resizetoWindow();
 
@@ -113,32 +105,18 @@ class Display {
   }
 
   /**
-   * Set up buffer canvas and then hand off to game instance for drawing.
+   * Hand off to game instance for drawing.
    */
   public draw() {
     let offset = this.offset;
 
-    this.buffer.clearRect(0, 0, this.width, this.height);
-    this.buffer.save();
-    this.buffer.translate(offset.x, offset.y);
-
-    this.game.draw(this.buffer, offset, this.resolution);
-
-    this.buffer.restore();
-
     this.ctx.clearRect(0, 0, this.width, this.height);
 
-    this.ctx.drawImage(
-      this.buffer.canvas,
-      0,
-      0,
-      this.buffer.canvas.width,
-      this.buffer.canvas.height,
-      0,
-      0,
-      this.ctx.canvas.width,
-      this.ctx.canvas.height
-    );
+    this.ctx.translate(offset.x, offset.y);
+
+    this.game.draw(this.ctx, offset, this.resolution);
+
+    this.ctx.translate(-offset.x, -offset.y);
   }
 
   /**
@@ -179,7 +157,7 @@ class Display {
   }
 
   /**
-   * Resize context canvas and buffer canvas to a new size
+   * Resize context canvas to a new size
    *
    * @param {number} width  New canvas width
    * @param {number} height New canvas height
@@ -191,10 +169,6 @@ class Display {
     this.ctx.canvas.width = width;
     this.ctx.canvas.height = height;
     this.ctx.imageSmoothingEnabled = false;
-
-    this.buffer.canvas.width = width;
-    this.buffer.canvas.height = height;
-    this.buffer.imageSmoothingEnabled = false;
 
     this.width = width;
     this.height = height;
