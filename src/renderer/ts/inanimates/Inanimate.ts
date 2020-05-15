@@ -41,23 +41,37 @@ abstract class Inanimate {
   /**
    * Draw the inanimate
    *
-   * @param {CanvasRenderingContext2D} ctx Render context
+   * @param {CanvasRenderingContext2D} ctx        Render context
+   * @param {Vector}                   offset     Render position offset
+   * @param {Vector}                   resolution Render resolution
    */
-  public draw(ctx: CanvasRenderingContext2D) {
+  public draw(
+    ctx: CanvasRenderingContext2D,
+    offset: Vector,
+    resolution: Vector
+  ) {
     if (config.debug) {
-      this.debugDraw(ctx);
+      this.debugDraw(ctx, new Vector(0, 0), resolution);
     }
   }
 
   /**
    * Force some sort of render
    *
-   * @param {CanvasRenderingContext2D} ctx Render context
+   * @param {CanvasRenderingContext2D} ctx         Render context
+   * @param {Vector}                   offset      Render position offset
+   * @param {Vector}                   _resolution Render resolution
    */
-  protected debugDraw(ctx: CanvasRenderingContext2D) {
+  protected debugDraw(
+    ctx: CanvasRenderingContext2D,
+    offset: Vector,
+    _resolution: Vector
+  ) {
+    let position = this.position.plus(offset);
+
     ctx.save();
     ctx.strokeStyle = "#F00";
-    ctx.strokeRect(this.position.x, this.position.y, this.size.x, this.size.y);
+    ctx.strokeRect(position.x, position.y, this.size.x, this.size.y);
     ctx.restore();
   }
 }

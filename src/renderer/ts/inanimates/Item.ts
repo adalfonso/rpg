@@ -85,11 +85,19 @@ class Item extends Inanimate {
   /**
    * Draw the item
    *
-   * @param {CanvasRenderingContext2D} ctx Render context
+   * @param {CanvasRenderingContext2D} ctx        Render context
+   * @param {Vector}                   offset     Render position offset
+   * @param {Vector}                   resolution Render resolution
    */
-  public draw(ctx: CanvasRenderingContext2D) {
-    super.draw(ctx);
-    super.debugDraw(ctx);
+  public draw(
+    ctx: CanvasRenderingContext2D,
+    offset: Vector,
+    resolution: Vector
+  ) {
+    super.draw(ctx, offset, resolution);
+
+    // Force debugDraw temporarily
+    super.debugDraw(ctx, new Vector(0, 0), resolution);
   }
 
   /**

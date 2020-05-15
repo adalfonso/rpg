@@ -116,9 +116,8 @@ class Dialogue implements Eventful, Drawable {
     let margin = new Vector(20, 20);
     let size = new Vector(resolution.x - 2 * margin.x, 130);
 
-    let position = new Vector(
-      margin.x - offset.x,
-      resolution.y - offset.y - size.y - margin.y
+    let position = new Vector(margin.x, resolution.y - size.y - margin.y).plus(
+      offset
     );
 
     ctx.save();

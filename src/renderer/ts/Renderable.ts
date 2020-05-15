@@ -1,5 +1,6 @@
 import Vector from "@common/Vector";
 import config from "./config";
+import { Drawable } from "./interfaces";
 
 /**
  * Data fed to a Renderable instance
@@ -13,7 +14,7 @@ export type RenderData = {
   sprite: string;
 };
 
-export default class Renderable {
+export default class Renderable implements Drawable {
   /**
    * Image element to render
    *
@@ -125,9 +126,15 @@ export default class Renderable {
   /**
    * Render the image
    *
-   * @param {CanvasRenderingContext2D} ctx Render Context
+   * @param {CanvasRenderingContext2D} ctx         Render Context
+   * @param {Vector}                   offset      Render position offset
+   * @param {Vector}                   _resolution Render resolution
    */
-  public draw(ctx: CanvasRenderingContext2D) {
+  public draw(
+    ctx: CanvasRenderingContext2D,
+    offset: Vector,
+    _resolution?: Vector
+  ) {
     if (!this.ready) {
       return;
     }
@@ -155,8 +162,8 @@ export default class Renderable {
       posY,
       this.spriteSize.x,
       this.spriteSize.y,
-      0,
-      0,
+      offset.x,
+      offset.y,
       this.spriteSize.x * this.scale,
       this.spriteSize.y * this.scale
     );

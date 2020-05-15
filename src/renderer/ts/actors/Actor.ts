@@ -244,7 +244,7 @@ abstract class Actor implements Drawable, Lockable {
     resolution: Vector
   ) {
     if (config.debug) {
-      this.debugDraw(ctx);
+      this.debugDraw(ctx, new Vector(0, 0), resolution);
     }
   }
 
@@ -467,12 +467,20 @@ abstract class Actor implements Drawable, Lockable {
   /**
    * Force some sort of render when debug mode is on.
    *
-   * @param {CanvasRenderingContext2D} ctx Render context
+   * @param {CanvasRenderingContext2D} ctx         Render context
+   * @param {Vector}                   offset      Render position offset
+   * @param {Vector}                   _resolution Render resolution
    */
-  private debugDraw(ctx: CanvasRenderingContext2D) {
+  private debugDraw(
+    ctx: CanvasRenderingContext2D,
+    offset: Vector,
+    _resolution: Vector
+  ) {
+    let position = this.position.plus(offset);
+
     ctx.save();
     ctx.strokeStyle = "#F00";
-    ctx.strokeRect(this.position.x, this.position.y, this.size.x, this.size.y);
+    ctx.strokeRect(position.x, position.y, this.size.x, this.size.y);
     ctx.restore();
   }
 }

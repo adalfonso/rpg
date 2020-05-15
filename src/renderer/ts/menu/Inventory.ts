@@ -94,7 +94,8 @@ class Inventory extends Menu implements Eventful, Drawable {
     let margin = new Vector(60, isMainMenu ? 90 : 0);
 
     ctx.save();
-    ctx.translate(-offset.x, -offset.y);
+
+    ctx.translate(offset.x, offset.y);
 
     // Draw background under main menu only
     if (isMainMenu) {
@@ -145,7 +146,7 @@ class Inventory extends Menu implements Eventful, Drawable {
 
       // Render sub-menu
       if (this.selected.includes(option) && option.menu) {
-        let offset = new Vector(-textWidth, 0);
+        let offset = new Vector(textWidth, 0);
         this.draw(ctx, offset, resolution, option.menu);
       }
     });

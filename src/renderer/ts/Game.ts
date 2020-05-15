@@ -146,7 +146,11 @@ class Game implements Eventful, Drawable {
     offset: Vector,
     resolution: Vector
   ) {
+    // Translate entire board by player offset, but pass in the offset. The map
+    // will use the offset to determine which tiles are off screen.
+    ctx.translate(offset.x, offset.y);
     this.level.draw(ctx, offset, resolution);
+    ctx.translate(-offset.x, -offset.y);
 
     if (this.hasActiveBattle()) {
       let battleOffset = new Vector(
@@ -156,11 +160,13 @@ class Game implements Eventful, Drawable {
       this.battle.draw(ctx, battleOffset, resolution);
     }
 
-    this.menu.draw(ctx, offset, resolution);
-    this.inventory.draw(ctx, offset, resolution);
+    let noOffset = new Vector(0, 0);
+
+    this.menu.draw(ctx, noOffset, resolution);
+    this.inventory.draw(ctx, noOffset, resolution);
 
     if (this.dialogue) {
-      this.dialogue.draw(ctx, offset, resolution);
+      this.dialogue.draw(ctx, noOffset, resolution);
     }
   }
 

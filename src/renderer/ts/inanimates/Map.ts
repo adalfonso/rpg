@@ -1,12 +1,13 @@
 import Renderable from "@/Renderable";
 import Vector from "@common/Vector";
 import config from "@/config";
+import { Drawable } from "@/interfaces";
 
 /**
  * Map is an underlying visual component and has no moving parts. It is simply
  * the basis to render and build additional fixures atop.
  */
-class Map {
+class Map implements Drawable {
   /**
    * Layer data
    *
@@ -69,33 +70,37 @@ class Map {
     }
 
     let r = this.renderable;
-    let tileSize = r.spriteSize.times(r.scale);
+    let size = r.spriteSize.times(r.scale);
 
     this.layers.forEach((layer) => {
       layer.data.forEach((value: number, index: number) => {
         r.frame = value - 1;
 
-        let tilePosition = new Vector(
+        let position = new Vector(
           index % layer.width,
           Math.floor(index / layer.width)
-        ).times(tileSize);
+        ).times(size);
 
         let visible =
-          tilePosition.x + offset.x + tileSize.x >= 0 &&
-          tilePosition.x + offset.x <= resolution.x &&
-          tilePosition.y + offset.y + tileSize.y >= 0 &&
-          tilePosition.y + offset.y <= resolution.y;
+          position.x + offset.x + size.x >= 0 &&
+          position.x + offset.x <= resolution.x &&
+          position.y + offset.y + size.y >= 0 &&
+          position.y + offset.y <= resolution.y;
 
         // Don't render tiles that aren't visible
         if (!visible) {
           return;
         }
 
-        ctx.translate(tilePosition.x, tilePosition.y);
-
-        r.draw(ctx);
-
-        ctx.translate(-tilePosition.x, -tilePosition.y);
+        /**
+         * Offset is not used when drawing because the canvas is already
+         * translated at this point. The offset is still passed in as a
+         * parameter because it's used to determine if the tile is off screen.
+         *
+         * This may be bad practice because it's not obvious that the offset
+         * would not be utilized by this class.
+         */
+        r.draw(ctx, position);
       });
     });
   }

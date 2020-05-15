@@ -108,15 +108,9 @@ class Display {
    * Hand off to game instance for drawing.
    */
   public draw() {
-    let offset = this.offset;
-
     this.ctx.clearRect(0, 0, this.width, this.height);
 
-    this.ctx.translate(offset.x, offset.y);
-
-    this.game.draw(this.ctx, offset, this.resolution);
-
-    this.ctx.translate(-offset.x, -offset.y);
+    this.game.draw(this.ctx, this.offset, this.resolution);
   }
 
   /**

@@ -81,7 +81,11 @@ abstract class Menu implements Eventful, Drawable, Lockable {
     ctx: CanvasRenderingContext2D,
     offset: Vector,
     resolution: Vector
-  ) {}
+  ) {
+    throw new Error(
+      `Submenu "${this.constructor.name}" must implement draw method.`
+    );
+  }
 
   /**
    * Register events with the event bus.
