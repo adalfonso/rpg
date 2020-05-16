@@ -97,7 +97,7 @@ class Item extends Inanimate {
     super.draw(ctx, offset, resolution);
 
     // Force debugDraw temporarily
-    super.debugDraw(ctx, new Vector(0, 0), resolution);
+    super.debugDraw(ctx, offset, resolution);
   }
 
   /**

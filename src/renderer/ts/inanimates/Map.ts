@@ -92,15 +92,7 @@ class Map implements Drawable {
           return;
         }
 
-        /**
-         * Offset is not used when drawing because the canvas is already
-         * translated at this point. The offset is still passed in as a
-         * parameter because it's used to determine if the tile is off screen.
-         *
-         * This may be bad practice because it's not obvious that the offset
-         * would not be utilized by this class.
-         */
-        r.draw(ctx, position);
+        r.draw(ctx, position.plus(offset));
       });
     });
   }

@@ -126,35 +126,23 @@ class Battle implements Eventful, Drawable, Lockable {
     let width: number = resolution.x;
     let height: number = resolution.y;
 
-    ctx.save();
     ctx.fillStyle = "#CCC";
     ctx.fillRect(0, 0, width, height);
-    ctx.fillStyle = "#FFF";
-    ctx.textAlign = "center";
-    ctx.restore();
-
-    ctx.save();
-
-    ctx.translate(offset.x, offset.y);
 
     this.player.draw(ctx, offset, resolution);
     this.enemy.draw(ctx, offset, resolution);
-
-    ctx.restore();
 
     this.drawUiBar(ctx, resolution);
     this.drawEnemyUiBar(ctx, resolution);
 
     if (this.playersTurn) {
-      let playerOffset = offset
-        .plus(this.player.position)
-        .plus(this.player.size);
+      let menuOffset = offset.plus(this.player.position).plus(this.player.size);
 
-      this.menu.draw(ctx, playerOffset, resolution);
+      this.menu.draw(ctx, menuOffset, resolution);
     }
 
     if (this.dialogue) {
-      this.dialogue.draw(ctx, undefined, resolution);
+      this.dialogue.draw(ctx, new Vector(0, 0), resolution);
     }
   }
 
@@ -186,7 +174,6 @@ class Battle implements Eventful, Drawable, Lockable {
         let name = this.player.displayAs;
         let exp = e.detail.exp;
         let levels = e.detail.levels;
-        let lvl = null;
         let moveSet = e.detail.moveSet;
         let dialogue = [`${name} gained ${exp} exp.`];
 
@@ -202,7 +189,10 @@ class Battle implements Eventful, Drawable, Lockable {
 
         let stream = new TextStream(dialogue);
 
-        this.dialogue = new Dialogue(stream, this.player, [this.enemy]);
+        this.dialogue = new Dialogue(stream, undefined, [
+          this.player,
+          this.enemy,
+        ]);
         this.lock();
       },
     };
@@ -273,13 +263,11 @@ class Battle implements Eventful, Drawable, Lockable {
   private drawUiBar(ctx: CanvasRenderingContext2D, resolution: Vector) {
     let uiBarSize = this.getUiBarSize(resolution);
 
-    ctx.save();
     ctx.fillStyle = "#000";
     ctx.fillRect(0, 0, uiBarSize.x, uiBarSize.y);
     ctx.fillStyle = "#FFF";
     ctx.font = "20px Arial";
     ctx.fillText("HP : " + this.player.stats.hp, 16, 32);
-    ctx.restore();
   }
 
   /**
@@ -289,15 +277,18 @@ class Battle implements Eventful, Drawable, Lockable {
    * @param {Vector}                   resolution Render resolution
    */
   private drawEnemyUiBar(ctx: CanvasRenderingContext2D, resolution: Vector) {
-    let uiBarSize = this.getUiBarSize(resolution);
-    ctx.save();
-    ctx.translate(resolution.x - uiBarSize.x, 0);
+    const uiBarSize = this.getUiBarSize(resolution);
+    const position = new Vector(resolution.x - uiBarSize.x, 0);
+
     ctx.fillStyle = "#000";
-    ctx.fillRect(0, 0, uiBarSize.x, uiBarSize.y);
+    ctx.fillRect(position.x, position.y, uiBarSize.x, uiBarSize.y);
     ctx.fillStyle = "#FFF";
     ctx.font = "20px Arial";
-    ctx.fillText("HP : " + this.enemy.stats.hp, 16, 32);
-    ctx.restore();
+    ctx.fillText(
+      "HP : " + this.enemy.stats.hp,
+      position.x + 16,
+      position.y + 32
+    );
   }
 
   /**

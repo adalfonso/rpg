@@ -97,7 +97,6 @@ class Dialogue implements Eventful, Drawable {
     let frames = Math.floor(this.timeStore / this.frameLength);
 
     this.waiting = this.stream.tick(frames);
-
     this.timeStore = this.timeStore % this.frameLength;
   }
 
@@ -121,12 +120,10 @@ class Dialogue implements Eventful, Drawable {
     );
 
     ctx.save();
-
-    ctx.translate(position.x, position.y);
     ctx.fillStyle = "#EEE";
-    ctx.fillRect(0, 0, size.x, size.y);
+    ctx.fillRect(position.x, position.y, size.x, size.y);
 
-    this.drawText(ctx, new Vector(0, 0), resolution.minus(margin.times(2)));
+    this.drawText(ctx, position, resolution.minus(margin.times(2)));
 
     ctx.restore();
   }
@@ -208,8 +205,6 @@ class Dialogue implements Eventful, Drawable {
     let lineHeight = 52;
     let padding = new Vector(20, 20);
 
-    ctx.save();
-
     ctx.font = "32px Minecraftia";
     ctx.textAlign = "left";
 
@@ -220,7 +215,6 @@ class Dialogue implements Eventful, Drawable {
       this.stream.fillBuffer(ctx, resolution.minus(padding.times(2)), prefix);
     }
 
-    ctx.translate(offset.x + padding.x, offset.y + padding.y);
     ctx.fillStyle = "#333";
     ctx.font = "32px Minecraftia";
     ctx.textAlign = "left";
@@ -230,15 +224,14 @@ class Dialogue implements Eventful, Drawable {
 
     // Print each line in the buffer
     for (let i = 0; i < lines.length; i++) {
-      let text = fragment.length < lines[i].length ? fragment : lines[i];
+      const text = fragment.length < lines[i].length ? fragment : lines[i];
+      const lineOffset = new Vector(0, lineHeight).times(i + 1);
+      const position = offset.plus(padding).plus(lineOffset);
 
-      ctx.translate(0, lineHeight);
-      ctx.fillText(text.trim(), 0, 0);
+      ctx.fillText(text.trim(), position.x, position.y);
 
       fragment = fragment.substr(text.length);
     }
-
-    ctx.restore();
   }
 }
 

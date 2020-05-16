@@ -27,7 +27,7 @@ class StartMenu extends Menu implements Drawable {
 
     ctx.save();
     ctx.fillStyle = "rgba(0, 0, 0, .85)";
-    ctx.fillRect(0, 0, resolution.x, resolution.y);
+    ctx.fillRect(offset.x, offset.y, resolution.x, resolution.y);
     ctx.fillStyle = "#FFF";
     ctx.textAlign = "center";
 

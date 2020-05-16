@@ -244,7 +244,7 @@ abstract class Actor implements Drawable, Lockable {
     resolution: Vector
   ) {
     if (config.debug) {
-      this.debugDraw(ctx, new Vector(0, 0), resolution);
+      this.debugDraw(ctx, offset, resolution);
     }
   }
 

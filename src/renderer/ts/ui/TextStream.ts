@@ -87,9 +87,9 @@ class TextStream {
     area: Vector,
     prefix: string = ""
   ) {
-    let text = prefix + this._data[this._index];
+    this._data[this._index] = prefix + this._data[this._index];
 
-    this._buffer = new TextBuffer(text);
+    this._buffer = new TextBuffer(this._data[this._index]);
     this._buffer.fill(ctx, area);
   }
 

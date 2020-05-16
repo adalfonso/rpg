@@ -78,7 +78,7 @@ class Enemy extends Actor implements Drawable {
 
     super.draw(ctx, offset, resolution);
 
-    this.sprites[this.direction].draw(ctx, this.position);
+    this.sprites[this.direction].draw(ctx, this.position.plus(offset));
   }
 
   /**

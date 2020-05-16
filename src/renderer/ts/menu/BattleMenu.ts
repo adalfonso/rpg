@@ -3,6 +3,16 @@ import Vector from "@common/Vector";
 import { Drawable, Eventful } from "@/interfaces";
 
 /**
+ * Anatomy of a BattleMenu option
+ *
+ * @type {BattleMenuOption}
+ */
+type BattleMenuOption = {
+  type: string;
+  menu: any[];
+};
+
+/**
  * A BattleMenu is used by the player to access battle-level fixtures such as
  * items, attack, and spells.
  */
@@ -10,9 +20,9 @@ class BattleMenu extends Menu implements Eventful, Drawable {
   /**
    * Draw BattleMenu and all underlying entities
    *
-   * @param {CanvasRenderingContext2D} ctx        Render context
-   * @param {Vector}                   offset     Render position offset
-   * @param {Vector}                   resolution Render resolution
+   * @param {CanvasRenderingContext2D} ctx         Render context
+   * @param {Vector}                   offset      Render position offset
+   * @param {Vector}                   _resolution Render resolution
    */
   public draw(
     ctx: CanvasRenderingContext2D,
@@ -22,39 +32,41 @@ class BattleMenu extends Menu implements Eventful, Drawable {
     ctx.save();
     ctx.font = "12px Minecraftia";
 
-    let tileSize = new Vector(72, 24);
-    let tilePadding = new Vector(8, 0);
+    const tileSize = new Vector(72, 24);
+    const tilePadding = new Vector(8, 0);
 
-    ctx.translate(
+    const basePosition = new Vector(
       offset.x - (tileSize.x + tilePadding.x) * this.menu.length,
       offset.y + tileSize.y
     );
 
-    this.menu.forEach((option) => {
-      let isSelected = option === this.selected[0];
+    this.menu.forEach((option, index) => {
+      const isSelected = option === this.selected[0];
+      const position = new Vector(tileSize.x + tilePadding.x, 0)
+        .times(index + 1)
+        .plus(basePosition);
 
-      ctx.translate(tileSize.x + tilePadding.x, 0);
-
-      ctx.fillStyle = "#fff";
+      ctx.fillStyle = "#FFF";
 
       if (option === this.selected[0]) {
-        ctx.fillStyle = "#ddd";
-        ctx.strokeRect(0, 0, tileSize.x, tileSize.y);
+        ctx.fillStyle = "#DDD";
+        ctx.strokeRect(position.x, position.y, tileSize.x, tileSize.y);
       }
 
-      ctx.fillRect(0, 0, tileSize.x, tileSize.y);
+      ctx.fillRect(position.x, position.y, tileSize.x, tileSize.y);
       ctx.fillStyle = "#000";
 
       ctx.save();
 
-      if (option === this.currentOption) {
-        ctx.shadowOffsetX = 1;
-        ctx.shadowOffsetY = 1;
-        ctx.shadowBlur = 0;
-        ctx.shadowColor = "#0DD";
-      }
+      this.applyHighlight(ctx, option);
 
-      ctx.fillText(option.type, 4, 4 + 20);
+      const textOffset = new Vector(4, 4 + 20);
+
+      ctx.fillText(
+        option.type,
+        position.x + textOffset.x,
+        position.y + textOffset.y
+      );
 
       ctx.restore();
 
@@ -62,17 +74,16 @@ class BattleMenu extends Menu implements Eventful, Drawable {
         option.menu.forEach((subOption, index) => {
           ctx.save();
 
-          if (subOption === this.currentOption) {
-            ctx.shadowOffsetX = 1;
-            ctx.shadowOffsetY = 1;
-            ctx.shadowBlur = 0;
-            ctx.shadowColor = "#0DD";
-          }
+          this.applyHighlight(ctx, subOption);
 
-          let displayAs = subOption.displayAs ?? subOption;
+          const displayAs = subOption.displayAs ?? subOption;
+          const subOffset = new Vector(0, 18 * (index + 1) + 32);
 
-          ctx.translate(0, 18 * (index + 1) + 16);
-          ctx.fillText(displayAs, 0, 16);
+          ctx.fillText(
+            displayAs,
+            position.x + subOffset.x,
+            position.y + subOffset.y
+          );
           ctx.restore();
         });
       }
@@ -128,6 +139,24 @@ class BattleMenu extends Menu implements Eventful, Drawable {
         }
       },
     };
+  }
+
+  /**
+   * Apply text highlighting to the menu option when necessary
+   *
+   * @param {CanvasRenderingContext2D} ctx    Render context
+   * @param {BattleMenuOption}         option Menu option
+   */
+  private applyHighlight(
+    ctx: CanvasRenderingContext2D,
+    option: BattleMenuOption
+  ) {
+    if (option === this.currentOption) {
+      ctx.shadowOffsetX = 1;
+      ctx.shadowOffsetY = 1;
+      ctx.shadowBlur = 0;
+      ctx.shadowColor = "#0DD";
+    }
   }
 }
 

@@ -73,14 +73,14 @@ abstract class Menu implements Eventful, Drawable, Lockable {
   /**
    * Draw Menu and all underlying entities
    *
-   * @param {CanvasRenderingContext2D} ctx        Render context
-   * @param {Vector}                   offset     Render position offset
-   * @param {Vector}                   resolution Render resolution
+   * @param {CanvasRenderingContext2D} _ctx        Render context
+   * @param {Vector}                   _offset     Render position offset
+   * @param {Vector}                   _resolution Render resolution
    */
   public draw(
-    ctx: CanvasRenderingContext2D,
-    offset: Vector,
-    resolution: Vector
+    _ctx: CanvasRenderingContext2D,
+    _offset: Vector,
+    _resolution: Vector
   ) {
     throw new Error(
       `Submenu "${this.constructor.name}" must implement draw method.`

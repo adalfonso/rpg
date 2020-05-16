@@ -100,7 +100,7 @@ class Inventory extends Menu implements Eventful, Drawable {
     // Draw background under main menu only
     if (isMainMenu) {
       ctx.fillStyle = "#555";
-      ctx.fillRect(0, 0, resolution.x, resolution.y);
+      ctx.fillRect(offset.x, offset.y, resolution.x, resolution.y);
       ctx.fillStyle = "#EEE";
       ctx.textAlign = "left";
     }

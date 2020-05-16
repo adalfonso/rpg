@@ -146,11 +146,7 @@ class Game implements Eventful, Drawable {
     offset: Vector,
     resolution: Vector
   ) {
-    // Translate entire board by player offset, but pass in the offset. The map
-    // will use the offset to determine which tiles are off screen.
-    ctx.translate(offset.x, offset.y);
     this.level.draw(ctx, offset, resolution);
-    ctx.translate(-offset.x, -offset.y);
 
     if (this.hasActiveBattle()) {
       let battleOffset = new Vector(
@@ -217,7 +213,7 @@ class Game implements Eventful, Drawable {
           `Picked up ${useVowel ? "an" : "a"} ${itemName}!`,
         ]);
 
-        this.dialogue = new Dialogue(stream, this.player, []);
+        this.dialogue = new Dialogue(stream, undefined, [this.player]);
         this.lock(GameState.Dialogue);
       },
     };

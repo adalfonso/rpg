@@ -51,7 +51,7 @@ abstract class Inanimate {
     resolution: Vector
   ) {
     if (config.debug) {
-      this.debugDraw(ctx, new Vector(0, 0), resolution);
+      this.debugDraw(ctx, offset, resolution);
     }
   }
 
@@ -70,7 +70,7 @@ abstract class Inanimate {
     let position = this.position.plus(offset);
 
     ctx.save();
-    ctx.strokeStyle = "#F00";
+    ctx.strokeStyle = "#FF0";
     ctx.strokeRect(position.x, position.y, this.size.x, this.size.y);
     ctx.restore();
   }
