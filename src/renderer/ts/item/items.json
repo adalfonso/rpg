@@ -12,8 +12,11 @@
   "big_sword": {
     "displayAs": "Big Sword",
     "type": "weapon",
-    "description": "A big ass word.",
-    "value": 15
+    "description": "A big ass word that has clearly seen better days.",
+    "value": 15,
+    "ui": {
+      "sprite": "weapon.big_sword"
+    }
   },
   "empanada_weapon": {
     "displayAs": "Empanada",

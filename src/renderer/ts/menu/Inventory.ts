@@ -128,9 +128,12 @@ class Inventory extends Menu implements Eventful, Drawable {
 
       ctx.save();
 
+      let equipableSize;
+
       if (isEquipable) {
         let offset = new Vector(-2, -TEXT_SIZE);
-        this.drawEquipable(ctx, offset, resolution, option);
+
+        equipableSize = this.drawEquipable(ctx, offset, resolution, option);
 
         // Move menu option a little bit away from the border
         ctx.translate(10, 0);
@@ -141,7 +144,7 @@ class Inventory extends Menu implements Eventful, Drawable {
 
       // Account for height of equipable menu on next menu item
       if (isEquipable) {
-        ctx.translate(0, EQUIPABLE_HEIGHT - TEXT_SIZE);
+        ctx.translate(0, equipableSize.y - TEXT_SIZE);
       }
 
       // Render sub-menu
@@ -168,41 +171,72 @@ class Inventory extends Menu implements Eventful, Drawable {
     resolution: Vector,
     option: Weapon
   ) {
-    let baseWidth = 400;
-    let padding = new Vector(10, 10);
-    let spriteSize = new Vector(128, 128);
+    // y-value is not known until the description renders
+    let descriptionSize = new Vector(400, Infinity);
 
-    let size = new Vector(
-      baseWidth + padding.x * 2 + spriteSize.x,
-      EQUIPABLE_HEIGHT
-    );
+    const isEquipped = option.isEquipped;
+    const padding = new Vector(16, 16);
+    const spriteSize = new Vector(64, 64);
+    const spritePadding = new Vector(16, 8);
+    const descriptionPadding = new Vector(0, 8);
+    const equippedIndicatorHeight = isEquipped
+      ? SUBTEXT_SIZE + spritePadding.y
+      : 0;
 
-    this.drawBox(ctx, offset, size);
-
-    // Manual offset
-    let subtextOffset = new Vector(14, 26);
-    let subtextSize = new Vector(baseWidth, EQUIPABLE_HEIGHT - padding.y);
-
-    this.drawSubtext(
+    descriptionSize.y = this.drawSubtext(
       ctx,
-      subtextOffset,
-      subtextSize.minus(new Vector(2, 0)),
+      offset.plus(padding).plus(descriptionPadding),
+      descriptionSize,
       option.description
     );
 
-    if (option.isEquipped) {
-      let text = "Equipped";
+    const equippedIndicator = "Equipped";
 
-      ctx.save();
-      ctx.font = `${SUBTEXT_SIZE}px Minecraftia`;
-      let textWidth = ctx.measureText(text).width;
-      ctx.restore();
+    ctx.save();
+    ctx.font = `${SUBTEXT_SIZE}px Minecraftia`;
+    const equippedIndicatorWidth = ctx.measureText(equippedIndicator).width;
+    ctx.restore();
 
-      let textSize = new Vector(textWidth, TEXT_SIZE);
-      let offset = size.minus(textSize).minus(new Vector(padding.x, 0));
+    const width =
+      descriptionSize.x +
+      padding.x * 2 +
+      Math.max(spriteSize.x, equippedIndicatorWidth) +
+      spritePadding.x;
 
-      this.drawSubtext(ctx, offset, resolution, text);
+    const height =
+      Math.max(
+        descriptionSize.y,
+        spriteSize.y + spritePadding.y + equippedIndicatorHeight
+      ) +
+      padding.y * 2;
+
+    const size = new Vector(width, height);
+
+    this.drawBox(ctx, offset, size);
+
+    const spriteOffset = new Vector(
+      size.x - spriteSize.x - padding.x,
+      padding.y + spritePadding.y
+    ).plus(offset);
+
+    option.draw(ctx, spriteOffset, spriteSize);
+
+    if (isEquipped) {
+      const textSize = new Vector(equippedIndicatorWidth, SUBTEXT_SIZE);
+      const equippedIndicatorOffset = offset
+        .plus(size)
+        .minus(textSize)
+        .minus(padding);
+
+      this.drawSubtext(
+        ctx,
+        equippedIndicatorOffset,
+        resolution,
+        equippedIndicator
+      );
     }
+
+    return size;
   }
 
   /**
@@ -263,12 +297,14 @@ class Inventory extends Menu implements Eventful, Drawable {
   /**
    * Draw the secondary type text on the inventory
    *
-   * @param {CanvasRenderingContext2D} ctx        Render context
-   * @param {Vector}                   offset     Render position offset
-   * @param {Vector}                   resolution Container for the text
-   * @param {string}                   text       Text to draw
+   * @param  {CanvasRenderingContext2D} ctx        Render context
+   * @param  {Vector}                   offset     Render position offset
+   * @param  {Vector}                   resolution Container for the text
+   * @param  {string}                   text       Text to draw
+   *
+   * @return {number}                              Amount of height consumed
    */
-  private drawSubtext(ctx, offset, resolution, text) {
+  private drawSubtext(ctx, offset, resolution, text): number {
     ctx.save();
 
     ctx.font = `${SUBTEXT_SIZE}px Minecraftia`;
@@ -276,18 +312,17 @@ class Inventory extends Menu implements Eventful, Drawable {
 
     let buffer = new TextBuffer(text);
 
+    const SPACING_MODIFIER = 0.4;
+    const LINE_HEIGHT = Math.ceil((1 + SPACING_MODIFIER) * SUBTEXT_SIZE);
+
     buffer.fill(ctx, resolution).forEach((text, index) => {
-      let lineSpacing = new Vector(0, Math.ceil(SUBTEXT_SIZE * 0.4)).times(
-        index
-      );
-      let lineOffset = new Vector(0, SUBTEXT_SIZE).times(index);
-
-      let currentOffset = offset.plus(lineSpacing).plus(lineOffset);
-
-      ctx.fillText(text, currentOffset.x, currentOffset.y);
+      // Offset by an extra line due to text being drawn from bottom left corner
+      ctx.fillText(text, offset.x, offset.y + LINE_HEIGHT * (index + 1));
     });
 
     ctx.restore();
+
+    return LINE_HEIGHT * buffer.read().length;
   }
 
   /**

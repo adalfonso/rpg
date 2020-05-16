@@ -1,4 +1,4 @@
-import CombatStrategy from "./CombatStrategy";
+import CombatStrategy, { UiData } from "./CombatStrategy";
 import { bus } from "@/EventBus";
 
 /**
@@ -11,6 +11,7 @@ type SpellTemplate = {
   description: string;
   value: number;
   special: boolean;
+  ui: UiData;
 };
 
 /**

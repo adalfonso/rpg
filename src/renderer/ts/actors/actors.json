@@ -10,7 +10,7 @@
       "spd": 105
     },
     "ui": {
-      "sprite": "characters.player",
+      "sprite": "actor.player",
       "frames": { "x": 1, "y": 4 },
       "scale": 1,
       "fps": 8
@@ -36,7 +36,7 @@
       "spd": 55
     },
     "ui": {
-      "sprite": "characters.knight",
+      "sprite": "actor.knight",
       "frames": { "x": 8, "y": 1 },
       "scale": 2
     }

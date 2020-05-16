@@ -1,4 +1,7 @@
+import Renderable from "@/Renderable";
+import Vector from "@common/Vector";
 import { bus } from "@/EventBus";
+import { getImagePath } from "@/util";
 
 /**
  * Data required to instantiate a combat strategy
@@ -9,6 +12,16 @@ type CombatStrategyTemplate = {
   displayAs: string;
   description: string;
   value: number;
+  ui: UiData;
+};
+
+/**
+ * Required Ui data for the combat strategy
+ *
+ * @type {UiData}
+ */
+export type UiData = {
+  sprite: string;
 };
 
 /**
@@ -37,9 +50,16 @@ class CombatStrategy {
   protected _description: string;
 
   /**
+   * Renderable sprite for the combat strategy
+   *
+   * @prop {Renderable} _sprite
+   */
+  protected _sprite: Renderable;
+
+  /**
    * Create a new CombatStrategy instance
    *
-   * @param {CombatStrategyTemplate} template CombatStrategyTemplate
+   * @param {CombatStrategyTemplate} template Combat strategy template
    */
   constructor(template: CombatStrategyTemplate) {
     if (!template) {
@@ -60,6 +80,8 @@ class CombatStrategy {
 
       this[prop] = value;
     });
+
+    this.loadSprite(template);
   }
 
   /**
@@ -90,10 +112,45 @@ class CombatStrategy {
   }
 
   /**
+   * Draw the combat strategy
+   *
+   * @param {CanvasRenderingContext2D} ctx         Render context
+   * @param {Vector}                   offset      Render position offset
+   * @param {Vector}                   _resolution Render resolution
+   */
+  public draw(
+    ctx: CanvasRenderingContext2D,
+    offset: Vector,
+    _resolution: Vector
+  ) {
+    this._sprite.draw(ctx, offset);
+  }
+
+  /**
    * Emit a battle action event with the combat strategy
    */
   public use() {
     bus.emit("battle.action", this);
+  }
+
+  /**
+   * Load sprite data for the combat strategy
+   *
+   * @param {CombatStrategyTemplate} template Combat strategy template
+   */
+  private loadSprite(template: CombatStrategyTemplate) {
+    if (!template.ui?.sprite) {
+      throw new Error(
+        `Unable to find ui.sprite in template when loading ${this.constructor.name}.`
+      );
+    }
+
+    const image = getImagePath(template.ui.sprite);
+    const scale = 1;
+    const ratio = new Vector(1, 1);
+    const fps = 1;
+
+    this._sprite = new Renderable(image, scale, 0, 0, ratio, fps);
   }
 }
 
