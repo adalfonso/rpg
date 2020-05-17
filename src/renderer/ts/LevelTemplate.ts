@@ -1,7 +1,9 @@
 import Clip from "./inanimates/Clip";
 import Enemy from "./actors/Enemy";
 import Entry from "./inanimates/Entry";
+import InvalidDataError from "./error/InvalidDataError";
 import Item from "./inanimates/Item";
+import MissingDataError from "./error/MissingDataError";
 import NonPlayer from "./actors/NonPlayer";
 import Portal from "./inanimates/Portal";
 import Vector from "@common/Vector";
@@ -52,7 +54,9 @@ class LevelTemplate {
   /**
    * Create a new LevelTemplate instance
    *
-   * @param {object} json Level data
+   * @param  {object} json Level data
+   *
+   * @throws {MissingDataError} When tile layers or tile source are missing
    */
   constructor(json) {
     let layers = json.layers ?? [];
@@ -60,13 +64,17 @@ class LevelTemplate {
     this._tiles = this.getTileLayers(layers);
 
     if (!this._tiles.length) {
-      throw new Error("Tile layers not found when loading map json.");
+      throw new MissingDataError(
+        "Tile layers not found when loading map json."
+      );
     }
 
     this._tileSource = this.getJsonProperty(json, "tile_source");
 
     if (!this._tileSource) {
-      throw new Error(`Unable to find tile source when loading template.`);
+      throw new MissingDataError(
+        `Unable to find tile source when loading template.`
+      );
     }
 
     let objectGroups = this.getObjectGroups(layers);
@@ -137,11 +145,14 @@ class LevelTemplate {
    * @param  {any}         fixture Fixture data
    *
    * @return {LevelFixture}        Resulting fixture instance
+   *
+   * @throws {MissingDataError} When x, y, width, or height are missing
+   * @throws {InvalidDataError} When the type is invalid
    */
   private createFixture(type: string, fixture: any): LevelFixture {
     ["x", "y", "width", "height"].forEach((prop) => {
       if (!fixture.hasOwnProperty(prop)) {
-        throw new Error(
+        throw new MissingDataError(
           `Cannot find property "${prop}" when loading fixture "${type}".`
         );
       }
@@ -166,7 +177,9 @@ class LevelTemplate {
         let item = new Item(position, size, fixture);
         return item.obtained ? null : item;
       default:
-        throw new Error(`Unable to create fixture for object type "${type}".`);
+        throw new InvalidDataError(
+          `Unable to create fixture for object type "${type}".`
+        );
     }
   }
 
@@ -203,6 +216,8 @@ class LevelTemplate {
    * @param  {object[]} layers Layer data
    *
    * @return {object}          Object groups
+   *
+   * @throws {InvalidDataError} When multiple object layers share a name
    */
   private getObjectGroups(layers: any[]): any {
     let objectGroups: any = {};
@@ -213,7 +228,9 @@ class LevelTemplate {
       }
 
       if (objectGroups[l.name]) {
-        throw new Error(`Duplicate name for object layers: ${l.name}`);
+        throw new InvalidDataError(
+          `Duplicate name for object layers: ${l.name}`
+        );
       }
 
       objectGroups[l.name] = l;

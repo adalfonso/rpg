@@ -1,4 +1,6 @@
 import Actor from "./Actor";
+import InvalidDataError from "@/error/InvalidDataError";
+import MissingDataError from "@/error/MissingDataError";
 import Renderable from "@/Renderable";
 import StateManager from "@/state/StateManager";
 import Vector from "@common/Vector";
@@ -135,13 +137,13 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
         let weapon = e.detail.weapon;
 
         if (!weapon) {
-          throw new Error(
+          throw new MissingDataError(
             `Player unable to equip weapon because it is missing.`
           );
         }
 
         if (!(weapon instanceof Weapon)) {
-          throw new Error(`Player unable to equip a non-weapon.`);
+          throw new InvalidDataError(`Player unable to equip a non-weapon.`);
         }
 
         this.weapon = weapon;

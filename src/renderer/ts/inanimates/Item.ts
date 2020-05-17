@@ -1,4 +1,5 @@
 import Inanimate from "./Inanimate";
+import MissingDataError from "@/error/MissingDataError";
 import StateManager from "@/state/StateManager";
 import Vector from "@common/Vector";
 import { ucFirst } from "@/util";
@@ -31,19 +32,21 @@ class Item extends Inanimate {
   /**
    * Create a new Item instance
    *
-   * @param {Vector} position The item's position
-   * @param {Vector} size     The item's size
-   * @param {object} data     Additional info about the item
+   * @param  {Vector} position The item's position
+   * @param  {Vector} size     The item's size
+   * @param  {object} data     Additional info about the item
+   *
+   * @throws {MissingDataError} When name or type are missing
    */
   constructor(position: Vector, size: Vector, data: any) {
     super(position, size);
 
     if (!data?.name) {
-      throw new Error(`Missing unique identifier for item.`);
+      throw new MissingDataError(`Missing unique identifier for item.`);
     }
 
     if (!data?.type) {
-      throw new Error(`Missing "type" for item.`);
+      throw new MissingDataError(`Missing "type" for item.`);
     }
 
     this._type = data.type;

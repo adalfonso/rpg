@@ -1,3 +1,4 @@
+import MissingDataError from "@/error/MissingDataError";
 import Renderable from "@/Renderable";
 import Vector from "@common/Vector";
 import { bus } from "@/EventBus";
@@ -59,12 +60,14 @@ class CombatStrategy {
   /**
    * Create a new CombatStrategy instance
    *
-   * @param {CombatStrategyTemplate} template Combat strategy template
+   * @param  {CombatStrategyTemplate} template Combat strategy template
+   *
+   * @throws {MissingDataError} When any required template field is missing
    */
   constructor(template: CombatStrategyTemplate) {
     if (!template) {
-      throw new Error(
-        `Unable to create template when creating "${this.constructor.name}".`
+      throw new MissingDataError(
+        `Unable to find template when creating "${this.constructor.name}".`
       );
     }
 
@@ -73,7 +76,7 @@ class CombatStrategy {
       let value = template[lookupName];
 
       if (!value) {
-        throw new Error(
+        throw new MissingDataError(
           `Unable to find "${lookupName}" when creating "${this.constructor.name}" from template.`
         );
       }
@@ -137,6 +140,8 @@ class CombatStrategy {
    * Load sprite data for the combat strategy
    *
    * @param {CombatStrategyTemplate} template Combat strategy template
+   *
+   * @throws {MissingDataError} When sprite data cannot be loaded
    */
   private loadSprite(template: CombatStrategyTemplate) {
     if (!template.ui?.sprite) {
@@ -151,7 +156,7 @@ class CombatStrategy {
 
       this._sprite = new Renderable(image, scale, 0, 0, ratio, fps);
     } catch (e) {
-      throw new Error(
+      throw new MissingDataError(
         `Unable to find ui.sprite "${template.ui.sprite}" in template when loading ${this.constructor.name}.`
       );
     }

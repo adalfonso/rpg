@@ -1,5 +1,6 @@
 import Actor from "./Actor";
 import Dialogue from "@/ui/Dialogue";
+import MissingDataError from "@/error/MissingDataError";
 import Vector from "@common/Vector";
 import { Drawable, Eventful } from "@/interfaces";
 import { bus } from "@/EventBus";
@@ -80,7 +81,7 @@ class NonPlayer extends Actor implements Eventful, Drawable {
         const player = e.detail?.player;
 
         if (!player) {
-          throw new Error(
+          throw new MissingDataError(
             "Player missing on player.move event as tracked by non-player."
           );
         }

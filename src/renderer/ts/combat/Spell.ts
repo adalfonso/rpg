@@ -1,5 +1,4 @@
 import CombatStrategy, { UiData } from "./CombatStrategy";
-import { bus } from "@/EventBus";
 
 /**
  * Data required to instantiate a spell

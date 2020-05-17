@@ -1,6 +1,7 @@
 import CollisionHandler from "./CollisionHandler";
 import Entry from "./inanimates/Entry";
 import Map from "./inanimates/Map";
+import MissingDataError from "./error/MissingDataError";
 import Player from "./actors/Player";
 import Portal from "./inanimates/Portal";
 import Template, { LevelFixture } from "./LevelTemplate";
@@ -95,7 +96,7 @@ class Level implements Drawable {
         let portal = e.detail?.portal;
 
         if (!portal) {
-          throw new Error(
+          throw new MissingDataError(
             `Could not find portal during "portal.enter" event as observed by "Level".`
           );
         }
@@ -104,7 +105,9 @@ class Level implements Drawable {
         let level = levels[to];
 
         if (!level) {
-          throw new Error(`Unable to locate level json for "${to}".`);
+          throw new MissingDataError(
+            `Unable to locate level json for "${to}".`
+          );
         }
 
         this.load(new Template(level), portal);
@@ -135,8 +138,10 @@ class Level implements Drawable {
    * Load a level template. If there is a referenced portal, move player to
    * corresponding entry point.
    *
-   * @param {Template} template Level details json
-   * @param {Portal}   portal   Starting portal
+   * @param  {Template} template Level details json
+   * @param  {Portal}   portal   Starting portal
+   *
+   * @throws {MissingDataError} When entry is missing
    */
   public load(template: Template, portal?: Portal) {
     this.cleanup();
@@ -152,7 +157,7 @@ class Level implements Drawable {
     let entry: Entry = portal ? this.entries[portal.from] : this.entries.origin;
 
     if (!entry) {
-      throw new Error(
+      throw new MissingDataError(
         "Unable to find origin entry point when loading player onto map."
       );
     }

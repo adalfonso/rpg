@@ -1,3 +1,4 @@
+import MissingDataError from "./error/MissingDataError";
 import manifest from "@img/manifest";
 
 /**
@@ -97,11 +98,13 @@ export const cloneByStringify = (input: any): any => {
  * @param  {string} resource Dot-separated string
  *
  * @return {string}          Image path
+ *
+ * @throws {MissingDataError} When manifest lookup is missing
  */
 export const getImagePath = (resource: string): string => {
   return resource.split(".").reduce((carry: any, key: string) => {
     if (!carry[key]) {
-      throw new Error(`Cannot find resource: ${key}`);
+      throw new MissingDataError(`Cannot find resource: ${key}`);
     }
     return carry[key];
   }, manifest);

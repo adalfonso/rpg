@@ -1,3 +1,4 @@
+import MissingDataError from "@/error/MissingDataError";
 import items from "@/item/items.json";
 import { ucFirst } from "@/util";
 
@@ -22,14 +23,16 @@ class Item {
   /**
    * Create a new Item instance
    *
-   * @param {string} type String reference to item type
+   * @param  {string} type String reference to item type
+   *
+   * @throws {MissingDataError} When config is missing
    */
   constructor(type: string) {
     this._config = items[type];
     this._type = type;
 
     if (!this._config) {
-      throw new Error(
+      throw new MissingDataError(
         `Config data for item "${type}" is not defined in items.json`
       );
     }

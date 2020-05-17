@@ -1,5 +1,6 @@
 import Dialogue from "@/ui/Dialogue";
 import Inanimate from "@/inanimates/Inanimate";
+import MissingDataError from "@/error/MissingDataError";
 import Spell from "@/combat/Spell";
 import StateManager from "@/state/StateManager";
 import Stats from "@/Stats";
@@ -137,19 +138,21 @@ abstract class Actor implements Drawable, Lockable {
   /**
    * Create a new Actor-based instance
    *
-   * @param {Vector} position Positon of the actor
-   * @param {Vector} size     Size of the actor
-   * @param {object} data     Additional info about the actor
+   * @param  {Vector} position Positon of the actor
+   * @param  {Vector} size     Size of the actor
+   * @param  {object} data     Additional info about the actor
+   *
+   * @throws {MissingDataError} When name, type, or config are missing
    */
   constructor(position: Vector, size: Vector, data: any) {
     let actorType = this.constructor.name;
 
     if (!data?.name) {
-      throw new Error(`Missing unique identifier for ${actorType}.`);
+      throw new MissingDataError(`Missing unique identifier for ${actorType}.`);
     }
 
     if (!data?.type) {
-      throw new Error(`Missing "type" for ${actorType}.`);
+      throw new MissingDataError(`Missing "type" for ${actorType}.`);
     }
 
     this.data = data;
@@ -160,7 +163,7 @@ abstract class Actor implements Drawable, Lockable {
     }
 
     if (!this.config) {
-      throw new Error(
+      throw new MissingDataError(
         `Config data for ${actorType} is not defined in actors.json`
       );
     }

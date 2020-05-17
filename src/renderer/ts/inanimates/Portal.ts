@@ -1,4 +1,5 @@
 import Inanimate from "./Inanimate";
+import MissingDataError from "@/error/MissingDataError";
 import Vector from "@common/Vector";
 
 /**
@@ -23,15 +24,19 @@ class Portal extends Inanimate {
   /**
    * Create a new Portal instance
    *
-   * @param {Vector} position Position of the portal
-   * @param {Vector} size     Size of the portal
-   * @param {object} data     Info about the portal
+   * @param  {Vector} position Position of the portal
+   * @param  {Vector} size     Size of the portal
+   * @param  {object} data     Info about the portal
+   *
+   * @throws {MissingDataError} When properties or to/from are missing
    */
   constructor(position: Vector, size: Vector, data: any) {
     super(position, size);
 
     if (!data.properties) {
-      throw new Error(`Cannot find "properties" object when creating portal.`);
+      throw new MissingDataError(
+        `Cannot find "properties" object when creating portal.`
+      );
     }
 
     /**
@@ -44,7 +49,7 @@ class Portal extends Inanimate {
     });
 
     if (!this.from || !this.to) {
-      throw new Error("Cannot find from/to when creating portal.");
+      throw new MissingDataError("Cannot find from/to when creating portal.");
     }
   }
 }

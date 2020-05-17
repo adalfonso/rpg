@@ -1,5 +1,6 @@
 import Item from "@/item/Item";
 import Menu from "./Menu";
+import MissingDataError from "@/error/MissingDataError";
 import StateManager from "@/state/StateManager";
 import TextBuffer from "@/ui/TextBuffer";
 import Vector from "@common/Vector";
@@ -378,7 +379,7 @@ class Inventory extends Menu implements Eventful, Drawable {
           let item = e.detail?.item;
 
           if (!item) {
-            throw new Error(
+            throw new MissingDataError(
               `Inventory unable to detect item on "item.obtain: event.`
             );
           }

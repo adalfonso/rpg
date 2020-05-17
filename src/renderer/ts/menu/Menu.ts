@@ -1,3 +1,4 @@
+import UnimplementedMethodError from "@/error/UnimplementMethodError";
 import Vector from "@common/Vector";
 import { Drawable, Eventful, Lockable } from "@/interfaces";
 import { bus } from "@/EventBus";
@@ -73,16 +74,18 @@ abstract class Menu implements Eventful, Drawable, Lockable {
   /**
    * Draw Menu and all underlying entities
    *
-   * @param {CanvasRenderingContext2D} _ctx        Render context
-   * @param {Vector}                   _offset     Render position offset
-   * @param {Vector}                   _resolution Render resolution
+   * @param  {CanvasRenderingContext2D} _ctx        Render context
+   * @param  {Vector}                   _offset     Render position offset
+   * @param  {Vector}                   _resolution Render resolution
+   *
+   * @throws {UnimplementedMethodError} When child class doesn't implement draw
    */
   public draw(
     _ctx: CanvasRenderingContext2D,
     _offset: Vector,
     _resolution: Vector
   ) {
-    throw new Error(
+    throw new UnimplementedMethodError(
       `Submenu "${this.constructor.name}" must implement draw method.`
     );
   }

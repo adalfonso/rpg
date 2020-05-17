@@ -1,4 +1,4 @@
-import { bus } from "./EventBus";
+import InvalidDataError from "./error/InvalidDataError";
 
 /**
  * Anatomy of an entity's stats
@@ -106,12 +106,13 @@ export default class Stats {
    * NOTE: This is used to manually set the lvl. Lvl is normally increased as a
    * result of gainExp().
    *
-   * @param {number} lvl Lev
-   * el to set
+   * @param  {number} lvl Level to set
+   *
+   * @throws {InvalidDataError} When lvl input is invalid
    */
   set lvl(lvl: number) {
     if (lvl < 1 || lvl > 100 || !Number.isInteger(lvl)) {
-      throw new Error(`Invalid input when setting lvl stat: ${lvl}`);
+      throw new InvalidDataError(`Invalid input when setting lvl stat: ${lvl}`);
     }
 
     this._lvl = lvl;
@@ -132,11 +133,13 @@ export default class Stats {
    * NOTE: This is used to manually set the dmg. If enduring dmg via battle or
    * some game mechanism, use endure().
    *
-   * @param {number} dmg Damage to set
+   * @param  {number} dmg Damage to set
+   *
+   * @throws {InvalidDataError} When dmg input is invalid
    */
   set dmg(dmg: number) {
     if (dmg < 0 || !Number.isInteger(dmg)) {
-      throw new Error(`Invalid input when setting dmg stat: ${dmg}`);
+      throw new InvalidDataError(`Invalid input when setting dmg stat: ${dmg}`);
     }
 
     this._dmg = dmg;
@@ -157,11 +160,13 @@ export default class Stats {
    * NOTE: This is used to manually set the exp. If gaining exp via battle or
    * some game mechanism, use gainExp().
    *
-   * @param {number} lvl Level to set
+   * @param  {number} lvl Level to set
+   *
+   * @throws {InvalidDataError} When exp input is invalid
    */
   set exp(exp: number) {
     if (exp < 0 || !Number.isInteger(exp) || exp > this.expToNextLevel()) {
-      throw new Error(`Invalid input when setting exp stat: ${exp}`);
+      throw new InvalidDataError(`Invalid input when setting exp stat: ${exp}`);
     }
 
     this._exp = exp;

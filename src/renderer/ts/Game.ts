@@ -4,6 +4,7 @@ import Dialogue from "./ui/Dialogue";
 import Inventory from "./menu/Inventory";
 import Level from "./Level";
 import LevelTemplate from "./LevelTemplate";
+import MissingDataError from "./error/MissingDataError";
 import Player from "./actors/Player";
 import StartMenu from "./menu/StartMenu";
 import TextStream from "./ui/TextStream";
@@ -198,7 +199,7 @@ class Game implements Eventful, Drawable {
         let item = e.detail?.item;
 
         if (!item) {
-          throw new Error(
+          throw new MissingDataError(
             `Inventory unable to detect item on "item.obtain" event.`
           );
         }
