@@ -140,17 +140,21 @@ class CombatStrategy {
    */
   private loadSprite(template: CombatStrategyTemplate) {
     if (!template.ui?.sprite) {
-      throw new Error(
-        `Unable to find ui.sprite in template when loading ${this.constructor.name}.`
-      );
+      return;
     }
 
-    const image = getImagePath(template.ui.sprite);
-    const scale = 1;
-    const ratio = new Vector(1, 1);
-    const fps = 1;
+    try {
+      const image = getImagePath(template.ui.sprite);
+      const scale = 1;
+      const ratio = new Vector(1, 1);
+      const fps = 1;
 
-    this._sprite = new Renderable(image, scale, 0, 0, ratio, fps);
+      this._sprite = new Renderable(image, scale, 0, 0, ratio, fps);
+    } catch (e) {
+      throw new Error(
+        `Unable to find ui.sprite "${template.ui.sprite}" in template when loading ${this.constructor.name}.`
+      );
+    }
   }
 }
 
