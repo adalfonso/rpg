@@ -59,6 +59,13 @@ class Weapon extends CombatStrategy {
 
     bus.emit("weapon.equip", { weapon: this });
   }
+
+  /**
+   * Unequip the weapon
+   */
+  public unequip() {
+    this._isEquipped = false;
+  }
 }
 
 export default Weapon;

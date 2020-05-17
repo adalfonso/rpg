@@ -146,7 +146,7 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
           throw new InvalidDataError(`Player unable to equip a non-weapon.`);
         }
 
-        this.weapon = weapon;
+        this.equip(weapon);
       },
     };
   }

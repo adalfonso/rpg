@@ -387,6 +387,19 @@ abstract class Actor implements Drawable, Lockable {
   }
 
   /**
+   * Equip a weapon
+   *
+   * @param {Weapon} weapon Weapon to equip
+   */
+  protected equip(weapon: Weapon) {
+    if (this.weapon) {
+      this.weapon.unequip();
+    }
+
+    this.weapon = weapon;
+  }
+
+  /**
    * Resolve the current state of the actor in comparison to the game state
    *
    * TODO: Tie the ref to the actor better, it's currently a little loosey goosey
