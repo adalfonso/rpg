@@ -147,7 +147,7 @@ class Game implements Eventful, Drawable {
     offset: Vector,
     resolution: Vector
   ) {
-    this.level.draw(ctx, offset, resolution);
+    let noOffset = new Vector(0, 0);
 
     if (this.hasActiveBattle()) {
       let battleOffset = new Vector(
@@ -155,12 +155,13 @@ class Game implements Eventful, Drawable {
         resolution.y / 2 - 64 - 64
       );
       this.battle.draw(ctx, battleOffset, resolution);
+    } else if (this.inventory.active) {
+      this.inventory.draw(ctx, noOffset, resolution);
+    } else {
+      this.level.draw(ctx, offset, resolution);
     }
 
-    let noOffset = new Vector(0, 0);
-
     this.menu.draw(ctx, noOffset, resolution);
-    this.inventory.draw(ctx, noOffset, resolution);
 
     if (this.dialogue) {
       this.dialogue.draw(ctx, noOffset, resolution);
