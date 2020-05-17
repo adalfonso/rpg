@@ -37,7 +37,10 @@ class AnimationFactory {
       resolution.y / 2 - textSize.y / 2
     );
 
-    const stages = [new Translation(start, end, 1000)];
+    const stages = [
+      new Translation(start, end, 1000),
+      new Translation(end, end, 1000),
+    ];
     const animation = new AnimatedText(text, options);
 
     return new AnimationQueue(stages, animation);
