@@ -12,7 +12,7 @@ type CombatStrategyTemplate = {
   displayAs: string;
   description: string;
   value: number;
-  ui: UiData;
+  ui?: UiData;
 };
 
 /**

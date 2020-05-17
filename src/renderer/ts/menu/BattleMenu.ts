@@ -54,7 +54,7 @@ class BattleMenu extends Menu implements Eventful, Drawable {
       }
 
       ctx.fillRect(position.x, position.y, tileSize.x, tileSize.y);
-      ctx.fillStyle = "#000";
+      ctx.fillStyle = "#333";
 
       ctx.save();
 

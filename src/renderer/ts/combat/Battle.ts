@@ -1,3 +1,5 @@
+import AnimationFactory from "@/ui/animation/AnimationFactory";
+import AnimationQueue from "@/ui/animation/AnimationQueue";
 import BattleMenu from "@/menu/BattleMenu";
 import Dialogue from "@/ui/Dialogue";
 import Enemy from "@/actors/Enemy";
@@ -8,6 +10,12 @@ import { Drawable, Eventful, Lockable } from "@/interfaces";
 import { bus } from "@/EventBus";
 
 class Battle implements Eventful, Drawable, Lockable {
+  /**
+   * Animation sequence occurring in the battle
+   *
+   * @prop {AnimationQueue} _animation
+   */
+  private _animation: AnimationQueue;
   /**
    * Menu for the battle
    *
@@ -83,6 +91,8 @@ class Battle implements Eventful, Drawable, Lockable {
     this.playersTurn = this.player.stats.spd > this.enemy.stats.spd;
     this.menu = this.getBattleMenu();
 
+    this._animation = AnimationFactory.createStartBattleAnimation();
+
     bus.register(this);
 
     // Force enemy to attack if it is their turn first
@@ -97,6 +107,14 @@ class Battle implements Eventful, Drawable, Lockable {
    * @param {number} dt Delta time
    */
   public update(dt: number) {
+    if (this._animation) {
+      this._animation.update(dt);
+
+      if (this._animation.isDone) {
+        this._animation = null;
+      }
+    }
+
     if (this.dialogue) {
       this.dialogue.update(dt);
     }
@@ -143,6 +161,10 @@ class Battle implements Eventful, Drawable, Lockable {
 
     if (this.dialogue) {
       this.dialogue.draw(ctx, new Vector(0, 0), resolution);
+    }
+
+    if (this._animation) {
+      this._animation.draw(ctx, new Vector(0, 0), resolution);
     }
   }
 

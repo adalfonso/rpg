@@ -11,7 +11,7 @@ type SpellTemplate = {
   description: string;
   value: number;
   special: boolean;
-  ui: UiData;
+  ui?: UiData;
 };
 
 /**
