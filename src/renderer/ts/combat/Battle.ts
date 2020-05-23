@@ -6,7 +6,7 @@ import Enemy from "@/actors/Enemy";
 import Player from "@/actors/Player";
 import TextStream from "@/ui/TextStream";
 import Vector from "@common/Vector";
-import { Drawable, Eventful, Lockable } from "@/interfaces";
+import { Drawable, Eventful, Lockable, CallableMap } from "@/interfaces";
 import { bus } from "@/EventBus";
 
 class Battle implements Eventful, Drawable, Lockable {
@@ -171,13 +171,13 @@ class Battle implements Eventful, Drawable, Lockable {
   /**
    * Register events with the event bus
    *
-   * @return {object} Events to register
+   * @return {CallableMap} Events to register
    */
-  public register(): object {
+  public register(): CallableMap {
     return {
-      "battle.action": (e) => {
+      "battle.action": (e: CustomEvent) => {
         if (this.playersTurn) {
-          this.player.attack(this.enemy, e.attack);
+          this.player.attack(this.enemy, e.detail.combatStrategy);
         } else {
           this.enemy.attack(this.player);
         }
@@ -192,19 +192,19 @@ class Battle implements Eventful, Drawable, Lockable {
           this.cycle();
         }
       },
-      "actor.gainExp": (e) => {
+      "actor.gainExp": (e: CustomEvent) => {
         let name = this.player.displayAs;
         let exp = e.detail.exp;
         let levels = e.detail.levels;
         let moveSet = e.detail.moveSet;
         let dialogue = [`${name} gained ${exp} exp.`];
 
-        levels.forEach((lvl) => {
+        levels.forEach((lvl: number) => {
           dialogue.push(`${name} grew to level ${lvl}!`);
 
           moveSet
-            .filter((move) => move.level === lvl)
-            .forEach((move) => {
+            .filter((move: any) => move.level === lvl)
+            .forEach((move: any) => {
               dialogue.push(`${name} learned ${move.displayAs}!`);
             });
         });
@@ -256,7 +256,7 @@ class Battle implements Eventful, Drawable, Lockable {
     this.playersTurn = !this.playersTurn;
 
     if (!this.playersTurn) {
-      bus.emit("battle.action", this);
+      bus.emit("battle.action");
     }
   }
 

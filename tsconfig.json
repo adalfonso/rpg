@@ -2,7 +2,7 @@
   "extends": "./node_modules/electron-webpack/tsconfig-base.json",
 
   "compilerOptions": {
-    "noImplicitAny": false,
+    "suppressImplicitAnyIndexErrors": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "strictPropertyInitialization": false,

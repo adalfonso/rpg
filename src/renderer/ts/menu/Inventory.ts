@@ -5,7 +5,7 @@ import StateManager from "@/state/StateManager";
 import TextBuffer from "@/ui/TextBuffer";
 import Vector from "@common/Vector";
 import Weapon from "@/combat/Weapon";
-import { Drawable, Eventful } from "@/interfaces";
+import { Drawable, Eventful, CallableMap } from "@/interfaces";
 
 /**
  * Template for a menu option
@@ -60,15 +60,15 @@ class Inventory extends Menu implements Eventful, Drawable {
    * @return {object} Current state of the inventory
    */
   get state(): object {
-    const getSubMenu = (type) =>
-      this.menu.filter((subMenu) => subMenu.type === type)[0]?.menu ?? [];
+    const getSubMenu = (type: string) =>
+      this.menu.filter((subMenu: any) => subMenu.type === type)[0]?.menu ?? [];
 
     return {
       menu: {
-        item: getSubMenu("item").map((i) => i.type),
-        weapon: getSubMenu("weapon").map((i) => i.type),
-        armor: getSubMenu("armor").map((i) => i.type),
-        special: getSubMenu("special").map((i) => i.type),
+        item: getSubMenu("item").map((i: Item) => i.type),
+        weapon: getSubMenu("weapon").map((i: Item) => i.type),
+        armor: getSubMenu("armor").map((i: Item) => i.type),
+        special: getSubMenu("special").map((i: Item) => i.type),
       },
     };
   }
@@ -305,7 +305,12 @@ class Inventory extends Menu implements Eventful, Drawable {
    *
    * @return {number}                              Amount of height consumed
    */
-  private drawSubtext(ctx, offset, resolution, text): number {
+  private drawSubtext(
+    ctx: CanvasRenderingContext2D,
+    offset: Vector,
+    resolution: Vector,
+    text: string
+  ): number {
     ctx.save();
 
     ctx.font = `${SUBTEXT_SIZE}px Minecraftia`;
@@ -360,34 +365,35 @@ class Inventory extends Menu implements Eventful, Drawable {
   /**
    * Register events with the event bus
    *
-   * @return {object} Events to register
+   * @return {CallableMap} Events to register
    */
-  public register(): object {
-    return [
-      super.register(),
-      {
-        keyup: (e) => {
-          if (this.locked) {
-            return;
-          } else if (e.key === "i") {
-            this.active ? this.close() : this.open();
-          } else if (e.key === "Enter") {
-            this.equipCurrentOption();
-          }
-        },
-        "item.obtain": (e) => {
-          let item = e.detail?.item;
+  public register(): CallableMap {
+    let parent = super.register();
 
-          if (!item) {
-            throw new MissingDataError(
-              `Inventory unable to detect item on "item.obtain: event.`
-            );
-          }
+    return {
+      keyup: (e: KeyboardEvent) => {
+        parent.keyup(e);
 
-          this.store(new Item(item.type));
-        },
+        if (this.locked) {
+          return;
+        } else if (e.key === "i") {
+          this.active ? this.close() : this.open();
+        } else if (e.key === "Enter") {
+          this.equipCurrentOption();
+        }
       },
-    ];
+      "item.obtain": (e: CustomEvent) => {
+        let item = e.detail?.item;
+
+        if (!item) {
+          throw new MissingDataError(
+            `Inventory unable to detect item on "item.obtain: event.`
+          );
+        }
+
+        this.store(new Item(item.type));
+      },
+    };
   }
 
   /**
@@ -425,7 +431,7 @@ class Inventory extends Menu implements Eventful, Drawable {
     ["item", "weapon", "armor", "spell"].forEach((menuType) => {
       let subMenu = stateManagerData?.menu?.[menuType] ?? [];
 
-      subMenu.forEach((item) => {
+      subMenu.forEach((item: any) => {
         let subMenu: any = this.menu.filter((subMenu) => {
           return subMenu.type === menuType;
         });
@@ -463,7 +469,7 @@ class Inventory extends Menu implements Eventful, Drawable {
 
     let menu = this.selected.slice(-2).shift();
 
-    menu.menu.forEach((option) => {
+    menu.menu.forEach((option: any) => {
       if (option === this.currentOption) {
         option.equip();
       }

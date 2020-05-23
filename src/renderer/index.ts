@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", async (_event) => {
 
   game.start();
 
-  startAnimation((dt) => {
+  startAnimation((dt: number) => {
     game.update(dt);
     display.draw();
   });

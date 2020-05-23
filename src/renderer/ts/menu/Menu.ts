@@ -1,6 +1,6 @@
 import UnimplementedMethodError from "@/error/UnimplementMethodError";
 import Vector from "@common/Vector";
-import { Drawable, Eventful, Lockable } from "@/interfaces";
+import { Drawable, Eventful, Lockable, CallableMap } from "@/interfaces";
 import { bus } from "@/EventBus";
 import { lcFirst } from "@/util";
 
@@ -99,11 +99,11 @@ abstract class Menu implements Eventful, Drawable, Lockable {
    * sub-menus may benefit from parsing the sub-menus as actual menu instances
    * instead of using an object literal.
    *
-   * @return {object} Events to register
+   * @return {CallableMap} Events to register
    */
-  public register(): object {
+  public register(): CallableMap {
     return {
-      keyup: (e) => {
+      keyup: (e: KeyboardEvent) => {
         if (!this.active) {
           return;
         }
@@ -213,9 +213,12 @@ abstract class Menu implements Eventful, Drawable, Lockable {
   protected previous() {
     let menu = this.currentMenu;
 
-    let currentIndex = menu.reduce((carry, value, index) => {
-      return value === this.currentOption ? index : carry;
-    }, 0);
+    let currentIndex = menu.reduce(
+      (carry: number, value: any, index: number) => {
+        return value === this.currentOption ? index : carry;
+      },
+      0
+    );
 
     let previousIndex = currentIndex === 0 ? menu.length - 1 : currentIndex - 1;
 
@@ -228,9 +231,12 @@ abstract class Menu implements Eventful, Drawable, Lockable {
   protected next() {
     let menu = this.currentMenu;
 
-    let currentIndex = menu.reduce((carry, value, index) => {
-      return value === this.currentOption ? index : carry;
-    }, 0);
+    let currentIndex = menu.reduce(
+      (carry: number, value: any, index: number) => {
+        return value === this.currentOption ? index : carry;
+      },
+      0
+    );
 
     let nextIndex = currentIndex === menu.length - 1 ? 0 : currentIndex + 1;
 

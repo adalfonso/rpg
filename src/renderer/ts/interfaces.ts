@@ -10,6 +10,11 @@ export interface Drawable {
 }
 
 /**
+ * A map of callables
+ */
+export type CallableMap = { [key: string]: Function };
+
+/**
  * Eventful interfaces are characterized by their register method, a hook into
  * the their underlying instance which allows an event bus to easily register
  * all of their events.
@@ -17,7 +22,7 @@ export interface Drawable {
  * @interface
  */
 export interface Eventful {
-  register(): object | object[];
+  register(): CallableMap;
 }
 
 /**

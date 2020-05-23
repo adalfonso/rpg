@@ -29,7 +29,7 @@ class Enemy extends Actor implements Drawable {
    *
    * @param {object} data Info about the enemy
    */
-  constructor(data) {
+  constructor(data: any) {
     super(
       new Vector(data.x, data.y),
       new Vector(data.width, data.height),

@@ -2,8 +2,8 @@ import { expect } from "chai";
 import Sut from "@/state/StateManager";
 import { promises as fs } from "fs";
 
-const getTempPath = (file) => "./tests/temp/" + file;
-const getAssetPath = (file) => "./tests/assets/" + file;
+const getTempPath = (file: string) => "./tests/temp/" + file;
+const getAssetPath = (file: string) => "./tests/assets/" + file;
 
 describe("StateManager", () => {
   describe("getInstance", () => {

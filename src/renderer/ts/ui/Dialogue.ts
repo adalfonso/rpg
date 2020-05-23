@@ -1,7 +1,7 @@
 import Actor from "../actors/Actor";
 import TextStream from "./TextStream";
 import Vector from "@common/Vector";
-import { Drawable, Eventful } from "../interfaces";
+import { Drawable, Eventful, CallableMap } from "../interfaces";
 import { bus } from "@/EventBus";
 
 class Dialogue implements Eventful, Drawable {
@@ -131,9 +131,9 @@ class Dialogue implements Eventful, Drawable {
   /**
    * Register events with the event bus
    *
-   * @return {object} Events to register
+   * @return {CallableMap} Events to register
    */
-  public register(): object {
+  public register(): CallableMap {
     return {
       keyup: (e: KeyboardEvent) => {
         if (e.key === "Enter") {

@@ -18,7 +18,7 @@ describe("EventBus", () => {
       let foo = {
         register: () => {
           return {
-            foo: (e) => {
+            foo: (e: CustomEvent) => {
               fooValue++;
             },
           };
@@ -44,7 +44,7 @@ describe("EventBus", () => {
       let foo = {
         register: () => {
           return {
-            foo: (e) => {
+            foo: (e: CustomEvent) => {
               fooValue++;
             },
           };
@@ -71,32 +71,32 @@ describe("EventBus", () => {
       let barValue = 0;
       let emittedDetails = false;
 
+      let fooParent = {
+        foo: (e: CustomEvent) => {
+          fooValue = 5;
+        },
+      };
+
       let foo = {
         register: () => {
-          return [
-            {
-              foo: (e) => {
-                fooValue = 5;
-              },
-            },
-            {
-              foo: (e) => {
-                fooValue += 10;
+          return {
+            foo: (e: CustomEvent) => {
+              fooParent.foo(e);
+              fooValue += 10;
 
-                if (e.detail?.bar === barValue) {
-                  emittedDetails = true;
-                  fooValue += barValue;
-                }
-              },
+              if (e.detail?.bar === barValue) {
+                emittedDetails = true;
+                fooValue += barValue;
+              }
             },
-          ];
+          };
         },
       };
 
       let bar = {
         register: () => {
           return {
-            bar: (e) => {
+            bar: (e: CustomEvent) => {
               if (barValue !== 10) {
                 barValue = 10;
               } else {

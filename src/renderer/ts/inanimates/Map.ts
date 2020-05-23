@@ -72,7 +72,7 @@ class Map implements Drawable {
     let r = this.renderable;
     let size = r.spriteSize.times(r.scale);
 
-    this.layers.forEach((layer) => {
+    this.layers.forEach((layer: any) => {
       layer.data.forEach((value: number, index: number) => {
         r.frame = value - 1;
 

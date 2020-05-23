@@ -18,7 +18,7 @@ class Entry extends Inanimate {
    * @param {Vector} size     The entry's size
    * @param {object} data     Info about the entry
    */
-  constructor(position: Vector, size: Vector, data) {
+  constructor(position: Vector, size: Vector, data: any) {
     super(position, size);
 
     this.name = data.name;

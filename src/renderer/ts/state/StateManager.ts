@@ -1,12 +1,13 @@
 import { merge } from "@/util";
 import { promises as fs } from "fs";
 import { bus } from "@/EventBus";
+import { Eventful, CallableMap } from "@/interfaces";
 
 /**
  * StateManager is an intermediary between an on-disk JSON store and objects
  * interacting within the game.
  */
-class StateManager {
+class StateManager implements Eventful {
   /**
    * The game state
    *
@@ -49,11 +50,11 @@ class StateManager {
   /**
    * Register events with the event bus
    *
-   * @return {object} Events to register
+   * @return {CallableMap} Events to register
    */
-  public register(): object {
+  public register(): CallableMap {
     return {
-      "state.save": (e) => {
+      "state.save": (e: CustomEvent) => {
         this.save();
       },
     };
@@ -95,14 +96,16 @@ class StateManager {
   public mergeByRef(ref: string, data: any) {
     let obj = {};
 
-    ref.split(".").reduce((carry, key, index, array) => {
-      if (index + 1 < array.length) {
-        carry[key] = {};
-      } else {
-        carry[key] = data;
-      }
-      return carry[key];
-    }, obj);
+    ref
+      .split(".")
+      .reduce((carry: any, key: any, index: number, array: any[]) => {
+        if (index + 1 < array.length) {
+          carry[key] = {};
+        } else {
+          carry[key] = data;
+        }
+        return carry[key];
+      }, obj);
 
     this.merge(obj);
   }

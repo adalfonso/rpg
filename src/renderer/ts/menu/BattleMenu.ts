@@ -1,6 +1,6 @@
 import Menu from "./Menu";
 import Vector from "@common/Vector";
-import { Drawable, Eventful } from "@/interfaces";
+import { Drawable, Eventful, CallableMap } from "@/interfaces";
 
 /**
  * Anatomy of a BattleMenu option
@@ -71,7 +71,7 @@ class BattleMenu extends Menu implements Eventful, Drawable {
       ctx.restore();
 
       if (isSelected && option.menu?.length) {
-        option.menu.forEach((subOption, index) => {
+        option.menu.forEach((subOption: any, index: number) => {
           ctx.save();
 
           this.applyHighlight(ctx, subOption);
@@ -92,9 +92,14 @@ class BattleMenu extends Menu implements Eventful, Drawable {
     ctx.restore();
   }
 
-  public register(): object {
+  /**
+   * Register events with the event bus
+   *
+   * @return {CallableMap} Events to register
+   */
+  public register(): CallableMap {
     return {
-      keyup: (e) => {
+      keyup: (e: KeyboardEvent) => {
         if (this.locked) {
           return;
         }

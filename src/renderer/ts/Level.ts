@@ -7,7 +7,7 @@ import Portal from "./inanimates/Portal";
 import Template, { LevelFixture } from "./LevelTemplate";
 import Vector from "@common/Vector";
 import levels from "./levels/levels";
-import { Drawable, Eventful } from "./interfaces";
+import { Drawable, Eventful, CallableMap } from "./interfaces";
 import { bus } from "@/EventBus";
 import { getImagePath } from "@/util";
 
@@ -88,11 +88,11 @@ class Level implements Drawable {
   /**
    * Register events with the event bus
    *
-   * @return {object} Events to register
+   * @return {CallableMap} Events to register
    */
-  public register(): object {
+  public register(): CallableMap {
     return {
-      "portal.enter": (e) => {
+      "portal.enter": (e: CustomEvent) => {
         let portal = e.detail?.portal;
 
         if (!portal) {

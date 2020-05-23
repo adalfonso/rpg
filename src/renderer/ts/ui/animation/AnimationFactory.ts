@@ -41,6 +41,7 @@ class AnimationFactory {
       new Translation(start, end, 1000),
       new Translation(end, end, 1000),
     ];
+
     const animation = new AnimatedText(text, options);
 
     return new AnimationQueue(stages, animation);
@@ -55,8 +56,7 @@ class AnimationFactory {
    * @return {number}         Text's width (in pixels)
    */
   public static getTextWidth(text: string, options: object): number {
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
+    const ctx = document.createElement("canvas").getContext("2d");
 
     for (let option in options) {
       ctx[option] = options[option];

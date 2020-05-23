@@ -34,7 +34,7 @@ describe("Inventory", () => {
 
       expected.menu.weapon.push(itemType);
 
-      sinon.stub(sword, "_type").value(itemType);
+      sinon.stub(sword, "type").value(itemType);
       sinon.stub(sword, "category").value(itemCategory);
 
       sut.store(sword);
@@ -64,11 +64,11 @@ const getSut = () => {
   return new Sut(menu);
 };
 
-const getItem = (type) => {
+const getItem = (type: string) => {
   return new Item(type);
 };
 
-const getEmptyState = () => {
+const getEmptyState = (): any => {
   return {
     menu: {
       item: [],

@@ -8,14 +8,14 @@ export const menus = {
     {
       type: "start",
       displayAs: "Start Game!",
-      action: (menu) => {
+      action: (menu: any) => {
         menu.close();
       },
     },
     {
       type: "save",
       displayAs: "Save Game",
-      action: (menu) => {
+      action: (menu: any) => {
         menu.saveState();
       },
     },
@@ -24,13 +24,13 @@ export const menus = {
     {
       type: "item",
       displayAs: "Items",
-      menu: [],
+      menu: [] as any[],
     },
     {
       type: "weapon",
       displayAs: "Weapons",
       equipable: true,
-      menu: [],
+      menu: [] as any[],
     },
     {
       type: "armor",

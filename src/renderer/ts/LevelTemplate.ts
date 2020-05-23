@@ -58,7 +58,7 @@ class LevelTemplate {
    *
    * @throws {MissingDataError} When tile layers or tile source are missing
    */
-  constructor(json) {
+  constructor(json: any) {
     let layers = json.layers ?? [];
 
     this._tiles = this.getTileLayers(layers);
@@ -80,7 +80,7 @@ class LevelTemplate {
     let objectGroups = this.getObjectGroups(layers);
     let entries = objectGroups.entry?.objects ?? [];
 
-    entries.forEach((e) => {
+    entries.forEach((e: any) => {
       this._entries[e.name] = this.createFixture("entry", e);
     });
 
@@ -92,7 +92,7 @@ class LevelTemplate {
         return;
       }
 
-      fixtures.forEach((object) => {
+      fixtures.forEach((object: any) => {
         let fixture = this.createFixture(type, object);
 
         if (fixture !== null) {
@@ -195,8 +195,8 @@ class LevelTemplate {
     let properties = json.properties ?? [];
 
     return properties
-      .filter((prop) => prop.name === property)
-      .map((prop) => prop.value)[0];
+      .filter((prop: any) => prop.name === property)
+      .map((prop: any) => prop.value)[0];
   }
 
   /**

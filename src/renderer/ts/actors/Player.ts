@@ -6,7 +6,7 @@ import StateManager from "@/state/StateManager";
 import Vector from "@common/Vector";
 import Weapon from "@/combat/Weapon";
 import config from "@/config";
-import { Drawable, Eventful, Lockable } from "@/interfaces";
+import { Drawable, Eventful, Lockable, CallableMap } from "@/interfaces";
 import { bus } from "@/EventBus";
 
 /**
@@ -117,23 +117,23 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
   /**
    * Register events with the event bus
    *
-   * @return {object} Events to register
+   * @return {CallableMap} Events to register
    */
-  public register(): object {
+  public register(): CallableMap {
     return {
-      keydown: (e) => {
+      keydown: (e: KeyboardEvent) => {
         if (e.key.match(/Arrow/)) {
           this.changeSpeed(e.key);
         }
       },
 
-      keyup: (e) => {
+      keyup: (e: KeyboardEvent) => {
         if (e.key.match(/Arrow/)) {
           this.stop(e.key);
         }
       },
 
-      "weapon.equip": (e) => {
+      "weapon.equip": (e: CustomEvent) => {
         let weapon = e.detail.weapon;
 
         if (!weapon) {

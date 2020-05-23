@@ -2,7 +2,7 @@ import Actor from "./Actor";
 import Dialogue from "@/ui/Dialogue";
 import MissingDataError from "@/error/MissingDataError";
 import Vector from "@common/Vector";
-import { Drawable, Eventful } from "@/interfaces";
+import { Drawable, Eventful, CallableMap } from "@/interfaces";
 import { bus } from "@/EventBus";
 
 /**
@@ -22,7 +22,7 @@ class NonPlayer extends Actor implements Eventful, Drawable {
    *
    * @param {object} data Info about the non-player
    */
-  constructor(data) {
+  constructor(data: any) {
     super(
       new Vector(data.x, data.y),
       new Vector(data.width, data.height),
@@ -67,17 +67,17 @@ class NonPlayer extends Actor implements Eventful, Drawable {
   /**
    * Register events with the event bus
    *
-   * @return {object} Events to register
+   * @return {CallableMap} Events to register
    */
-  public register(): object {
+  public register(): CallableMap {
     return {
-      keyup: (e) => {
+      keyup: (e: KeyboardEvent) => {
         if (e.key === "Enter" && this.collisions.length) {
           this.speak([...this.collisions]);
         }
       },
 
-      "player.move": (e) => {
+      "player.move": (e: CustomEvent) => {
         const player = e.detail?.player;
 
         if (!player) {

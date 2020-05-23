@@ -17,7 +17,7 @@ import { getImagePath } from "@/util";
  *
  * @type {Collision}
  */
-type Collision = {
+export type Collision = {
   position: Vector;
   size: Vector;
 };
@@ -369,6 +369,12 @@ abstract class Actor implements Drawable, Lockable {
   public attack(target: Actor, weapon?: Weapon) {
     if (!weapon && this.weapon) {
       weapon = this.weapon;
+    }
+
+    if (!weapon) {
+      throw new MissingDataError(
+        `Tried to attack as ${this.constructor.name} but no weapon was used and a default is not set.`
+      );
     }
 
     let weaponDamage = weapon?.damage ?? 0;

@@ -133,7 +133,7 @@ class CombatStrategy {
    * Emit a battle action event with the combat strategy
    */
   public use() {
-    bus.emit("battle.action", this);
+    bus.emit("battle.action", { combatStrategy: this });
   }
 
   /**

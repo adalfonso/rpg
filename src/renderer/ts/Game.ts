@@ -10,7 +10,7 @@ import StartMenu from "./menu/StartMenu";
 import TextStream from "./ui/TextStream";
 import Vector from "@common/Vector";
 import levels from "./levels/levels";
-import { Drawable, Eventful } from "./interfaces";
+import { Drawable, Eventful, CallableMap } from "./interfaces";
 import { bus } from "@/EventBus";
 import { menus } from "./config";
 
@@ -171,11 +171,11 @@ class Game implements Eventful, Drawable {
   /**
    * Register events with the event bus
    *
-   * @return {object} Events to register
+   * @return {CallableMap} Events to register
    */
-  public register(): object {
+  public register(): CallableMap {
     return {
-      "battle.start": (e) => {
+      "battle.start": (e: CustomEvent) => {
         /**
          * TODO: in the future, check if a battle will ever be started while
          * another battle is already underway. If an enemy jumps on the player
@@ -187,16 +187,18 @@ class Game implements Eventful, Drawable {
         this.lock(GameState.Battle);
       },
 
-      "battle.end": (e) => {
+      "battle.end": (e: CustomEvent) => {
         this.battle = null;
         this.unlock(GameState.Battle);
       },
 
-      "menu.inventory.open": (e) => this.lock(GameState.Inventory),
-      "menu.inventory.close": (e) => this.unlock(GameState.Inventory),
-      "menu.startMenu.open": (e) => this.lock(GameState.StartMenu),
-      "menu.startMenu.close": (e) => this.unlock(GameState.StartMenu),
-      "item.obtain": (e) => {
+      "menu.inventory.open": (e: CustomEvent) => this.lock(GameState.Inventory),
+      "menu.inventory.close": (e: CustomEvent) =>
+        this.unlock(GameState.Inventory),
+      "menu.startMenu.open": (e: CustomEvent) => this.lock(GameState.StartMenu),
+      "menu.startMenu.close": (e: CustomEvent) =>
+        this.unlock(GameState.StartMenu),
+      "item.obtain": (e: CustomEvent) => {
         let item = e.detail?.item;
 
         if (!item) {

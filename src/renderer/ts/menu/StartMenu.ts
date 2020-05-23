@@ -1,6 +1,6 @@
 import Menu from "./Menu";
 import Vector from "@common/Vector";
-import { Drawable } from "@/interfaces";
+import { Drawable, CallableMap } from "@/interfaces";
 import { bus } from "@/EventBus";
 
 /**
@@ -58,11 +58,11 @@ class StartMenu extends Menu implements Drawable {
   /**
    * Register events with the event bus
    *
-   * @return {object} Events to register
+   * @return {CallableMap} Events to register
    */
-  public register(): object {
+  public register(): CallableMap {
     return {
-      keyup: (e) => {
+      keyup: (e: KeyboardEvent) => {
         if (this.locked) {
           return;
         }
@@ -87,7 +87,7 @@ class StartMenu extends Menu implements Drawable {
             break;
         }
       },
-      "state.saved": (e) => {
+      "state.saved": (e: CustomEvent) => {
         this.close();
       },
     };

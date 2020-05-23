@@ -22,6 +22,19 @@ export type StatTemplate = {
 };
 
 /**
+ * Template for export of gained experience data
+ *
+ * @type {GainedExpSummary}
+ *
+ * @prop {number}   exp    Amount of exp gained
+ * @prop {number[]} levels Listing of levels grown during experience gain
+ */
+type GainedExpSummary = {
+  exp: number;
+  levels: number[];
+};
+
+/**
  * Modifier to scale experience calculations down to a certain range
  *
  * @constant {number} EXP_MODIFER
@@ -254,17 +267,18 @@ export default class Stats {
   /**
    * Increase the subject's experience points
    *
-   * @param {number} exp Points of experience earned
+   * @param  {number}          exp Points of experience earned
+   *
+   * @return {GainedExpSummary}    Experience Data
    *
    * @emits stats.gainExp
    */
-  public gainExp(exp: number) {
+  public gainExp(exp: number): GainedExpSummary {
     this._exp += exp;
 
-    let data = {
+    let data: GainedExpSummary = {
       exp: exp,
       levels: [],
-      manager: this,
     };
 
     while (this.gainLevel()) {

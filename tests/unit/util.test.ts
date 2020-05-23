@@ -177,7 +177,7 @@ describe("util", () => {
 
   describe("cloneByStringify", () => {
     it("clones a basic object", () => {
-      let input = {
+      let input: any = {
         number: 1,
         boolean: true,
         empty: null,

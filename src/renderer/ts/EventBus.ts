@@ -1,5 +1,18 @@
 import { Eventful } from "./interfaces";
 
+/**
+ * How events are stored locally
+ *
+ * @type {BrokeredEventTemplate}
+ *
+ * @prop {Eventful} observer Event's observer
+ * @prop {Function} handle   How the event is handled
+ */
+type BrokeredEventTemplate = {
+  observer: Eventful;
+  handle: Function;
+};
+
 class EventBus {
   /**
    * Singleton instance
@@ -29,29 +42,31 @@ class EventBus {
   /**
    * Register an entity on the event bus
    *
-   * @param {Eventful} target Entity to register
+   * @param {Eventful} observer Entity to register
    */
-  public register(target: Eventful) {
-    let events = target.register();
+  public register(observer: Eventful) {
+    let events = observer.register();
 
     // An array here indicates that a classes's parents events are included
     if (Array.isArray(events)) {
-      events.forEach((event) => this.install(target, event));
+      events.forEach((event) => this.install(observer, event));
     } else {
-      this.install(target, events);
+      this.install(observer, events);
     }
   }
 
   /**
    * Unregister an entity from the event bus
    *
-   * @param {Eventful} target Eventful entity
+   * @param {Eventful} observer Eventful entity
    */
-  public unregister(target: Eventful) {
+  public unregister(observer: Eventful) {
     for (let event in this.events) {
-      this.events[event] = this.events[event].filter((e) => {
-        return e.target !== target;
-      });
+      this.events[event] = this.events[event].filter(
+        (e: BrokeredEventTemplate) => {
+          return e.observer !== observer;
+        }
+      );
     }
   }
 
@@ -66,27 +81,29 @@ class EventBus {
   }
 
   /**
-   * Install a list of events for a target Eventful entity on the event bus
+   * Install a list of events for a observer Eventful entity on the event bus
    *
-   * @param {Eventful} target Eventful entity
-   * @param {object}   events A list of event callbacks
+   * @param {Eventful} observer Eventful entity
+   * @param {object}   events   A list of event callbacks
    */
-  private install(target: Eventful, events: object) {
+  private install(observer: Eventful, events: object) {
     for (let event in events) {
+      let brokeredEvent: BrokeredEventTemplate = {
+        observer: observer,
+        handle: events[event],
+      };
+
       if (!this.events.hasOwnProperty(event)) {
         this.events[event] = [];
 
         window.addEventListener(event, (e) => {
-          this.events[event].forEach((ev) => {
+          this.events[event].forEach((ev: BrokeredEventTemplate) => {
             ev.handle(e);
           });
         });
       }
 
-      this.events[event].push({
-        target: target,
-        handle: events[event],
-      });
+      this.events[event].push(brokeredEvent);
     }
   }
 }
