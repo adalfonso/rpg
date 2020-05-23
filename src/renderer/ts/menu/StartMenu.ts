@@ -22,7 +22,7 @@ class StartMenu extends Menu implements Drawable {
     resolution: Vector
   ) {
     if (!this.active) {
-      return false;
+      return;
     }
 
     ctx.save();

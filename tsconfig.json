@@ -6,7 +6,6 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "strictPropertyInitialization": false,
-    "noImplicitReturns": false,
     "strictNullChecks": false,
     "strictFunctionTypes": false,
 

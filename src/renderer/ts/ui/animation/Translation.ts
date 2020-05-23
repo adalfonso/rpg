@@ -49,14 +49,14 @@ class Translation {
    */
   public update(dt: number): Vector {
     if (this._isDone) {
-      return;
+      return this._b.copy();
     }
 
     this._timeElapsed += dt;
 
     if (this._timeElapsed > this._duration) {
       this._isDone = true;
-      return;
+      return this._b.copy();
     }
 
     let percentComplete = Math.min(1, this._timeElapsed / this._duration);
