@@ -4,8 +4,6 @@
   "compilerOptions": {
     "suppressImplicitAnyIndexErrors": true,
     "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "strictPropertyInitialization": false,
     "strictNullChecks": false,
     "strictFunctionTypes": false,
 

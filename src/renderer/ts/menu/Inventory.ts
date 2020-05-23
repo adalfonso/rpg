@@ -19,13 +19,6 @@ type MenuOption = {
 };
 
 /**
- * The height of an equipable description box
- *
- * @const {number}
- */
-const EQUIPABLE_HEIGHT = 100;
-
-/**
  * Main font size
  *
  * @const {number}

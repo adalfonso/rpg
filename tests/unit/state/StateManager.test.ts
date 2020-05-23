@@ -82,15 +82,6 @@ describe("StateManager", () => {
   describe("mergeByRef", () => {
     it("loads by ref for a pre-existing ref", () => {
       let sut = new Sut();
-      let expected = {
-        actors: {
-          knight0: {
-            stats: {
-              hp: 5,
-            },
-          },
-        },
-      };
 
       sut.merge(getBasicActorData());
 

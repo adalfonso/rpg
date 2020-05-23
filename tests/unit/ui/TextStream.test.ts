@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import Sut from "@/ui/TextStream";
-import Vector from "@common/Vector";
+//import Vector from "@common/Vector";
 
 // TODO: Uncomment tests when able to mock canvas
 describe("TextStream", () => {

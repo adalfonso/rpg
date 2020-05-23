@@ -6,12 +6,6 @@ import Vector from "@common/Vector";
  */
 class Entry extends Inanimate {
   /**
-   * Name of the entry. A reference which usually corresponds to the area from
-   * where the entity previously was.
-   */
-  private name: string;
-
-  /**
    * Create a new Entry instance
    *
    * @param {Vector} position The entry's position
@@ -20,8 +14,6 @@ class Entry extends Inanimate {
    */
   constructor(position: Vector, size: Vector, data: any) {
     super(position, size);
-
-    this.name = data.name;
   }
 }
 
