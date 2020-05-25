@@ -19,44 +19,44 @@ class Battle implements Eventful, Drawable, Lockable {
   /**
    * Menu for the battle
    *
-   * @prop {BattleMenu} menu
+   * @prop {BattleMenu} _menu
    */
-  private menu: BattleMenu;
+  private _menu: BattleMenu;
 
   /**
    * Dialogue in the battle
    *
-   * @prop {Dialogue} dialogue
+   * @prop {Dialogue} _dialogue
    */
-  private dialogue: Dialogue = null;
+  private _dialogue: Dialogue = null;
 
   /**
-   * Enemy being fought
+   * Enemies being fought
    *
-   * @prop {Enemy} enemy
+   * @prop {Enemy[]} _enemy
    */
-  private enemy: Enemy;
+  private _foes: Enemy[] = [];
 
   /**
-   * Player instance
+   * Heroes in the battle
    *
-   * @prop {Player} player
+   * @prop {Player[]} _heroes
    */
-  private player: Player;
+  private _heroes: Player[] = [];
 
   /**
    * If it is currently the player's turn
    *
-   * @prop {boolean} playersTurn
+   * @prop {boolean} _herosTurn
    */
-  private playersTurn: boolean = true;
+  private _herosTurn: boolean = true;
 
   /**
    * If the battle is locked
    *
-   * @prop {boolean} locked
+   * @prop {boolean} _locked
    */
-  private locked: boolean = false;
+  private _locked: boolean = false;
 
   /**
    * If the battle is currently active
@@ -74,30 +74,51 @@ class Battle implements Eventful, Drawable, Lockable {
   constructor(player: Player, enemy: Enemy) {
     this.active = true;
 
-    this.player = player;
-    this.player.savePosition();
+    this._heroes.push(player);
 
-    // TODO: make these scale
-    this.player.position = new Vector(64, 128);
-    this.player.direction = 4;
-    this.player.lock();
+    this._heroes.forEach((hero) => {
+      hero.savePosition();
 
-    this.enemy = enemy;
-    this.enemy.savePosition();
-    this.enemy.position = new Vector(256 + 64, 0);
-    this.enemy.direction = 2;
-    this.enemy.lock();
+      // TODO: make these scale
+      hero.position = new Vector(64, 128);
+      hero.direction = 4;
+      hero.lock();
+    });
 
-    this.menu = this.getBattleMenu();
+    this._foes.push(enemy);
+
+    this._foes.forEach((foe) => {
+      foe.savePosition();
+      foe.position = new Vector(256 + 64, 0);
+      foe.direction = 2;
+      foe.lock();
+    });
+
+    this._menu = this._getBattleMenu();
 
     this._animation = AnimationFactory.createStartBattleAnimation();
 
     bus.register(this);
 
     // Force enemy to attack if it is their turn first
-    if (!this.playersTurn) {
+    if (!this._herosTurn) {
       bus.emit("battle.action");
     }
+  }
+
+  /**
+   * Determine if the battle is done
+   *
+   * @return {boolean} If the battle is done
+   */
+  get isDone() {
+    const allHeroesDead =
+      this._heroes.filter((hero) => hero.stats.hp > 0).length === 0;
+
+    const allFoesDead =
+      this._foes.filter((foe) => foe.stats.hp > 0).length === 0;
+
+    return allHeroesDead || allFoesDead;
   }
 
   /**
@@ -114,16 +135,16 @@ class Battle implements Eventful, Drawable, Lockable {
       }
     }
 
-    if (this.dialogue) {
-      this.dialogue.update(dt);
+    if (this._dialogue) {
+      this._dialogue.update(dt);
     }
 
-    if (this.dialogue?.done) {
-      this.dialogue = null;
+    if (this._dialogue?.done) {
+      this._dialogue = null;
 
       // End battle after exp/lvl growth dialogue has ended
-      if (this.isDone()) {
-        this.stop();
+      if (this.isDone) {
+        this._stop();
       }
     }
   }
@@ -142,24 +163,25 @@ class Battle implements Eventful, Drawable, Lockable {
   ) {
     let width: number = resolution.x;
     let height: number = resolution.y;
+    let player: Player = this._heroes[0];
 
     ctx.fillStyle = "#CCC";
     ctx.fillRect(0, 0, width, height);
 
-    this.player.draw(ctx, offset, resolution);
-    this.enemy.draw(ctx, offset, resolution);
+    this._heroes.forEach((hero) => hero.draw(ctx, offset, resolution));
+    this._foes.forEach((foe) => foe.draw(ctx, offset, resolution));
 
-    this.drawUiBar(ctx, resolution);
-    this.drawEnemyUiBar(ctx, resolution);
+    this._drawUiBar(ctx, resolution);
+    this._drawEnemyUiBar(ctx, resolution);
 
-    if (this.playersTurn) {
-      let menuOffset = offset.plus(this.player.position).plus(this.player.size);
+    if (this._herosTurn) {
+      let menuOffset = offset.plus(player.position).plus(player.size);
 
-      this.menu.draw(ctx, menuOffset, resolution);
+      this._menu.draw(ctx, menuOffset, resolution);
     }
 
-    if (this.dialogue) {
-      this.dialogue.draw(ctx, new Vector(0, 0), resolution);
+    if (this._dialogue) {
+      this._dialogue.draw(ctx, new Vector(0, 0), resolution);
     }
 
     if (this._animation) {
@@ -175,24 +197,33 @@ class Battle implements Eventful, Drawable, Lockable {
   public register(): CallableMap {
     return {
       "battle.action": (e: CustomEvent) => {
-        if (this.playersTurn) {
-          this.player.attack(this.enemy, e.detail.combatStrategy);
+        let player = this._heroes[0];
+        let enemy = this._foes[0];
+
+        if (this._herosTurn) {
+          this._heroes.forEach((hero) =>
+            hero.attack(enemy, e.detail.combatStrategy)
+          );
         } else {
-          this.enemy.attack(this.player);
+          this._foes.forEach((foe) => foe.attack(player));
         }
 
-        if (this.player.stats.hp <= 0) {
-          let stream = new TextStream(["You died!"]);
-          this.dialogue = new Dialogue(stream, this.player, [this.enemy]);
-          this.lock();
-        } else if (this.enemy.stats.hp <= 0) {
-          this.player.gainExp(this.enemy.stats.givesExp);
+        const allHeroesDead =
+          this._heroes.filter((hero) => hero.stats.hp > 0).length === 0;
+
+        const allFoesDead =
+          this._foes.filter((foe) => foe.stats.hp > 0).length === 0;
+
+        if (allHeroesDead) {
+          this._doGameOver();
+        } else if (allFoesDead) {
+          this._payExp();
         } else {
-          this.cycle();
+          this._cycle();
         }
       },
       "actor.gainExp": (e: CustomEvent) => {
-        let name = this.player.displayAs;
+        let name = this._heroes[0].displayAs;
         let exp = e.detail.exp;
         let levels = e.detail.levels;
         let moveSet = e.detail.moveSet;
@@ -210,9 +241,9 @@ class Battle implements Eventful, Drawable, Lockable {
 
         let stream = new TextStream(dialogue);
 
-        this.dialogue = new Dialogue(stream, undefined, [
-          this.player,
-          this.enemy,
+        this._dialogue = new Dialogue(stream, undefined, [
+          ...this._heroes,
+          ...this._foes,
         ]);
         this.lock();
       },
@@ -225,8 +256,8 @@ class Battle implements Eventful, Drawable, Lockable {
    * @return {boolean} If the lock was successful
    */
   public lock(): boolean {
-    this.locked = true;
-    return this.menu.lock();
+    this._locked = true;
+    return this._menu.lock();
   }
 
   /**
@@ -235,26 +266,44 @@ class Battle implements Eventful, Drawable, Lockable {
    * @return {boolean} If the unlock was successful
    */
   public unlock(): boolean {
-    this.locked = false;
-    return this.menu.unlock();
+    this._locked = false;
+    return this._menu.unlock();
   }
 
   /**
-   * Determine if the battle is done
-   *
-   * @return {boolean} If the battle is done
+   * Pay experience out the heroes
    */
-  private isDone() {
-    return this.player.stats.hp <= 0 || this.enemy.stats.hp <= 0;
+  private _payExp() {
+    const accumExp = (n: number, foe: Enemy) => n + foe.stats.givesExp;
+
+    const expGained = Math.ceil(
+      this._foes.reduce(accumExp, 0) / this._heroes.length
+    );
+
+    this._heroes.forEach((hero) => hero.gainExp(expGained));
+  }
+
+  /**
+   * Cause game over
+   */
+  private _doGameOver() {
+    let stream = new TextStream(["You died!"]);
+
+    this._dialogue = new Dialogue(stream, this._heroes[0], [
+      ...this._heroes,
+      ...this._foes,
+    ]);
+
+    this.lock();
   }
 
   /**
    * Run one cycle of the battle
    */
-  private cycle() {
-    this.playersTurn = !this.playersTurn;
+  private _cycle() {
+    this._herosTurn = !this._herosTurn;
 
-    if (!this.playersTurn) {
+    if (!this._herosTurn) {
       bus.emit("battle.action");
     }
   }
@@ -262,16 +311,18 @@ class Battle implements Eventful, Drawable, Lockable {
   /**
    * End the battle
    */
-  private stop() {
+  private _stop() {
     this.unlock();
-    this.player.restorePosition();
-    this.enemy.restorePosition();
-    this.enemy.kill();
+    [...this._heroes, ...this._foes].forEach((actor) =>
+      actor.restorePosition()
+    );
+
+    this._foes.forEach((foe) => foe.kill());
 
     bus.emit("battle.end");
     bus.unregister(this);
 
-    this.menu.destroy();
+    this._menu.destroy();
     this.active = false;
   }
 
@@ -281,14 +332,14 @@ class Battle implements Eventful, Drawable, Lockable {
    * @param {CanvasRenderingContext2D} ctx        Render context
    * @param {Vector}                   resolution Render resolution
    */
-  private drawUiBar(ctx: CanvasRenderingContext2D, resolution: Vector) {
-    let uiBarSize = this.getUiBarSize(resolution);
+  private _drawUiBar(ctx: CanvasRenderingContext2D, resolution: Vector) {
+    let uiBarSize = this._getUiBarSize(resolution);
 
     ctx.fillStyle = "#000";
     ctx.fillRect(0, 0, uiBarSize.x, uiBarSize.y);
     ctx.fillStyle = "#FFF";
     ctx.font = "20px Arial";
-    ctx.fillText("HP : " + this.player.stats.hp, 16, 32);
+    ctx.fillText("HP : " + this._heroes[0].stats.hp, 16, 32);
   }
 
   /**
@@ -297,8 +348,8 @@ class Battle implements Eventful, Drawable, Lockable {
    * @param {CanvasRenderingContext2D} ctx        Render context
    * @param {Vector}                   resolution Render resolution
    */
-  private drawEnemyUiBar(ctx: CanvasRenderingContext2D, resolution: Vector) {
-    const uiBarSize = this.getUiBarSize(resolution);
+  private _drawEnemyUiBar(ctx: CanvasRenderingContext2D, resolution: Vector) {
+    const uiBarSize = this._getUiBarSize(resolution);
     const position = new Vector(resolution.x - uiBarSize.x, 0);
 
     ctx.fillStyle = "#000";
@@ -306,7 +357,7 @@ class Battle implements Eventful, Drawable, Lockable {
     ctx.fillStyle = "#FFF";
     ctx.font = "20px Arial";
     ctx.fillText(
-      "HP : " + this.enemy.stats.hp,
+      "HP : " + this._foes[0].stats.hp,
       position.x + 16,
       position.y + 32
     );
@@ -319,7 +370,7 @@ class Battle implements Eventful, Drawable, Lockable {
    *
    * @return {Vector}            Size of the UI bar
    */
-  private getUiBarSize(resolution: Vector) {
+  private _getUiBarSize(resolution: Vector) {
     return new Vector(
       Math.round(resolution.x * 0.4),
       Math.round(resolution.y * 0.07)
@@ -333,7 +384,9 @@ class Battle implements Eventful, Drawable, Lockable {
    *
    * @return {BattleMenu} The battle menu
    */
-  private getBattleMenu(): BattleMenu {
+  private _getBattleMenu(): BattleMenu {
+    const player = this._heroes[0];
+
     return new BattleMenu([
       {
         type: "Items",
@@ -341,11 +394,11 @@ class Battle implements Eventful, Drawable, Lockable {
       },
       {
         type: "Attack",
-        menu: this.player.weapon ? [this.player.weapon] : [],
+        menu: player.weapon ? [player.weapon] : [],
       },
       {
         type: "Spells",
-        menu: this.player.spells,
+        menu: player.spells,
       },
       {
         type: "Other",
