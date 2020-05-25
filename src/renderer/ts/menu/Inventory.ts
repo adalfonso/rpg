@@ -440,6 +440,18 @@ class Inventory extends Menu implements Eventful, Drawable {
       });
     });
 
+    const equipped = state.get("player.equipped");
+
+    if (equipped) {
+      const weaponMenu = this.menu.filter((menu) => menu.type === "weapon")[0];
+
+      weaponMenu.menu.forEach((weapon: Weapon) => {
+        if (weapon.type === equipped) {
+          weapon.equip();
+        }
+      });
+    }
+
     return stateManagerData;
   }
 

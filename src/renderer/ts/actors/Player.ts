@@ -170,6 +170,17 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
   }
 
   /**
+   * Equip a weapon
+   *
+   * @param {Weapon} weapon Weapon to equip
+   */
+  protected equip(weapon: Weapon) {
+    super.equip(weapon);
+
+    StateManager.getInstance().mergeByRef("player", this.getState());
+  }
+
+  /**
    * Change the player's speed
    *
    * @param {string} key The key that has been pressed
@@ -246,7 +257,11 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
    * @return {object} Current state of the player
    */
   protected getState(): object {
-    return { ...super.getState(), exp: this.stats.exp };
+    return {
+      ...super.getState(),
+      exp: this.stats.exp,
+      equipped: this.weapon?.type ?? null,
+    };
   }
 }
 
