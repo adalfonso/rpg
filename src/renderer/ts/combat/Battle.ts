@@ -49,7 +49,7 @@ class Battle implements Eventful, Drawable, Lockable {
    *
    * @prop {boolean} playersTurn
    */
-  private playersTurn: boolean;
+  private playersTurn: boolean = true;
 
   /**
    * If the battle is locked
@@ -88,7 +88,6 @@ class Battle implements Eventful, Drawable, Lockable {
     this.enemy.direction = 2;
     this.enemy.lock();
 
-    this.playersTurn = this.player.stats.spd > this.enemy.stats.spd;
     this.menu = this.getBattleMenu();
 
     this._animation = AnimationFactory.createStartBattleAnimation();
