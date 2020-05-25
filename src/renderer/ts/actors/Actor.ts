@@ -371,12 +371,6 @@ abstract class Actor implements Drawable, Lockable {
       weapon = this.weapon;
     }
 
-    if (!weapon) {
-      throw new MissingDataError(
-        `Tried to attack as ${this.constructor.name} but no weapon was used and a default is not set.`
-      );
-    }
-
     let weaponDamage = weapon?.damage ?? 0;
     let damage = this.stats.atk + weaponDamage;
 
