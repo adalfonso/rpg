@@ -1,12 +1,14 @@
 import Battle from "./combat/Battle";
 import CollisionHandler from "./CollisionHandler";
 import Dialogue from "./ui/Dialogue";
+import HeroTeam from "./combat/HeroTeam";
 import Inventory from "./menu/Inventory";
 import Level from "./Level";
 import LevelTemplate from "./LevelTemplate";
 import MissingDataError from "./error/MissingDataError";
 import Player from "./actors/Player";
 import StartMenu from "./menu/StartMenu";
+import Team from "./combat/Team";
 import TextStream from "./ui/TextStream";
 import Vector from "@common/Vector";
 import levels from "./levels/levels";
@@ -183,7 +185,11 @@ class Game implements Eventful, Drawable {
          * occur.
          */
         this.battle =
-          this.battle || new Battle(e.detail.player, e.detail.enemy);
+          this.battle ||
+          new Battle(
+            new HeroTeam([e.detail.player]),
+            new Team([e.detail.enemy])
+          );
         this.lock(GameState.Battle);
       },
 

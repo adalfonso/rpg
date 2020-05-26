@@ -4,6 +4,7 @@ import MissingDataError from "@/error/MissingDataError";
 import Spell from "@/combat/Spell";
 import StateManager from "@/state/StateManager";
 import Stats from "@/Stats";
+import UnimplementedMethodError from "@/error/UnimplementMethodError";
 import Vector from "@common/Vector";
 import Weapon from "@/combat/Weapon";
 import actors from "./actors.json";
@@ -384,6 +385,15 @@ abstract class Actor implements Drawable, Lockable {
    */
   public endure(damage: number) {
     this.stats.endure(damage);
+  }
+
+  /**
+   * Kill off the actor
+   */
+  public kill() {
+    throw new UnimplementedMethodError(
+      `Actor "${this.constructor.name}" must implement kill method.`
+    );
   }
 
   /**
