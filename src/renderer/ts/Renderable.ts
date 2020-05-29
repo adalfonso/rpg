@@ -111,7 +111,7 @@ export default class Renderable implements Drawable {
     this.frameCount = frameCount;
     this.gridRatio = gridRatio;
     this.fps = fps;
-    this.nextAnimationTimestamp = new Date().getTime();
+    this.nextAnimationTimestamp = new Date().getTime() + 1000 / this.fps;
 
     this.img.onload = () => {
       this.spriteSize = new Vector(
