@@ -60,8 +60,8 @@ class Team {
    * @param {Function} callable Action for each team member
    */
   public each(callable: Function) {
-    this._members.forEach((member: Actor) => {
-      callable(member);
+    this._members.forEach((member: Actor, index: number) => {
+      callable(member, index);
     });
   }
 

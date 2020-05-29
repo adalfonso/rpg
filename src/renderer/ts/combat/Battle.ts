@@ -145,8 +145,13 @@ class Battle implements Eventful, Drawable, Lockable {
     ctx.fillStyle = "#CCC";
     ctx.fillRect(0, 0, width, height);
 
-    this._heroes.each((hero: Actor) => hero.draw(ctx, offset, resolution));
-    this._foes.each((foe: Actor) => foe.draw(ctx, offset, resolution));
+    this._heroes.each((hero: Actor, index: number) =>
+      hero.draw(ctx, offset.plus(new Vector(100 * index, 0)), resolution)
+    );
+
+    this._foes.each((foe: Actor, index: number) =>
+      foe.draw(ctx, offset.plus(new Vector(100 * index, 0)), resolution)
+    );
 
     this._drawUiBar(ctx, resolution);
     this._drawEnemyUiBar(ctx, resolution);

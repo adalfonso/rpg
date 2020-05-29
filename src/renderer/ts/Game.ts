@@ -1,14 +1,13 @@
 import Battle from "./combat/Battle";
+import BattleBuilder from "./combat/BattleBuilder";
 import CollisionHandler from "./CollisionHandler";
 import Dialogue from "./ui/Dialogue";
-import HeroTeam from "./combat/HeroTeam";
 import Inventory from "./menu/Inventory";
 import Level from "./Level";
 import LevelTemplate from "./LevelTemplate";
 import MissingDataError from "./error/MissingDataError";
 import Player from "./actors/Player";
 import StartMenu from "./menu/StartMenu";
-import Team from "./combat/Team";
 import TextStream from "./ui/TextStream";
 import Vector from "@common/Vector";
 import levels from "./levels/levels";
@@ -19,7 +18,7 @@ import { menus } from "./config";
 /**
  * Different states a game can be in
  *
- * @prop {GameState} GameState
+ * @enum {GameState} GameState
  */
 enum GameState {
   StartMenu,
@@ -37,8 +36,6 @@ enum GameState {
 class Game implements Eventful, Drawable {
   /**
    * The current battle taking place
-   *
-   * @prop {Battle} Battle
    */
   private battle: Battle = null;
 
@@ -184,12 +181,7 @@ class Game implements Eventful, Drawable {
          * during a battle animation, it is plausible that battle.start would
          * occur.
          */
-        this.battle =
-          this.battle ||
-          new Battle(
-            new HeroTeam([e.detail.player]),
-            new Team([e.detail.enemy])
-          );
+        this.battle = this.battle || BattleBuilder.create(e);
         this.lock(GameState.Battle);
       },
 
@@ -199,11 +191,15 @@ class Game implements Eventful, Drawable {
       },
 
       "menu.inventory.open": (e: CustomEvent) => this.lock(GameState.Inventory),
+
       "menu.inventory.close": (e: CustomEvent) =>
         this.unlock(GameState.Inventory),
+
       "menu.startMenu.open": (e: CustomEvent) => this.lock(GameState.StartMenu),
+
       "menu.startMenu.close": (e: CustomEvent) =>
         this.unlock(GameState.StartMenu),
+
       "item.obtain": (e: CustomEvent) => {
         let item = e.detail?.item;
 

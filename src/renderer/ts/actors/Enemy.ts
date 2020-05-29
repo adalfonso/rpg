@@ -54,6 +54,15 @@ class Enemy extends Actor implements Drawable {
   }
 
   /**
+   * Get the string reference to the team type
+   *
+   * @return string reference to the team type
+   */
+  get teamType() {
+    return this.config?.teamType;
+  }
+
+  /**
    * Update the enemy
    *
    * @param {number} dt Delta time
@@ -79,6 +88,15 @@ class Enemy extends Actor implements Drawable {
     super.draw(ctx, offset, resolution);
 
     this.sprites[this.direction].draw(ctx, this.position.plus(offset));
+  }
+
+  /**
+   * Make a clone of the enemy
+   *
+   * @return the clone
+   */
+  public clone(): Enemy {
+    return new Enemy(this.data);
   }
 
   /**

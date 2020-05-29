@@ -70,7 +70,7 @@ abstract class Actor implements Drawable, Lockable {
    *
    * @prop {string} id
    */
-  protected id: string;
+  protected _id: string;
 
   /**
    * Level-related info about the actor
@@ -173,7 +173,7 @@ abstract class Actor implements Drawable, Lockable {
       this.assignCustomProperties(data.properties);
     }
 
-    this.id = data.name;
+    this._id = data.name;
     this.position = position.times(config.scale);
     this._size = size;
     this.direction = 0;
@@ -185,9 +185,18 @@ abstract class Actor implements Drawable, Lockable {
   }
 
   /**
+   * Get the actor's id
+   *
+   * @return the actor's size
+   */
+  get id() {
+    return this._id;
+  }
+
+  /**
    * Get the actor's size
    *
-   * @prop {Vector} size
+   * @return {Vector} size
    */
   get size(): Vector {
     return this._size;
@@ -196,7 +205,7 @@ abstract class Actor implements Drawable, Lockable {
   /**
    * Get the name used when rendering dialogue
    *
-   * @prop {string} displayAs
+   * @return {string} displayAs
    */
   get displayAs(): string {
     return this.config.displayAs;
