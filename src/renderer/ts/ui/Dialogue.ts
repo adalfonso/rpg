@@ -6,45 +6,17 @@ import { bus } from "@/EventBus";
 
 class Dialogue implements Eventful, Drawable {
   /**
-   * Used to split the current text out for a line-by-line rendering
-   *
-   * @prop {TextStream} stream
-   */
-  private stream: TextStream;
-
-  /**
-   * Actor speaking the dialogue
-   *
-   * @prop {Actor} speaker
-   */
-  private speaker: Actor;
-
-  /**
-   * All actors participating in the dialogue
-   *
-   * @prop {actors[]} actors
-   */
-  private actors: Actor[];
-
-  /**
-   * A waiting state denotes one line of text as fully rendered and is waiting
-   * for user input to render the next line
-   *
-   * @prop {boolean} waiting
+   * If waiting for user input
    */
   private waiting: boolean;
 
   /**
    * Done denotes that all texts have been fully rendered
-   *
-   * @prop {boolean} done
    */
   public done: boolean;
 
   /**
    * The length of time in milliseconds between the rendering of each letter
-   *
-   * @prop {number} frameLength
    */
   private frameLength: number;
 
@@ -56,14 +28,15 @@ class Dialogue implements Eventful, Drawable {
   /**
    * Create a new Dialogue instance
    *
-   * @param {TextStream} pool    Tool for drawing partial lines in the dialogue
-   * @param {Actor}      speaker Actor speaking the dialogue
-   * @param {Actor[]}    actors  All actors in dialogue, excluding the speaker
+   * @param stream  - stores text used for render
+   * @param speaker - actor speaking the dialogue
+   * @param actors  - all actors in dialogue, excluding the speaker
    */
-  constructor(stream: TextStream, speaker: Actor, actors: Actor[]) {
-    this.stream = stream;
-    this.speaker = speaker;
-    this.actors = actors;
+  constructor(
+    private stream: TextStream,
+    private speaker: Actor,
+    private actors: Actor[]
+  ) {
     this.waiting = false;
     this.done = false;
 
@@ -80,7 +53,7 @@ class Dialogue implements Eventful, Drawable {
   /**
    * Update the current state of the dialogue
    *
-   * @param {number} dt Delta time
+   * @param dt - delta time
    */
   public update(dt: number) {
     // Waiting for user input, don't update
@@ -103,9 +76,9 @@ class Dialogue implements Eventful, Drawable {
   /**
    * Draw Dialogue and all underlying entities
    *
-   * @param {CanvasRenderingContext2D} ctx        Render context
-   * @param {Vector}                   offset     Render position offset
-   * @param {Vector}                   resolution Render resolution
+   * @param ctx        - render context
+   * @param offset     - render position offset
+   * @param resolution - render resolution
    */
   public draw(
     ctx: CanvasRenderingContext2D,
@@ -131,7 +104,7 @@ class Dialogue implements Eventful, Drawable {
   /**
    * Register events with the event bus
    *
-   * @return {CallableMap} Events to register
+   * @return events to register
    */
   public register(): CallableMap {
     return {
@@ -174,7 +147,7 @@ class Dialogue implements Eventful, Drawable {
   /**
    * Move to the next line of text or end the dialogue
    *
-   * @param {KeyboardEvent} e Keyboard event
+   * @param e - keyboard event
    */
   private next(e: KeyboardEvent) {
     if (!this.waiting || this.done) {
@@ -193,9 +166,9 @@ class Dialogue implements Eventful, Drawable {
   /**
    * Draw text
    *
-   * @param {CanvasRenderingContext2D} ctx        Render context
-   * @param {Vector}                   offset     Render position offset
-   * @param {Vector}                   resolution Render resolution
+   * @param ctx        - render context
+   * @param offset     - render position offset
+   * @param resolution - render resolution
    */
   private drawText(
     ctx: CanvasRenderingContext2D,

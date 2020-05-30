@@ -4,8 +4,6 @@ import { Drawable } from "./interfaces";
 
 /**
  * Data fed to a Renderable instance
- *
- * @type {RenderData}
  */
 export type RenderData = {
   fps: number;
@@ -17,100 +15,55 @@ export type RenderData = {
 export default class Renderable implements Drawable {
   /**
    * Image element to render
-   *
-   * @prop {HTMLImageElement} img
    */
   private img: HTMLImageElement;
 
   /**
    * Current frame in animation sequence
-   *
-   * @prop {number} frame
    */
   public frame: number;
 
   /**
-   * Starting frame in animation sequence
-   *
-   * @prop {number} startFrame
-   */
-  private startFrame: number;
-
-  /**
-   * Total number of frames in animation sequence
-   *
-   * @prop {number} frameCount
-   */
-  private frameCount: number;
-
-  /**
-   * Vector of columns/rows in animation sequence
-   *
-   * @prop {number} gridRatio
-   */
-  private gridRatio: Vector;
-
-  /**
    * Unix time at which the next animation frame should render
-   *
-   * @prop {number} nextAnimationTimestamp
    */
   private nextAnimationTimestamp: number;
 
   /**
-   * Number of frames to render in a second
+   * Size of sub-panel in the sprite sheet
    *
-   * @prop {number} fps
-   */
-  private fps: number;
-
-  /**
-   * Scale at which to render the image
-   *
-   * @prop {number} scale
-   */
-  public scale: number;
-
-  /**
-   * Size of sub-panel in the sprite sheet - the effective dimensions of sprite
-   *
-   * @prop {number} spriteSize
+   * (The effective dimensions of sprite)
    */
   public spriteSize: Vector;
 
   /**
-   * If the image has loaded. This is needed because HTMLImageElement.complete
-   * is set before the onload event takes place.
+   * If the image has loaded
    *
+   * This is needed because HTMLImageElement.complete is set before the onload
+   * event takes place.
    */
   public ready: boolean = false;
 
   /**
    * Create a new Renderable instance
    *
-   * @param {string} src        Source path of image element to render
-   * @param {number} scale      Scale at which to render the image
-   * @param {number} startFrame Starting frame in animation sequence
-   * @param {number} frameCount Total number of frames in animation sequence
-   * @param {number} gridRatio  Vector of columns/rows in animation sequence
-   * @param {number} fps        Number of frames to render in a second
+   * @param src        - source path of image element to render
+   * @param scale      - scale at which to render the image
+   * @param startFrame - starting frame in animation sequence
+   * @param frameCount - total number of frames in animation sequence
+   * @param gridRatio  - vector of columns/rows in animation sequence
+   * @param fps        - number of frames to render in a second
    */
   constructor(
     src: string,
-    scale: number = config.scale,
-    startFrame: number = 0,
-    frameCount: number = 9,
-    gridRatio: Vector = new Vector(9, 4),
-    fps: number = 10
+    public scale: number = config.scale,
+    private startFrame: number = 0,
+    private frameCount: number = 9,
+    private gridRatio: Vector = new Vector(9, 4),
+    private fps: number = 10
   ) {
     this.img = new Image();
     this.img.src = src;
-    this.scale = scale;
-    this.frame = startFrame;
-    this.startFrame = startFrame;
-    this.frameCount = frameCount;
-    this.gridRatio = gridRatio;
-    this.fps = fps;
+    this.frame = this.startFrame;
     this.nextAnimationTimestamp = new Date().getTime() + 1000 / this.fps;
 
     this.img.onload = () => {
@@ -126,9 +79,9 @@ export default class Renderable implements Drawable {
   /**
    * Render the image
    *
-   * @param {CanvasRenderingContext2D} ctx         Render Context
-   * @param {Vector}                   offset      Render position offset
-   * @param {Vector}                   _resolution Render resolution
+   * @param ctx         - render context
+   * @param offset      - render position offset
+   * @param _resolution - render resolution
    */
   public draw(
     ctx: CanvasRenderingContext2D,

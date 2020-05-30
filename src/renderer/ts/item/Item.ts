@@ -3,45 +3,33 @@ import items from "@/item/items.json";
 import { ucFirst } from "@/util";
 
 /**
- * An item in the inventory
+ * An item in the context of an inventory
  */
 class Item {
   /**
    * Game-related info about the item
-   *
-   * @prop {object} _config
    */
   private _config: any;
 
   /**
-   * The type of item
-   *
-   * @prop {string} _type
-   */
-  private _type: string;
-
-  /**
    * Create a new Item instance
    *
-   * @param  {string} type String reference to item type
+   * @param _type - string reference to item type
    *
-   * @throws {MissingDataError} When config is missing
+   * @throws {MissingDataError} when config is missing
    */
-  constructor(type: string) {
-    this._config = items[type];
-    this._type = type;
+  constructor(private _type: string) {
+    this._config = items[_type];
 
     if (!this._config) {
       throw new MissingDataError(
-        `Config data for item "${type}" is not defined in items.json`
+        `Config data for item "${_type}" is not defined in items.json`
       );
     }
   }
 
   /**
    * Get the item's category
-   *
-   * @return {string} The item's category
    */
   get category(): string {
     return this._config.type;
@@ -49,8 +37,6 @@ class Item {
 
   /**
    * Get the name used when rendering dialogue
-   *
-   * @return {string} Name used when rendering dialogue
    */
   get displayAs(): string {
     return this._type
@@ -61,8 +47,6 @@ class Item {
 
   /**
    * Get the item's type
-   *
-   * @return {string} The item's type
    */
   get type(): string {
     return this._type;

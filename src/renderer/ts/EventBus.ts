@@ -3,10 +3,8 @@ import { Eventful } from "./interfaces";
 /**
  * How events are stored locally
  *
- * @type {BrokeredEventTemplate}
- *
- * @prop {Eventful} observer Event's observer
- * @prop {Function} handle   How the event is handled
+ * @prop observer - event's observer
+ * @prop handle   - how the event is handled
  */
 type BrokeredEventTemplate = {
   observer: Eventful;
@@ -16,22 +14,18 @@ type BrokeredEventTemplate = {
 class EventBus {
   /**
    * Singleton instance
-   *
-   * @prop {EventBus} instance
    */
   private static instance: EventBus;
 
   /**
    * Event store
-   *
-   * @prop {object} events
    */
   private events: object = {};
 
   /**
    * Create a new instance or get the shared instance
    *
-   * @return {EventBus} Shared instance
+   * @return shared instance
    */
   public static getInstance() {
     EventBus.instance = EventBus.instance ?? new EventBus();
@@ -42,7 +36,7 @@ class EventBus {
   /**
    * Register an entity on the event bus
    *
-   * @param {Eventful} observer Entity to register
+   * @param observer - entity to register
    */
   public register(observer: Eventful) {
     let events = observer.register();
@@ -58,7 +52,7 @@ class EventBus {
   /**
    * Unregister an entity from the event bus
    *
-   * @param {Eventful} observer Eventful entity
+   * @param observer - eventful entity
    */
   public unregister(observer: Eventful) {
     for (let event in this.events) {
@@ -72,8 +66,9 @@ class EventBus {
 
   /**
    * Emit an event to all entities listening
-   * @param {string} event  Event name
-   * @param {object} detail Additional detail to pass along
+   *
+   * @param event  - event name
+   * @param detail - additional detail to pass along
    */
   public emit(event: string, detail?: object) {
     let e = new CustomEvent(event, { detail: detail });
@@ -81,10 +76,10 @@ class EventBus {
   }
 
   /**
-   * Install a list of events for a observer Eventful entity on the event bus
+   * Install a list of events for a observer on the event bus
    *
-   * @param {Eventful} observer Eventful entity
-   * @param {object}   events   A list of event callbacks
+   * @param observer - eventful entity
+   * @param events   - a list of event callbacks
    */
   private install(observer: Eventful, events: object) {
     for (let event in events) {
@@ -110,8 +105,6 @@ class EventBus {
 
 /**
  * Event bus singleton
- *
- * @const {EventBus} bus
  */
 export const bus: EventBus = EventBus.getInstance();
 

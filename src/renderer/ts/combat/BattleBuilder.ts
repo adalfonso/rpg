@@ -33,6 +33,8 @@ class BattleBuilder {
    * @param e - target event
    *
    * @return battle instance
+   *
+   * @throws {MissingDataError} when the player/enemy aren't provided
    */
   public createFromEvent(e: CustomEvent): Battle {
     const player = e.detail?.player;

@@ -5,46 +5,32 @@ import { bus } from "@/EventBus";
 import { lcFirst } from "@/util";
 
 /**
- * Menu is a visual UI that can be opened, closed, and traversed
+ * A visual UI that can be opened, closed, and traversed
  */
 abstract class Menu implements Eventful, Drawable, Lockable {
   /**
-   * The actual menu choices. The content of which is really up to the sub-class
-   * to determine as this base class has no context.
+   * A stack of the currently selected menu options
    *
-   * @prop {any[]} menu
-   */
-  protected menu: any[];
-
-  /**
-   * A stack of the currently selected menu options. If the menu contains sub-
-   * menus, the stack will grow to store the menu path.
-   *
-   * @prop {any[]} selected
+   * If the menu contains sub-menus, the stack will grow to store the menu path.
    */
   protected selected: any[];
 
   /**
    * If the menu is locked
-   *
-   * @prop {boolean} locked
    */
   protected locked: boolean = false;
 
   /**
    * If the menu is currently active
-   *
-   * @prop {boolean} active
    */
   public active: Boolean;
 
   /**
    * Create a Menu-based instance
    *
-   * @param {any[]} menu Menu options
+   * @param menu - menu options
    */
-  constructor(menu: any[]) {
-    this.menu = menu;
+  constructor(protected menu: any[]) {
     this.selected = [];
     this.selected.push(this.menu[0]);
 
@@ -53,19 +39,15 @@ abstract class Menu implements Eventful, Drawable, Lockable {
 
   /**
    * Get the current selected menu option
-   *
-   * @prop {mixed} currentOption Currently selected menu option
    */
-  get currentOption() {
+  get currentOption(): any {
     return this.selected[this.selected.length - 1];
   }
 
   /**
    * Get the current list of menu options being displayed.
-   *
-   * @prop {any[]} currentMenu Currently selected menu
    */
-  get currentMenu() {
+  get currentMenu(): any {
     return this.selected.length > 1
       ? this.selected[this.selected.length - 2].menu
       : this.menu;
@@ -74,11 +56,11 @@ abstract class Menu implements Eventful, Drawable, Lockable {
   /**
    * Draw Menu and all underlying entities
    *
-   * @param  {CanvasRenderingContext2D} _ctx        Render context
-   * @param  {Vector}                   _offset     Render position offset
-   * @param  {Vector}                   _resolution Render resolution
+   * @param _ctx        - render context
+   * @param _offset     - render position offset
+   * @param _resolution - render resolution
    *
-   * @throws {UnimplementedMethodError} When child class doesn't implement draw
+   * @throws {UnimplementedMethodError} when child class doesn't implement draw
    */
   public draw(
     _ctx: CanvasRenderingContext2D,
@@ -91,7 +73,7 @@ abstract class Menu implements Eventful, Drawable, Lockable {
   }
 
   /**
-   * Register events with the event bus.
+   * Register events with the event bus
    *
    * TODO: This menu is vertical orientation, with sub-classes left to override
    * how key codes are interpreted. This is bad design. Perhaps there should be
@@ -99,7 +81,7 @@ abstract class Menu implements Eventful, Drawable, Lockable {
    * sub-menus may benefit from parsing the sub-menus as actual menu instances
    * instead of using an object literal.
    *
-   * @return {CallableMap} Events to register
+   * @return events to register
    */
   public register(): CallableMap {
     return {
@@ -152,7 +134,7 @@ abstract class Menu implements Eventful, Drawable, Lockable {
   /**
    * Lock the menu
    *
-   * @return {boolean} If unlock was successful
+   * @return if unlock was successful
    */
   public lock(): boolean {
     this.locked = true;
@@ -163,7 +145,7 @@ abstract class Menu implements Eventful, Drawable, Lockable {
   /**
    * Unlock the menu
    *
-   * @return {boolean} If unlock was successful
+   * @return if unlock was successful
    */
   public unlock(): boolean {
     this.locked = false;
@@ -246,7 +228,7 @@ abstract class Menu implements Eventful, Drawable, Lockable {
   /**
    * Determine if current menu option has a sub-menu
    *
-   * @return {boolean} If current menu option has a sub-menu
+   * @return if current menu option has a sub-menu
    */
   protected hasSubMenu(): boolean {
     let current = this.currentOption;

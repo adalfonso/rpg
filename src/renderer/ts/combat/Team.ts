@@ -2,13 +2,13 @@ import Actor from "@/actors/Actor";
 import MissingDataError from "@/error/MissingDataError";
 
 /**
- * A team is a battle-centric collection of actors that are related in some way
+ * A battle-centric collection of actors that are related in some way
  */
 class Team {
   /**
    * Create a new Team instance
    *
-   * @param _members
+   * @param _members - members of the team
    */
   constructor(protected _members: Actor[]) {
     if (_members.length === 0) {
@@ -18,8 +18,6 @@ class Team {
 
   /**
    * Determine if all team members are defeated
-   *
-   * @return {boolean} Members are defeated
    */
   get areDefeated(): boolean {
     return this._members.filter((member) => member.stats.hp > 0).length === 0;
@@ -27,8 +25,6 @@ class Team {
 
   /**
    * Get the total exp yield from defeating the team
-   *
-   * @return {number} Exp yield
    */
   get givesExp(): number {
     return this._members.reduce((carry, member) => {
@@ -38,8 +34,6 @@ class Team {
 
   /**
    * Get the team leader
-   *
-   * @return {Actor} Team leader
    */
   get leader(): Actor {
     return this._members[0];
@@ -47,8 +41,6 @@ class Team {
 
   /**
    * Get the length of the team
-   *
-   * @return {boolean} Team length
    */
   get length(): number {
     return this._members.length;
@@ -57,7 +49,7 @@ class Team {
   /**
    * Impose an action on each team member
    *
-   * @param {Function} callable Action for each team member
+   * @param callable - action for each team member
    */
   public each(callable: Function) {
     this._members.forEach((member: Actor, index: number) => {
@@ -68,7 +60,7 @@ class Team {
   /**
    * Get all the team members
    *
-   * @return {Actor[]} All team members
+   * @return all team members
    */
   public all(): Actor[] {
     return this._members;

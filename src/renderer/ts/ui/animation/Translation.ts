@@ -1,29 +1,25 @@
 import Vector from "@common/Vector";
 
 /**
- * Translation is a simply a translation from one point to another.
+ * A translation from one point to another
  */
 class Translation {
   /**
    * Time elapsed since the animation started
-   *
-   * @prop {number} _timeElapsed
    */
   private _timeElapsed: number = 0;
 
   /**
    * If the translation has finished
-   *
-   * @prop {boolean} _isDone
    */
   private _isDone: boolean = false;
 
   /**
    * Create a new Translation instance
    *
-   * @param {Vector} _a        Starting coordinate
-   * @param {Vector} _b        Ending coordinate
-   * @param {number} _duration Duration of translation
+   * @param _a        - starting coordinate
+   * @param _b        - ending coordinate
+   * @param _duration - duration of translation
    */
   constructor(
     private _a: Vector,
@@ -33,8 +29,6 @@ class Translation {
 
   /**
    * Determine if the translation is done
-   *
-   * @return {boolean} If the translation is done
    */
   get isDone(): boolean {
     return this._isDone;
@@ -43,9 +37,9 @@ class Translation {
   /**
    * Update the translation
    *
-   * @param  {number} dt Delta time
+   * @param dt - delta time
    *
-   * @return {Vector}    Current position of the translation
+   * @return current position of the translation
    */
   public update(dt: number): Vector {
     if (this._isDone) {

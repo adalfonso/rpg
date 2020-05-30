@@ -3,8 +3,6 @@ import Vector from "@common/Vector";
 
 /**
  * Required options for rendering an animation
- *
- * @type {RenderOptions}
  */
 type RenderOptions = {
   fillStyle?: string;
@@ -15,28 +13,25 @@ type RenderOptions = {
 };
 
 /**
- * Animated text manages text and renders it according to a set of options
+ * Manages text and renders it according to a set of options
  */
 class AnimatedText {
   /**
    * Current animation applied to the text
-   *
-   * @prop {Translation} _animation
    */
   private _animation: Translation;
 
   /**
    * If the text is currently waiting for an animation
-   *
-   * @prop {boolean} _isWaiting
    */
   private _isWaiting: boolean = true;
 
   /**
    * Create a new AnimatedText instance
-   * @param {string}        _text     Text content
-   * @param {RenderOptions} _options  Render Options
-   * @param {Vector}        _position Starting position of the text
+   *
+   * @param _text     - text content
+   * @param _options  - render Options
+   * @param _position - starting position of the text
    */
   constructor(
     private _text: string,
@@ -46,8 +41,6 @@ class AnimatedText {
 
   /**
    * Determine if the text is waiting for an animation
-   *
-   * @return {boolean} If the text is waiting for an animation
    */
   get isWaiting(): boolean {
     return this._isWaiting;
@@ -56,7 +49,7 @@ class AnimatedText {
   /**
    * Update the animation
    *
-   * @param {number} dt Delta time
+   * @param dt - delta time
    */
   public update(dt: number) {
     if (this._isWaiting) {
@@ -77,9 +70,9 @@ class AnimatedText {
   /**
    * Draw renderable text
    *
-   * @param {CanvasRenderingContext2D} ctx         Render context
-   * @param {Vector}                   offset      Render position offset
-   * @param {Vector}                   _resolution Render resolution
+   * @param ctx         - render context
+   * @param offset      - render position offset
+   * @param _resolution - render resolution
    */
   public draw(
     ctx: CanvasRenderingContext2D,
@@ -106,7 +99,7 @@ class AnimatedText {
   /**
    * Apply a new animation to the text
    *
-   * @param {Translation} animation New animtion
+   * @param animation - new animtion
    */
   public applyAnimation(animation: Translation) {
     this._animation = animation;
@@ -116,7 +109,7 @@ class AnimatedText {
   /**
    * Change the text's position
    *
-   * @param {Vector} position Text's new position
+   * @param position - text's new position
    */
   private moveTo(position: Vector) {
     this._position = position;

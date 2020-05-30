@@ -1,42 +1,29 @@
 import Vector from "@common/Vector";
 
 /**
- * TextBuffer uses a canvas context to split a string of text into multiple
- * lines preventing horizontal overflow when rendering.
+ * Splits a string of text into multiple lines
  */
 class TextBuffer {
   /**
    * The inner array buffer
-   *
-   * @prop {string[]} _buffer
    */
   private _buffer: string[] = [];
 
   /**
-   * Target text
-   *
-   * @prop {string} _text
-   */
-  private _text: string;
-
-  /**
    * Create a new TextBuffer instance
-   *
-   * @param {string} text Target text
    */
-  constructor(text: string) {
-    this._text = text;
-  }
+  constructor(private _text: string) {}
 
   /**
-   * Fill the buffer with the line-by-line data. Filling the text buffer
-   * requires us have a render context to determine how much text can fit on a
-   * line.
+   * Fill the buffer with the line-by-line data
    *
-   * @param  {CanvasRenderingContext2D} ctx        Render context
-   * @param  {Vector}                   resolution Render area
+   * Filling the text buffer requires us have a render context to determine how
+   * much text can fit on a line.
    *
-   * @return {string[]}                            Buffer content
+   * @param ctx        - render context
+   * @param resolution - render area
+   *
+   * @return buffer content
    */
   public fill(ctx: CanvasRenderingContext2D, area: Vector): string[] {
     let words = this._text.split(/\s+/);
@@ -70,8 +57,6 @@ class TextBuffer {
 
   /**
    * Determine if the buffer is empty
-   *
-   * @return {boolean} If the buffer is empty
    */
   get isEmpty(): boolean {
     return this._buffer.length === 0;
@@ -87,7 +72,7 @@ class TextBuffer {
   /**
    * Read the text buffer
    *
-   * @return {string[]} Text buffer contents
+   * @return text buffer contents
    */
   public read(): string[] {
     return this._buffer;

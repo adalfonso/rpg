@@ -2,48 +2,36 @@ import Vector from "@common/Vector";
 import config from "@/config";
 
 /**
- * Inanimates are entities that interact with other entities in the game, but
- * are stationary, and often invisible. e.g. clipping boundaries or portals.
+ * An entity that interacts with other entities in the game
+ *
+ * Inanimates are stationary, and often invisible. e.g. clipping boundaries or
+ * portals.
  */
 abstract class Inanimate {
   /**
-   * Position of the inanimate
-   *
-   * @prop {Vector} pos
-   */
-  public position: Vector;
-
-  /**
-   * Size of the inanimate
-   *
-   * @prop {Vector} size
-   */
-  public size: Vector;
-
-  /**
    * Create an Inanimate-based instance
    *
-   * @param {Vector} position  Position of the inanimate
-   * @param {Vector} size      Size of the inanimate
+   * @param position - position of the inanimate
+   * @param size     - size of the inanimate
    */
-  constructor(position?: Vector, size?: Vector) {
-    this.position = position ?? new Vector(0, 0);
-    this.size = size ?? new Vector(0, 0);
-  }
+  constructor(
+    public position: Vector = new Vector(0, 0),
+    public size: Vector = new Vector(0, 0)
+  ) {}
 
   /**
    * Update the inanimate
    *
-   * @param {number} dt Delta time
+   * @param dt - delta time
    */
   public update(dt: number) {}
 
   /**
    * Draw the inanimate
    *
-   * @param {CanvasRenderingContext2D} ctx        Render context
-   * @param {Vector}                   offset     Render position offset
-   * @param {Vector}                   resolution Render resolution
+   * @param ctx        - render context
+   * @param offset     - render position offset
+   * @param resolution - render resolution
    */
   public draw(
     ctx: CanvasRenderingContext2D,
@@ -58,9 +46,9 @@ abstract class Inanimate {
   /**
    * Force some sort of render
    *
-   * @param {CanvasRenderingContext2D} ctx         Render context
-   * @param {Vector}                   offset      Render position offset
-   * @param {Vector}                   _resolution Render resolution
+   * @param ctx         - render context
+   * @param offset      - render position offset
+   * @param _resolution - render resolution
    */
   protected debugDraw(
     ctx: CanvasRenderingContext2D,

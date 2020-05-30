@@ -9,8 +9,6 @@ import { Drawable, Eventful, CallableMap } from "@/interfaces";
 
 /**
  * Template for a menu option
- *
- * @type {MenuOption}
  */
 type MenuOption = {
   type: string;
@@ -20,26 +18,22 @@ type MenuOption = {
 
 /**
  * Main font size
- *
- * @const {number}
  */
 const TEXT_SIZE = 24;
 
 /**
  * Secondary font size
- *
- * @const {number}
  */
 const SUBTEXT_SIZE = 16;
 
 /**
- * Inventory is a menu for managing things such as items and equipment.
+ * A menu for managing things such as items and equipment
  */
 class Inventory extends Menu implements Eventful, Drawable {
   /**
    * Create an Inventory instance
    *
-   * @param {MenuOption[]} menu Menu options
+   * @param menu - menu options
    */
   constructor(menu: MenuOption[]) {
     super(menu);
@@ -49,8 +43,6 @@ class Inventory extends Menu implements Eventful, Drawable {
 
   /**
    * Get current state of the inventory for export to a state manager
-   *
-   * @return {object} Current state of the inventory
    */
   get state(): object {
     const getSubMenu = (type: string) =>
@@ -69,10 +61,10 @@ class Inventory extends Menu implements Eventful, Drawable {
   /**
    * Draw Inventory and all underlying entities.
    *
-   * @param {CanvasRenderingContext2D} ctx        Render context
-   * @param {Vector}                   offset     Render position offset
-   * @param {Vector}                   resolution Render resolution
-   * @param {MenuOption[]}             menu       Target menu
+   * @param ctx        - render context
+   * @param offset     - render position offset
+   * @param resolution - render resolution
+   * @param menu       - target menu
    */
   public draw(
     ctx: CanvasRenderingContext2D,
@@ -154,10 +146,10 @@ class Inventory extends Menu implements Eventful, Drawable {
   /**
    * Handle drawing of the equipable screen
    *
-   * @param {CanvasRenderingContext2D} ctx         Render context
-   * @param {Vector}                   offset      Render position offset
-   * @param {Vector}                   _resolution Render resolution
-   * @param {Weapon}                   option      Target option
+   * @param ctx         - render context
+   * @param offset      - render position offset
+   * @param _resolution - render resolution
+   * @param option      - target option
    */
   private drawEquipable(
     ctx: CanvasRenderingContext2D,
@@ -236,9 +228,9 @@ class Inventory extends Menu implements Eventful, Drawable {
   /**
    * Draw a box on the inventory
    *
-   * @param {CanvasRenderingContext2D} ctx        Render context
-   * @param {Vector}                   offset     Render position offset
-   * @param {Vector}                   resolution Render resolution
+   * @param ctx        - render context
+   * @param offset     - render position offset
+   * @param resolution - render resolution
    */
   private drawBox(
     ctx: CanvasRenderingContext2D,
@@ -257,10 +249,10 @@ class Inventory extends Menu implements Eventful, Drawable {
   /**
    * Draw main text type on the inventory
    *
-   * @param {CanvasRenderingContext2D} ctx         Render context
-   * @param {Vector}                   offset      Render position offset
-   * @param {Vector}                   _resolution Render resolution
-   * @param {MenuOption}               option      Target option
+   * @param ctx         - render context
+   * @param offset      - render position offset
+   * @param _resolution - render resolution
+   * @param option      - target option
    */
   private drawOptionText(
     ctx: CanvasRenderingContext2D,
@@ -291,12 +283,12 @@ class Inventory extends Menu implements Eventful, Drawable {
   /**
    * Draw the secondary type text on the inventory
    *
-   * @param  {CanvasRenderingContext2D} ctx        Render context
-   * @param  {Vector}                   offset     Render position offset
-   * @param  {Vector}                   resolution Container for the text
-   * @param  {string}                   text       Text to draw
+   * @param ctx        - render context
+   * @param offset     - render position offset
+   * @param resolution - container for the text
+   * @param text       - text to draw
    *
-   * @return {number}                              Amount of height consumed
+   * @return amount of height consumed
    */
   private drawSubtext(
     ctx: CanvasRenderingContext2D,
@@ -327,9 +319,9 @@ class Inventory extends Menu implements Eventful, Drawable {
   /**
    * Get the widest option description in the menu
    *
-   * @param  {MenuOption} menu Target menu
+   * @param menu - target menu
    *
-   * @return {string}          Widest description in the menu
+   * @return widest description in the menu
    */
   private getWidestMenuDescription(menu: MenuOption[]): string {
     return menu.reduce((widestMenuText, option) => {
@@ -344,9 +336,9 @@ class Inventory extends Menu implements Eventful, Drawable {
   /**
    * Get the description of a MenuOption
    *
-   * @param  {MenuOption} option Option to get description for
+   * @param option - option to get description for
    *
-   * @return {string}            Description
+   * @return description of the option
    */
   private getOptionDescription(option: MenuOption): string {
     let subMenuCount = option.menu?.length ?? "";
@@ -358,7 +350,7 @@ class Inventory extends Menu implements Eventful, Drawable {
   /**
    * Register events with the event bus
    *
-   * @return {CallableMap} Events to register
+   * @return events to register
    */
   public register(): CallableMap {
     let parent = super.register();
@@ -392,7 +384,7 @@ class Inventory extends Menu implements Eventful, Drawable {
   /**
    * Store an item in the proper inventory submenu
    *
-   * @param {Item} item
+   * @param item - an item to store in the inventory
    */
   public store(item: Item) {
     this.menu
@@ -407,9 +399,9 @@ class Inventory extends Menu implements Eventful, Drawable {
   /**
    * Resolve the current state of the inventory in comparison to the game state
    *
-   * @param  {string} ref Reference to where in the state the inventory is stored
+   * @param ref - reference to where in the state the inventory is stored
    *
-   * @return {object}     Inventory data as stored in the state
+   * @return inventory data as stored in the state
    */
   private resolveState(ref: string): any {
     const state = StateManager.getInstance();

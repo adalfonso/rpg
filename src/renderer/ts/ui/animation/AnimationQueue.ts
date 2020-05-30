@@ -3,22 +3,19 @@ import Translation from "./Translation";
 import Vector from "@common/Vector";
 
 /**
- * AnimationQueue queues up a sequence of animations and applies them to a
- * target entity.
+ * Queues up a sequence of animations and applies them to a target entity
  */
 class AnimationQueue {
   /**
    * If all animations have finished
-   *
-   * @prop {boolean} _isDone
    */
   private _isDone: boolean = false;
 
   /**
    * Create a new AnimationQueue instance
    *
-   * @param {Translation[]} queue  Queue of animations to run
-   * @param {AnimatedText}  target Target entity for the animations
+   * @param queue  - queue of animations to run
+   * @param target - target entity for the animations
    */
   constructor(private _queue: Translation[], private _target: AnimatedText) {
     this._target.applyAnimation(this._queue[0]);
@@ -26,8 +23,6 @@ class AnimationQueue {
 
   /**
    * Determine if all animations have finished
-   *
-   * @return {boolean} If all animations have finished
    */
   get isDone(): boolean {
     return this._isDone;
@@ -36,7 +31,7 @@ class AnimationQueue {
   /**
    * Update the animation
    *
-   * @param {number} dt Delta time
+   * @param dt - delta time
    */
   public update(dt: number) {
     if (this._isDone) {
@@ -60,9 +55,9 @@ class AnimationQueue {
   /**
    * Hand off drawing to the target
    *
-   * @param {CanvasRenderingContext2D} ctx        Render context
-   * @param {Vector}                   offset     Render position offset
-   * @param {Vector}                   resolution Render resolution
+   * @param ctx        - render context
+   * @param offset     - render position offset
+   * @param resolution - render resolution
    */
   public draw(
     ctx: CanvasRenderingContext2D,

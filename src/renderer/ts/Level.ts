@@ -12,60 +12,43 @@ import { bus } from "@/EventBus";
 import { getImagePath } from "@/util";
 
 /**
- * Level represents a discrete area of the game that warrents it's own domain.
- * It contains actors, a renderable map, and other fixtures.
+ * A discrete area of the game
+ *
+ * Level contains actors, a renderable map, and other fixtures.
  *
  * Level is reusable, for better or for worse. It simply loads a decoded json
  * string into memory when a new area is entered.
  */
 class Level implements Drawable {
   /**
-   * Main player instance
-   *
-   * @prop {Player} player
-   */
-  private player: Player;
-
-  /**
    * World area associated with the level
-   *
-   * @prop {Map} map
    */
   private map: Map;
 
   /**
    * Entry points that an fixture has to the level
-   * TODO: Better solution for typing these
    *
-   * @prop {any} entries
+   * TODO: Better solution for typing these
    */
   private entries: any;
 
   /**
    * A mix of fixtures that interact in the level
-   *
-   * @prop {LevelFixture[]} fixtures
    */
   private fixtures: LevelFixture[] = [];
 
   /**
-   * Collision handler for player + fixtures
-   *
-   * @prop {CollisionHandler} collisionHandler
-   */
-  private collisionHandler: CollisionHandler;
-
-  /**
    * Create a new level instance
    *
-   * @param {object}           template Template loaded from level json
-   * @param {Player}           player   Main player instance
-   * @param {CollisionHandler} handler  Collision handler
+   * @param template - template loaded from level json
+   * @param player   - main player instance
+   * @param handler  - collision handler for player + fixtures
    */
-  constructor(template: Template, player: Player, handler: CollisionHandler) {
-    this.player = player;
-    this.collisionHandler = handler;
-
+  constructor(
+    template: Template,
+    private player: Player,
+    private collisionHandler: CollisionHandler
+  ) {
     this.load(template);
     bus.register(this);
   }
@@ -73,7 +56,7 @@ class Level implements Drawable {
   /**
    * Update all fixtures of the level
    *
-   * @param {number} dt Delta time
+   * @param dt - delta time
    */
   public update(dt: number) {
     // Remove any stale fixtures that are returned
@@ -88,7 +71,7 @@ class Level implements Drawable {
   /**
    * Register events with the event bus
    *
-   * @return {CallableMap} Events to register
+   * @return events to register
    */
   public register(): CallableMap {
     return {
@@ -118,9 +101,9 @@ class Level implements Drawable {
   /**
    * Draw map and level fixtures
    *
-   * @param {CanvasRenderingContext2D} ctx        Render context
-   * @param {Vector}                   offset     Render position offset
-   * @param {Vector}                   resolution Render resolution
+   * @param ctx        - render context
+   * @param offset     - render position offset
+   * @param resolution - render resolution
    */
   public draw(
     ctx: CanvasRenderingContext2D,
@@ -135,13 +118,14 @@ class Level implements Drawable {
   }
 
   /**
-   * Load a level template. If there is a referenced portal, move player to
-   * corresponding entry point.
+   * Load a level template
    *
-   * @param  {Template} template Level details json
-   * @param  {Portal}   portal   Starting portal
+   * If there is a referenced portal, move player to corresponding entry point.
    *
-   * @throws {MissingDataError} When entry is missing
+   * @param template - level details json
+   * @param portal   - starting portal
+   *
+   * @throws {MissingDataError} when entry is missing
    */
   public load(template: Template, portal?: Portal) {
     this.cleanup();
@@ -170,8 +154,10 @@ class Level implements Drawable {
    * Clean up residual data from previous level
    */
   private cleanup() {
-    // Force unregister every fixture, even if they aren't really eventful to
-    // prevent memory leaks.
+    /**
+     * Force unregister every fixture, even if they aren't really eventful to
+     * prevent memory leaks.
+     */
     this.fixtures.forEach((e) => bus.unregister(<Eventful>e));
     this.fixtures = [];
     this.entries = {};
@@ -180,7 +166,7 @@ class Level implements Drawable {
   /**
    * Remove a fixture
    *
-   * @param {LevelFixture} fixture Fixture to remove
+   * @param fixture - fixture to remove
    */
   private removeFixture(fixture: LevelFixture) {
     this.fixtures = this.fixtures.filter((f) => f !== fixture);

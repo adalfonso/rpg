@@ -15,8 +15,6 @@ import { getImagePath } from "@/util";
 
 /**
  * Collision information with another entity
- *
- * @type {Collision}
  */
 export type Collision = {
   position: Vector;
@@ -24,128 +22,94 @@ export type Collision = {
 };
 
 /**
- * A general purpose entity that interacts with fixtures in the game
- *
- * @type {Entity}
+ * General purpose entity that interacts with fixtures in the game
  */
 type Entity = Actor | Inanimate;
 
 /**
- * Actor is the base class for entities that affect change within the game
+ * Base class for entities that affect change within the game
  */
 abstract class Actor implements Drawable, Lockable {
   /**
-   * The position the actor was previously at. This becomes handy if the actor
-   * has a collision and needs to take a step back.
+   * The position the actor was previously at
    *
-   * @prop {Vector} lastPosition
+   * This becomes handy if the actor has a collision and needs to take a step
+   * back.
    */
   private lastPosition: Vector;
 
   /**
-   * Long-term saved position of the actor, in case we need to restore the
-   * position after some period of time.
+   * Long-term saved position of the actor
    *
-   * @prop {Vector} savedPosition
+   * Recorded in case we need to restore the position after some period of time.
    */
   private savedPosition: Vector;
 
   /**
-   * Long-term saved direction of the actor, in case we need to restore the
-   * direction the actor was facing after some period of time.
+   * Long-term saved direction of the actor
    *
-   * @prop {number} savedDirection
+   * Recorded in case we need to restore the direction the actor was facing
+   * after some period of time.
    */
   private savedDirection: number;
 
   /**
-   * Size of the actor
-   *
-   * @prop {Vector} _size
-   */
-  private _size: Vector;
-
-  /**
    * Unique identifier
-   *
-   * @prop {string} id
    */
   protected _id: string;
 
   /**
-   * Level-related info about the actor
-   *
-   * @prop {object} data
-   */
-  protected data: any;
-
-  /**
    * Game-related info about the actor
-   *
-   * @prop {object} config
    */
   protected config: any;
 
   /**
    * Dialogue that the actor is the leader of
-   *
-   * @prop {Dialogue} dialogue
    */
   protected dialogue: Dialogue = null;
 
   /**
    * If the actor is locked from updating
-   *
-   * @prop {boolean} locked
    */
   protected locked: boolean;
 
   /**
    * Current position of the actor
-   *
-   * @prop {Vector} _position
    */
   public position: Vector;
 
   /**
    * An actor's stats
-   *
-   * @prop {Stats} stats
    */
   public stats: Stats;
 
   /**
    * The weapon currently equipped to the actor
-   *
-   * @prop {Weapon} weapon
    */
   public weapon: Weapon;
 
   /**
    * Direction the actor is currently facing
-   * 1 = north; 2 = west; 3 = south; 4 = east;
    *
-   * @prop {number} direction
+   * 1 = north; 2 = west; 3 = south; 4 = east;
    */
   public direction: number;
 
   /**
    * If the actor is in dialogue
-   *
-   * @prop {boolean} inDialogue
    */
   public inDialogue: boolean;
 
   /**
    * Create a new Actor-based instance
    *
-   * @param  {Vector} position Positon of the actor
-   * @param  {Vector} size     Size of the actor
-   * @param  {object} data     Additional info about the actor
+   * @param position - positon of the actor
+   * @param size     - size of the actor
+   * @param data     - additional info about the actor
    *
-   * @throws {MissingDataError} When name, type, or config are missing
+   * @throws {MissingDataError} when name, type, or config are missing
    */
-  constructor(position: Vector, size: Vector, data: any) {
+  constructor(position: Vector, private _size: Vector, protected data: any) {
     let actorType = this.constructor.name;
 
     if (!data?.name) {
@@ -156,7 +120,6 @@ abstract class Actor implements Drawable, Lockable {
       throw new MissingDataError(`Missing "type" for ${actorType}.`);
     }
 
-    this.data = data;
     this.config = actors[data.type];
 
     if (this.config.baseStats) {
@@ -175,7 +138,6 @@ abstract class Actor implements Drawable, Lockable {
 
     this._id = data.name;
     this.position = position.times(config.scale);
-    this._size = size;
     this.direction = 0;
     this.inDialogue = false;
     this.locked = false;
@@ -186,17 +148,13 @@ abstract class Actor implements Drawable, Lockable {
 
   /**
    * Get the actor's id
-   *
-   * @return the actor's size
    */
   get id() {
     return this._id;
   }
 
   /**
-   * Get the actor's size
-   *
-   * @return {Vector} size
+   * Get the actor's sizee
    */
   get size(): Vector {
     return this._size;
@@ -204,8 +162,6 @@ abstract class Actor implements Drawable, Lockable {
 
   /**
    * Get the name used when rendering dialogue
-   *
-   * @return {string} displayAs
    */
   get displayAs(): string {
     return this.config.displayAs;
@@ -213,8 +169,6 @@ abstract class Actor implements Drawable, Lockable {
 
   /**
    * Get the move set of an actor
-   *
-   * @return {any[]}
    */
   get moveSet(): any[] {
     return this.config.moveSet ?? [];
@@ -222,8 +176,6 @@ abstract class Actor implements Drawable, Lockable {
 
   /**
    * Get the spells the actor currently knows
-   *
-   * @return {Spell[]} List of spells
    */
   get spells(): Spell[] {
     return this.moveSet
@@ -234,7 +186,7 @@ abstract class Actor implements Drawable, Lockable {
   /**
    * Update the actor
    *
-   * @param {number} dt Delta time
+   * @param dt - delta time
    */
   public update(dt: number) {
     if (this.locked) {
@@ -247,9 +199,9 @@ abstract class Actor implements Drawable, Lockable {
   /**
    * Draw actor and all underlying entities
    *
-   * @param {CanvasRenderingContext2D} ctx        Render context
-   * @param {Vector}                   offset     Render position offset
-   * @param {Vector}                   resolution Render resolution
+   * @param ctx        - render context
+   * @param offset     - render position offset
+   * @param resolution - render resolution
    */
   public draw(
     ctx: CanvasRenderingContext2D,
@@ -264,7 +216,7 @@ abstract class Actor implements Drawable, Lockable {
   /**
    * Helper method to change the actor's position
    *
-   * @param {Vector} position Position to move to
+   * @param position - position to move to
    */
   public moveTo(position: Vector) {
     this.position = position.copy();
@@ -273,7 +225,7 @@ abstract class Actor implements Drawable, Lockable {
   /**
    * Lock the menu
    *
-   * @return {boolean} If unlock was successful
+   * @return if lock was successful
    */
   public lock(): boolean {
     this.locked = true;
@@ -284,7 +236,7 @@ abstract class Actor implements Drawable, Lockable {
   /**
    * Unlock the menu
    *
-   * @return {boolean} If unlock was successful
+   * @return if unlock was successful
    */
   public unlock(): boolean {
     // Do not unlock the actor while they are still in dialogue
@@ -298,10 +250,12 @@ abstract class Actor implements Drawable, Lockable {
   }
 
   /**
-   * Backstep the actor. If a collision happens, try backstepping in only one
-   * direction. Otherwise, just revert to the last position.
+   * Backstep the actor
    *
-   * @param {Collision} collision Collision to consider
+   * If a collision happens, try backstepping in only one direction. Otherwise,
+   * just revert to the last position.
+   *
+   * @param collision - collision to consider
    */
   public backstep(collision?: Collision) {
     let prevCollisionPoint = this.collisionPoint(true);
@@ -321,12 +275,13 @@ abstract class Actor implements Drawable, Lockable {
   }
 
   /**
-   * Determine if the actor collides with another entity. Check if the actor's
-   * collision point is inside of the entity
+   * Determine if the actor collides with another entity
    *
-   * @param  {Entity} entity     Entity to check collision with
+   * Check if the actor's collision point is inside of the entity
    *
-   * @return {Collision | false} Collision indicator
+   * @param entity - entity to check collision with
+   *
+   * @return collision indicator
    */
   public collidesWith(entity: Entity): Collision | false {
     let collisionPoint = this.collisionPoint();
@@ -358,7 +313,7 @@ abstract class Actor implements Drawable, Lockable {
   /**
    * Restore the actor's saved position
    *
-   * @param {boolean} unlock If the actor should be unlocked too
+   * @param unlock - if the actor should be unlocked too
    */
   public restorePosition(unlock: boolean = true) {
     this.moveTo(this.savedPosition);
@@ -370,11 +325,13 @@ abstract class Actor implements Drawable, Lockable {
   }
 
   /**
-   * Allow the actor to attack another actor. Allow the weapon to be specified,
-   * and fall back to the actor's weapon when it's not.
+   * Allow the actor to attack another actor
    *
-   * @param {Actor}  target Other actor to attack
-   * @param {Weapon} weapon Weapon to use for attack
+   * Allow the weapon to be specified, and fall back to the actor's weapon when
+   * it's not.
+   *
+   * @param target - other actor to attack
+   * @param weapon - weapon to use for attack
    */
   public attack(target: Actor, weapon?: Weapon) {
     if (!weapon && this.weapon) {
@@ -390,7 +347,7 @@ abstract class Actor implements Drawable, Lockable {
   /**
    * Receive an amount of damage
    *
-   * @param {number} damage Amount of damage to receive
+   * @param damage - amount of damage to receive
    */
   public endure(damage: number) {
     this.stats.endure(damage);
@@ -398,6 +355,8 @@ abstract class Actor implements Drawable, Lockable {
 
   /**
    * Kill off the actor
+   *
+   * @throws {UnimplementedMethodError} this should never be called directly
    */
   public kill() {
     throw new UnimplementedMethodError(
@@ -408,7 +367,7 @@ abstract class Actor implements Drawable, Lockable {
   /**
    * Equip a weapon
    *
-   * @param {Weapon} weapon Weapon to equip
+   * @param weapon - weapon to equip
    */
   protected equip(weapon: Weapon) {
     if (this.weapon) {
@@ -423,9 +382,9 @@ abstract class Actor implements Drawable, Lockable {
    *
    * TODO: Tie the ref to the actor better, it's currently a little loosey goosey
    *
-   * @param  {string} ref Reference to where in the state the actor is stored
+   * @param ref - reference to where in the state the actor is stored
    *
-   * @return {object}     Actor data as stored in the state
+   * @return actor data as stored in the state
    */
   protected resolveState(ref: string): any {
     const state = StateManager.getInstance();
@@ -449,7 +408,7 @@ abstract class Actor implements Drawable, Lockable {
   /**
    * Get render info from an actor's config
    *
-   * @return {RenderData} Inputs for a renderable
+   * @return inputs for a renderable
    */
   protected getUiInfo(): RenderData {
     const UI = this.config.ui;
@@ -465,19 +424,18 @@ abstract class Actor implements Drawable, Lockable {
   /**
    * Get current state of the actor for export to a state manager
    *
-   * @return {object} Current state of the actor
+   * @return current state of the actor
    */
   protected getState(): object {
     return { type: this.data.type, dmg: this.stats.dmg, lvl: this.stats.lvl };
   }
 
   /**
-   * Retrieve a coordinate within the area of the actor to consider as a
-   * collision point.
+   * Retrieve a collision coordinate within the area of the actor
    *
    * TODO: Reconsider the hardcoded values here
    *
-   * @param {boolean} prev Use previous position instead of current position
+   * @param prev - use previous position instead of current position
    */
   private collisionPoint(prev: boolean = false): Vector {
     return new Vector(
@@ -489,7 +447,7 @@ abstract class Actor implements Drawable, Lockable {
   /**
    * Assign custom properties from the input data to the actor
    *
-   * @param {object[]} props List of properties
+   * @param props - list of properties
    */
   private assignCustomProperties(props: any[]) {
     let lvl = props.filter((prop) => prop.name === "lvl")[0]?.value;
@@ -500,11 +458,11 @@ abstract class Actor implements Drawable, Lockable {
   }
 
   /**
-   * Force some sort of render when debug mode is on.
+   * Force some sort of render when debug mode is on
    *
-   * @param {CanvasRenderingContext2D} ctx         Render context
-   * @param {Vector}                   offset      Render position offset
-   * @param {Vector}                   _resolution Render resolution
+   * @param ctx         - render context
+   * @param offset      - render position offset
+   * @param _resolution - render resolution
    */
   private debugDraw(
     ctx: CanvasRenderingContext2D,

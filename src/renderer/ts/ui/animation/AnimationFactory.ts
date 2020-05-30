@@ -5,14 +5,16 @@ import Vector from "@common/Vector";
 import { resolution } from "@common/common";
 
 /**
- * AnimationFactory creates various types of animations
+ * Creates various types of animations
  */
 class AnimationFactory {
   /**
-   * Create the animation for the start of a battle. Scroll text out to the
-   * center of the screen so battles don't begin so abruptly.
+   * Create the animation for the start of a battle.
    *
-   * @return {AnimationQueue}
+   * Scroll text out to the center of the screen so battles don't begin so
+   * abruptly.
+   *
+   * @return an animation queue
    */
   public static createStartBattleAnimation(): AnimationQueue {
     const text = "-    BATTLE START    -";
@@ -50,10 +52,10 @@ class AnimationFactory {
   /**
    * Get the width of a string while considering certain render options
    *
-   * @param  {string} text    Text to measure
-   * @param  {object} options Render options
+   * @param text    - text to measure
+   * @param options - render options
    *
-   * @return {number}         Text's width (in pixels)
+   * @return text's width (in pixels)
    */
   public static getTextWidth(text: string, options: object): number {
     const ctx = document.createElement("canvas").getContext("2d");

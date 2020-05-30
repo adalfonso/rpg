@@ -6,8 +6,6 @@ import { getImagePath } from "@/util";
 
 /**
  * Data required to instantiate a combat strategy
- *
- * @type {CombatStrategyTemplate}
  */
 type CombatStrategyTemplate = {
   displayAs: string;
@@ -18,51 +16,41 @@ type CombatStrategyTemplate = {
 
 /**
  * Required Ui data for the combat strategy
- *
- * @type {UiData}
  */
 export type UiData = {
   sprite: string;
 };
 
 /**
- * CombatStrategy is the base technique for combat-related skills an actor has.
+ * Base technique for combat-related skills an actor has
  */
 class CombatStrategy {
   /**
    * The name of the combat strategy
-   *
-   * @prop {string} _displayAs
    */
   protected _displayAs: string;
 
   /**
    * The amount of damage a combat strategy deals
-   *
-   * @prop {number} _value
    */
   protected _value: number;
 
   /**
    * A description of the combat strategy
-   *
-   * @prop {string} _description
    */
   protected _description: string;
 
   /**
    * Renderable sprite for the combat strategy
-   *
-   * @prop {Renderable} _sprite
    */
   protected _sprite: Renderable;
 
   /**
    * Create a new CombatStrategy instance
    *
-   * @param  {CombatStrategyTemplate} template Combat strategy template
+   * @param template - combat strategy template
    *
-   * @throws {MissingDataError} When any required template field is missing
+   * @throws {MissingDataError} when any required template field is missing
    */
   constructor(template: CombatStrategyTemplate) {
     if (!template) {
@@ -89,8 +77,6 @@ class CombatStrategy {
 
   /**
    * Get the base amount of damage the combat strategy deals
-   *
-   * @return {number} Base damage of the combat strategy
    */
   get damage(): number {
     return this._value;
@@ -98,8 +84,6 @@ class CombatStrategy {
 
   /**
    * Get the description of the combat strategy
-   *
-   * @return {string} Description of the combat strategy
    */
   get description(): string {
     return this._description;
@@ -107,8 +91,6 @@ class CombatStrategy {
 
   /**
    * Get the display name of the combat strategy
-   *
-   * @return {string} Display name of the combat strategy
    */
   get displayAs(): string {
     return this._displayAs;
@@ -117,9 +99,9 @@ class CombatStrategy {
   /**
    * Draw the combat strategy
    *
-   * @param {CanvasRenderingContext2D} ctx         Render context
-   * @param {Vector}                   offset      Render position offset
-   * @param {Vector}                   _resolution Render resolution
+   * @param ctx         - render context
+   * @param offset      - render position offset
+   * @param _resolution - render resolution
    */
   public draw(
     ctx: CanvasRenderingContext2D,
@@ -131,6 +113,8 @@ class CombatStrategy {
 
   /**
    * Emit a battle action event with the combat strategy
+   *
+   * @emits battle.action
    */
   public use() {
     bus.emit("battle.action", { combatStrategy: this });
@@ -139,9 +123,9 @@ class CombatStrategy {
   /**
    * Load sprite data for the combat strategy
    *
-   * @param {CombatStrategyTemplate} template Combat strategy template
+   * @param template - combat strategy template
    *
-   * @throws {MissingDataError} When sprite data cannot be loaded
+   * @throws {MissingDataError} when sprite data cannot be loaded
    */
   private loadSprite(template: CombatStrategyTemplate) {
     if (!template.ui?.sprite) {

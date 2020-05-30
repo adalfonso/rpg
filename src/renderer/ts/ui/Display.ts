@@ -8,8 +8,6 @@ import { CallableMap } from "@/interfaces";
  *
  * In static mode, entites render relative to a (0,0) origin point.
  * In dynamic mode, entites render relative to another entity. e.g. the player
- *
- * @enum {RenderMode} RenderMode
  */
 enum RenderMode {
   Static,
@@ -18,59 +16,39 @@ enum RenderMode {
 
 class Display {
   /**
-   * Main game instance
-   *
-   * @prop {Game} game
-   */
-  private game: Game;
-
-  /**
    * Main rendering context
-   *
-   * @prop {CanvasRenderingContext2D} ctx
    */
   private ctx: CanvasRenderingContext2D;
 
   /**
-   * Original width/height of display
-   *
-   * @prop {Vector} aspectRatio
-   */
-  private aspectRatio: Vector;
-
-  /**
    * Height of the display
-   *
-   * @prop {number} height
    */
   private height: number;
 
   /**
    * Width of the display
-   *
-   * @prop {number} width
    */
   private width: number;
 
   /**
    * Whether the contents of the display move dependently on a center point
-   *
-   * @prop {RenderMode} renderMode;
    */
   private renderMode: RenderMode;
 
   /**
    * Create a new display instance
    *
-   * @param {Vector}            aspectRatio Height and width of the display
-   * @param {HTMLCanvasElement} canvas       HTML canvas element
-   * @param {Game}              game       Underlying game instance
+   * @param aspectRatio - height and width of the display
+   * @param canvas      - HTML canvas element
+   * @param game        - underlying game instance
    */
-  constructor(aspectRatio: Vector, canvas: HTMLCanvasElement, game: Game) {
-    this.aspectRatio = aspectRatio;
+  constructor(
+    private aspectRatio: Vector,
+    canvas: HTMLCanvasElement,
+    private game: Game
+  ) {
     this.width = aspectRatio.x;
     this.height = aspectRatio.y;
-    this.game = game;
 
     this.renderMode = RenderMode.Dynamic;
 
@@ -83,8 +61,6 @@ class Display {
 
   /**
    * The drawing offset relative to the current render mode
-   *
-   * @prop {Vector} offset
    */
   get offset(): Vector {
     if (this.renderMode === RenderMode.Static) {
@@ -98,8 +74,6 @@ class Display {
 
   /**
    * The current resolution
-   *
-   * @prop {Vector} resolution
    */
   get resolution() {
     return new Vector(this.width, this.height);
@@ -117,7 +91,7 @@ class Display {
   /**
    * Register events with the event bus
    *
-   * @return {CallableMap} Events to register
+   * @return events to register
    */
   public register(): CallableMap {
     return {
@@ -154,8 +128,8 @@ class Display {
   /**
    * Resize context canvas to a new size
    *
-   * @param {number} width  New canvas width
-   * @param {number} height New canvas height
+   * @param width  - new canvas width
+   * @param height - new canvas height
    */
   private resizeCanvases(
     width: number = this.aspectRatio.x,

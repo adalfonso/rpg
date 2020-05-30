@@ -11,23 +11,19 @@ import { bus } from "@/EventBus";
  */
 class Enemy extends Actor implements Drawable {
   /**
-   * An array of renderables for each sprite of the enemy's movement animation
-   *
-   * @prop {Renderable[]} sprites
+   * Each sprite of the enemy's movement animation
    */
   private sprites: Renderable[];
 
   /**
    * If the enemy has been defeated
-   *
-   * @prop {boolean} defeated
    */
   public defeated: boolean;
 
   /**
    * Create a new Enemy instance
    *
-   * @param {object} data Info about the enemy
+   * @param data - info about the enemy
    */
   constructor(data: any) {
     super(
@@ -55,8 +51,6 @@ class Enemy extends Actor implements Drawable {
 
   /**
    * Get the string reference to the team type
-   *
-   * @return string reference to the team type
    */
   get teamType() {
     return this.config?.teamType;
@@ -65,16 +59,16 @@ class Enemy extends Actor implements Drawable {
   /**
    * Update the enemy
    *
-   * @param {number} dt Delta time
+   * @param dt - delta time
    */
   public update(dt: number) {}
 
   /**
    * Draw Enemy and all underlying entities
    *
-   * @param {CanvasRenderingContext2D} ctx        Render context
-   * @param {Vector}                   offset     Render position offset
-   * @param {Vector}                   resolution Render resolution
+   * @param ctx        - render context
+   * @param offset     - render position offset
+   * @param resolution - render resolution
    */
   public draw(
     ctx: CanvasRenderingContext2D,
@@ -102,7 +96,9 @@ class Enemy extends Actor implements Drawable {
   /**
    * Start a fight with the player
    *
-   * @param {Player} player Player to fight
+   * @param player - player to fight
+   *
+   * @emits battle.start
    */
   public fight(player: Player) {
     if (this.defeated) {
@@ -127,9 +123,9 @@ class Enemy extends Actor implements Drawable {
   /**
    * Resolve the current state of the enemy in comparison to the game state
    *
-   * @param  {string} ref Reference to where in the state the enemy is stored
+   * @param ref - reference to where in the state the enemy is stored
    *
-   * @return {object}     Enemy data as stored in the state
+   * @return enemy data as stored in the state
    */
   protected resolveState(ref: string): any {
     let stateManagerData = super.resolveState(ref);
@@ -144,7 +140,7 @@ class Enemy extends Actor implements Drawable {
   /**
    * Get current state of the enemy for export to a state manager
    *
-   * @return {object} Current state of the enemy
+   * @return current state of the enemy
    */
   protected getState(): object {
     return { ...super.getState(), defeated: this.defeated };

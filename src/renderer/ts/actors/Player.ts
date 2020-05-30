@@ -10,35 +10,29 @@ import { Drawable, Eventful, Lockable, CallableMap } from "@/interfaces";
 import { bus } from "@/EventBus";
 
 /**
- * A Player is the main entity of the game.
+ * The main entity of the game
  */
 class Player extends Actor implements Eventful, Drawable, Lockable {
   /**
    * The speed the player will move in any one direction
-   *
-   * @prop {number} baseSpeed
    */
   private baseSpeed: number;
 
   /**
    * The current speed of the player in x/y directions
-   *
-   * @prop {Vector} speed
    */
   private speed: Vector;
 
   /**
-   * An array of renderables for each sprite of the players movement animation
-   *
-   * @prop {Renderable[]} sprites
+   * Each sprite of the player's movement animation
    */
   private sprites: Renderable[];
 
   /**
    * Create a new Player instance
    *
-   * @param {Vector} position  The player's position
-   * @param {Vector} size      The player's size
+   * @param position - the player's position
+   * @param size     - the player's size
    */
   constructor(position: Vector, size: Vector) {
     super(position, size, { name: "Me", type: "player" });
@@ -71,7 +65,9 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
   /**
    * Update the player
    *
-   * @param {number} dt Delta time
+   * @param dt - delta time
+   *
+   * @emits player.move
    */
   public update(dt: number) {
     if (this.locked) {
@@ -100,9 +96,9 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
   /**
    * Draw Player and all underlying entities
    *
-   * @param {CanvasRenderingContext2D} ctx        Render context
-   * @param {Vector}                   offset     Render position offset
-   * @param {Vector}                   resolution Render resolution
+   * @param ctx        - render context
+   * @param offset     - render position offset
+   * @param resolution - render resolution
    */
   public draw(
     ctx: CanvasRenderingContext2D,
@@ -117,7 +113,7 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
   /**
    * Register events with the event bus
    *
-   * @return {CallableMap} Events to register
+   * @return events to register
    */
   public register(): CallableMap {
     return {
@@ -154,7 +150,9 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
   /**
    * Gain experience points
    *
-   * @param {number} exp Number of experience points to gain
+   * @param exp - number of experience points to gain
+   *
+   * @emits actor.gainExp
    */
   public gainExp(exp: number) {
     let expData = this.stats.gainExp(exp);
@@ -172,7 +170,7 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
   /**
    * Equip a weapon
    *
-   * @param {Weapon} weapon Weapon to equip
+   * @param weapon - weapon to equip
    */
   protected equip(weapon: Weapon) {
     super.equip(weapon);
@@ -183,7 +181,7 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
   /**
    * Change the player's speed
    *
-   * @param {string} key The key that has been pressed
+   * @param key - the key that has been pressed
    */
   private changeSpeed(key: string) {
     switch (key) {
@@ -210,7 +208,7 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
   /**
    * Stop the player from moving
    *
-   * @param {string} key The key that has been released
+   * @param key - the key that has been released
    */
   private stop(key: string) {
     if (key === "ArrowLeft" && this.speed.x < 0) {
@@ -254,7 +252,7 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
   /**
    * Get current state of the player for export to a state manager
    *
-   * @return {object} Current state of the player
+   * @return current state of the player
    */
   protected getState(): object {
     return {

@@ -4,8 +4,6 @@ import { Drawable, Eventful, CallableMap } from "@/interfaces";
 
 /**
  * Anatomy of a BattleMenu option
- *
- * @type {BattleMenuOption}
  */
 type BattleMenuOption = {
   type: string;
@@ -13,16 +11,15 @@ type BattleMenuOption = {
 };
 
 /**
- * A BattleMenu is used by the player to access battle-level fixtures such as
- * items, attack, and spells.
+ * In-battle menu of a player's items, attack, and spells
  */
 class BattleMenu extends Menu implements Eventful, Drawable {
   /**
    * Draw BattleMenu and all underlying entities
    *
-   * @param {CanvasRenderingContext2D} ctx         Render context
-   * @param {Vector}                   offset      Render position offset
-   * @param {Vector}                   _resolution Render resolution
+   * @param ctx         - render context
+   * @param offset      - render position offset
+   * @param _resolution - render resolution
    */
   public draw(
     ctx: CanvasRenderingContext2D,
@@ -95,7 +92,7 @@ class BattleMenu extends Menu implements Eventful, Drawable {
   /**
    * Register events with the event bus
    *
-   * @return {CallableMap} Events to register
+   * @return events to register
    */
   public register(): CallableMap {
     return {
@@ -149,8 +146,8 @@ class BattleMenu extends Menu implements Eventful, Drawable {
   /**
    * Apply text highlighting to the menu option when necessary
    *
-   * @param {CanvasRenderingContext2D} ctx    Render context
-   * @param {BattleMenuOption}         option Menu option
+   * @param ctx    - render context
+   * @param option - menu option
    */
   private applyHighlight(
     ctx: CanvasRenderingContext2D,

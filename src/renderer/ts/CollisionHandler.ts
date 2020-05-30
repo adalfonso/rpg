@@ -7,37 +7,25 @@ import { LevelFixture } from "./LevelTemplate";
 import { bus } from "@/EventBus";
 
 /**
- * The CollisionHandler manages collisions between a player and several other
- * fixtures that it may interact with.
+ * Manages collisions between a player and other fixtures
  */
 class CollisionHandler {
   /**
-   * Center of attention
-   *
-   * @prop {Player} _player
-   */
-  private _player: Player;
-
-  /**
    * Fixtures that interact with the player
-   *
-   * @prop {LevelFixture[]} _fixtures
    */
   private _fixtures: LevelFixture[] = [];
 
   /**
    * Create a new CollisionHandler instance
    *
-   * @param {player} player Center of attention
+   * @param _player - center of attention
    */
-  constructor(player: Player) {
-    this._player = player;
-  }
+  constructor(private _player: Player) {}
 
   /**
    * Load a list of fixtures to manage
    *
-   * @param {LevelFixture[]} fixtures Target fixtures
+   * @param fixtures - target fixtures
    */
   public loadFixtures(fixtures: LevelFixture[]) {
     this._fixtures = fixtures;
@@ -46,9 +34,9 @@ class CollisionHandler {
   /**
    * Update all parties, detect, and manage collisions
    *
-   * @param  {number}         dt Delta time
+   * @param dt - delta time
    *
-   * @return {LevelFixture[]}    A list of stale fixtures to nix
+   * @return a list of stale fixtures to nix
    */
   public update(dt: number): LevelFixture[] {
     this._player.update(dt);
@@ -74,9 +62,9 @@ class CollisionHandler {
   /**
    * Handle enemy collisions
    *
-   * @param  {Enemy}   enemy An enemy
+   * @param enemy - an enemy
    *
-   * @return {boolean}       If the enemy is stale
+   * @return if the enemy is stale
    */
   private handleEnemy(enemy: Enemy): boolean {
     if (enemy.defeated) {
@@ -93,9 +81,9 @@ class CollisionHandler {
   /**
    * Handle clip collisions
    *
-   * @param  {Clip}   clip A clip
+   * @param clip - a clip
    *
-   * @return {boolean}     If the clip is stale
+   * @return if the clip is stale
    */
   private handleClip(clip: Clip): boolean {
     let collision = this._player.collidesWith(clip);
@@ -110,9 +98,11 @@ class CollisionHandler {
   /**
    * Handle portal collisions
    *
-   * @param  {Portal}  portal A portal
+   * @param portal - a portal
    *
-   * @return {boolean}        If the portal is stale
+   * @return if the portal is stale
+   *
+   * @emits portal.enter
    */
   private handlePortal(portal: Portal): boolean {
     if (this._player.collidesWith(portal)) {
@@ -125,9 +115,11 @@ class CollisionHandler {
   /**
    * Handle item collisions
    *
-   * @param  {Item}    item An item
+   * @param item - an item
    *
-   * @return {boolean}      If the item is stale
+   * @return if the item is stale
+   *
+   * @emits item.obtain
    */
   private handleItem(item: Item): boolean {
     if (!this._player.collidesWith(item)) {

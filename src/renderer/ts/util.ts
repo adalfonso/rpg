@@ -4,9 +4,9 @@ import manifest from "@img/manifest";
 /**
  * Lowercase the first character of a string
  *
- * @param  {string} input String to format
+ * @param input - string to format
  *
- * @return {string}       Formatted string
+ * @return formatted string
  */
 export const lcFirst: Function = (input: string): string =>
   input.charAt(0).toLowerCase() + input.slice(1);
@@ -14,25 +14,27 @@ export const lcFirst: Function = (input: string): string =>
 /**
  * Uppercase the first character of a string
  *
- * @param  {string} input String to format
+ * @param input - string to format
  *
- * @return {string}       Formatted string
+ * @return formatted string
  */
 export const ucFirst: Function = (input: string): string =>
   input.charAt(0).toUpperCase() + input.slice(1);
 
 /**
- * Merge two objects together. If duplicates are found, favor the second object.
+ * Merge two objects together
+ *
+ * If duplicates are found, favor the second object.
  *
  * NOTE: Merging will remove all references to the original objects by default
  * via JSON stringify/parse. Therefore unserializable objects will produce
  * unexpected behavior.
  *
- * @param  {object}  obj1              First object
- * @param  {object}  obj2              Second object
- * @param  {boolean} preserveReference Preserve reference too non-shallow objects
+ * @param obj1              - first object
+ * @param obj2              - second object
+ * @param preserveReference - preserve reference too non-shallow objects
  *
- * @return {object}                    Merged object
+ * @return merged object
  */
 export const merge: Function = (
   obj1: object,
@@ -62,7 +64,7 @@ export const merge: Function = (
 /**
  * Create an animation frame loop
  *
- * @param {Function} callback Callback to perform on each frame render
+ * @param callback - callback to perform on each frame render
  */
 export const startAnimation: Function = (callback: Function) => {
   let lastTime: number = 0;
@@ -79,14 +81,14 @@ export const startAnimation: Function = (callback: Function) => {
 };
 
 /**
- * Clone an object with JSON stringify/parse method.
+ * Clone an object with JSON stringify/parse method
  *
  * NOTE: Complex objects may not be preserved during string conversion. This
  * should only be used when the object is naturally JSON-like.
  *
- * @param  {any} input Input
+ * @param input - input data
  *
- * @return {any}       Output
+ * @return cloned data
  */
 export const cloneByStringify = (input: any): any => {
   return JSON.parse(JSON.stringify(input));
@@ -95,11 +97,11 @@ export const cloneByStringify = (input: any): any => {
 /**
  * Retrieve image path from a dot-separated string
  *
- * @param  {string} resource Dot-separated string
+ * @param resource - dot-separated string
  *
- * @return {string}          Image path
+ * @return image path
  *
- * @throws {MissingDataError} When manifest lookup is missing
+ * @throws {MissingDataError} when manifest lookup is missing
  */
 export const getImagePath = (resource: string): string => {
   return resource.split(".").reduce((carry: any, key: string) => {

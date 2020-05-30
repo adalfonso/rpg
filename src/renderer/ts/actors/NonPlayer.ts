@@ -6,21 +6,20 @@ import { Drawable, Eventful, CallableMap } from "@/interfaces";
 import { bus } from "@/EventBus";
 
 /**
- * * NonPlayer is a non-playable character.
+ * A non-playable character
  */
 class NonPlayer extends Actor implements Eventful, Drawable {
   /**
    * Entities that were recently collided with
-   *
-   * @prop {Actor[]} collisions
    */
   private collisions: Actor[] = [];
 
   /**
    * Create a new NonPlayer instance
+   *
    * TODO: handle sprites when they are available
    *
-   * @param {object} data Info about the non-player
+   * @param data - info about the non-player
    */
   constructor(data: any) {
     super(
@@ -37,7 +36,7 @@ class NonPlayer extends Actor implements Eventful, Drawable {
   /**
    * Update the non-player
    *
-   * @param {number} dt Delta time
+   * @param dt - delta time
    */
   public update(dt: number) {
     if (this.dialogue?.done) {
@@ -50,9 +49,9 @@ class NonPlayer extends Actor implements Eventful, Drawable {
   /**
    * Draw NPC and all underlying entities
    *
-   * @param {CanvasRenderingContext2D} ctx        Render context
-   * @param {Vector}                   offset     Render position offset
-   * @param {Vector}                   resolution Render resolution
+   * @param ctx        - render context
+   * @param offset     - render position offset
+   * @param resolution - render resolution
    */
   public draw(
     ctx: CanvasRenderingContext2D,
@@ -67,7 +66,7 @@ class NonPlayer extends Actor implements Eventful, Drawable {
   /**
    * Register events with the event bus
    *
-   * @return {CallableMap} Events to register
+   * @return events to register
    */
   public register(): CallableMap {
     return {
@@ -100,7 +99,7 @@ class NonPlayer extends Actor implements Eventful, Drawable {
   /**
    * Start a dialogue with all actors the non-player has collided with
    *
-   * @param {Actor[]} actors Actors recently collided with
+   * @param actors - actors recently collided with
    */
   private speak(actors: Actor[]) {
     if (this.dialogue) {

@@ -8,17 +8,18 @@ class HeroTeam extends Team {
   /**
    * Create a new HeroTeam instance
    *
-   * @param {Payer[]} _members Heroes
+   * @param _members - heroes
    */
   constructor(protected _members: Player[]) {
     super(_members);
   }
 
   /**
-   * Gain exp for the whole team. The number of exp points are split equally
-   * amonst the team members.
+   * Gain exp for the whole team
    *
-   * @param {number} exp Experience points
+   * The number of exp points are split equally amonst the team members.
+   *
+   * @param exp - experience points
    */
   public gainExp(exp: number) {
     this._members.forEach((member) =>

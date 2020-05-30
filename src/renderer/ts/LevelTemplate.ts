@@ -11,8 +11,6 @@ import config from "./config";
 
 /**
  * Type of fixtures to expect in a level
- *
- * @type {LevelFixture}
  */
 export type LevelFixture = Clip | Enemy | Portal | NonPlayer | Entry | Item;
 
@@ -22,15 +20,11 @@ export type LevelFixture = Clip | Enemy | Portal | NonPlayer | Entry | Item;
 class LevelTemplate {
   /**
    * Main fixtures of the level
-   *
-   * @prop {LevelFixture[]} _fixtures
    */
   private _fixtures: LevelFixture[] = [];
 
   /**
    * Visual layer/tileset data
-   *
-   * @prop {any[]} _tiles
    */
   private _tiles: any[];
 
@@ -39,24 +33,20 @@ class LevelTemplate {
    *
    * NOTE: Entries are considered level fixtures but are stored separately in an
    * object because they are queried often.
-   *
-   * @prop {object} _entries
    */
   private _entries: object = {};
 
   /**
    * Name reference to tile set image
-   *
-   * @prop {string} _tileSource
    */
   private _tileSource: string;
 
   /**
    * Create a new LevelTemplate instance
    *
-   * @param  {object} json Level data
+   * @param json - level data
    *
-   * @throws {MissingDataError} When tile layers or tile source are missing
+   * @throws {MissingDataError} when tile layers or tile source are missing
    */
   constructor(json: any) {
     let layers = json.layers ?? [];
@@ -104,8 +94,6 @@ class LevelTemplate {
 
   /**
    * Visual layer/tileset data
-   *
-   * @prop {any[]} tiles
    */
   get tiles(): any[] {
     return this._tiles;
@@ -113,8 +101,6 @@ class LevelTemplate {
 
   /**
    * Entry/loading points on a level
-   *
-   * @prop {object} entries
    */
   get entries(): object {
     return this._entries;
@@ -122,8 +108,6 @@ class LevelTemplate {
 
   /**
    * Name reference to tile set image
-   *
-   * @prop {string} tileSource
    */
   get tileSource(): string {
     return this._tileSource;
@@ -131,8 +115,6 @@ class LevelTemplate {
 
   /**
    * Main fixtures of the level
-   *
-   * @prop {LevelFixtures} fixtures
    */
   get fixtures(): LevelFixture[] {
     return this._fixtures;
@@ -141,13 +123,13 @@ class LevelTemplate {
   /**
    * Load a single fixture from a layer object
    *
-   * @param  {string}      type    Fixture type
-   * @param  {any}         fixture Fixture data
+   * @param type    - fixture type
+   * @param fixture - fixture data
    *
-   * @return {LevelFixture}        Resulting fixture instance
+   * @return resulting fixture instance
    *
-   * @throws {MissingDataError} When x, y, width, or height are missing
-   * @throws {InvalidDataError} When the type is invalid
+   * @throws {MissingDataError} when x, y, width, or height are missing
+   * @throws {InvalidDataError} when the type is invalid
    */
   private createFixture(type: string, fixture: any): LevelFixture {
     ["x", "y", "width", "height"].forEach((prop) => {
@@ -167,7 +149,7 @@ class LevelTemplate {
       case "portal":
         return new Portal(position, size, fixture);
       case "entry":
-        return new Entry(position, size, fixture);
+        return new Entry(position, size);
       case "npc":
         return new NonPlayer(fixture);
       case "enemy":
@@ -186,10 +168,10 @@ class LevelTemplate {
   /**
    * Get the value of a custom property from template data
    *
-   * @param  {object} template Level data
-   * @param  {string} property Property name to locate
+   * @param template - level data
+   * @param property - property name to locate
    *
-   * @return {mixed}           Property's value
+   * @return property's value
    */
   private getJsonProperty(json: any, property: string): string {
     let properties = json.properties ?? [];
@@ -202,9 +184,9 @@ class LevelTemplate {
   /**
    * Get the tile layers from the level data
    *
-   * @param  {object[]} layers Layer data
+   * @param layers - layer data
    *
-   * @return {object}          Tile layers
+   * @return tile layers
    */
   private getTileLayers(layers: any[]): object[] {
     return layers.filter((l) => l.type === "tilelayer");
@@ -213,11 +195,11 @@ class LevelTemplate {
   /**
    * Get the object groups from the level data
    *
-   * @param  {object[]} layers Layer data
+   * @param layers - layer data
    *
-   * @return {object}          Object groups
+   * @return object groups
    *
-   * @throws {InvalidDataError} When multiple object layers share a name
+   * @throws {InvalidDataError} when multiple object layers share a name
    */
   private getObjectGroups(layers: any[]): any {
     let objectGroups: any = {};

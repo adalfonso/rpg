@@ -13,50 +13,41 @@ import { bus } from "@/EventBus";
 class Battle implements Eventful, Drawable, Lockable {
   /**
    * Animation sequence occurring in the battle
-   *
-   * @prop {AnimationQueue} _animation
    */
   private _animation: AnimationQueue;
+
   /**
    * Menu for the battle
-   *
-   * @prop {BattleMenu} _menu
    */
   private _menu: BattleMenu;
 
   /**
    * Dialogue in the battle
-   *
-   * @prop {Dialogue} _dialogue
    */
   private _dialogue: Dialogue = null;
 
   /**
    * If it is currently the player's turn
-   *
-   * @prop {boolean} _herosTurn
    */
   private _herosTurn: boolean = true;
 
   /**
    * If the battle is locked
-   *
-   * @prop {boolean} _locked
    */
   private _locked: boolean = false;
 
   /**
    * If the battle is currently active
-   *
-   * @prop {boolean} active
    */
   public active: boolean;
 
   /**
    * Create a new battle instance
    *
-   * @param {HeroTeam} _heroes Heroes in battle
-   * @param {Team}     _foes   Enemies in battle
+   * @param _heroes - heroes in battle
+   * @param _foes   - enemies in battle
+   *
+   * @emits battle.action
    */
   constructor(private _heroes: HeroTeam, private _foes: Team) {
     this.active = true;
@@ -91,8 +82,6 @@ class Battle implements Eventful, Drawable, Lockable {
 
   /**
    * Determine if the battle is done
-   *
-   * @return {boolean} If the battle is done
    */
   get isDone() {
     return this._heroes.areDefeated || this._foes.areDefeated;
@@ -101,7 +90,7 @@ class Battle implements Eventful, Drawable, Lockable {
   /**
    * Update the battle
    *
-   * @param {number} dt Delta time
+   * @param dt - delta time
    */
   public update(dt: number) {
     if (this._animation) {
@@ -129,9 +118,9 @@ class Battle implements Eventful, Drawable, Lockable {
   /**
    * Draw Battle and all underlying entities
    *
-   * @param {CanvasRenderingContext2D} ctx        Render context
-   * @param {Vector}                   offset     Render position offset
-   * @param {Vector}                   resolution Render resolution
+   * @param ctx        - render context
+   * @param offset     - render position offset
+   * @param resolution - render resolution
    */
   public draw(
     ctx: CanvasRenderingContext2D,
@@ -174,7 +163,7 @@ class Battle implements Eventful, Drawable, Lockable {
   /**
    * Register events with the event bus
    *
-   * @return {CallableMap} Events to register
+   * @return events to register
    */
   public register(): CallableMap {
     return {
@@ -229,7 +218,7 @@ class Battle implements Eventful, Drawable, Lockable {
   /**
    * Lock the battle and its menu
    *
-   * @return {boolean} If the lock was successful
+   * @return if the lock was successful
    */
   public lock(): boolean {
     this._locked = true;
@@ -239,7 +228,7 @@ class Battle implements Eventful, Drawable, Lockable {
   /**
    * Unlock the battle and its menu
    *
-   * @return {boolean} If the unlock was successful
+   * @return if the unlock was successful
    */
   public unlock(): boolean {
     this._locked = false;
@@ -262,6 +251,8 @@ class Battle implements Eventful, Drawable, Lockable {
 
   /**
    * Run one cycle of the battle
+   *
+   * @emits battle.action
    */
   private _cycle() {
     this._herosTurn = !this._herosTurn;
@@ -273,6 +264,8 @@ class Battle implements Eventful, Drawable, Lockable {
 
   /**
    * End the battle
+   *
+   * @emits battle.end
    */
   private _stop() {
     this.unlock();
@@ -294,8 +287,8 @@ class Battle implements Eventful, Drawable, Lockable {
   /**
    * Draw the UI bar for the player
    *
-   * @param {CanvasRenderingContext2D} ctx        Render context
-   * @param {Vector}                   resolution Render resolution
+   * @param ctx        - render context
+   * @param resolution - render resolution
    */
   private _drawUiBar(ctx: CanvasRenderingContext2D, resolution: Vector) {
     let uiBarSize = this._getUiBarSize(resolution);
@@ -310,8 +303,8 @@ class Battle implements Eventful, Drawable, Lockable {
   /**
    * Draw the UI bar for the enemy
    *
-   * @param {CanvasRenderingContext2D} ctx        Render context
-   * @param {Vector}                   resolution Render resolution
+   * @param ctx        - render context
+   * @param resolution - render resolution
    */
   private _drawEnemyUiBar(ctx: CanvasRenderingContext2D, resolution: Vector) {
     const uiBarSize = this._getUiBarSize(resolution);
@@ -331,9 +324,9 @@ class Battle implements Eventful, Drawable, Lockable {
   /**
    * Get the size of the UI bar based on screen resolution
    *
-   * @param  {Vector} resolution Current screen resolution
+   * @param resolution - current screen resolution
    *
-   * @return {Vector}            Size of the UI bar
+   * @return size of the UI bar
    */
   private _getUiBarSize(resolution: Vector) {
     return new Vector(
@@ -347,7 +340,7 @@ class Battle implements Eventful, Drawable, Lockable {
    *
    * TODO: consider moving this to a factory
    *
-   * @return {BattleMenu} The battle menu
+   * @return the battle menu
    */
   private _getBattleMenu(): BattleMenu {
     const player = this._heroes.leader;

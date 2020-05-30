@@ -17,8 +17,6 @@ import { menus } from "./config";
 
 /**
  * Different states a game can be in
- *
- * @enum {GameState} GameState
  */
 enum GameState {
   StartMenu,
@@ -30,8 +28,9 @@ enum GameState {
 }
 
 /**
- * Game is the main class to facilitate updates, handing off rendering to all
- * of the game's constituents, and basic state management.
+ * Main class to facilitate updates
+ *
+ * Game hands off rendering to all of the game's constituents.
  */
 class Game implements Eventful, Drawable {
   /**
@@ -41,58 +40,39 @@ class Game implements Eventful, Drawable {
 
   /**
    * Current level instance
-   *
-   * @prop {Level} level
    */
   private level: Level;
 
   /**
    * General game dialogue
-   *
-   * @prop {Dialogue} dialogue
    */
   private dialogue: Dialogue = null;
 
   /**
    * Main game menu
-   *
-   * @prop {StartMenu} menu
    */
   private menu: StartMenu;
 
   /**
    * Inventory menu
-   *
-   * @prop {Inventory} inventory
    */
   private inventory: Inventory;
 
   /**
-   * Main player instance
-   *
-   * @prop {Player} player
-   */
-  private player: Player;
-
-  /**
    * Current state of game
-   *
-   * @prop {GameState} state
    */
   private state: GameState;
 
   /**
    * Create a new game instance
    *
-   * @param {Player} player Main player instance
+   * @param player - main player instance
    */
-  constructor(player: Player) {
+  constructor(private player: Player) {
     this.state = GameState.Play;
 
     this.menu = new StartMenu(menus.startMenu);
     this.inventory = new Inventory(menus.inventory);
-
-    this.player = player;
 
     bus.register(this);
 
@@ -100,9 +80,7 @@ class Game implements Eventful, Drawable {
   }
 
   /**
-   * Get the focal point that the game revolves around, the player.
-   *
-   * @returns {Vector} Focal point of the game
+   * Get the focal point that the game revolves around, the player
    */
   get renderPoint(): Vector {
     return this.player.position.copy();
@@ -111,7 +89,7 @@ class Game implements Eventful, Drawable {
   /**
    * Update the game and underlying entities
    *
-   * @param {number} dt Delta time since last update
+   * @param dt - delta time since last update
    */
   public update(dt: number) {
     if (this.battle) {
@@ -137,9 +115,9 @@ class Game implements Eventful, Drawable {
   /**
    * Draw game and all underlying entities
    *
-   * @param {CanvasRenderingContext2D} ctx        Render context
-   * @param {Vector}                   offset     Render position offset
-   * @param {Vector}                   resolution Render resolution
+   * @param ctx        - render context
+   * @param offset     - render position offset
+   * @param resolution - render resolution
    */
   public draw(
     ctx: CanvasRenderingContext2D,
@@ -170,7 +148,7 @@ class Game implements Eventful, Drawable {
   /**
    * Register events with the event bus
    *
-   * @return {CallableMap} Events to register
+   * @return events to register
    */
   public register(): CallableMap {
     return {
@@ -240,7 +218,7 @@ class Game implements Eventful, Drawable {
   /**
    * Lock player movement when non-play state is requested
    *
-   * @param {GameState} state The game state to active
+   * @param state - the game state to active
    */
   private lock(state: GameState) {
     if (this.state !== GameState.Play) {
@@ -262,7 +240,7 @@ class Game implements Eventful, Drawable {
   /**
    * Unlock player movement if a current state is active
    *
-   * @param {GameState} state The game to deactivate
+   * @param state - the game to deactivate
    */
   private unlock(state: GameState) {
     if (this.state !== state) {
@@ -277,7 +255,7 @@ class Game implements Eventful, Drawable {
   /**
    * Determine if a battle is underway
    *
-   * @return {boolean} If a battle is underway
+   * @return if a battle is underway
    */
   private hasActiveBattle(): boolean {
     return this.battle !== null && this.battle.active;

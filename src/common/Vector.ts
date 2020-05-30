@@ -1,20 +1,21 @@
 /**
- * This is a simple 2D vector. Common use cases include cartesian coordinates,
- * and screen resolution.
+ * A simple 2D vector
+ *
+ * Common use cases include cartesian coordinates, and screen resolution.
  */
 class Vector {
   /**
    * Create a new vector instance
    *
-   * @param {number} x x-coordinate
-   * @param {number} y y-coordinate
+   * @param x - x-coordinate
+   * @param y - y-coordinate
    */
   constructor(public x: number, public y: number) {}
 
   /**
    * Create a copy of this vector
    *
-   * @return {Vector} The copied vector
+   * @return - the copied vector
    */
   public copy(): Vector {
     return new Vector(this.x, this.y);
@@ -23,9 +24,9 @@ class Vector {
   /**
    * Add to vector to generate a new vector
    *
-   * @param  {Vector} addend Value to add
+   * @param addend - value to add
    *
-   * @return {Vector}        New vector
+   * @return new vector
    */
   public plus(addend: Vector): Vector {
     return new Vector(this.x + addend.x, this.y + addend.y);
@@ -34,9 +35,9 @@ class Vector {
   /**
    * Subtract a vector to generate a new vector
    *
-   * @param  {Vector} subtrahend Value to subtract
+   * @param subtrahend - value to subtract
    *
-   * @return {Vector}            New vector
+   * @return new vector
    */
   public minus(subtrahend: Vector): Vector {
     return new Vector(this.x - subtrahend.x, this.y - subtrahend.y);
@@ -45,9 +46,9 @@ class Vector {
   /**
    * Multiply by a factor to generate a new vector
    *
-   * @param  {Vector | number} factor Factor to multiply by
+   * @param factor - factor to multiply by
    *
-   * @return {Vector}                  New Vector
+   * @return new Vector
    */
   public times(factor: Vector | number): Vector {
     if (typeof factor === "number") {
@@ -60,7 +61,7 @@ class Vector {
   /**
    * Convert to an array
    *
-   * @return {[number, number]} Resulting array
+   * @return resulting array
    */
   public toArray(): [number, number] {
     return [this.x, this.y];
@@ -69,9 +70,9 @@ class Vector {
   /**
    * Return a new vector run thorugh a callback
    *
-   * @param  {Function} callback Callback to apply
+   * @param callback - callback to apply
    *
-   * @return {Vector} Resulting vector
+   * @return resulting vector
    */
   public apply(callback: Function): Vector {
     return new Vector(callback(this.x), callback(this.y));

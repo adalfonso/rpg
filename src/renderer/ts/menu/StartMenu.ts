@@ -4,17 +4,18 @@ import { Drawable, CallableMap } from "@/interfaces";
 import { bus } from "@/EventBus";
 
 /**
- * Start menu is the first menu to load when the game starts up. It is
- * responsible for higher level game functions like saving, changing settings,
- * and loading levels
+ * The first menu to load when the game starts up
+ *
+ * It is responsible for higher level game functions like saving, changing
+ * settings, and loading levels.
  */
 class StartMenu extends Menu implements Drawable {
   /**
    * Draw StartMenu and all underlying entities
    *
-   * @param {CanvasRenderingContext2D} ctx        Render context
-   * @param {Vector}                   offset     Render position offset
-   * @param {Vector}                   resolution Render resolution
+   * @param ctx        - render context
+   * @param offset     - render position offset
+   * @param resolution - render resolution
    */
   public draw(
     ctx: CanvasRenderingContext2D,
@@ -58,7 +59,7 @@ class StartMenu extends Menu implements Drawable {
   /**
    * Register events with the event bus
    *
-   * @return {CallableMap} Events to register
+   * @return events to register
    */
   public register(): CallableMap {
     return {
@@ -95,6 +96,8 @@ class StartMenu extends Menu implements Drawable {
 
   /**
    * Trigger the game state to save.
+   *
+   * @emits state.save
    */
   private saveState() {
     bus.emit("state.save");

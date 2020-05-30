@@ -2,8 +2,6 @@ import CombatStrategy, { UiData } from "./CombatStrategy";
 
 /**
  * Data required to instantiate a spell
- *
- * @type {SpellTemplate}
  */
 type SpellTemplate = {
   displayAs: string;
@@ -14,20 +12,18 @@ type SpellTemplate = {
 };
 
 /**
- * Spells are techniques used by the player to deal damage against an entity
+ * Techniques used by the player to deal damage against an entity
  */
 class Spell extends CombatStrategy {
   /**
    * Whether the spell deals special damage
-   *
-   * @prop {boolean} _special
    */
   private _special: boolean;
 
   /**
    * Create a new Spell instance
    *
-   * @param {SpellTemplate} template Spell data
+   * @param template - spell data
    */
   constructor(template: SpellTemplate) {
     super(template);

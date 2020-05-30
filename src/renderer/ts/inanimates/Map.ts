@@ -4,28 +4,16 @@ import config from "@/config";
 import { Drawable } from "@/interfaces";
 
 /**
- * Map is an underlying visual component and has no moving parts. It is simply
- * the basis to render and build additional fixures atop.
+ * A visual representation of the level
  */
 class Map implements Drawable {
   /**
-   * Layer data
-   *
-   * @prop {object} layers
-   */
-  private layers: any;
-
-  /**
    * Rendering asset
-   *
-   * @prop {Renderable} renderable
    */
   private renderable: Renderable;
 
   /**
    * Scale of the map
-   *
-   * @prop {number} scale
    */
   private scale: number;
 
@@ -35,12 +23,10 @@ class Map implements Drawable {
    * TODO: Some of the Renderable params should come from a MapTemplate,
    * especially frameCount and gridRatio;
    *
-   * @param {object} layers Layer data
-   * @param {string} img    Source path for sprite sheet
+   * @param layers - layer data
+   * @param img    - source path for sprite sheet
    */
-  constructor(layers: object, img: string) {
-    this.layers = layers;
-
+  constructor(private layers: any[], img: string) {
     this.scale = config.scale;
 
     this.renderable = new Renderable(
@@ -56,9 +42,9 @@ class Map implements Drawable {
   /**
    * Draw all tiles through a renderable
    *
-   * @param {CanvasRenderingContext2D} ctx        Rendering context
-   * @param {Vector}                   offset     Render position offset
-   * @param {Vector}                   resolution Render resolution
+   * @param ctx        - rendering context
+   * @param offset     - render position offset
+   * @param resolution - render resolution
    */
   public draw(
     ctx: CanvasRenderingContext2D,

@@ -1,9 +1,7 @@
 import Vector from "@common/Vector";
 
 /**
- * Drawables are elements that can render on a canvas
- *
- * @interface
+ * Any class that renders itself on a canvas
  */
 export interface Drawable {
   draw(ctx: CanvasRenderingContext2D, offset: Vector, resolution: Vector): void;
@@ -15,20 +13,20 @@ export interface Drawable {
 export type CallableMap = { [key: string]: Function };
 
 /**
+ * Any class that interfaces with an event bus
+ *
  * Eventful interfaces are characterized by their register method, a hook into
  * the their underlying instance which allows an event bus to easily register
  * all of their events.
- *
- * @interface
  */
 export interface Eventful {
   register(): CallableMap;
 }
 
 /**
- * Lockables can be disabled to prevent their default behavior from happening
+ * Any class that can be locked/unlocked
  *
- * @interface
+ * Lockables can be disabled to prevent their default behavior from happening
  */
 export interface Lockable {
   lock(): boolean;

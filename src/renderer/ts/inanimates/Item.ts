@@ -5,38 +5,32 @@ import Vector from "@common/Vector";
 import { ucFirst } from "@/util";
 
 /**
- * An item laying on the ground
+ * An item in the context of a map/level
  */
 class Item extends Inanimate {
   /**
    * Unique identifier
-   *
-   * @prop {string} _id
    */
   private _id: string;
 
   /**
    * If the item was picked up
-   *
-   * @prop {boolean} _obtained
    */
   private _obtained: boolean = false;
 
   /**
    * The type of item
-   *
-   * @prop {string} _type
    */
   private _type: string;
 
   /**
    * Create a new Item instance
    *
-   * @param  {Vector} position The item's position
-   * @param  {Vector} size     The item's size
-   * @param  {object} data     Additional info about the item
+   * @param position - the item's position
+   * @param size     - the item's size
+   * @param data     - additional info about the item
    *
-   * @throws {MissingDataError} When name or type are missing
+   * @throws {MissingDataError} when name or type are missing
    */
   constructor(position: Vector, size: Vector, data: any) {
     super(position, size);
@@ -57,8 +51,6 @@ class Item extends Inanimate {
 
   /**
    * The type of item
-   *
-   * @return {string} The type of item
    */
   get type(): string {
     return this._type;
@@ -66,8 +58,6 @@ class Item extends Inanimate {
 
   /**
    * If the item was picked up
-   *
-   * @return {boolean} If the item was picked up
    */
   get obtained(): boolean {
     return this._obtained;
@@ -75,8 +65,6 @@ class Item extends Inanimate {
 
   /**
    * Get the name used for the item when rendering dialogue
-   *
-   * @return {string} Name used for item when rendering dialogue
    */
   get displayAs(): string {
     return this.type
@@ -88,9 +76,9 @@ class Item extends Inanimate {
   /**
    * Draw the item
    *
-   * @param {CanvasRenderingContext2D} ctx        Render context
-   * @param {Vector}                   offset     Render position offset
-   * @param {Vector}                   resolution Render resolution
+   * @param ctx        - render context
+   * @param offset     - render position offset
+   * @param resolution - render resolution
    */
   public draw(
     ctx: CanvasRenderingContext2D,
@@ -119,9 +107,9 @@ class Item extends Inanimate {
   /**
    * Resolve the current state of the item in comparison to the game state
    *
-   * @param  {string} ref Reference to where in the state the item is stored
+   * @param ref - reference to where in the state the item is stored
    *
-   * @return {object}     Item data as stored in the state
+   * @return item data as stored in the state
    */
   protected resolveState(ref: string): any {
     const state = StateManager.getInstance();
@@ -143,7 +131,7 @@ class Item extends Inanimate {
   /**
    * Get current state of the item for export to a state manager
    *
-   * @return {object} Current state of the item
+   * @return current state of the item
    */
   protected getState(): object {
     return { obtained: this._obtained };

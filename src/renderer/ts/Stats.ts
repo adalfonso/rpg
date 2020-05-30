@@ -3,14 +3,12 @@ import InvalidDataError from "./error/InvalidDataError";
 /**
  * Anatomy of an entity's stats
  *
- * @type {StatTemplate}
- *
- * @prop {number} hp     Base health
- * @prop {number} atk    Physical attack
- * @prop {number} def    Physical defense
- * @prop {number} sp_atk Magic attack
- * @prop {number} sp_def Magic defense
- * @prop {number} spd    Speed
+ * @prop hp     - base health
+ * @prop atk    - physical attack
+ * @prop def    - physical defense
+ * @prop sp_atk - magic attack
+ * @prop sp_def - magic defense
+ * @prop spd    - speed
  */
 export type StatTemplate = {
   hp: number;
@@ -24,10 +22,8 @@ export type StatTemplate = {
 /**
  * Template for export of gained experience data
  *
- * @type {GainedExpSummary}
- *
- * @prop {number}   exp    Amount of exp gained
- * @prop {number[]} levels Listing of levels grown during experience gain
+ * @prop exp    - amount of exp gained
+ * @prop levels - listing of levels grown during experience gain
  */
 type GainedExpSummary = {
   exp: number;
@@ -36,19 +32,17 @@ type GainedExpSummary = {
 
 /**
  * Modifier to scale experience calculations down to a certain range
- *
- * @constant {number} EXP_MODIFER
  */
-const EXP_MODIFIER = 0.05;
+const EXP_MODIFIER: number = 0.05;
 
 /**
  * Max attainable level
- *
- * @constant {number} MAX_LEVEL
  */
-const MAX_LEVEL = 100;
+const MAX_LEVEL: number = 100;
 
 /**
+ * Actor's innate value
+ *
  * Stats is in charge of maintaining the progression of an entity thoughout the
  * game. It increases the entity's abilities through stats and serves battle
  * functions by increasing the experience of the subject and yielding experience
@@ -57,47 +51,30 @@ const MAX_LEVEL = 100;
 export default class Stats {
   /**
    * Experience level of the entity
-   *
-   * @prop {number} _lvl
    */
   private _lvl: number;
 
   /**
    * Amount of damage currently inflicted on the entity
-   *
-   * @prop {number} _dmg
    */
   private _dmg: number = 0;
 
   /**
    * Amount of experience points the entity has gained between levels
-   *
-   * @prop {number} _exp
    */
   private _exp: number;
 
   /**
-   * Base stats of an entity
-   *
-   * @prop {StatTemplate} baseStats
-   */
-  private baseStats: StatTemplate;
-
-  /**
    * Multiplier used to expand the range that base stats take
-   *
-   * @prop {number} multiplier
    */
   private multiplier: number = 2.5;
 
   /**
    * Create a new Stats instance
    *
-   * @param {StatTemplate} stats Base stats for an entity
+   * @param baseStats - base stats for an entity
    */
-  constructor(stats: StatTemplate) {
-    this.baseStats = stats;
-
+  constructor(private baseStats: StatTemplate) {
     // Default to 5
     this._lvl = 5;
     this._exp = 0;
@@ -106,8 +83,6 @@ export default class Stats {
 
   /**
    * Get the current level
-   *
-   * @return {number} Current level stat
    */
   get lvl(): number {
     return this._lvl;
@@ -119,9 +94,7 @@ export default class Stats {
    * NOTE: This is used to manually set the lvl. Lvl is normally increased as a
    * result of gainExp().
    *
-   * @param  {number} lvl Level to set
-   *
-   * @throws {InvalidDataError} When lvl input is invalid
+   * @throws {InvalidDataError} when lvl input is invalid
    */
   set lvl(lvl: number) {
     if (lvl < 1 || lvl > 100 || !Number.isInteger(lvl)) {
@@ -133,8 +106,6 @@ export default class Stats {
 
   /**
    * Get the current damage
-   *
-   * @return {number} Current damage
    */
   get dmg(): number {
     return this._dmg;
@@ -146,9 +117,7 @@ export default class Stats {
    * NOTE: This is used to manually set the dmg. If enduring dmg via battle or
    * some game mechanism, use endure().
    *
-   * @param  {number} dmg Damage to set
-   *
-   * @throws {InvalidDataError} When dmg input is invalid
+   * @throws {InvalidDataError} when dmg input is invalid
    */
   set dmg(dmg: number) {
     if (dmg < 0 || !Number.isInteger(dmg)) {
@@ -160,8 +129,6 @@ export default class Stats {
 
   /**
    * Get the amount of experience points
-   *
-   * @return {number} Current experience points
    */
   get exp(): number {
     return this._exp;
@@ -173,9 +140,7 @@ export default class Stats {
    * NOTE: This is used to manually set the exp. If gaining exp via battle or
    * some game mechanism, use gainExp().
    *
-   * @param  {number} lvl Level to set
-   *
-   * @throws {InvalidDataError} When exp input is invalid
+   * @throws {InvalidDataError} when exp input is invalid
    */
   set exp(exp: number) {
     if (exp < 0 || !Number.isInteger(exp) || exp > this.expToNextLevel()) {
@@ -187,8 +152,6 @@ export default class Stats {
 
   /**
    * Get the current health stat
-   *
-   * @return {number} Current health stat
    */
   get hp(): number {
     return Math.max(0, this.currentStatValue(this.baseStats.hp) - this._dmg);
@@ -196,8 +159,6 @@ export default class Stats {
 
   /**
    * Get the current physical attack stat
-   *
-   * @return {number} Current physical attack stat
    */
   get atk(): number {
     return this.currentStatValue(this.baseStats.atk);
@@ -205,8 +166,6 @@ export default class Stats {
 
   /**
    * Get the current physical defense stat
-   *
-   * @return {number} Current physical defense stat
    */
   get def(): number {
     return this.currentStatValue(this.baseStats.def);
@@ -214,8 +173,6 @@ export default class Stats {
 
   /**
    * Get the current magic attack stat
-   *
-   * @return {number} Current magic attack stat
    */
   get sp_atk(): number {
     return this.currentStatValue(this.baseStats.sp_atk);
@@ -223,8 +180,6 @@ export default class Stats {
 
   /**
    * Get the current magic defense stat
-   *
-   * @return {number} Current magic defense stat
    */
   get sp_def(): number {
     return this.currentStatValue(this.baseStats.sp_def);
@@ -232,8 +187,6 @@ export default class Stats {
 
   /**
    * Get the current speed stat
-   *
-   * @return {number} Current speed stat
    */
   get spd(): number {
     return this.currentStatValue(this.baseStats.spd);
@@ -241,8 +194,6 @@ export default class Stats {
 
   /**
    * Get the experience yield from defeating the subject
-   *
-   * @return {number} Experience yield
    */
   get givesExp(): number {
     return this.currentStatValue(
@@ -258,7 +209,7 @@ export default class Stats {
   /**
    * Damage the subject
    *
-   * @param {number} dmg Amount of damage
+   * @param dmg - amount of damage
    */
   public endure(dmg: number) {
     this._dmg += Math.max(1, dmg - this.def);
@@ -267,11 +218,9 @@ export default class Stats {
   /**
    * Increase the subject's experience points
    *
-   * @param  {number}          exp Points of experience earned
+   * @param exp - points of experience earned
    *
-   * @return {GainedExpSummary}    Experience Data
-   *
-   * @emits stats.gainExp
+   * @return - experience data
    */
   public gainExp(exp: number): GainedExpSummary {
     this._exp += exp;
@@ -291,7 +240,7 @@ export default class Stats {
   /**
    * Gain a level if the experience has been earned
    *
-   * @return {boolean} If a level increased
+   * @return if a level increased
    */
   private gainLevel(): boolean {
     let experienceNeeded = this.expToNextLevel();
@@ -309,9 +258,9 @@ export default class Stats {
   /**
    * Adjust a base stat based on current conditions
    *
-   * @param  {number} baseStat Base state to adjust
+   * @param baseStat - base state to adjust
    *
-   * @return {number}          Adjusted stat value
+   * @return adjusted stat value
    */
   private currentStatValue(baseStat: number): number {
     return Math.floor(((baseStat * this._lvl) / 100) * this.multiplier);
@@ -320,7 +269,7 @@ export default class Stats {
   /**
    * Get the amount of experience required to grow a level
    *
-   * @param {number} lvl Level to grow
+   * @param lvl - level to grow
    */
   private expToNextLevel(lvl = this._lvl): number {
     if (this._lvl >= MAX_LEVEL) {
@@ -335,7 +284,7 @@ export default class Stats {
   /**
    * Sum all the base stats
    *
-   * @return {number} Total of base stats
+   * @return total of base stats
    */
   private getBaseStateTotal(): number {
     return Object.keys(this.baseStats).reduce((carry, stat) => {

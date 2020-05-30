@@ -3,32 +3,29 @@ import MissingDataError from "@/error/MissingDataError";
 import Vector from "@common/Vector";
 
 /**
- * Portal is an invisible area on the map which transports entities that enter
- * it into a different area.
+ * An invisible area on the map
+ *
+ * Portals transport entities that enter it into a different area.
  */
 class Portal extends Inanimate {
   /**
    * Reference to the current area's name
-   *
-   * @prop {string} from
    */
   public from: string;
 
   /**
    * Reference to the name of the area that the portal leads to
-   *
-   * @prop {string} to
    */
   public to: string;
 
   /**
    * Create a new Portal instance
    *
-   * @param  {Vector} position Position of the portal
-   * @param  {Vector} size     Size of the portal
-   * @param  {object} data     Info about the portal
+   * @param position - position of the portal
+   * @param size     - size of the portal
+   * @param data     - info about the portal
    *
-   * @throws {MissingDataError} When properties or to/from are missing
+   * @throws {MissingDataError} when properties or to/from are missing
    */
   constructor(position: Vector, size: Vector, data: any) {
     super(position, size);
@@ -41,6 +38,7 @@ class Portal extends Inanimate {
 
     /**
      * Sets to/from properties
+     *
      * TODO: Input should be more concise. At some point wrap map data in some
      * class so we can make assumptions about the input data.
      */

@@ -2,51 +2,33 @@ import TextBuffer from "./TextBuffer";
 import Vector from "@common/Vector";
 
 /**
- * TextStream handles to usage of several TextBuffers to split text up for
- * multi-line rendering.
+ * Handles to usage of several TextBuffers
  */
 class TextStream {
   /**
-   * Listing of all text lines
-   *
-   * @prop {string[]} _data
-   */
-  private _data: string[] = [];
-
-  /**
    * Current text to display
-   *
-   * @prop {string} _fragment
    */
   private _fragment: string = "";
 
   /**
    * Index of the data that is currently rendering
-   *
-   * @prop {number} _index
    */
   private _index: number = 0;
 
   /**
    * Buffer of current data split for line-by-line rendering
-   *
-   * @prop {TextBuffer} _buffer
    */
   private _buffer: TextBuffer;
 
   /**
    * Create a new TextStream
    *
-   * @param {string[]} data Listing of all text lines
+   * @param data - listing of all text lines
    */
-  constructor(data: string[]) {
-    this._data = data;
-  }
+  constructor(private _data: string[]) {}
 
   /**
    * Get the current text fragment
-   *
-   * @return {string} fragment Current text fragment
    */
   get fragment(): string {
     return this._fragment;
@@ -54,8 +36,6 @@ class TextStream {
 
   /**
    * Determine if the buffer is empty
-   *
-   * @return {boolean} If the buffer is empty
    */
   get isEmpty(): boolean {
     return this._buffer ? this._buffer.isEmpty : true;
@@ -63,8 +43,6 @@ class TextStream {
 
   /**
    * Determine if the stream has completed
-   *
-   * @return {boolean} If the stream has completed
    */
   get isDone(): boolean {
     return (
@@ -74,13 +52,14 @@ class TextStream {
   }
 
   /**
-   * Build a text buffer with the line-by-line data. Filling the text buffer
-   * requires us have a render context to determine how much text can fit on a
-   * line.
+   * Build a text buffer with the line-by-line data
    *
-   * @param {CanvasRenderingContext2D} ctx        Render context
-   * @param {Vector}                   resolution Render area
-   * @param {string}                   prefix     Prefix the current text line
+   * Filling the text buffer requires us have a render context to determine how
+   * much text can fit on a line.
+   *
+   * @param ctx        - render context
+   * @param resolution - render area
+   * @param prefix     - prefix the current text line
    */
   public fillBuffer(
     ctx: CanvasRenderingContext2D,
@@ -105,7 +84,7 @@ class TextStream {
   /**
    * Get contents of the buffer
    *
-   * @return {string[]} Buffer contents
+   * @return buffer contents
    */
   public read(): string[] {
     return this._buffer.read();
@@ -114,9 +93,9 @@ class TextStream {
   /**
    * Advance the current line of text to the next char(s)
    *
-   * @param {number}  ticks Number of chars to advance
+   * @param ticks - number of chars to advance
    *
-   * @return {boolean}      If the current line is fully completed
+   * @return if the current line is fully completed
    */
   public tick(ticks: number): boolean {
     let lineLength = this._data[this._index].length;

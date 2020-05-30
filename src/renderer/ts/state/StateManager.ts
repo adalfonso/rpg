@@ -4,28 +4,21 @@ import { bus } from "@/EventBus";
 import { Eventful, CallableMap } from "@/interfaces";
 
 /**
- * StateManager is an intermediary between an on-disk JSON store and objects
- * interacting within the game.
+ * An intermediary between an on-disk JSON store and objects within the game
  */
 class StateManager implements Eventful {
   /**
    * The game state
-   *
-   * @prop {object} data
    */
   private data: object = {};
 
   /**
    * Location the state was last loaded from
-   *
-   * @prop {string} lastLoadedFrom
    */
   private lastLoadedFrom: string;
 
   /**
    * Singleton instance
-   *
-   * @prop {StateManager} instance
    */
   private static instance: StateManager;
 
@@ -39,7 +32,7 @@ class StateManager implements Eventful {
   /**
    * Create a new instance or get the shared instance
    *
-   * @return {StateManager} Shared instance
+   * @return shared instance
    */
   public static getInstance() {
     StateManager.instance = StateManager.instance ?? new StateManager();
@@ -50,7 +43,7 @@ class StateManager implements Eventful {
   /**
    * Register events with the event bus
    *
-   * @return {CallableMap} Events to register
+   * @return events to register
    */
   public register(): CallableMap {
     return {
@@ -63,9 +56,9 @@ class StateManager implements Eventful {
   /**
    * Retrieve data from the state based on a key lookup
    *
-   * @param  {string} ref Lookup key
+   * @param ref - lookup key
    *
-   * @return {any}        Data stored at the reference
+   * @return data stored at the reference
    */
   public get(ref: string): any {
     try {
@@ -78,10 +71,11 @@ class StateManager implements Eventful {
   }
 
   /**
-   * Merge data into the state. Any duplicate (non-object) values will be
-   * overwritten by the new data.
+   * Merge data into the state
    *
-   * @param {object} data Data to merge in
+   * Any duplicate (non-object) values will be overwritten by the new data.
+   *
+   * @param data - data to merge in
    */
   public merge(data: object) {
     this.data = merge(this.data, data);
@@ -90,8 +84,8 @@ class StateManager implements Eventful {
   /**
    * Merge data into the state via reference string
    *
-   * @param {string} ref  Reference string
-   * @param {any}    data Data to merge in
+   * @param ref  - reference string
+   * @param data - data to merge in
    */
   public mergeByRef(ref: string, data: any) {
     let obj = {};
@@ -113,16 +107,16 @@ class StateManager implements Eventful {
   /**
    * Return the state in JSON form
    *
-   * @return {string} State as a JSON string
+   * @return state as a JSON string
    */
   public toJson(): string {
     return JSON.stringify(this.data);
   }
 
   /**
-   * Remove part of the state with a dot-separated string reference;
+   * Remove part of the state with a dot-separated string reference
    *
-   * @param {string} ref Reference to a value within the state
+   * @param ref - reference to a value within the state
    */
   public remove(ref: string) {
     let current = this.data;
@@ -148,9 +142,11 @@ class StateManager implements Eventful {
   /**
    * Save the state to disk at a specified location
    *
-   * @param  {string} destination Disk location to save the state at
+   * @param destination - disk location to save the state at
    *
-   * @return {Promise<void>} Promise for write operation
+   * @return promise for write operation
+   *
+   * @emits state.saved
    */
   public save(destination: string = this.lastLoadedFrom): Promise<void> {
     destination = this.parseFileDestination(destination);
@@ -168,9 +164,11 @@ class StateManager implements Eventful {
   /**
    * Load game state from a location on disk
    *
-   * @param  {string} destination Disk location to load the state from
+   * @param destination - disk location to load the state from
    *
-   * @return {Promise<string | void>} Promise for read operation
+   * @return promise for read operation
+   *
+   * @emits file.load
    */
   public load(destination: string): Promise<string | void> {
     destination = this.parseFileDestination(destination);
@@ -193,9 +191,9 @@ class StateManager implements Eventful {
   /**
    * Make sure the destination is a json file
    *
-   * @param  {string} destination Destination path
+   * @param destination - destination path
    *
-   * @return {string}             Formatted destination path;
+   * @return formatted destination path
    */
   private parseFileDestination(destination: string): string {
     return /\.json$/.test(destination) ? destination : destination + ".json";
