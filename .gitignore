@@ -3,5 +3,5 @@ node_modules
 *.log
 coverage
 .nyc_output
-data
+data/*.json
 tests/temp

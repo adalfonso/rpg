@@ -133,7 +133,7 @@ class StateManager implements Eventful {
         }
       }
     } catch (e) {
-      console.log(
+      console.error(
         `Warning: Tried to remove a non-existent reference from the state manager: ${ref}`
       );
     }
@@ -157,7 +157,7 @@ class StateManager implements Eventful {
         bus.emit("state.saved");
       })
       .catch((err) => {
-        console.log(`Could not save state to "${destination}".`);
+        console.error(`Could not save state to "${destination}".`);
       });
   }
 
@@ -180,7 +180,7 @@ class StateManager implements Eventful {
         bus.emit("file.load");
       })
       .catch((err) => {
-        console.log(`Could not load state from "${destination}".`);
+        console.error(`Could not load state from "${destination}".`);
         this.save(destination);
       })
       .finally(() => {
