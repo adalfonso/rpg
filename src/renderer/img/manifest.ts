@@ -2,7 +2,7 @@ import bigSword from "./weapon/big_sword.png";
 import dungeon from "./dungeon.png";
 import dungeonBlue from "./dungeon_sheet.png";
 import knight from "./enemies/knight.png";
-import player from "./player-new.png";
+import player from "./player_new.png";
 
 export default {
   tileset: {

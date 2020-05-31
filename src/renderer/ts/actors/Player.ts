@@ -40,21 +40,23 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
     this.speed = new Vector(0, 0);
     this.baseSpeed = size.x / 10;
 
-    let { fps, ratio, scale, sprite } = this.getUiInfo();
+    const { fps, frames, ratio, scale, sprite } = this.getUiInfo();
+
+    // This assumes that each direction has its own row and is in NESW order
+    const start = {
+      north: 0 * frames.x,
+      east: 1 * frames.x,
+      south: 2 * frames.x,
+      west: 3 * frames.x,
+    };
 
     this.sprites = [
-      // Keep this example of an animated sprite until we actually use one
       // img, scale, startFrame, frameCount, framesX, framesY, speed
-      // new Renderable(sprite, 1, 18, 0, 9, 4, 8),
-      // new Renderable(sprite, 1, 1, 7, 9, 4, 8),
-      // new Renderable(sprite, 1, 9, 7, 9, 4, 8),
-      // new Renderable(sprite, 1, 19, 7, 9, 4, 8),
-      // new Renderable(sprite, 1, 27, 7, 9, 4, 8)
-      new Renderable(sprite, scale, 0, 0, ratio, fps),
-      new Renderable(sprite, scale, 3, 0, ratio, fps),
-      new Renderable(sprite, scale, 2, 0, ratio, fps),
-      new Renderable(sprite, scale, 0, 0, ratio, fps),
-      new Renderable(sprite, scale, 1, 0, ratio, fps),
+      new Renderable(sprite, scale, start.south, frames.idle, ratio, fps),
+      new Renderable(sprite, scale, start.north, frames.north, ratio, fps),
+      new Renderable(sprite, scale, start.east, frames.east, ratio, fps),
+      new Renderable(sprite, scale, start.south, frames.south, ratio, fps),
+      new Renderable(sprite, scale, start.west, frames.west, ratio, fps),
     ];
 
     this.resolveState(this.data.type);
@@ -232,6 +234,11 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
 
   /**
    * Change the direction the player is facing based on their speed
+   *
+   * Since the canvas renders in quadrant IV, moving away from the origin in the
+   * y-direction is an increase in the negative y, but an increase in
+   * position-y. Because of this inversion, north is speed < 0 and south is
+   * speed > 0.
    */
   private changeDirection() {
     if (this.locked) {
@@ -239,14 +246,22 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
     }
 
     if (this.speed.x > 0) {
-      this.direction = 4;
-    } else if (this.speed.x < 0) {
+      // east
       this.direction = 2;
+    } else if (this.speed.x < 0) {
+      // west
+      this.direction = 4;
     } else if (this.speed.y > 0) {
+      // south
       this.direction = 3;
     } else if (this.speed.y < 0) {
+      // north
       this.direction = 1;
     }
+    // else {
+    //   // idle
+    //   this.direction = 0;
+    // }
   }
 
   /**

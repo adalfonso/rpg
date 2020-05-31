@@ -7,6 +7,15 @@ import { Drawable } from "./interfaces";
  */
 export type RenderData = {
   fps: number;
+  frames: {
+    x: number;
+    y: number;
+    idle: number;
+    north: number;
+    east: number;
+    south: number;
+    west: number;
+  };
   ratio: Vector;
   scale: number;
   sprite: string;
