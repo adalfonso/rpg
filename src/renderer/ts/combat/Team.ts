@@ -1,5 +1,6 @@
 import Actor from "@/actors/Actor";
 import MissingDataError from "@/error/MissingDataError";
+import Vector from "@common/Vector";
 
 /**
  * A battle-centric collection of actors that are related in some way
@@ -44,6 +45,38 @@ class Team {
    */
   get length(): number {
     return this._members.length;
+  }
+
+  /**
+   * Draw opponent select
+   *
+   * @param ctx        - render context
+   * @param offset     - render position offset
+   * @param resolution - render resolution
+   */
+  public draw(
+    ctx: CanvasRenderingContext2D,
+    offset: Vector,
+    resolution: Vector
+  ) {
+    this._members.forEach((member: Actor, index: number) => {
+      member.draw(ctx, offset, resolution);
+    });
+  }
+
+  /**
+   * Prepare the team's positioning for battle
+   *
+   * @param direction - direction members will face
+   * @param position  - position members are moved to
+   */
+  public prepare(direction: number, position: Vector) {
+    this._members.forEach((member: Actor, index: number) => {
+      member.savePosition();
+      member.direction = direction;
+      member.position = position.plus(new Vector(member.size.x * index * 4, 0));
+      member.lock();
+    });
   }
 
   /**

@@ -4,6 +4,7 @@ import AnimationQueue from "@/ui/animation/AnimationQueue";
 import BattleMenu from "@/menu/BattleMenu";
 import Dialogue from "@/ui/Dialogue";
 import HeroTeam from "./HeroTeam";
+import OpponentSelect from "./OpponentSelect";
 import Team from "./Team";
 import TextStream from "@/ui/TextStream";
 import Vector from "@common/Vector";
@@ -49,24 +50,17 @@ class Battle implements Eventful, Drawable, Lockable {
    *
    * @emits battle.action
    */
-  constructor(private _heroes: HeroTeam, private _foes: Team) {
+  constructor(
+    private _heroes: HeroTeam,
+    private _foes: Team,
+    private _opponentSelect: OpponentSelect
+  ) {
     this.active = true;
 
-    this._heroes.each((hero: Actor) => {
-      hero.savePosition();
-
-      // TODO: make these scale
-      hero.position = new Vector(64, 128);
-      hero.direction = 4;
-      hero.lock();
-    });
-
-    this._foes.each((foe: Actor) => {
-      foe.savePosition();
-      foe.position = new Vector(256 + 64, 0);
-      foe.direction = 2;
-      foe.lock();
-    });
+    // TODO: make these scale
+    // TODO: Make this a enum direction
+    this._heroes.prepare(4, new Vector(64, 128));
+    this._foes.prepare(2, new Vector(256 + 64, 0));
 
     this._menu = this._getBattleMenu();
 
@@ -105,6 +99,10 @@ class Battle implements Eventful, Drawable, Lockable {
       this._dialogue.update(dt);
     }
 
+    this._menu.wantsCombat
+      ? this._opponentSelect.unlock()
+      : this._opponentSelect.lock();
+
     if (this._dialogue?.done) {
       this._dialogue = null;
 
@@ -134,13 +132,8 @@ class Battle implements Eventful, Drawable, Lockable {
     ctx.fillStyle = "#CCC";
     ctx.fillRect(0, 0, width, height);
 
-    this._heroes.each((hero: Actor, index: number) =>
-      hero.draw(ctx, offset.plus(new Vector(100 * index, 0)), resolution)
-    );
-
-    this._foes.each((foe: Actor, index: number) =>
-      foe.draw(ctx, offset.plus(new Vector(100 * index, 0)), resolution)
-    );
+    this._heroes.draw(ctx, offset, resolution);
+    this._foes.draw(ctx, offset, resolution);
 
     this._drawUiBar(ctx, resolution);
     this._drawEnemyUiBar(ctx, resolution);
@@ -149,6 +142,10 @@ class Battle implements Eventful, Drawable, Lockable {
       const menuOffset = offset.plus(player.position).plus(player.size);
 
       this._menu.draw(ctx, menuOffset, resolution);
+
+      if (!this._opponentSelect.isLocked) {
+        this._opponentSelect.draw(ctx, offset, resolution);
+      }
     }
 
     if (this._dialogue) {
@@ -168,15 +165,13 @@ class Battle implements Eventful, Drawable, Lockable {
   public register(): CallableMap {
     return {
       "battle.action": (e: CustomEvent) => {
-        let player = this._heroes.leader;
-        let enemy = this._foes.leader;
-
         if (this._herosTurn) {
-          this._heroes.each((hero: Actor) =>
-            hero.attack(enemy, e.detail.combatStrategy)
+          this._heroes.leader.attack(
+            this._opponentSelect.selected,
+            e.detail.combatStrategy
           );
         } else {
-          this._foes.each((foe: Actor) => foe.attack(player));
+          this._foes.each((foe: Actor) => foe.attack(this._heroes.leader));
         }
 
         if (this._heroes.areDefeated) {
@@ -315,7 +310,7 @@ class Battle implements Eventful, Drawable, Lockable {
     ctx.fillStyle = "#FFF";
     ctx.font = "20px Arial";
     ctx.fillText(
-      "HP : " + this._foes.leader.stats.hp,
+      "HP : " + this._opponentSelect.selected.stats.hp,
       position.x + 16,
       position.y + 32
     );

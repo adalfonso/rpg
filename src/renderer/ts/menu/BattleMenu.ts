@@ -1,3 +1,4 @@
+import CombatStrategy from "@/combat/CombatStrategy";
 import Menu from "./Menu";
 import Vector from "@common/Vector";
 import { Drawable, Eventful, CallableMap } from "@/interfaces";
@@ -14,6 +15,13 @@ type BattleMenuOption = {
  * In-battle menu of a player's items, attack, and spells
  */
 class BattleMenu extends Menu implements Eventful, Drawable {
+  /**
+   * If the currently selection option is combat-oriented
+   */
+  get wantsCombat() {
+    return this.currentOption instanceof CombatStrategy;
+  }
+
   /**
    * Draw BattleMenu and all underlying entities
    *

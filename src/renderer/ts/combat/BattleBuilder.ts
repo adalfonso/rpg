@@ -2,6 +2,7 @@ import Battle from "./Battle";
 import Enemy from "@/actors/Enemy";
 import HeroTeam from "./HeroTeam";
 import MissingDataError from "@/error/MissingDataError";
+import OpponentSelect from "./OpponentSelect";
 import Team from "./Team";
 import config from "./battle.json";
 
@@ -52,7 +53,13 @@ class BattleBuilder {
       );
     }
 
-    return new Battle(new HeroTeam([player]), this._createTeamFromEnemy(enemy));
+    const enemyTeam = this._createTeamFromEnemy(enemy);
+
+    return new Battle(
+      new HeroTeam([player]),
+      enemyTeam,
+      new OpponentSelect(enemyTeam)
+    );
   }
 
   /**

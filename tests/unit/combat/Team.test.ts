@@ -1,6 +1,7 @@
 import Actor from "@/actors/Actor";
 import Enemy from "@/actors/Enemy";
 import Sut from "@/combat/Team";
+import Vector from "@common/Vector";
 import sinon from "sinon";
 import { expect } from "chai";
 
@@ -66,6 +67,25 @@ describe("Team", () => {
     });
   });
 
+  describe("prepare", () => {
+    it("set direction and position of team members", () => {
+      const sut = new Sut([getActor()]);
+
+      const position = new Vector(5, 6);
+      const direction = 2;
+
+      expect(sut.leader.direction).to.not.equal(2);
+      expect(sut.leader.position.x).to.not.equal(5);
+      expect(sut.leader.position.y).to.not.equal(6);
+
+      sut.prepare(direction, position);
+
+      expect(sut.leader.direction).to.equal(2);
+      expect(sut.leader.position.x).to.equal(5);
+      expect(sut.leader.position.y).to.equal(6);
+    });
+  });
+
   describe("all", () => {
     it("returns all members", () => {
       const actors = [getActor(), getActor()];
@@ -100,5 +120,5 @@ describe("Team", () => {
 });
 
 const getActor = () => {
-  return new Enemy({ name: "test", type: "knight" });
+  return new Enemy({ name: "test", type: "knight", width: 1, height: 1 });
 };

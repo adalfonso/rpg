@@ -154,7 +154,7 @@ abstract class Actor implements Drawable, Lockable {
   }
 
   /**
-   * Get the actor's sizee
+   * Get the actor's size
    */
   get size(): Vector {
     return this._size;
