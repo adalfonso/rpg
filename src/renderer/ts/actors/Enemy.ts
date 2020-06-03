@@ -16,11 +16,6 @@ class Enemy extends Actor implements Drawable {
   private sprites: Renderable[];
 
   /**
-   * If the enemy has been defeated
-   */
-  public defeated: boolean;
-
-  /**
    * Create a new Enemy instance
    *
    * @param data - info about the enemy
@@ -33,7 +28,6 @@ class Enemy extends Actor implements Drawable {
     );
 
     this.direction = 4;
-    this.defeated = false;
 
     let { fps, ratio, scale, sprite } = this.getUiInfo();
 
@@ -75,7 +69,7 @@ class Enemy extends Actor implements Drawable {
     offset: Vector,
     resolution: Vector
   ) {
-    if (this.defeated) {
+    if (this._defeated) {
       return;
     }
 
@@ -101,7 +95,7 @@ class Enemy extends Actor implements Drawable {
    * @emits battle.start
    */
   public fight(player: Player) {
-    if (this.defeated) {
+    if (this._defeated) {
       return;
     }
 
@@ -115,35 +109,9 @@ class Enemy extends Actor implements Drawable {
    * Kill off the enemy
    */
   public kill() {
-    this.defeated = true;
+    this._defeated = true;
 
     StateManager.getInstance().mergeByRef(`enemies.${this.id}.defeated`, true);
-  }
-
-  /**
-   * Resolve the current state of the enemy in comparison to the game state
-   *
-   * @param ref - reference to where in the state the enemy is stored
-   *
-   * @return enemy data as stored in the state
-   */
-  protected resolveState(ref: string): any {
-    let stateManagerData = super.resolveState(ref);
-
-    if (stateManagerData?.defeated) {
-      this.defeated = stateManagerData.defeated;
-    }
-
-    return stateManagerData;
-  }
-
-  /**
-   * Get current state of the enemy for export to a state manager
-   *
-   * @return current state of the enemy
-   */
-  protected getState(): object {
-    return { ...super.getState(), defeated: this.defeated };
   }
 }
 

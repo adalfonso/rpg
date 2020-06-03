@@ -254,6 +254,8 @@ class Battle implements Eventful, Drawable, Lockable {
 
     if (!this._herosTurn) {
       bus.emit("battle.action");
+    } else {
+      this._opponentSelect.resolveSelected();
     }
   }
 

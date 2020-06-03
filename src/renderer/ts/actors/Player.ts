@@ -170,6 +170,15 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
   }
 
   /**
+   * Kill off the player
+   */
+  public kill() {
+    this._defeated = true;
+
+    StateManager.getInstance().mergeByRef(`player.defeated`, true);
+  }
+
+  /**
    * Equip a weapon
    *
    * @param weapon - weapon to equip

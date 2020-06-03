@@ -79,6 +79,10 @@ class OpponentSelect implements Eventful, Drawable, Lockable {
     offset: Vector,
     _resolution: Vector
   ) {
+    if (this._opponents.areDefeated) {
+      return;
+    }
+
     const fontOffset = new Vector(17, -36);
     const position = this.selected.position.plus(offset).plus(fontOffset);
 
@@ -117,13 +121,39 @@ class OpponentSelect implements Eventful, Drawable, Lockable {
   }
 
   /**
+   * Select the first non-defeated enemy
+   */
+  public resolveSelected() {
+    let opponents = this._opponents.all();
+
+    for (let i = 0; i < opponents.length; i++) {
+      if (!opponents[i].isDefeated) {
+        this._index = i;
+        return;
+      }
+    }
+  }
+
+  /**
    * Switch to the next selection
    */
   private _next() {
+    if (this._opponents.areDefeated) {
+      return;
+    }
+
+    if (this._opponents.hasLastManStanding()) {
+      return this.resolveSelected();
+    }
+
     if (this._index === this._opponents.length - 1) {
       this._index = 0;
     } else {
       this._index++;
+    }
+
+    if (this.selected.isDefeated) {
+      this._next();
     }
   }
 
@@ -131,10 +161,22 @@ class OpponentSelect implements Eventful, Drawable, Lockable {
    * Switch to the previous selection
    */
   private _previous() {
+    if (this._opponents.areDefeated) {
+      return;
+    }
+
+    if (this._opponents.hasLastManStanding()) {
+      return this.resolveSelected();
+    }
+
     if (this._index === 0) {
       this._index = this._opponents.length - 1;
     } else {
       this._index--;
+    }
+
+    if (this.selected.isDefeated) {
+      this._previous();
     }
   }
 }

@@ -60,7 +60,11 @@ class StateManager implements Eventful {
    *
    * @return data stored at the reference
    */
-  public get(ref: string): any {
+  public get(ref?: string): any {
+    if (ref === undefined) {
+      return this.data;
+    }
+
     try {
       return ref.split(".").reduce((current, key) => {
         return current[key];
@@ -68,6 +72,13 @@ class StateManager implements Eventful {
     } catch (e) {
       return undefined;
     }
+  }
+
+  /**
+   * Completely wipe out the state
+   */
+  public empty() {
+    this.data = {};
   }
 
   /**

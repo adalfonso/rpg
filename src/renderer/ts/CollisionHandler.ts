@@ -67,7 +67,7 @@ class CollisionHandler {
    * @return if the enemy is stale
    */
   private handleEnemy(enemy: Enemy): boolean {
-    if (enemy.defeated) {
+    if (enemy.isDefeated) {
       return true;
     }
 

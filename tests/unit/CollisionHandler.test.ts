@@ -1,11 +1,18 @@
 import Enemy from "@/actors/Enemy";
 import Item from "@/inanimates/Item";
 import Player from "@/actors/Player";
+import StateManager from "@/state/StateManager";
 import Sut from "@/CollisionHandler";
 import Vector from "@common/Vector";
 import sinon from "sinon";
 import { Collision } from "@/actors/Actor";
 import { expect } from "chai";
+
+const state = StateManager.getInstance();
+
+afterEach(() => {
+  state.empty();
+});
 
 describe("CollisionHandler", () => {
   describe("update", () => {
@@ -25,7 +32,7 @@ describe("CollisionHandler", () => {
 
       expect(sut.update(0).length).to.equal(0);
 
-      enemy.defeated = true;
+      enemy.kill();
 
       expect(sut.update(0).length).to.equal(1);
     });

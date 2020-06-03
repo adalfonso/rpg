@@ -154,7 +154,7 @@ class LevelTemplate {
         return new NonPlayer(fixture);
       case "enemy":
         let enemy = new Enemy(fixture);
-        return enemy.defeated ? null : enemy;
+        return enemy.isDefeated ? null : enemy;
       case "item":
         let item = new Item(position, size, fixture);
         return item.obtained ? null : item;

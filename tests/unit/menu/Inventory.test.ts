@@ -10,7 +10,7 @@ const state = StateManager.getInstance();
 
 afterEach(() => {
   sinon.restore();
-  state.merge({});
+  state.empty();
 });
 
 describe("Inventory", () => {

@@ -69,6 +69,11 @@ abstract class Actor implements Drawable, Lockable {
   protected dialogue: Dialogue = null;
 
   /**
+   * If the actor has been defeated
+   */
+  protected _defeated: boolean = false;
+
+  /**
    * If the actor is locked from updating
    */
   protected locked: boolean;
@@ -151,6 +156,13 @@ abstract class Actor implements Drawable, Lockable {
    */
   get id() {
     return this._id;
+  }
+
+  /**
+   * Get the actor's defeated status
+   */
+  get isDefeated() {
+    return this._defeated || this.stats.hp <= 0;
   }
 
   /**
@@ -402,6 +414,10 @@ abstract class Actor implements Drawable, Lockable {
       }
     });
 
+    if (stateManagerData?.defeated) {
+      this._defeated = stateManagerData.defeated;
+    }
+
     return stateManagerData;
   }
 
@@ -428,7 +444,12 @@ abstract class Actor implements Drawable, Lockable {
    * @return current state of the actor
    */
   protected getState(): object {
-    return { type: this.data.type, dmg: this.stats.dmg, lvl: this.stats.lvl };
+    return {
+      type: this.data.type,
+      defeated: this._defeated,
+      dmg: this.stats.dmg,
+      lvl: this.stats.lvl,
+    };
   }
 
   /**

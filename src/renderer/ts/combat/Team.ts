@@ -21,7 +21,7 @@ class Team {
    * Determine if all team members are defeated
    */
   get areDefeated(): boolean {
-    return this._members.filter((member) => member.stats.hp > 0).length === 0;
+    return this._members.filter((member) => !member.isDefeated).length === 0;
   }
 
   /**
@@ -59,9 +59,11 @@ class Team {
     offset: Vector,
     resolution: Vector
   ) {
-    this._members.forEach((member: Actor, index: number) => {
-      member.draw(ctx, offset, resolution);
-    });
+    this._members
+      .filter((member) => !member.isDefeated)
+      .forEach((member: Actor, index: number) => {
+        member.draw(ctx, offset, resolution);
+      });
   }
 
   /**
@@ -77,6 +79,15 @@ class Team {
       member.position = position.plus(new Vector(member.size.x * index * 4, 0));
       member.lock();
     });
+  }
+
+  /**
+   * Determine if there is only one member left on the team
+   *
+   * @return if there is only one undefeated member on the team
+   */
+  public hasLastManStanding(): boolean {
+    return this._members.filter((member) => !member.isDefeated).length === 1;
   }
 
   /**

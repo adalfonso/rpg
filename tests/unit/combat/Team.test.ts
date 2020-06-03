@@ -1,9 +1,16 @@
 import Actor from "@/actors/Actor";
 import Enemy from "@/actors/Enemy";
+import StateManager from "@/state/StateManager";
 import Sut from "@/combat/Team";
 import Vector from "@common/Vector";
 import sinon from "sinon";
 import { expect } from "chai";
+
+const state = StateManager.getInstance();
+
+afterEach(() => {
+  state.empty();
+});
 
 describe("Team", () => {
   describe("areDefeated", () => {
@@ -115,6 +122,22 @@ describe("Team", () => {
       const sut = new Sut([actor1, actor2]);
 
       expect(sut.givesExp).to.equal(25);
+    });
+  });
+
+  describe("hasLastManStanding", () => {
+    it("detects when has last man standing", () => {
+      const actor1 = getActor();
+      const actor2 = getActor();
+      const sut = new Sut([actor1, actor2]);
+
+      expect(sut.hasLastManStanding()).to.be.false;
+
+      actor2.kill();
+      expect(sut.hasLastManStanding()).to.be.true;
+
+      actor1.kill();
+      expect(sut.hasLastManStanding()).to.be.false;
     });
   });
 });

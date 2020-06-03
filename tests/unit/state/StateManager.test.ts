@@ -32,6 +32,16 @@ describe("StateManager", () => {
 
       expect(sut.get("actors.knight0")).to.equal(undefined);
     });
+
+    it("gets the entire state when the reference key is undefined", () => {
+      let sut = new Sut();
+      let expected = getBasicActorData();
+
+      sut.merge(getBasicActorData());
+
+      expect(sut.get()).to.deep.equal(expected);
+      expect(sut.get()).to.not.equal(expected);
+    });
   });
 
   describe("merge", () => {
@@ -113,7 +123,7 @@ describe("StateManager", () => {
         },
       };
 
-      sut.merge({});
+      sut.empty();
 
       expect(sut.get("actors.knight0")).to.equal(undefined);
       expect(sut.get("actors.knight0.stats.hp")).to.equal(undefined);
@@ -157,6 +167,20 @@ describe("StateManager", () => {
       sut.remove("actors.knight0.weapon");
 
       expect(sut.toJson()).to.equal(JSON.stringify(input));
+    });
+  });
+
+  describe("empty", () => {
+    it("completely empties the state", () => {
+      let sut = new Sut();
+
+      sut.merge(getBasicActorData());
+
+      expect(sut.get()).to.not.deep.equal({});
+
+      sut.empty();
+
+      expect(sut.get()).to.deep.equal({});
     });
   });
 
