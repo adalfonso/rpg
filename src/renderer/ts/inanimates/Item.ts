@@ -1,13 +1,20 @@
 import Inanimate from "./Inanimate";
 import MissingDataError from "@/error/MissingDataError";
+import Renderable from "@/Renderable";
 import StateManager from "@/state/StateManager";
 import Vector from "@common/Vector";
-import { ucFirst } from "@/util";
+import items from "@/item/items.json";
+import { ucFirst, getImagePath } from "@/util";
 
 /**
  * An item in the context of a map/level
  */
 class Item extends Inanimate {
+  /**
+   * Game-related info about the item
+   */
+  private _config: any;
+
   /**
    * Unique identifier
    */
@@ -17,6 +24,11 @@ class Item extends Inanimate {
    * If the item was picked up
    */
   private _obtained: boolean = false;
+
+  /**
+   * UI aspect of the item
+   */
+  private _renderable: Renderable;
 
   /**
    * The type of item
@@ -45,6 +57,21 @@ class Item extends Inanimate {
 
     this._type = data.type;
     this._id = data.name;
+
+    this._config = items[data.type];
+
+    if (!this._config) {
+      throw new MissingDataError(
+        `Config data for ${data.type} is not defined in items.json`
+      );
+    }
+
+    const sprite = getImagePath(this._config.ui.sprite);
+    const scale = this._config.ui?.scale ?? 1;
+    const ratio = new Vector(1, 1);
+    const fps = 0;
+
+    this._renderable = new Renderable(sprite, scale, 0, 1, ratio, fps);
 
     this.resolveState(`items.${this._id}`);
   }
@@ -87,8 +114,7 @@ class Item extends Inanimate {
   ) {
     super.draw(ctx, offset, resolution);
 
-    // Force debugDraw temporarily
-    super.debugDraw(ctx, offset, resolution);
+    this._renderable.draw(ctx, this.position.plus(offset), resolution);
   }
 
   /**

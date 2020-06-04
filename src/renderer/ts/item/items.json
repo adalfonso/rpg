@@ -2,12 +2,19 @@
   "empanada": {
     "type": "item",
     "description": "A tasty treat!",
-    "value": 0.25
+    "value": 0.25,
+    "ui": {
+      "sprite": "item.empanada",
+      "scale": 2
+    }
   },
   "water": {
     "type": "item",
     "description": "For the thirsty.",
-    "value": 0.5
+    "value": 0.5,
+    "ui": {
+      "sprite": "item.water_bottle"
+    }
   },
   "big_sword": {
     "displayAs": "Big Sword",
