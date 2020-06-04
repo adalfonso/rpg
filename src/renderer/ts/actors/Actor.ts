@@ -382,6 +382,10 @@ abstract class Actor implements Drawable, Lockable {
    * @param weapon - weapon to equip
    */
   protected equip(weapon: Weapon) {
+    if (weapon === this.weapon) {
+      return;
+    }
+
     if (this.weapon) {
       this.weapon.unequip();
     }

@@ -184,6 +184,10 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
    * @param weapon - weapon to equip
    */
   protected equip(weapon: Weapon) {
+    if (weapon === this.weapon) {
+      return;
+    }
+
     super.equip(weapon);
 
     StateManager.getInstance().mergeByRef("player", this.getState());
