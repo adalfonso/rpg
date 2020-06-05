@@ -1,6 +1,8 @@
 import MissingDataError from "@/error/MissingDataError";
+import Renderable from "@/Renderable";
+import Vector from "@common/Vector";
 import items from "@/item/items.json";
-import { ucFirst } from "@/util";
+import { ucFirst, getImagePath } from "@/util";
 
 /**
  * An item in the context of an inventory
@@ -10,6 +12,11 @@ class Item {
    * Game-related info about the item
    */
   private _config: any;
+
+  /**
+   * UI aspect of the item
+   */
+  private _renderable: Renderable;
 
   /**
    * Create a new Item instance
@@ -26,6 +33,13 @@ class Item {
         `Config data for item "${_type}" is not defined in items.json`
       );
     }
+
+    const sprite = getImagePath(this._config.ui.sprite);
+    const scale = this._config.ui?.scale ?? 1;
+    const ratio = new Vector(1, 1);
+    const fps = 0;
+
+    this._renderable = new Renderable(sprite, scale, 0, 1, ratio, fps);
   }
 
   /**
@@ -33,6 +47,13 @@ class Item {
    */
   get category(): string {
     return this._config.type;
+  }
+
+  /**
+   * Get the description of the item
+   */
+  get description(): string {
+    return this._config.description ?? this.displayAs;
   }
 
   /**
@@ -50,6 +71,21 @@ class Item {
    */
   get type(): string {
     return this._type;
+  }
+
+  /**
+   * Draw the item
+   *
+   * @param ctx        - render context
+   * @param offset     - render position offset
+   * @param resolution - render resolution
+   */
+  public draw(
+    ctx: CanvasRenderingContext2D,
+    offset: Vector,
+    resolution: Vector
+  ) {
+    this._renderable.draw(ctx, offset, resolution);
   }
 }
 

@@ -1,7 +1,7 @@
 {
   "empanada": {
     "type": "item",
-    "description": "A tasty treat!",
+    "description": "A tasty treat! Restore 50 HP.",
     "value": 0.25,
     "ui": {
       "sprite": "item.empanada",
@@ -10,7 +10,7 @@
   },
   "water": {
     "type": "item",
-    "description": "For the thirsty.",
+    "description": "For the thirsty. Restores 10 hp.",
     "value": 0.5,
     "ui": {
       "sprite": "item.water_bottle"

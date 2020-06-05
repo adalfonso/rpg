@@ -105,21 +105,24 @@ class Inventory extends Menu implements Eventful, Drawable {
       // Offset all options after the first option
       let spacing = index ? TEXT_SIZE * 2 : 0;
 
-      let isEquipable =
-        option === this.currentOption &&
-        this.selected.length > 1 &&
-        this.selected.slice(-2).shift().equipable;
+      /**
+       * Make the assumption that this.selected with a length of two consists of
+       * a menu and one of its constituents. If this is the case, we want to
+       * draw the details of the contituent.
+       */
+      const showDetails =
+        option === this.currentOption && this.selected.length === 2;
 
       ctx.translate(0, spacing);
 
       ctx.save();
 
-      let equipableSize;
+      let detailSize;
 
-      if (isEquipable) {
+      if (showDetails) {
         let offset = new Vector(-2, -TEXT_SIZE);
 
-        equipableSize = this.drawEquipable(ctx, offset, resolution, option);
+        detailSize = this.drawDetails(ctx, offset, resolution, option);
 
         // Move menu option a little bit away from the border
         ctx.translate(10, 0);
@@ -129,8 +132,8 @@ class Inventory extends Menu implements Eventful, Drawable {
       this.drawOptionText(ctx, new Vector(0, 0), resolution, option);
 
       // Account for height of equipable menu on next menu item
-      if (isEquipable) {
-        ctx.translate(0, equipableSize.y - TEXT_SIZE);
+      if (showDetails) {
+        ctx.translate(0, detailSize.y - TEXT_SIZE);
       }
 
       // Render sub-menu
@@ -144,14 +147,14 @@ class Inventory extends Menu implements Eventful, Drawable {
   }
 
   /**
-   * Handle drawing of the equipable screen
+   * Handle drawing of the detail panel
    *
    * @param ctx         - render context
    * @param offset      - render position offset
    * @param _resolution - render resolution
    * @param option      - target option
    */
-  private drawEquipable(
+  private drawDetails(
     ctx: CanvasRenderingContext2D,
     offset: Vector,
     resolution: Vector,
@@ -160,7 +163,7 @@ class Inventory extends Menu implements Eventful, Drawable {
     // y-value is not known until the description renders
     let descriptionSize = new Vector(400, Infinity);
 
-    const isEquipped = option.isEquipped;
+    const isEquipped = option.isEquipped ?? false;
     const padding = new Vector(16, 16);
     const spriteSize = new Vector(64, 64);
     const spritePadding = new Vector(16, 8);
@@ -173,7 +176,7 @@ class Inventory extends Menu implements Eventful, Drawable {
       ctx,
       offset.plus(padding).plus(descriptionPadding),
       descriptionSize,
-      option.description
+      option.description ?? "Description not found."
     );
 
     const equippedIndicator = "Equipped";

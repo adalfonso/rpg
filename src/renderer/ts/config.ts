@@ -35,12 +35,13 @@ export const menus = {
     {
       type: "armor",
       displayAs: "Armor",
-      menu: [],
+      equipable: true,
+      menu: [] as any[],
     },
     {
       type: "special",
       displayAs: "Special",
-      menu: [],
+      menu: [] as any[],
     },
   ],
 };
