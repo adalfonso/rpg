@@ -1,4 +1,5 @@
-import Actor from "@/actors/Actor";
+import AbilityFactory from "./strategy/AbilityFactory";
+import Actor from "@/actor/Actor";
 import AnimationFactory from "@/ui/animation/AnimationFactory";
 import AnimationQueue from "@/ui/animation/AnimationQueue";
 import BattleMenu from "@/menu/BattleMenu";
@@ -9,6 +10,7 @@ import Team from "./Team";
 import TextStream from "@/ui/TextStream";
 import Vector from "@common/Vector";
 import { Drawable, Eventful, Lockable, CallableMap } from "@/interfaces";
+import { LearnedAbility } from "./strategy/types";
 import { bus } from "@/EventBus";
 
 class Battle implements Eventful, Drawable, Lockable {
@@ -186,16 +188,18 @@ class Battle implements Eventful, Drawable, Lockable {
         let name = this._heroes.leader.displayAs;
         let exp = e.detail.exp;
         let levels = e.detail.levels;
-        let moveSet = e.detail.moveSet;
+        let abilities = e.detail.abilities;
         let dialogue = [`${name} gained ${exp} exp.`];
 
         levels.forEach((lvl: number) => {
           dialogue.push(`${name} grew to level ${lvl}!`);
 
-          moveSet
-            .filter((move: any) => move.level === lvl)
-            .forEach((move: any) => {
-              dialogue.push(`${name} learned ${move.displayAs}!`);
+          abilities
+            .filter((ability: LearnedAbility) => ability.level === lvl)
+            .forEach((ability: LearnedAbility) => {
+              const instance = new AbilityFactory().createStrategy(ability.ref);
+
+              dialogue.push(`${name} learned ${instance.displayAs}!`);
             });
         });
 
@@ -352,8 +356,8 @@ class Battle implements Eventful, Drawable, Lockable {
         menu: player.weapon ? [player.weapon] : [],
       },
       {
-        type: "Spells",
-        menu: player.spells,
+        type: "Abilities",
+        menu: player.abilities,
       },
       {
         type: "Other",

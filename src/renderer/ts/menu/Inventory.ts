@@ -4,7 +4,8 @@ import MissingDataError from "@/error/MissingDataError";
 import StateManager from "@/state/StateManager";
 import TextBuffer from "@/ui/TextBuffer";
 import Vector from "@common/Vector";
-import Weapon from "@/combat/Weapon";
+import Weapon from "@/combat/strategy/Weapon";
+import WeaponFactory from "@/combat/strategy/WeaponFactory";
 import { Drawable, Eventful, CallableMap } from "@/interfaces";
 
 /**
@@ -13,7 +14,7 @@ import { Drawable, Eventful, CallableMap } from "@/interfaces";
 type MenuOption = {
   type: string;
   displayAs: string;
-  menu: MenuOption[];
+  menu: any[];
 };
 
 /**
@@ -45,15 +46,12 @@ class Inventory extends Menu implements Eventful, Drawable {
    * Get current state of the inventory for export to a state manager
    */
   get state(): object {
-    const getSubMenu = (type: string) =>
-      this.menu.filter((subMenu: any) => subMenu.type === type)[0]?.menu ?? [];
-
     return {
       menu: {
-        item: getSubMenu("item").map((i: Item) => i.type),
-        weapon: getSubMenu("weapon").map((i: Item) => i.type),
-        armor: getSubMenu("armor").map((i: Item) => i.type),
-        special: getSubMenu("special").map((i: Item) => i.type),
+        item: this._getSubMenu("item").map((i: Item) => i.type),
+        weapon: this._getSubMenu("weapon").map((i: Item) => i.type),
+        armor: this._getSubMenu("armor").map((i: Item) => i.type),
+        special: this._getSubMenu("special").map((i: Item) => i.type),
       },
     };
   }
@@ -390,13 +388,28 @@ class Inventory extends Menu implements Eventful, Drawable {
    * @param item - an item to store in the inventory
    */
   public store(item: Item) {
-    this.menu
-      .filter((subMenu) => {
-        return subMenu.type === item.category;
-      })[0]
-      .menu.push(item.category === "weapon" ? new Weapon(item.type) : item);
+    const menu = this._getSubMenu(item.category);
+
+    if (item.category == "weapon") {
+      menu.push(new WeaponFactory().createStrategy(item.type));
+    } else {
+      menu.push(item);
+    }
 
     this.updateState();
+  }
+
+  /**
+   * Lookup a submenu by its type
+   *
+   * @param type - the type of the submenu
+   *
+   * @return the submenu
+   */
+  private _getSubMenu(type: string): any[] {
+    return this.menu.filter((subMenu) => {
+      return subMenu.type === type;
+    })[0]?.menu;
   }
 
   /**
@@ -416,31 +429,20 @@ class Inventory extends Menu implements Eventful, Drawable {
       return state.get(ref);
     }
 
-    ["item", "weapon", "armor", "spell"].forEach((menuType) => {
+    ["item", "weapon", "armor", "ability"].forEach((menuType) => {
       let subMenu = stateManagerData?.menu?.[menuType] ?? [];
 
       subMenu.forEach((item: any) => {
-        let subMenu: any = this.menu.filter((subMenu) => {
-          return subMenu.type === menuType;
-        });
-
-        if (!subMenu.length) {
-          return;
+        if (this._getSubMenu(menuType)) {
+          this.store(new Item(item));
         }
-
-        let instance =
-          menuType === "weapon" ? new Weapon(item) : new Item(item);
-
-        subMenu[0].menu.push(instance);
       });
     });
 
     const equipped = state.get("player.equipped");
 
     if (equipped) {
-      const weaponMenu = this.menu.filter((menu) => menu.type === "weapon")[0];
-
-      weaponMenu.menu.forEach((weapon: Weapon) => {
+      this._getSubMenu("weapon").forEach((weapon: Weapon) => {
         if (weapon.type === equipped) {
           weapon.equip();
         }

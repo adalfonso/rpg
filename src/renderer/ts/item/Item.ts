@@ -1,7 +1,7 @@
 import MissingDataError from "@/error/MissingDataError";
-import Renderable from "@/Renderable";
+import Renderable from "@/ui/Renderable";
 import Vector from "@common/Vector";
-import items from "@/item/items.json";
+import items from "@/item/items.ts";
 import { ucFirst, getImagePath } from "@/util";
 
 /**
@@ -30,7 +30,7 @@ class Item {
 
     if (!this._config) {
       throw new MissingDataError(
-        `Config data for item "${_type}" is not defined in items.json`
+        `Config data for item "${_type}" is not defined in items.ts`
       );
     }
 
@@ -46,7 +46,7 @@ class Item {
    * Get the item's category
    */
   get category(): string {
-    return this._config.type;
+    return this._config.category;
   }
 
   /**

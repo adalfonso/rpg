@@ -1,4 +1,4 @@
-import Renderable from "@/Renderable";
+import Renderable from "@/ui/Renderable";
 import Vector from "@common/Vector";
 import config from "@/config";
 import { Drawable } from "@/interfaces";

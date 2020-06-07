@@ -1,5 +1,5 @@
-import Actor from "@/actors/Actor";
-import Enemy from "@/actors/Enemy";
+import Actor from "@/actor/Actor";
+import Enemy from "@/actor/Enemy";
 import StateManager from "@/state/StateManager";
 import Sut from "@/combat/Team";
 import Vector from "@common/Vector";

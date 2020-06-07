@@ -1,11 +1,10 @@
-import Enemy from "@/actors/Enemy";
-import Item from "@/inanimates/Item";
-import Player from "@/actors/Player";
+import Enemy from "@/actor/Enemy";
+import Item from "@/inanimate/Item";
+import Player from "@/actor/Player";
 import StateManager from "@/state/StateManager";
-import Sut from "@/CollisionHandler";
+import Sut, { Collision } from "@/CollisionHandler";
 import Vector from "@common/Vector";
 import sinon from "sinon";
-import { Collision } from "@/actors/Actor";
 import { expect } from "chai";
 
 const state = StateManager.getInstance();

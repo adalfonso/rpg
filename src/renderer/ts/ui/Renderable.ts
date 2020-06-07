@@ -1,25 +1,6 @@
 import Vector from "@common/Vector";
-import config from "./config";
-import { Drawable } from "./interfaces";
-
-/**
- * Data fed to a Renderable instance
- */
-export type RenderData = {
-  fps: number;
-  frames: {
-    x: number;
-    y: number;
-    idle: number;
-    north: number;
-    east: number;
-    south: number;
-    west: number;
-  };
-  ratio: Vector;
-  scale: number;
-  sprite: string;
-};
+import config from "@/config";
+import { Drawable } from "@/interfaces";
 
 export default class Renderable implements Drawable {
   /**

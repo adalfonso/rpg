@@ -1,7 +1,7 @@
 import "./scss/app.scss";
 import Display from "@/ui/Display";
 import Game from "@/Game";
-import Player from "@/actors/Player";
+import Player from "@/actor/Player";
 import StateManager from "@/state/StateManager";
 import Vector from "@common/Vector";
 import { resolution } from "@common/common";

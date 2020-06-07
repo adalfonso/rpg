@@ -1,13 +1,13 @@
-import CollisionHandler from "./CollisionHandler";
-import Entry from "./inanimates/Entry";
-import Map from "./inanimates/Map";
-import MissingDataError from "./error/MissingDataError";
-import Player from "./actors/Player";
-import Portal from "./inanimates/Portal";
+import CollisionHandler from "../CollisionHandler";
+import Entry from "@/inanimate/Entry";
+import Map from "@/inanimate/Map";
+import MissingDataError from "@/error/MissingDataError";
+import Player from "@/actor/Player";
+import Portal from "@/inanimate/Portal";
 import Template, { LevelFixture } from "./LevelTemplate";
 import Vector from "@common/Vector";
-import levels from "./levels/levels";
-import { Drawable, Eventful, CallableMap } from "./interfaces";
+import levels from "./levels";
+import { Drawable, Eventful, CallableMap } from "@/interfaces";
 import { bus } from "@/EventBus";
 import { getImagePath } from "@/util";
 

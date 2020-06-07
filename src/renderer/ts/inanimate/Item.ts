@@ -1,9 +1,9 @@
 import Inanimate from "./Inanimate";
 import MissingDataError from "@/error/MissingDataError";
-import Renderable from "@/Renderable";
+import Renderable from "@/ui/Renderable";
 import StateManager from "@/state/StateManager";
 import Vector from "@common/Vector";
-import items from "@/item/items.json";
+import items from "@/item/items.ts";
 import { ucFirst, getImagePath } from "@/util";
 
 /**
@@ -62,7 +62,7 @@ class Item extends Inanimate {
 
     if (!this._config) {
       throw new MissingDataError(
-        `Config data for ${data.type} is not defined in items.json`
+        `Config data for ${data.type} is not defined in items.ts`
       );
     }
 

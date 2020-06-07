@@ -1,10 +1,22 @@
-import Clip from "./inanimates/Clip";
-import Enemy from "./actors/Enemy";
-import Item from "./inanimates/Item";
-import Player from "./actors/Player";
-import Portal from "./inanimates/Portal";
-import { LevelFixture } from "./LevelTemplate";
+import Clip from "./inanimate/Clip";
+import Enemy from "./actor/Enemy";
+import Item from "./inanimate/Item";
+import Player from "./actor/Player";
+import Portal from "./inanimate/Portal";
+import Vector from "@common/Vector";
+import { LevelFixture } from "./level/LevelTemplate";
 import { bus } from "@/EventBus";
+
+/**
+ * Collision information with another entity
+ *
+ * @prop position - position of the entity that caused the collision
+ * @prop size     - size of the entity that caused the collision
+ */
+export type Collision = {
+  position: Vector;
+  size: Vector;
+};
 
 /**
  * Manages collisions between a player and other fixtures

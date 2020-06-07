@@ -170,7 +170,7 @@ abstract class Menu implements Eventful, Drawable, Lockable {
   protected select() {
     let option = this.currentOption;
 
-    if (option.hasOwnProperty("menu") && option.menu.length) {
+    if (option.menu?.length) {
       this.selected.push(option.menu[0]);
     } else if (option.hasOwnProperty("action")) {
       option.action(this);

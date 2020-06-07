@@ -1,4 +1,4 @@
-import CombatStrategy from "@/combat/CombatStrategy";
+import CombatStrategy from "@/combat/strategy/CombatStrategy";
 import Menu from "./Menu";
 import Vector from "@common/Vector";
 import { Drawable, Eventful, CallableMap } from "@/interfaces";
@@ -12,7 +12,7 @@ type BattleMenuOption = {
 };
 
 /**
- * In-battle menu of a player's items, attack, and spells
+ * In-battle menu of a player's items, attack, and abilities
  */
 class BattleMenu extends Menu implements Eventful, Drawable {
   /**

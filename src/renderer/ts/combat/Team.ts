@@ -1,4 +1,4 @@
-import Actor from "@/actors/Actor";
+import Actor from "@/actor/Actor";
 import MissingDataError from "@/error/MissingDataError";
 import Vector from "@common/Vector";
 

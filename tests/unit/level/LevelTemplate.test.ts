@@ -1,6 +1,6 @@
 import { expect } from "chai";
-import Sut from "@/LevelTemplate";
-import example from "../assets/example.json";
+import Sut from "@/level/LevelTemplate";
+import example from "../../assets/example.json";
 
 describe("LevelTemplate", () => {
   it("parses template json", () => {

@@ -1,10 +1,10 @@
-import Sut from "@/combat/Weapon";
+import Sut from "@/combat/strategy/Weapon";
 import { expect } from "chai";
 
 describe("Weapon", () => {
   describe("equip", () => {
     it("equips a weapon", () => {
-      let sut = getSut();
+      const sut = getSut();
 
       expect(sut.isEquipped).to.be.false;
 
@@ -16,7 +16,7 @@ describe("Weapon", () => {
 
   describe("unequip", () => {
     it("unequips a weapon", () => {
-      let sut = getSut();
+      const sut = getSut();
 
       sut.equip();
       expect(sut.isEquipped).to.be.true;
@@ -28,7 +28,15 @@ describe("Weapon", () => {
 });
 
 const getSut = () => {
-  let itemType = "big_sword";
+  const itemType = "big_sword";
 
-  return new Sut(itemType);
+  const template = {
+    description: "desc",
+    displayAs: "display name",
+    category: "weapon",
+    ui: { sprite: "weapon.big_sword" },
+    value: 1,
+  };
+
+  return new Sut(template, itemType);
 };

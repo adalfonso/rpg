@@ -1,25 +1,20 @@
+import AbilityFactory from "@/combat/strategy/AbilityFactory";
+import CombatStrategy from "@/combat/strategy/CombatStrategy";
 import Dialogue from "@/ui/Dialogue";
-import Inanimate from "@/inanimates/Inanimate";
+import Inanimate from "@/inanimate/Inanimate";
 import MissingDataError from "@/error/MissingDataError";
-import Spell from "@/combat/Spell";
 import StateManager from "@/state/StateManager";
 import Stats from "@/Stats";
 import UnimplementedMethodError from "@/error/UnimplementMethodError";
 import Vector from "@common/Vector";
-import Weapon from "@/combat/Weapon";
-import actors from "./actors.json";
+import Weapon from "@/combat/strategy/Weapon";
+import actors from "./actors";
 import config from "@/config";
+import { Collision } from "@/CollisionHandler";
 import { Drawable, Lockable } from "@/interfaces";
-import { RenderData } from "@/Renderable";
+import { LearnedAbility } from "@/combat/strategy/types";
+import { RenderData } from "@/ui/types";
 import { getImagePath } from "@/util";
-
-/**
- * Collision information with another entity
- */
-export type Collision = {
-  position: Vector;
-  size: Vector;
-};
 
 /**
  * General purpose entity that interacts with fixtures in the game
@@ -180,19 +175,12 @@ abstract class Actor implements Drawable, Lockable {
   }
 
   /**
-   * Get the move set of an actor
+   * Get the abilities the actor currently knows
    */
-  get moveSet(): any[] {
-    return this.config.moveSet ?? [];
-  }
-
-  /**
-   * Get the spells the actor currently knows
-   */
-  get spells(): Spell[] {
-    return this.moveSet
-      .filter((move) => move.level <= this.stats.lvl)
-      .map((spell) => new Spell(spell));
+  get abilities(): CombatStrategy[] {
+    return this._getAllAbilities()
+      .filter((ability) => ability.level <= this.stats.lvl)
+      .map((ability) => new AbilityFactory().createStrategy(ability.ref));
   }
 
   /**
@@ -423,6 +411,15 @@ abstract class Actor implements Drawable, Lockable {
     }
 
     return stateManagerData;
+  }
+
+  /**
+   * Get all of the actor's abilities
+   *
+   * @return all the actor's abilities
+   */
+  protected _getAllAbilities(): LearnedAbility[] {
+    return this.config.abilities ?? [];
   }
 
   /**

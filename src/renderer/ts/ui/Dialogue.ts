@@ -1,4 +1,4 @@
-import Actor from "../actors/Actor";
+import Actor from "../actor/Actor";
 import TextStream from "./TextStream";
 import Vector from "@common/Vector";
 import { Drawable, Eventful, CallableMap } from "../interfaces";

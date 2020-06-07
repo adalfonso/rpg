@@ -3,17 +3,17 @@ import BattleBuilder from "./combat/BattleBuilder";
 import CollisionHandler from "./CollisionHandler";
 import Dialogue from "./ui/Dialogue";
 import Inventory from "./menu/Inventory";
-import Level from "./Level";
-import LevelTemplate from "./LevelTemplate";
+import Level from "./level/Level";
+import LevelTemplate from "./level/LevelTemplate";
 import MissingDataError from "./error/MissingDataError";
-import Player from "./actors/Player";
+import Player from "./actor/Player";
 import StartMenu from "./menu/StartMenu";
 import TextStream from "./ui/TextStream";
 import Vector from "@common/Vector";
-import levels from "./levels/levels";
+import levels from "./level/levels";
+import menus from "./menu/menus";
 import { Drawable, Eventful, CallableMap } from "./interfaces";
 import { bus } from "@/EventBus";
-import { menus } from "./config";
 
 /**
  * Different states a game can be in

@@ -1,4 +1,4 @@
-import Enemy from "@/actors/Enemy";
+import Enemy from "@/actor/Enemy";
 import StateManager from "@/state/StateManager";
 import Sut from "@/combat/OpponentSelect";
 import Team from "@/combat/Team";

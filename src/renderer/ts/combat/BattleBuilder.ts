@@ -1,5 +1,5 @@
 import Battle from "./Battle";
-import Enemy from "@/actors/Enemy";
+import Enemy from "@/actor/Enemy";
 import HeroTeam from "./HeroTeam";
 import MissingDataError from "@/error/MissingDataError";
 import OpponentSelect from "./OpponentSelect";

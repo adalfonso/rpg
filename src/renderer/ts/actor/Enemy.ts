@@ -1,6 +1,6 @@
 import Actor from "./Actor";
 import Player from "./Player.js";
-import Renderable from "@/Renderable";
+import Renderable from "@/ui/Renderable";
 import StateManager from "@/state/StateManager";
 import Vector from "@common/Vector";
 import { Drawable } from "@/interfaces";

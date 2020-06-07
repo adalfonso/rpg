@@ -1,8 +1,8 @@
-import Player from "@/actors/Player";
+import Player from "@/actor/Player";
 import Sut from "@/combat/HeroTeam";
-import { expect } from "chai";
-import sinon from "sinon";
 import Vector from "@common/Vector";
+import sinon from "sinon";
+import { expect } from "chai";
 
 describe("HeroTeam", () => {
   describe("gainExp", () => {

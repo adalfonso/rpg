@@ -1,10 +1,10 @@
 import Actor from "./Actor";
 import InvalidDataError from "@/error/InvalidDataError";
 import MissingDataError from "@/error/MissingDataError";
-import Renderable from "@/Renderable";
+import Renderable from "@/ui/Renderable";
 import StateManager from "@/state/StateManager";
 import Vector from "@common/Vector";
-import Weapon from "@/combat/Weapon";
+import Weapon from "@/combat/strategy/Weapon";
 import config from "@/config";
 import { Drawable, Eventful, Lockable, CallableMap } from "@/interfaces";
 import { bus } from "@/EventBus";
@@ -160,7 +160,7 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
     let expData = this.stats.gainExp(exp);
 
     let data = {
-      moveSet: this.moveSet,
+      abilities: this._getAllAbilities(),
       ...expData,
     };
 

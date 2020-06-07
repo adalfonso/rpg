@@ -1,13 +1,13 @@
-import Clip from "./inanimates/Clip";
-import Enemy from "./actors/Enemy";
-import Entry from "./inanimates/Entry";
-import InvalidDataError from "./error/InvalidDataError";
-import Item from "./inanimates/Item";
-import MissingDataError from "./error/MissingDataError";
-import NonPlayer from "./actors/NonPlayer";
-import Portal from "./inanimates/Portal";
+import Clip from "@/inanimate/Clip";
+import Enemy from "@/actor/Enemy";
+import Entry from "@/inanimate/Entry";
+import InvalidDataError from "@/error/InvalidDataError";
+import Item from "@/inanimate/Item";
+import MissingDataError from "@/error/MissingDataError";
+import NonPlayer from "@/actor/NonPlayer";
+import Portal from "@/inanimate/Portal";
 import Vector from "@common/Vector";
-import config from "./config";
+import config from "@/config";
 
 /**
  * Type of fixtures to expect in a level

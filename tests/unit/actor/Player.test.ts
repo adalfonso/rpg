@@ -1,4 +1,4 @@
-import Sut from "@/actors/Player";
+import Sut from "@/actor/Player";
 import Vector from "@common/Vector";
 import { bus } from "@/EventBus";
 import { expect } from "chai";

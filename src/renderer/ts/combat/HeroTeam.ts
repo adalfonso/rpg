@@ -1,4 +1,4 @@
-import Player from "@/actors/Player";
+import Player from "@/actor/Player";
 import Team from "./Team";
 
 /**

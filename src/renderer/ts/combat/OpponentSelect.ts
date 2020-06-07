@@ -1,4 +1,4 @@
-import Actor from "@/actors/Actor";
+import Actor from "@/actor/Actor";
 import Team from "./Team";
 import Vector from "@common/Vector";
 import { Eventful, CallableMap, Drawable, Lockable } from "@/interfaces";

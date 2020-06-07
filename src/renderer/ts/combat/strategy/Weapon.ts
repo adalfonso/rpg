@@ -1,5 +1,5 @@
 import CombatStrategy from "./CombatStrategy";
-import items from "@/item/items.json";
+import { CombatStrategyTemplate } from "./types";
 import { bus } from "@/EventBus";
 
 /**
@@ -12,12 +12,13 @@ class Weapon extends CombatStrategy {
   private _isEquipped: boolean = false;
 
   /**
-   * Create a new weapon instance
+   * Create a new Weapon instance
    *
-   * @param _type - item type
+   * @param template - weapon's template
+   * @param _type    - weapon type
    */
-  constructor(private _type: string) {
-    super(items[_type]);
+  constructor(template: CombatStrategyTemplate, private _type: string) {
+    super(template);
   }
 
   /**
