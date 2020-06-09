@@ -131,20 +131,18 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
         }
       },
 
-      "weapon.equip": (e: CustomEvent) => {
-        let weapon = e.detail.weapon;
+      "equipment.equip": (e: CustomEvent) => {
+        let equipment = e.detail.equipment;
 
-        if (!weapon) {
+        if (!equipment) {
           throw new MissingDataError(
-            `Player unable to equip weapon because it is missing.`
+            `Player unable to equip equipment because it is missing.`
           );
         }
 
-        if (!(weapon instanceof Weapon)) {
-          throw new InvalidDataError(`Player unable to equip a non-weapon.`);
+        if (equipment instanceof Weapon) {
+          this.equip(equipment);
         }
-
-        this.equip(weapon);
       },
     };
   }

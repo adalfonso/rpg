@@ -1,24 +1,26 @@
 import CombatStrategy from "./CombatStrategy";
-import { AbilityTemplate } from "./types";
+import Damage from "../Damage";
+import Renderable from "@/ui/Renderable";
+import { Descriptive, DamageDealing, Visual } from "./CombatStrategy";
+import { DescriptiveTemplate } from "./types";
 
 /**
  * Technique learned by an actor
  */
-class Ability extends CombatStrategy {
-  /**
-   * If the ability relates to sp_atk/sp_def
-   */
-  private _isSpecial: boolean;
-
+class Ability extends DamageDealing(Visual(Descriptive(CombatStrategy))) {
   /**
    * Create a new Ability instance
    *
-   * @param template - weapon template
+   * @param _template - ability's template
+   * @param _ui       - UI component of the ability
+   * @param _damage   - damage the ability deals
    */
-  constructor(template: AbilityTemplate) {
-    super(template);
-
-    this._isSpecial = template.isSpecial;
+  constructor(
+    protected _template: DescriptiveTemplate,
+    protected _ui: Renderable,
+    protected _damage: Damage
+  ) {
+    super();
   }
 }
 

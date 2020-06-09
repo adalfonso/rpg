@@ -33,6 +33,10 @@ const actors: ActorList = {
         ref: "twister",
         level: 6,
       },
+      {
+        ref: "mega_punch",
+        level: 6,
+      },
     ],
   },
   knight: {

@@ -1,36 +1,15 @@
+import { Stat } from "@/Stats";
 import { UiData } from "@/ui/types";
 
 /**
- * Info about an ability
+ * Basic description for an entity
  *
- * @prop description - description of the ability
  * @prop displayAs   - display name
- * @prop isSpecial   - if damage dealt by the ability is based on sp_atk
- * @prop ui          - render info
- * @prop value       - offensive/defensive value of the ability
- *
+ * @prop description - description
  */
-export type AbilityTemplate = {
-  description: string;
+export type DescriptiveTemplate = {
   displayAs: string;
-  isSpecial: boolean;
-  ui: UiData;
-  value: number;
-};
-
-/**
- * Info about a combat strategy
- *
- * @prop description - description of the strategy
- * @prop displayAs   - display name
- * @prop ui          - render info
- * @prop value       - offensive/defensive value of the strategy
- */
-export type CombatStrategyTemplate = {
   description: string;
-  displayAs: string;
-  ui: UiData;
-  value: number;
 };
 
 /**

@@ -1,7 +1,8 @@
 import Ability from "./Ability";
-import CombatStrategy from "./CombatStrategy";
 import CombatStrategyFactory from "./CombatStrategyFactory";
+import Damage from "../Damage";
 import MissingDataError from "@/error/MissingDataError";
+import RenderableFactory from "@/ui/RenderableFactory";
 import abilities from "@/combat/strategy/abilities";
 
 class AbilityFactory implements CombatStrategyFactory {
@@ -14,7 +15,7 @@ class AbilityFactory implements CombatStrategyFactory {
    *
    * @return the ability
    */
-  public createStrategy(ref: string): CombatStrategy {
+  public createStrategy(ref: string): Ability {
     let template = abilities[ref];
 
     if (!template) {
@@ -23,7 +24,14 @@ class AbilityFactory implements CombatStrategyFactory {
       );
     }
 
-    return new Ability(template);
+    const ui = RenderableFactory.createRenderable(template.ui.sprite);
+
+    const damage = new Damage(
+      template.value,
+      template.isSpecial ? "special" : "physical"
+    );
+
+    return new Ability(template, ui, damage);
   }
 }
 

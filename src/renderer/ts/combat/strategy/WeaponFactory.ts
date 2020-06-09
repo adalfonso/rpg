@@ -1,6 +1,8 @@
 import CombatStrategy from "./CombatStrategy";
 import CombatStrategyFactory from "./CombatStrategyFactory";
+import Damage from "../Damage";
 import MissingDataError from "@/error/MissingDataError";
+import RenderableFactory from "@/ui/RenderableFactory";
 import Weapon from "./Weapon";
 import items from "@/item/items.ts";
 
@@ -15,7 +17,7 @@ class WeaponFactory implements CombatStrategyFactory {
    * @return the weapon
    */
   public createStrategy(ref: string): CombatStrategy {
-    let template = items[ref];
+    const template = items[ref];
 
     if (!template) {
       throw new MissingDataError(
@@ -23,7 +25,10 @@ class WeaponFactory implements CombatStrategyFactory {
       );
     }
 
-    return new Weapon(template, ref);
+    const ui = RenderableFactory.createRenderable(template.ui.sprite);
+    const damage = new Damage(template.value, "physical");
+
+    return new Weapon(template, ui, damage, ref);
   }
 }
 

@@ -1,5 +1,6 @@
 import AbilityFactory from "@/combat/strategy/AbilityFactory";
 import CombatStrategy from "@/combat/strategy/CombatStrategy";
+import Damage from "@/combat/Damage";
 import Dialogue from "@/ui/Dialogue";
 import Inanimate from "@/inanimate/Inanimate";
 import MissingDataError from "@/error/MissingDataError";
@@ -330,18 +331,15 @@ abstract class Actor implements Drawable, Lockable {
    * Allow the weapon to be specified, and fall back to the actor's weapon when
    * it's not.
    *
-   * @param target - other actor to attack
-   * @param weapon - weapon to use for attack
+   * @param target   - other actor to attack
+   * @param strategy - strategy to use for attack
    */
-  public attack(target: Actor, weapon?: Weapon) {
-    if (!weapon && this.weapon) {
-      weapon = this.weapon;
+  public attack(target: Actor, strategy: CombatStrategy) {
+    if (!strategy && this.weapon) {
+      strategy = this.weapon;
     }
 
-    let weaponDamage = weapon?.damage ?? 0;
-    let damage = this.stats.atk + weaponDamage;
-
-    target.endure(damage);
+    target.endure(strategy.damage.augment(this.stats));
   }
 
   /**
@@ -349,7 +347,7 @@ abstract class Actor implements Drawable, Lockable {
    *
    * @param damage - amount of damage to receive
    */
-  public endure(damage: number) {
+  public endure(damage: Damage) {
     this.stats.endure(damage);
   }
 

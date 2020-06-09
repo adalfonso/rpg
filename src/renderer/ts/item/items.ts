@@ -42,6 +42,13 @@ const items: ItemList = {
     },
     value: 50,
   },
+  unarmed: {
+    displayAs: "Unarmed",
+    description: "Unarmed.",
+    category: "weapon",
+    value: 1,
+    ui: { sprite: "missing" },
+  },
 };
 
 export default items;

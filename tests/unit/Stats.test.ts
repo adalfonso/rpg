@@ -1,5 +1,6 @@
-import { expect } from "chai";
+import Damage from "@/combat/Damage";
 import Sut from "@/Stats";
+import { expect } from "chai";
 
 describe("Stats", () => {
   describe("getters", () => {
@@ -117,14 +118,18 @@ describe("Stats", () => {
     it("reflects damage dealt in the hp stat", () => {
       let sut = getSut();
       expect(sut.hp).to.equal(25);
-      sut.endure(1);
+      sut.endure(getDamage(1));
       expect(sut.hp).to.equal(24);
 
-      sut.endure(24);
+      sut.endure(getDamage(24));
       expect(sut.hp).to.equal(20);
     });
   });
 });
+
+const getDamage = (amount: number) => {
+  return new Damage(amount, "physical");
+};
 
 const getSut = () => {
   let sut = new Sut(getStats());

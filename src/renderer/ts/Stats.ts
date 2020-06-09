@@ -1,4 +1,10 @@
+import Damage from "./combat/Damage";
 import InvalidDataError from "./error/InvalidDataError";
+
+/**
+ * Different stat types
+ */
+export type Stat = "hp" | "atk" | "def" | "sp_atk" | "sp_def" | "spd";
 
 /**
  * Anatomy of an entity's stats
@@ -6,17 +12,12 @@ import InvalidDataError from "./error/InvalidDataError";
  * @prop hp     - base health
  * @prop atk    - physical attack
  * @prop def    - physical defense
- * @prop sp_atk - magic attack
- * @prop sp_def - magic defense
+ * @prop sp_atk - special attack
+ * @prop sp_def - special defense
  * @prop spd    - speed
  */
 export type StatTemplate = {
-  hp: number;
-  atk: number;
-  def: number;
-  sp_atk: number;
-  sp_def: number;
-  spd: number;
+  [stat in Stat]: number;
 };
 
 /**
@@ -172,14 +173,14 @@ export default class Stats {
   }
 
   /**
-   * Get the current magic attack stat
+   * Get the current special attack stat
    */
   get sp_atk(): number {
     return this.currentStatValue(this.baseStats.sp_atk);
   }
 
   /**
-   * Get the current magic defense stat
+   * Get the current special defense stat
    */
   get sp_def(): number {
     return this.currentStatValue(this.baseStats.sp_def);
@@ -209,10 +210,12 @@ export default class Stats {
   /**
    * Damage the subject
    *
-   * @param dmg - amount of damage
+   * @param damage - amount of damage
    */
-  public endure(dmg: number) {
-    this._dmg += Math.max(1, dmg - this.def);
+  public endure(damage: Damage) {
+    const defense = damage.isSpecial ? this.sp_def : this.def;
+
+    this._dmg += Math.max(1, damage.value - defense);
   }
 
   /**

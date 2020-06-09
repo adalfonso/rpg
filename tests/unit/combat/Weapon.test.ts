@@ -1,3 +1,5 @@
+import Damage from "@/combat/Damage";
+import Renderable from "@/ui/Renderable";
 import Sut from "@/combat/strategy/Weapon";
 import { expect } from "chai";
 
@@ -38,5 +40,8 @@ const getSut = () => {
     value: 1,
   };
 
-  return new Sut(template, itemType);
+  const renderable = new Renderable("test");
+  const damage = new Damage(0, "physical");
+
+  return new Sut(template, renderable, damage, itemType);
 };

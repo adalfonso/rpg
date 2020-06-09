@@ -9,6 +9,7 @@ import OpponentSelect from "./OpponentSelect";
 import Team from "./Team";
 import TextStream from "@/ui/TextStream";
 import Vector from "@common/Vector";
+import WeaponFactory from "./strategy/WeaponFactory";
 import { Drawable, Eventful, Lockable, CallableMap } from "@/interfaces";
 import { LearnedAbility } from "./strategy/types";
 import { bus } from "@/EventBus";
@@ -170,10 +171,14 @@ class Battle implements Eventful, Drawable, Lockable {
         if (this._herosTurn) {
           this._heroes.leader.attack(
             this._opponentSelect.selected,
-            e.detail.combatStrategy
+            e.detail.strategy
           );
         } else {
-          this._foes.each((foe: Actor) => foe.attack(this._heroes.leader));
+          const unarmed = new WeaponFactory().createStrategy("unarmed");
+
+          this._foes.each((foe: Actor) =>
+            foe.attack(this._heroes.leader, unarmed)
+          );
         }
 
         if (this._heroes.areDefeated) {

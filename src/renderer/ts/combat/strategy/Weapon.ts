@@ -1,56 +1,42 @@
 import CombatStrategy from "./CombatStrategy";
-import { CombatStrategyTemplate } from "./types";
-import { bus } from "@/EventBus";
+import Damage from "../Damage";
+import Renderable from "@/ui/Renderable";
+import {
+  Descriptive,
+  DamageDealing,
+  Equipable,
+  Visual,
+} from "./CombatStrategy";
+import { DescriptiveTemplate } from "./types";
 
 /**
  * Items used by the player to deal damage against an entity
  */
-class Weapon extends CombatStrategy {
-  /**
-   * If the weapon is currently equipped
-   */
-  private _isEquipped: boolean = false;
-
+class Weapon extends DamageDealing(
+  Equipable(Visual(Descriptive(CombatStrategy)))
+) {
   /**
    * Create a new Weapon instance
    *
-   * @param template - weapon's template
-   * @param _type    - weapon type
+   * @param _template - weapon's template
+   * @param _ui       - UI component of the weapon
+   * @param _damage   - damage the weapon deals
+   * @param _id       - weapon type
    */
-  constructor(template: CombatStrategyTemplate, private _type: string) {
-    super(template);
-  }
-
-  /**
-   * Determine if the weapon is equipped
-   */
-  get isEquipped(): boolean {
-    return this._isEquipped;
+  constructor(
+    protected _template: DescriptiveTemplate,
+    protected _ui: Renderable,
+    protected _damage: Damage,
+    private _id: string
+  ) {
+    super();
   }
 
   /**
    * Get the weapon's type
    */
   get type(): string {
-    return this._type;
-  }
-
-  /**
-   * Equip the weapon
-   *
-   * @emits weapon.equip
-   */
-  public equip() {
-    this._isEquipped = true;
-
-    bus.emit("weapon.equip", { weapon: this });
-  }
-
-  /**
-   * Unequip the weapon
-   */
-  public unequip() {
-    this._isEquipped = false;
+    return this._id;
   }
 }
 
