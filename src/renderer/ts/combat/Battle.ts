@@ -301,7 +301,14 @@ class Battle implements Eventful, Drawable, Lockable {
 
     this._foes.each((foe: Actor) => {
       foe.restorePosition();
-      foe.kill();
+
+      /**
+       * This logic is for when a player runs away from battle. We don't want to
+       * kill off the leader if they have not been defeated yet.
+       */
+      if (foe.isDefeated || foe !== this._foes.leader) {
+        foe.kill();
+      }
     });
 
     bus.emit("battle.end");
@@ -387,7 +394,15 @@ class Battle implements Eventful, Drawable, Lockable {
       },
       {
         type: "Other",
-        menu: [new StatModifierFactory().createModifier("defend"), "Run Away"],
+        menu: [
+          new StatModifierFactory().createModifier("defend"),
+          {
+            displayAs: "Run Away",
+            use: () => {
+              this._stop();
+            },
+          },
+        ],
       },
     ]);
   }

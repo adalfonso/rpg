@@ -305,9 +305,14 @@ abstract class Actor implements Drawable, Lockable {
 
   /**
    * Save the actor's position for later usage
+   *
+   * @param - whether to use the last position instead of the current
    */
-  public savePosition() {
-    this.savedPosition = this.position.copy();
+  public savePosition(useLast: boolean = false) {
+    this.savedPosition = useLast
+      ? this.lastPosition.copy()
+      : this.position.copy();
+
     this.savedDirection = this.direction;
   }
 

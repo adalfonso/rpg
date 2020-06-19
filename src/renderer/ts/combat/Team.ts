@@ -74,7 +74,7 @@ class Team {
    */
   public prepare(direction: number, position: Vector) {
     this._members.forEach((member: Actor, index: number) => {
-      member.savePosition();
+      member.savePosition(true);
       member.direction = direction;
       member.position = position.plus(new Vector(member.size.x * index * 4, 0));
       member.lock();
