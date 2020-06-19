@@ -20,6 +20,17 @@ const abilities = {
       sprite: "missing",
     },
   },
+  defend: {
+    displayAs: "Defend",
+    description: "Turn your elbow and absorb damage.",
+    type: "def",
+    value: 0.25,
+    duration: 1,
+    self: true,
+    ui: {
+      sprite: "missing",
+    },
+  },
 };
 
 export default abilities;

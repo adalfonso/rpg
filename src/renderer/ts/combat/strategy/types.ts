@@ -22,3 +22,22 @@ export type LearnedAbility = {
   level: number;
   ref: string;
 };
+
+/**
+ * An temporary effect placed on an actor's stats
+ *
+ * @prop displayAs   - display name
+ * @prop description - description
+ * @prop stat        - target stat
+ * @prop self        - if the modifier is applied to the user
+ * @prop value       - amount to affect stat by
+ * @prop duration    - number of turns to persist effect
+ */
+export type StatModifierTemplate = {
+  displayAs: string;
+  description: string;
+  stat: Stat;
+  self: boolean;
+  value: number;
+  duration: number;
+};

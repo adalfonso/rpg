@@ -1,5 +1,6 @@
 import Damage from "./combat/Damage";
 import InvalidDataError from "./error/InvalidDataError";
+import StatModifier from "./combat/strategy/StatModifier";
 
 /**
  * Different stat types
@@ -64,6 +65,11 @@ export default class Stats {
    * Amount of experience points the entity has gained between levels
    */
   private _exp: number;
+
+  /**
+   * Temporary modifications to the stats
+   */
+  private _modifiers: StatModifier[] = [];
 
   /**
    * Multiplier used to expand the range that base stats take
@@ -155,42 +161,50 @@ export default class Stats {
    * Get the current health stat
    */
   get hp(): number {
-    return Math.max(0, this.currentStatValue(this.baseStats.hp) - this._dmg);
+    return Math.max(
+      0,
+      this.currentStatValue(this.baseStats.hp) * this._getModifier("hp") -
+        this._dmg
+    );
   }
 
   /**
    * Get the current physical attack stat
    */
   get atk(): number {
-    return this.currentStatValue(this.baseStats.atk);
+    return this.currentStatValue(this.baseStats.atk) * this._getModifier("atk");
   }
 
   /**
    * Get the current physical defense stat
    */
   get def(): number {
-    return this.currentStatValue(this.baseStats.def);
+    return this.currentStatValue(this.baseStats.def) * this._getModifier("def");
   }
 
   /**
    * Get the current special attack stat
    */
   get sp_atk(): number {
-    return this.currentStatValue(this.baseStats.sp_atk);
+    return (
+      this.currentStatValue(this.baseStats.sp_atk) * this._getModifier("sp_atk")
+    );
   }
 
   /**
    * Get the current special defense stat
    */
   get sp_def(): number {
-    return this.currentStatValue(this.baseStats.sp_def);
+    return (
+      this.currentStatValue(this.baseStats.sp_def) * this._getModifier("sp_def")
+    );
   }
 
   /**
    * Get the current speed stat
    */
   get spd(): number {
-    return this.currentStatValue(this.baseStats.spd);
+    return this.currentStatValue(this.baseStats.spd) * this._getModifier("spd");
   }
 
   /**
@@ -241,6 +255,22 @@ export default class Stats {
   }
 
   /**
+   * Apply a temporary stat modifier
+   *
+   * @param modifier - modifier to apply
+   */
+  public modify(modifier: StatModifier) {
+    this._modifiers.push(modifier);
+  }
+
+  /**
+   * Cycle modifiers once and discard any that have expired
+   */
+  public expireModifiers() {
+    this._modifiers = this._modifiers.filter((m) => !m.consume());
+  }
+
+  /**
    * Gain a level if the experience has been earned
    *
    * @return if a level increased
@@ -256,6 +286,24 @@ export default class Stats {
     this._lvl++;
 
     return true;
+  }
+
+  /**
+   * Get numeric modifer for a stat
+   *
+   * @param stat - stat type
+   *
+   * @return modifier
+   */
+  private _getModifier(stat: Stat): number {
+    return (
+      1 +
+      this._modifiers
+        .filter((m) => m.stat === stat)
+        .reduce((carry: number, m: StatModifier) => {
+          return carry + m.value;
+        }, 0)
+    );
   }
 
   /**

@@ -3,9 +3,12 @@ import Actor from "@/actor/Actor";
 import AnimationFactory from "@/ui/animation/AnimationFactory";
 import AnimationQueue from "@/ui/animation/AnimationQueue";
 import BattleMenu from "@/menu/BattleMenu";
+import CombatStrategy from "./strategy/CombatStrategy";
 import Dialogue from "@/ui/Dialogue";
 import HeroTeam from "./HeroTeam";
 import OpponentSelect from "./OpponentSelect";
+import StatModifier from "./strategy/StatModifier";
+import StatModifierFactory from "./strategy/StatModifierFactory";
 import Team from "./Team";
 import TextStream from "@/ui/TextStream";
 import Vector from "@common/Vector";
@@ -168,18 +171,7 @@ class Battle implements Eventful, Drawable, Lockable {
   public register(): CallableMap {
     return {
       "battle.action": (e: CustomEvent) => {
-        if (this._herosTurn) {
-          this._heroes.leader.attack(
-            this._opponentSelect.selected,
-            e.detail.strategy
-          );
-        } else {
-          const unarmed = new WeaponFactory().createStrategy("unarmed");
-
-          this._foes.each((foe: Actor) =>
-            foe.attack(this._heroes.leader, unarmed)
-          );
-        }
+        this._herosTurn ? this._handleHeroAction(e) : this._handleFoeAction();
 
         if (this._heroes.areDefeated) {
           this._doGameOver();
@@ -260,12 +252,41 @@ class Battle implements Eventful, Drawable, Lockable {
    */
   private _cycle() {
     this._herosTurn = !this._herosTurn;
+    this._herosTurn ? this._heroes.cycle() : this._foes.cycle();
 
     if (!this._herosTurn) {
       bus.emit("battle.action");
     } else {
       this._opponentSelect.resolveSelected();
     }
+  }
+
+  /**
+   * Handle battle action for the heroes
+   *
+   * @param e - battle action event
+   */
+  private _handleHeroAction(e: CustomEvent) {
+    const opponent = this._opponentSelect.selected;
+
+    if (e.detail?.strategy instanceof CombatStrategy) {
+      this._heroes.leader.attack(opponent, e.detail.strategy);
+    } else if (e.detail?.modifier instanceof StatModifier) {
+      const target = e.detail.modifier.appliesToSelf
+        ? this._heroes.leader
+        : opponent;
+
+      target.stats.modify(e.detail.modifier);
+    }
+  }
+
+  /**
+   * Handle battle action for the foes
+   */
+  private _handleFoeAction() {
+    const unarmed = new WeaponFactory().createStrategy("unarmed");
+
+    this._foes.each((foe: Actor) => foe.attack(this._heroes.leader, unarmed));
   }
 
   /**
@@ -366,7 +387,7 @@ class Battle implements Eventful, Drawable, Lockable {
       },
       {
         type: "Other",
-        menu: ["Defend", "Run Away"],
+        menu: [new StatModifierFactory().createModifier("defend"), "Run Away"],
       },
     ]);
   }

@@ -1,5 +1,8 @@
 import Damage from "@/combat/Damage";
+import Renderable from "@/ui/Renderable";
+import StatModifier from "@/combat/strategy/StatModifier";
 import Sut from "@/Stats";
+import sinon from "sinon";
 import { expect } from "chai";
 
 describe("Stats", () => {
@@ -125,6 +128,102 @@ describe("Stats", () => {
       expect(sut.hp).to.equal(20);
     });
   });
+
+  describe("modify", () => {
+    it("applies a stat modifier", () => {
+      const sut = getSut();
+
+      expect(sut.def).to.equal(20);
+
+      const mod = getModifier();
+      sinon.stub(mod, "stat").get(() => "def");
+      sinon.stub(mod, "value").get(() => 0.25);
+      sut.modify(mod);
+
+      expect(sut.def).to.equal(25);
+    });
+
+    it("applies hp stat modifier properly with damage", () => {
+      const sut = getSut();
+
+      expect(sut.hp).to.equal(25);
+
+      const hpMod = getModifier();
+      sinon.stub(hpMod, "stat").get(() => "hp");
+      sinon.stub(hpMod, "value").get(() => 0.5);
+      sut.modify(hpMod);
+
+      expect(sut.hp).to.equal(37.5);
+
+      sut.endure(new Damage(30, "physical"));
+
+      expect(sut.hp).to.equal(27.5);
+    });
+
+    it("applies multiple stat modifiers", () => {
+      const sut = getSut();
+
+      expect(sut.atk).to.equal(37);
+
+      const mod = getModifier();
+      sinon.stub(mod, "stat").get(() => "atk");
+      sinon.stub(mod, "value").get(() => 0.25);
+      sut.modify(mod);
+
+      const mod2 = getModifier();
+      sinon.stub(mod2, "stat").get(() => "atk");
+      sinon.stub(mod2, "value").get(() => 0.5);
+      sut.modify(mod2);
+
+      expect(sut.atk).to.equal(64.75);
+    });
+  });
+
+  describe("expireModifiers", () => {
+    it("expires modifiers that have been used", () => {
+      const sut = getSut();
+
+      expect(sut.sp_def).to.equal(10);
+      expect(sut.sp_atk).to.equal(30);
+      expect(sut.hp).to.equal(25);
+
+      const spDefMod = getModifier({ duration: 1 });
+      sinon.stub(spDefMod, "stat").get(() => "sp_def");
+      sinon.stub(spDefMod, "value").get(() => 0.1);
+      sut.modify(spDefMod);
+
+      const spAtkMod = getModifier({ duration: 2 });
+      sinon.stub(spAtkMod, "stat").get(() => "sp_atk");
+      sinon.stub(spAtkMod, "value").get(() => 0.5);
+      sut.modify(spAtkMod);
+
+      const hpMod = getModifier({ duration: Infinity });
+      sinon.stub(hpMod, "stat").get(() => "hp");
+      sinon.stub(hpMod, "value").get(() => 0.5);
+      sut.modify(hpMod);
+
+      expect(sut.sp_def).to.equal(11);
+      expect(sut.sp_atk).to.equal(45);
+      expect(sut.hp).to.equal(37.5);
+
+      sut.expireModifiers();
+
+      expect(sut.sp_def).to.equal(10);
+      expect(sut.sp_atk).to.equal(45);
+      expect(sut.hp).to.equal(37.5);
+
+      sut.expireModifiers();
+
+      expect(sut.sp_def).to.equal(10);
+      expect(sut.sp_atk).to.equal(30);
+      expect(sut.hp).to.equal(37.5);
+
+      sut.expireModifiers();
+      sut.expireModifiers();
+      sut.expireModifiers();
+      expect(sut.hp).to.equal(37.5);
+    });
+  });
 });
 
 const getDamage = (amount: number) => {
@@ -147,4 +246,20 @@ const getStats = () => {
     sp_def: 40,
     spd: 70,
   };
+};
+
+const getModifier = (config: any = {}) => {
+  const renderable = new Renderable("missing");
+
+  return new StatModifier(
+    {
+      displayAs: "",
+      description: "",
+      stat: config.stat ?? "def",
+      self: true,
+      value: 0,
+      duration: config.duration ?? 1,
+    },
+    renderable
+  );
 };

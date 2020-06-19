@@ -91,6 +91,13 @@ class Team {
   }
 
   /**
+   * Handle actions after a combat cycle has ended
+   */
+  public cycle() {
+    this._members.forEach((m: Actor) => m.stats.expireModifiers());
+  }
+
+  /**
    * Impose an action on each team member
    *
    * @param callable - action for each team member
