@@ -29,7 +29,7 @@
     "jsdom-global": "3.0.2",
     "mocha": "^6.2.3",
     "mochapack": "^1.1.15",
-    "node-sass": "^4.13.1",
+    "node-sass": "^6.0.0",
     "nyc": "^14.1.1",
     "sass-loader": "^8.0.2",
     "sinon": "^9.0.2",
