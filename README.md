@@ -2,15 +2,20 @@
 
 This is currently in development.
 
-To setup, run:
+After cloning the project:
 
 ```bash
-$ yarn install
-$ yarn dev
+$ npm i
+```
+
+Running the game (in dev mode):
+
+```bash
+$ npm run dev
 ```
 
 Running unit tests:
 
 ```bash
-$ yarn test
+$ npm test
 ```
