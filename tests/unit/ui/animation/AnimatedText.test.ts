@@ -1,30 +1,50 @@
-import Sut from "@/ui/animation/AnimatedText";
-import Translation from "@/ui/animation/Translation";
 import Vector from "@common/Vector";
-import sinon from "sinon";
+import { AnimatedText as Sut } from "@/ui/animation/AnimatedText";
+import { Animation, AnimationType } from "@/ui/animation/Animation";
 import { expect } from "chai";
 
 describe("AnimatedText", () => {
-  describe("isWaiting", () => {
-    it("determines if an animation is waiting", () => {
-      let sut = new Sut("", {});
+  describe("update", () => {
+    it("updates text position", () => {
       let animation = getAnimation();
 
-      sinon.stub(animation, "isDone").value(true);
+      let sut = new Sut("", animation, new Vector(0, 0), {});
 
-      expect(sut.isWaiting).to.be.true;
+      sut.update(100);
 
-      sut.applyAnimation(animation);
+      const results: number[][] = [];
+      const expected = [[500, 500]];
 
-      expect(sut.isWaiting).to.be.false;
+      const ctx = <CanvasRenderingContext2D>{
+        fillText(_, position_x, position_y) {
+          results.push([position_x, position_y]);
+        },
+        save: () => {},
+        restore: () => {},
+      };
 
-      sut.update(1);
+      sut.draw(ctx, new Vector(0, 0), new Vector(0, 0));
 
-      expect(sut.isWaiting).to.be.true;
+      expect(results).to.deep.equal(expected);
+    });
+  });
+
+  describe("isDone", () => {
+    it("detects when it is done", () => {
+      let animation = getAnimation();
+
+      let sut = new Sut("", animation, new Vector(0, 0), {});
+      expect(sut.isDone).to.be.false;
+      (<any>animation).isDone = true;
+      expect(sut.isDone).to.be.true;
     });
   });
 });
 
-const getAnimation = () => {
-  return new Translation(new Vector(0, 0), new Vector(0, 0), 1000);
-};
+const getAnimation = () => <Animation>(<unknown>{
+    update: () => ({
+      type: AnimationType.Position,
+      delta: new Vector(500, 500),
+    }),
+    isDone: false,
+  });

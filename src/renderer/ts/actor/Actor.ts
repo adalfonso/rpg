@@ -339,7 +339,7 @@ abstract class Actor implements Drawable, Lockable {
    * @param target   - other actor to attack
    * @param strategy - strategy to use for attack
    */
-  public attack(target: Actor, strategy: CombatStrategy) {
+  public async attack(target: Actor, strategy: CombatStrategy) {
     if (!strategy && this.weapon) {
       strategy = this.weapon;
     }

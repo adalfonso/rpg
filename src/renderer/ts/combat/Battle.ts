@@ -1,7 +1,5 @@
 import AbilityFactory from "./strategy/AbilityFactory";
 import Actor from "@/actor/Actor";
-import AnimationFactory from "@/ui/animation/AnimationFactory";
-import AnimationQueue from "@/ui/animation/AnimationQueue";
 import BattleMenu from "@/menu/BattleMenu";
 import CombatStrategy from "./strategy/CombatStrategy";
 import Dialogue from "@/ui/Dialogue";
@@ -13,16 +11,12 @@ import Team from "./Team";
 import TextStream from "@/ui/TextStream";
 import Vector from "@common/Vector";
 import WeaponFactory from "./strategy/WeaponFactory";
+import { AnimatedText } from "@/ui/animation/AnimatedText";
 import { Drawable, Eventful, Lockable, CallableMap } from "@/interfaces";
 import { LearnedAbility } from "./strategy/types";
 import { bus } from "@/EventBus";
 
 class Battle implements Eventful, Drawable, Lockable {
-  /**
-   * Animation sequence occurring in the battle
-   */
-  private _animation: AnimationQueue;
-
   /**
    * Menu for the battle
    */
@@ -51,15 +45,18 @@ class Battle implements Eventful, Drawable, Lockable {
   /**
    * Create a new battle instance
    *
-   * @param _heroes - heroes in battle
-   * @param _foes   - enemies in battle
+   * @param _heroes         - heroes in battle
+   * @param _foes           - enemies in battle
+   * @param _opponentSelect - utility to traverse opponents in battle
+   * @param _text_animation - animation sequence occurring in the battle
    *
    * @emits battle.action
    */
   constructor(
     private _heroes: HeroTeam,
     private _foes: Team,
-    private _opponentSelect: OpponentSelect
+    private _opponentSelect: OpponentSelect,
+    private _text_animation: AnimatedText
   ) {
     this.active = true;
 
@@ -69,8 +66,6 @@ class Battle implements Eventful, Drawable, Lockable {
     this._foes.prepare(2, new Vector(256 + 64, 0));
 
     this._menu = this._getBattleMenu();
-
-    this._animation = AnimationFactory.createStartBattleAnimation();
 
     bus.register(this);
 
@@ -93,11 +88,11 @@ class Battle implements Eventful, Drawable, Lockable {
    * @param dt - delta time
    */
   public update(dt: number) {
-    if (this._animation) {
-      this._animation.update(dt);
+    if (this._text_animation) {
+      this._text_animation.update(dt);
 
-      if (this._animation.isDone) {
-        this._animation = null;
+      if (this._text_animation.isDone) {
+        this._text_animation = null;
       }
     }
 
@@ -158,8 +153,8 @@ class Battle implements Eventful, Drawable, Lockable {
       this._dialogue.draw(ctx, new Vector(0, 0), resolution);
     }
 
-    if (this._animation) {
-      this._animation.draw(ctx, new Vector(0, 0), resolution);
+    if (this._text_animation) {
+      this._text_animation.draw(ctx, new Vector(0, 0), resolution);
     }
   }
 

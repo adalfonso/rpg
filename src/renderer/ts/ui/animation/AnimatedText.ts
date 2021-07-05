@@ -1,9 +1,7 @@
-import Translation from "./Translation";
 import Vector from "@common/Vector";
+import { Animation, AnimationType } from "./Animation";
 
-/**
- * Required options for rendering an animation
- */
+/** Required options for rendering an animation */
 type RenderOptions = {
   fillStyle?: string;
   font?: string;
@@ -12,38 +10,26 @@ type RenderOptions = {
   shadowOffsetY?: number;
 };
 
-/**
- * Manages text and renders it according to a set of options
- */
-class AnimatedText {
-  /**
-   * Current animation applied to the text
-   */
-  private _animation: Translation;
-
-  /**
-   * If the text is currently waiting for an animation
-   */
-  private _isWaiting: boolean = true;
-
+/** Manages text and renders it according to a set of options */
+export class AnimatedText {
   /**
    * Create a new AnimatedText instance
    *
-   * @param _text     - text content
-   * @param _options  - render Options
-   * @param _position - starting position of the text
+   * @param _text      - text content
+   * @param _animation - current animation applied to the text
+   * @param _position  - starting position of the text
+   * @param _options   - render options
    */
   constructor(
     private _text: string,
-    private _options: RenderOptions,
-    private _position: Vector = new Vector(9999, 9999)
+    private _animation: Animation,
+    private _position: Vector,
+    private _options: RenderOptions
   ) {}
 
-  /**
-   * Determine if the text is waiting for an animation
-   */
-  get isWaiting(): boolean {
-    return this._isWaiting;
+  /** If the animation is done */
+  get isDone(): boolean {
+    return this._animation.isDone;
   }
 
   /**
@@ -52,19 +38,18 @@ class AnimatedText {
    * @param dt - delta time
    */
   public update(dt: number) {
-    if (this._isWaiting) {
+    if (this.isDone) {
       return;
     }
 
-    let position = this._animation.update(dt);
+    let { type, delta } = this._animation.update(dt);
 
-    if (this._animation.isDone) {
-      this._animation = null;
-      this._isWaiting = true;
+    // only handles position animations for now
+    if (type !== AnimationType.Position) {
       return;
     }
 
-    this.moveTo(position);
+    this.move(delta);
   }
 
   /**
@@ -97,23 +82,11 @@ class AnimatedText {
   }
 
   /**
-   * Apply a new animation to the text
-   *
-   * @param animation - new animtion
-   */
-  public applyAnimation(animation: Translation) {
-    this._animation = animation;
-    this._isWaiting = false;
-  }
-
-  /**
    * Change the text's position
    *
-   * @param position - text's new position
+   * @param delta - text's new position change
    */
-  private moveTo(position: Vector) {
-    this._position = position;
+  private move(delta: Vector) {
+    this._position = this._position.plus(delta);
   }
 }
-
-export default AnimatedText;

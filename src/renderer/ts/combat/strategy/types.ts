@@ -1,16 +1,14 @@
 import { Stat } from "@/Stats";
-import { UiData } from "@/ui/types";
-
 /**
  * Basic description for an entity
  *
  * @prop displayAs   - display name
  * @prop description - description
  */
-export type DescriptiveTemplate = {
+export interface EntityTemplate {
   displayAs: string;
   description: string;
-};
+}
 
 /**
  * An ability constrained to a level

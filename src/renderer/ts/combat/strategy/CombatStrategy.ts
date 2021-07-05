@@ -2,7 +2,7 @@ import Damage from "../Damage";
 import Renderable from "@/ui/Renderable";
 import Vector from "@common/Vector";
 import { Constructor } from "@/mixins";
-import { DescriptiveTemplate } from "./types";
+import { EntityTemplate } from "./types";
 import { bus } from "@/EventBus";
 
 /**
@@ -18,7 +18,7 @@ export const Descriptive = <T extends Constructor>(Base: T) =>
     /**
      * Stores the descriptors
      */
-    protected _template: DescriptiveTemplate;
+    protected _template: EntityTemplate;
 
     /**
      * Get the display name
@@ -150,7 +150,7 @@ class CombatStrategy {
    *
    * @emits battle.action
    */
-  public use() {
+  public async use() {
     bus.emit("battle.action", { strategy: this });
   }
 }

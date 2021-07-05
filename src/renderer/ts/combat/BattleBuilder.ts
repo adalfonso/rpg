@@ -4,6 +4,7 @@ import HeroTeam from "./HeroTeam";
 import MissingDataError from "@/error/MissingDataError";
 import OpponentSelect from "./OpponentSelect";
 import Team from "./Team";
+import AnimatedTextFactory from "@/ui/animation/AnimatedTextFactory";
 import config from "./battle.json";
 
 /**
@@ -58,7 +59,8 @@ class BattleBuilder {
     return new Battle(
       new HeroTeam([player]),
       enemyTeam,
-      new OpponentSelect(enemyTeam)
+      new OpponentSelect(enemyTeam),
+      AnimatedTextFactory.createStartBattleAnimation()
     );
   }
 

@@ -1,13 +1,13 @@
 import CombatStrategy from "./CombatStrategy";
 import Damage from "../Damage";
 import Renderable from "@/ui/Renderable";
+import { EntityTemplate } from "./types";
 import {
   Descriptive,
   DamageDealing,
   Equipable,
   Visual,
 } from "./CombatStrategy";
-import { DescriptiveTemplate } from "./types";
 
 /**
  * Items used by the player to deal damage against an entity
@@ -24,12 +24,13 @@ class Weapon extends DamageDealing(
    * @param _id       - weapon type
    */
   constructor(
-    protected _template: DescriptiveTemplate,
+    protected _template: EntityTemplate,
     protected _ui: Renderable,
     protected _damage: Damage,
     private _id: string
   ) {
     super();
+    //_template.animation
   }
 
   /**

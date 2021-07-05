@@ -2,7 +2,7 @@ import CombatStrategy from "./CombatStrategy";
 import Damage from "../Damage";
 import Renderable from "@/ui/Renderable";
 import { Descriptive, DamageDealing, Visual } from "./CombatStrategy";
-import { DescriptiveTemplate } from "./types";
+import { EntityTemplate } from "./types";
 
 /**
  * Technique learned by an actor
@@ -16,7 +16,7 @@ class Ability extends DamageDealing(Visual(Descriptive(CombatStrategy))) {
    * @param _damage   - damage the ability deals
    */
   constructor(
-    protected _template: DescriptiveTemplate,
+    protected _template: EntityTemplate,
     protected _ui: Renderable,
     protected _damage: Damage
   ) {
