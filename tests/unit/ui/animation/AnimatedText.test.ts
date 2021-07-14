@@ -1,5 +1,5 @@
 import Vector from "@common/Vector";
-import { AnimatedText as Sut } from "@/ui/animation/AnimatedText";
+import { AnimatedText as Sut } from "@/ui/animation/text/AnimatedText";
 import { Animation, AnimationType } from "@/ui/animation/Animation";
 import { expect } from "chai";
 

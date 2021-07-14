@@ -1,5 +1,5 @@
 import Vector from "@common/Vector";
-import { Animation, AnimationType } from "./Animation";
+import { Animation, AnimationType } from "../Animation";
 
 /** Required options for rendering an animation */
 type RenderOptions = {

@@ -11,7 +11,7 @@ import Team from "./Team";
 import TextStream from "@/ui/TextStream";
 import Vector from "@common/Vector";
 import WeaponFactory from "./strategy/WeaponFactory";
-import { AnimatedText } from "@/ui/animation/AnimatedText";
+import { AnimatedText } from "@/ui/animation/text/AnimatedText";
 import { Drawable, Eventful, Lockable, CallableMap } from "@/interfaces";
 import { LearnedAbility } from "./strategy/types";
 import { bus } from "@/EventBus";

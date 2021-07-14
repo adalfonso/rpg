@@ -1,23 +1,18 @@
 import Vector from "@common/Vector";
-import { AnimationUpdate } from "./Animation";
 import { AnimationFunctionApplication } from "./AnimationFunction";
 
 /** Describes one step of an animation */
 export interface AnimationStepTemplate {
   delay_ms: number;
   duration_ms: number;
-  end: (resolution?: Vector, textSize?: Vector) => Vector;
+  end: (subject?: Vector, resolution?: Vector) => Vector;
   fn: AnimationFunctionApplication;
 }
 
-/**
- * Entities related to the animation
- *
- * TODO: needs to be streamlined better for polymorphism
- */
-interface EntityReference {
+/** Entities related to the animation */
+export interface EntityReference {
+  subject: Vector;
   resolution: Vector;
-  text_size: Vector;
 }
 
 /**
@@ -76,7 +71,7 @@ export class AnimationStep {
    */
   public update(dt: number): Vector {
     const { duration_ms, delay_ms, end, fn } = this._template;
-    const { resolution, text_size } = this._reference;
+    const { subject, resolution } = this._reference;
 
     this._current_time += dt;
 
@@ -94,8 +89,8 @@ export class AnimationStep {
 
     const prev_percent = (adj_time - adj_dt) / adj_duration_ms;
     const current_percent = Math.min(1, adj_time / adj_duration_ms);
-    const previous = fn(prev_percent, end(resolution, text_size));
-    const current = fn(current_percent, end(resolution, text_size));
+    const previous = fn(prev_percent, end(subject, resolution));
+    const current = fn(current_percent, end(subject, resolution));
 
     return current.minus(previous);
   }

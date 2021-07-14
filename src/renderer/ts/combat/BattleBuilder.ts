@@ -4,8 +4,8 @@ import HeroTeam from "./HeroTeam";
 import MissingDataError from "@/error/MissingDataError";
 import OpponentSelect from "./OpponentSelect";
 import Team from "./Team";
-import AnimatedTextFactory from "@/ui/animation/AnimatedTextFactory";
 import config from "./battle.json";
+import { AnimatedTextFactory } from "@/ui/animation/text/AnimatedTextFactory";
 
 /**
  * Blueprint for an enemy team

@@ -91,5 +91,5 @@ const getAnimationFn = <AnimationFunctionApplication>(
 
 const getReferences = () => ({
   resolution: new Vector(0, 0),
-  text_size: new Vector(0, 0),
+  subject: new Vector(0, 0),
 });
