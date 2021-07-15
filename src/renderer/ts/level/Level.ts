@@ -59,6 +59,13 @@ class Level implements Drawable {
    * @param dt - delta time
    */
   public update(dt: number) {
+    this.fixtures.forEach((fixture) => {
+      if (!fixture.hasOwnProperty("update")) {
+        return;
+      }
+
+      fixture.update(dt);
+    });
     // Remove any stale fixtures that are returned
     this.collisionHandler.update(dt).forEach((fixture) => {
       this.removeFixture(fixture);

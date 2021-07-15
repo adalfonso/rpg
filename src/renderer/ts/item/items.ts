@@ -11,6 +11,7 @@ const items: ItemList = {
     ui: {
       sprite: "item.empanada",
       scale: 2,
+      animation: "stir",
     },
     value: 0.25,
   },
@@ -20,6 +21,7 @@ const items: ItemList = {
     category: "item",
     ui: {
       sprite: "item.water_bottle",
+      animation: "stir",
     },
     value: 0.5,
   },
@@ -29,6 +31,7 @@ const items: ItemList = {
     category: "weapon",
     ui: {
       sprite: "weapon.big_sword",
+      animation: "stir",
     },
     value: 15,
   },

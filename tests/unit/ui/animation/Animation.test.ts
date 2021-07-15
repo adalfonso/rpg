@@ -20,7 +20,7 @@ describe("Animation", () => {
         steps,
       };
 
-      const sut = new Sut(template);
+      const sut = new Sut(template, createStep);
 
       const expected = {
         type: AnimationType.Position,
@@ -40,7 +40,7 @@ describe("Animation", () => {
         steps,
       };
 
-      const sut = new Sut(template);
+      const sut = new Sut(template, createStep);
 
       const expected = {
         type: AnimationType.Position,
@@ -56,7 +56,7 @@ describe("Animation", () => {
         steps: getAnimations(),
       };
 
-      const sut = new Sut(template);
+      const sut = new Sut(template, createStep);
 
       const expected = {
         type: AnimationType.Position,
@@ -78,7 +78,7 @@ describe("Animation", () => {
         steps,
       };
 
-      const sut = new Sut(template);
+      const sut = new Sut(template, createStep);
 
       expect(sut.update(100).delta.toArray()).to.deep.equal([1, 1]);
       expect(sut.isDone).to.be.true;
@@ -94,15 +94,17 @@ function getAnimations() {
       delay_ms: 0,
       duration_ms: 1000,
       end: <Vector>(<unknown>{}),
-      fn: getAnimationFn(),
+      fn: getStepTemplates(),
     },
     {
       delay_ms: 1000,
       duration_ms: 1000,
       end: <Vector>(<unknown>{}),
-      fn: getAnimationFn(),
+      fn: getStepTemplates(),
     },
   ];
+
+  return templates;
 
   return templates.map((template) => {
     return <AnimationStep>{
@@ -111,9 +113,21 @@ function getAnimations() {
   });
 }
 
-function getAnimationFn() {
+function getStepTemplates() {
   const count = 0;
   return (percent: number, end: Vector) => {
     return <Vector>{};
+  };
+}
+
+function createStep() {
+  let done = false;
+
+  return <AnimationStep>{
+    update(dt: number) {
+      if (dt === 666) {
+        done = true;
+      }
+    },
   };
 }

@@ -45,6 +45,11 @@ export class AnimationStep {
     private _reference: EntityReference
   ) {}
 
+  public refresh() {
+    this._current_time = 0;
+    this._locked = false;
+  }
+
   /** Public view into if the animation has completed */
   public get isDone(): boolean {
     return this._hasCompleted() && this._locked;

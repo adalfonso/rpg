@@ -3,36 +3,34 @@ import MissingDataError from "@/error/MissingDataError";
 import Renderable from "@/ui/Renderable";
 import StateManager from "@/state/StateManager";
 import Vector from "@common/Vector";
-import items from "@/item/items.ts";
+import items from "@/item/items";
+import { Animation } from "@/ui/animation/Animation";
+import { AnimationType } from "@/ui/animation/Animation";
+import { ItemTemplate } from "@/item/types";
+import { animations } from "@/ui/animation/animations";
+import { getAnimation } from "@/ui/animation/AnimationFactory";
 import { ucFirst, getImagePath } from "@/util";
 
 /**
  * An item in the context of a map/level
  */
 class Item extends Inanimate {
-  /**
-   * Game-related info about the item
-   */
-  private _config: any;
+  /** Visual animation */
+  private _animation: Animation | null;
 
-  /**
-   * Unique identifier
-   */
+  /** Game-related info about the item */
+  private _config: ItemTemplate;
+
+  /** Unique identifier */
   private _id: string;
 
-  /**
-   * If the item was picked up
-   */
+  /** If the item was picked up */
   private _obtained: boolean = false;
 
-  /**
-   * UI aspect of the item
-   */
+  /** UI aspect of the item */
   private _renderable: Renderable;
 
-  /**
-   * The type of item
-   */
+  /** The type of item */
   private _type: string;
 
   /**
@@ -63,6 +61,13 @@ class Item extends Inanimate {
     if (!this._config) {
       throw new MissingDataError(
         `Config data for ${data.type} is not defined in items.ts`
+      );
+    }
+
+    if (this._config.ui.animation) {
+      // TODO: Ideally inject this factory into the ctor
+      this._animation = getAnimation(animations)(this._config.ui.animation)(
+        this.size
       );
     }
 
@@ -98,6 +103,23 @@ class Item extends Inanimate {
       .split("_")
       .map((s) => ucFirst(s))
       .join(" ");
+  }
+
+  public update(dt: number) {
+    if (!this._animation) {
+      return;
+    }
+
+    let { type, delta } = this._animation.update(dt);
+
+    console.log({ type, delta });
+
+    // only handles position animations for now
+    if (type !== AnimationType.Position) {
+      return;
+    }
+
+    this.position = this.position.plus(delta);
   }
 
   /**
