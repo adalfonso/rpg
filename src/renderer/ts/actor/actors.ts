@@ -6,7 +6,7 @@ import { ActorList } from "./types";
 const actors: ActorList = {
   player: {
     displayAs: "Me",
-    baseStats: {
+    base_stats: {
       hp: 120,
       atk: 125,
       def: 85,
@@ -41,7 +41,7 @@ const actors: ActorList = {
   },
   knight: {
     displayAs: "Knight",
-    baseStats: {
+    base_stats: {
       hp: 80,
       atk: 65,
       def: 85,

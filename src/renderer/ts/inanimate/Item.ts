@@ -1,38 +1,34 @@
 import Inanimate from "./Inanimate";
-import MissingDataError from "@/error/MissingDataError";
 import Renderable from "@/ui/Renderable";
 import StateManager from "@/state/StateManager";
 import Vector from "@common/Vector";
-import items from "@/item/items.ts";
+import config from "@/config";
+import { Animation } from "@/ui/animation/Animation";
+import { AnimationFactory } from "@/ui/animation/AnimationFactory";
+import { AnimationType } from "@/ui/animation/Animation";
+import { EntityConfigFactory } from "@/combat/strategy/types";
+import { ItemConfig } from "@/item/types";
+import { LevelFixtureTemplate } from "@/level/LevelFixture";
 import { ucFirst, getImagePath } from "@/util";
 
-/**
- * An item in the context of a map/level
- */
-class Item extends Inanimate {
-  /**
-   * Game-related info about the item
-   */
-  private _config: any;
+/** An item in the context of a map/level */
+export class Item extends Inanimate {
+  /** Visual animation */
+  private _animation: Animation | null;
 
-  /**
-   * Unique identifier
-   */
+  /** Game-related info about the item */
+  private _config: ItemConfig;
+
+  /** Unique identifier */
   private _id: string;
 
-  /**
-   * If the item was picked up
-   */
+  /** If the item was picked up */
   private _obtained: boolean = false;
 
-  /**
-   * UI aspect of the item
-   */
+  /** UI aspect of the item */
   private _renderable: Renderable;
 
-  /**
-   * The type of item
-   */
+  /** The type of item */
   private _type: string;
 
   /**
@@ -40,34 +36,34 @@ class Item extends Inanimate {
    *
    * @param position - the item's position
    * @param size     - the item's size
-   * @param data     - additional info about the item
+   * @param template    - additional info about the item
+   * @param config_ctor - used to access a config from a template
+   * @param animation_factory - create an animation from an animation template
    *
    * @throws {MissingDataError} when name or type are missing
    */
-  constructor(position: Vector, size: Vector, data: any) {
+  constructor(
+    position: Vector,
+    size: Vector,
+    template: LevelFixtureTemplate,
+    config_ctor: EntityConfigFactory<ItemConfig>,
+    animation_factory: AnimationFactory
+  ) {
     super(position, size);
 
-    if (!data?.name) {
-      throw new MissingDataError(`Missing unique identifier for item.`);
-    }
+    this._type = template.type;
+    this._id = template.name;
 
-    if (!data?.type) {
-      throw new MissingDataError(`Missing "type" for item.`);
-    }
+    this._config = config_ctor(template);
 
-    this._type = data.type;
-    this._id = data.name;
-
-    this._config = items[data.type];
-
-    if (!this._config) {
-      throw new MissingDataError(
-        `Config data for ${data.type} is not defined in items.ts`
-      );
+    if (this._config.ui.animation) {
+      this._animation = animation_factory(this._config.ui.animation)(this.size);
     }
 
     const sprite = getImagePath(this._config.ui.sprite);
-    const scale = this._config.ui?.scale ?? 1;
+
+    // TODO: streamline how scaling is handled
+    const scale = (this._config.ui?.scale ?? 1) * config.scale;
     const ratio = new Vector(1, 1);
     const fps = 0;
 
@@ -76,28 +72,42 @@ class Item extends Inanimate {
     this.resolveState(`items.${this._id}`);
   }
 
-  /**
-   * The type of item
-   */
+  /** The type of item */
   get type(): string {
     return this._type;
   }
 
-  /**
-   * If the item was picked up
-   */
+  /** If the item was picked up */
   get obtained(): boolean {
     return this._obtained;
   }
 
-  /**
-   * Get the name used for the item when rendering dialogue
-   */
+  /** Get the name used for the item when rendering dialogue */
   get displayAs(): string {
     return this.type
       .split("_")
       .map((s) => ucFirst(s))
       .join(" ");
+  }
+
+  /**
+   * Update the item
+   *
+   * @param ts - delta time
+   */
+  public update(dt: number) {
+    if (!this._animation) {
+      return;
+    }
+
+    let { type, delta } = this._animation.update(dt);
+
+    // only handles position animations for now
+    if (type !== AnimationType.Position) {
+      return;
+    }
+
+    this.position = this.position.plus(delta);
   }
 
   /**
@@ -117,9 +127,7 @@ class Item extends Inanimate {
     this._renderable.draw(ctx, this.position.plus(offset), resolution);
   }
 
-  /**
-   * Pick up the item
-   */
+  /** Pick up the item */
   public obtain() {
     if (this._obtained) {
       return;
@@ -159,9 +167,7 @@ class Item extends Inanimate {
    *
    * @return current state of the item
    */
-  protected getState(): object {
+  protected getState(): Record<string, unknown> {
     return { obtained: this._obtained };
   }
 }
-
-export default Item;

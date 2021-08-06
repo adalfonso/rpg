@@ -4,10 +4,12 @@ import Map from "@/inanimate/Map";
 import MissingDataError from "@/error/MissingDataError";
 import Player from "@/actor/Player";
 import Portal from "@/inanimate/Portal";
-import Template, { LevelFixture } from "./LevelTemplate";
 import Vector from "@common/Vector";
 import levels from "./levels";
 import { Drawable, Eventful, CallableMap } from "@/interfaces";
+import { LevelFixture } from "./LevelFixture";
+import { LevelFixtureFactory } from "./LevelFixtureFactory";
+import { LevelTemplate } from "./LevelTemplate";
 import { bus } from "@/EventBus";
 import { getImagePath } from "@/util";
 
@@ -32,9 +34,7 @@ class Level implements Drawable {
    */
   private entries: any;
 
-  /**
-   * A mix of fixtures that interact in the level
-   */
+  /** A mix of fixtures that interact in the level */
   private fixtures: LevelFixture[] = [];
 
   /**
@@ -45,7 +45,7 @@ class Level implements Drawable {
    * @param handler  - collision handler for player + fixtures
    */
   constructor(
-    template: Template,
+    template: LevelTemplate,
     private player: Player,
     private collisionHandler: CollisionHandler
   ) {
@@ -59,6 +59,8 @@ class Level implements Drawable {
    * @param dt - delta time
    */
   public update(dt: number) {
+    this.fixtures.forEach((fixture) => fixture.update(dt));
+
     // Remove any stale fixtures that are returned
     this.collisionHandler.update(dt).forEach((fixture) => {
       this.removeFixture(fixture);
@@ -93,7 +95,7 @@ class Level implements Drawable {
           );
         }
 
-        this.load(new Template(level), portal);
+        this.load(new LevelTemplate(level, new LevelFixtureFactory()), portal);
       },
     };
   }
@@ -127,7 +129,7 @@ class Level implements Drawable {
    *
    * @throws {MissingDataError} when entry is missing
    */
-  public load(template: Template, portal?: Portal) {
+  public load(template: LevelTemplate, portal?: Portal) {
     this.cleanup();
 
     let tileSet = getImagePath(`tileset.${template.tileSource}`);

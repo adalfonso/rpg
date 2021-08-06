@@ -1,10 +1,10 @@
 import Clip from "./inanimate/Clip";
 import Enemy from "./actor/Enemy";
-import Item from "./inanimate/Item";
 import Player from "./actor/Player";
 import Portal from "./inanimate/Portal";
 import Vector from "@common/Vector";
-import { LevelFixture } from "./level/LevelTemplate";
+import { Item } from "./inanimate/Item";
+import { LevelFixture } from "./level/LevelFixture";
 import { bus } from "@/EventBus";
 
 /**

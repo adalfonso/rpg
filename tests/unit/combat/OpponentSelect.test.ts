@@ -2,6 +2,7 @@ import Enemy from "@/actor/Enemy";
 import StateManager from "@/state/StateManager";
 import Sut from "@/combat/OpponentSelect";
 import Team from "@/combat/Team";
+import Vector from "@common/Vector";
 import { expect } from "chai";
 
 const state = StateManager.getInstance();
@@ -146,5 +147,23 @@ describe("OpponentSelect", () => {
 });
 
 const getEnemy = () => {
-  return new Enemy({ name: "test", type: "knight" });
+  return new Enemy(getVector(), getVector(), {
+    name: "test",
+    type: "knight",
+    x: 1,
+    y: 1,
+    height: 1,
+    width: 1,
+  });
+};
+
+const getVector = () => {
+  return <Vector>(<unknown>{
+    copy() {
+      return getVector();
+    },
+    times() {
+      return getVector();
+    },
+  });
 };

@@ -1,4 +1,4 @@
-import { EntityTemplate } from "@/combat/strategy/types";
+import { EntityConfig } from "@/combat/strategy/types";
 import { UiData } from "@/ui/types";
 
 /**
@@ -8,11 +8,11 @@ import { UiData } from "@/ui/types";
  * @prop value    - value of the item
  *
  */
-export interface ItemTemplate extends EntityTemplate {
+export interface ItemConfig extends EntityConfig {
   category: string;
   ui: UiData;
   value: number;
 }
 
 /** A list of items */
-export type ItemList = Record<string, ItemTemplate>;
+export type ItemList = Record<string, ItemConfig>;

@@ -45,6 +45,12 @@ export class AnimationStep {
     private _reference: EntityReference
   ) {}
 
+  /** Refresh/reset the step to its original state */
+  public refresh() {
+    this._current_time = 0;
+    this._locked = false;
+  }
+
   /** Public view into if the animation has completed */
   public get isDone(): boolean {
     return this._hasCompleted() && this._locked;
@@ -54,8 +60,9 @@ export class AnimationStep {
    * If the animation has "technically" completed
    *
    * This is relied on internally to determine when the animation has reached
-   * its final update. Once the has happened, this method is used in conjunction
-   * with _locked to inform the outside world that the animation is done.
+   * its final update. Once that has happened, this method is used in
+   * conjunction with _locked to inform the outside world that the animation is
+   * done.
    **/
   private _hasCompleted(): boolean {
     const { duration_ms, delay_ms } = this._template;

@@ -18,5 +18,12 @@ describe("Player", () => {
 });
 
 const getSut = () => {
-  return new Sut(new Vector(0, 0), new Vector(10, 10));
+  return new Sut(new Vector(0, 0), new Vector(10, 10), {
+    x: 1,
+    y: 1,
+    height: 1,
+    width: 1,
+    name: "Me",
+    type: "player",
+  });
 };

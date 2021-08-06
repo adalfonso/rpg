@@ -1,10 +1,11 @@
-import { expect } from "chai";
-import Sut from "@/level/LevelTemplate";
 import example from "../../assets/example.json";
+import { LevelFixtureFactory } from "@/level/LevelFixtureFactory";
+import { LevelTemplate as Sut } from "@/level/LevelTemplate";
+import { expect } from "chai";
 
 describe("LevelTemplate", () => {
   it("parses template json", () => {
-    let sut = new Sut(example);
+    let sut = new Sut(example, getFixtureFactory());
 
     expect(2).to.equal(sut.tiles.length);
 
@@ -13,3 +14,11 @@ describe("LevelTemplate", () => {
     expect("some_file_name").to.equal(sut.tileSource);
   });
 });
+
+const getFixtureFactory = () => {
+  return <LevelFixtureFactory>(<unknown>{
+    create() {
+      return {};
+    },
+  });
+};

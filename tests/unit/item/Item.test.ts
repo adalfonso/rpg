@@ -1,7 +1,7 @@
 import Sut from "@/item/Item";
 import { expect } from "chai";
 
-describe("Item", () => {
+describe("item/Item", () => {
   describe("get displayAs", () => {
     it("gets the dialogue name of the item", () => {
       let sut = getSut();

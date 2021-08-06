@@ -1,6 +1,7 @@
 import Inanimate from "./Inanimate";
 import MissingDataError from "@/error/MissingDataError";
 import Vector from "@common/Vector";
+import { LevelFixtureTemplate } from "@/level/LevelFixture";
 
 /**
  * An invisible area on the map
@@ -23,18 +24,12 @@ class Portal extends Inanimate {
    *
    * @param position - position of the portal
    * @param size     - size of the portal
-   * @param data     - info about the portal
+   * @param template - info about the portal
    *
    * @throws {MissingDataError} when properties or to/from are missing
    */
-  constructor(position: Vector, size: Vector, data: any) {
+  constructor(position: Vector, size: Vector, template: LevelFixtureTemplate) {
     super(position, size);
-
-    if (!data.properties) {
-      throw new MissingDataError(
-        `Cannot find "properties" object when creating portal.`
-      );
-    }
 
     /**
      * Sets to/from properties
@@ -42,7 +37,7 @@ class Portal extends Inanimate {
      * TODO: Input should be more concise. At some point wrap map data in some
      * class so we can make assumptions about the input data.
      */
-    data.properties.forEach((prop: any) => {
+    template.properties?.forEach((prop: any) => {
       this[prop.name] = prop.value;
     });
 

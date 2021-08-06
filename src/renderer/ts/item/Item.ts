@@ -1,21 +1,16 @@
 import MissingDataError from "@/error/MissingDataError";
 import Renderable from "@/ui/Renderable";
 import Vector from "@common/Vector";
-import items from "@/item/items.ts";
+import config from "@/config";
+import items from "@/item/items";
 import { ucFirst, getImagePath } from "@/util";
 
-/**
- * An item in the context of an inventory
- */
+/** An item in the context of an inventory */
 class Item {
-  /**
-   * Game-related info about the item
-   */
+  /** Game-related info about the item */
   private _config: any;
 
-  /**
-   * UI aspect of the item
-   */
+  /** UI aspect of the item */
   private _renderable: Renderable;
 
   /**
@@ -35,30 +30,25 @@ class Item {
     }
 
     const sprite = getImagePath(this._config.ui.sprite);
-    const scale = this._config.ui?.scale ?? 1;
+    // TODO: streamline how scaling is handled
+    const scale = (this._config.ui?.scale ?? 1) * config.scale;
     const ratio = new Vector(1, 1);
     const fps = 0;
 
     this._renderable = new Renderable(sprite, scale, 0, 1, ratio, fps);
   }
 
-  /**
-   * Get the item's category
-   */
+  /** Get the item's category */
   get category(): string {
     return this._config.category;
   }
 
-  /**
-   * Get the description of the item
-   */
+  /** Get the description of the item */
   get description(): string {
     return this._config.description ?? this.displayAs;
   }
 
-  /**
-   * Get the name used when rendering dialogue
-   */
+  /** Get the name used when rendering dialogue */
   get displayAs(): string {
     return this._type
       .split("_")
@@ -66,9 +56,7 @@ class Item {
       .join(" ");
   }
 
-  /**
-   * Get the item's type
-   */
+  /** Get the item's type */
   get type(): string {
     return this._type;
   }

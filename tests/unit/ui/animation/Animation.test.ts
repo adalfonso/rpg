@@ -1,16 +1,19 @@
 import Vector from "@common/Vector";
 import { Animation as Sut, AnimationType } from "@/ui/animation/Animation";
-import { AnimationStep } from "@/ui/animation/AnimationStep";
+import {
+  AnimationStep,
+  AnimationStepTemplate,
+} from "@/ui/animation/AnimationStep";
 import { expect } from "chai";
 
 describe("Animation", () => {
   describe("update", () => {
     it("updates a no-op step", () => {
-      const steps = [getAnimations()[0]];
+      const steps = [getAnimationStepTemplates()[0]];
 
       let count = 0;
 
-      steps[0].update = () => {
+      (<AnimationStep>(<any>steps[0])).update = () => {
         count++;
         return count === 2 ? new Vector(1, 1) : new Vector(0, 0);
       };
@@ -20,7 +23,7 @@ describe("Animation", () => {
         steps,
       };
 
-      const sut = new Sut(template);
+      const sut = new Sut(template, createBasicStep);
 
       const expected = {
         type: AnimationType.Position,
@@ -33,14 +36,18 @@ describe("Animation", () => {
     });
 
     it("updates a single step", () => {
-      const steps = [getAnimations()[0]];
+      const steps = [getAnimationStepTemplates()[0]];
+
+      (<AnimationStep>(<any>steps[0])).update = () => {
+        return new Vector(1, 1);
+      };
 
       const template = {
         type: AnimationType.Position,
         steps,
       };
 
-      const sut = new Sut(template);
+      const sut = new Sut(template, createBasicStep);
 
       const expected = {
         type: AnimationType.Position,
@@ -53,10 +60,16 @@ describe("Animation", () => {
     it("updates a multi step", () => {
       const template = {
         type: AnimationType.Position,
-        steps: getAnimations(),
+        steps: getAnimationStepTemplates(),
       };
 
-      const sut = new Sut(template);
+      template.steps.forEach((step) => {
+        (<AnimationStep>(<any>step)).update = () => {
+          return new Vector(1, 1);
+        };
+      });
+
+      const sut = new Sut(template, createBasicStep);
 
       const expected = {
         type: AnimationType.Position,
@@ -69,7 +82,7 @@ describe("Animation", () => {
 
   describe("isDone", () => {
     it("detects when an animation is done", () => {
-      const steps = [getAnimations()[0]];
+      const steps = [getAnimationStepTemplates()[0]];
 
       (<any>steps[0]).isDone = true;
 
@@ -78,7 +91,7 @@ describe("Animation", () => {
         steps,
       };
 
-      const sut = new Sut(template);
+      const sut = new Sut(template, createBasicStep);
 
       expect(sut.update(100).delta.toArray()).to.deep.equal([1, 1]);
       expect(sut.isDone).to.be.true;
@@ -88,32 +101,47 @@ describe("Animation", () => {
   });
 });
 
-function getAnimations() {
+const getAnimationStepTemplates = (): AnimationStepTemplate[] => {
   const templates = [
     {
       delay_ms: 0,
       duration_ms: 1000,
       end: <Vector>(<unknown>{}),
-      fn: getAnimationFn(),
+      fn: getStepTemplates(),
+      update: () => new Vector(1, 1),
+      refresh: () => {},
     },
     {
       delay_ms: 1000,
       duration_ms: 1000,
       end: <Vector>(<unknown>{}),
-      fn: getAnimationFn(),
+      fn: getStepTemplates(),
+      update: () => new Vector(1, 1),
+      refresh: () => {},
     },
   ];
 
-  return templates.map((template) => {
-    return <AnimationStep>{
-      update: (dt: number) => new Vector(1, 1),
-    };
-  });
-}
+  return <AnimationStepTemplate[]>(<any>templates);
+};
 
-function getAnimationFn() {
+function getStepTemplates() {
   const count = 0;
   return (percent: number, end: Vector) => {
     return <Vector>{};
+  };
+}
+
+const createBasicStep = (step: AnimationStepTemplate) =>
+  <AnimationStep>(<any>step);
+
+function createStep() {
+  let done = false;
+
+  return <AnimationStep>{
+    update(dt: number) {
+      if (dt === 666) {
+        done = true;
+      }
+    },
   };
 }

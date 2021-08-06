@@ -5,23 +5,19 @@ import { StatTemplate } from "@/Stats";
 /**
  * Template data for an actor
  *
- * @prop baseStats - base stats scale
+ * @prop base_stats - base stats scale
  * @prop displayAs - display name
  * @prop abilities - abilities learned
  * @prop teamType  - reference to team type for battles
  * @prop ui        - render info
  */
-export type ActorTemplate = {
+export type ActorConfig = {
   abilities: LearnedAbility[];
-  baseStats: StatTemplate;
+  base_stats: StatTemplate;
   displayAs: string;
   teamType?: string;
   ui: ActorUiData;
 };
 
-/**
- * A list of actors
- */
-export type ActorList = {
-  [key: string]: ActorTemplate;
-};
+/** A list of actors */
+export type ActorList = Record<string, ActorConfig>;

@@ -76,10 +76,12 @@ describe("Team", () => {
 
   describe("prepare", () => {
     it("set direction and position of team members", () => {
-      const sut = new Sut([getActor()]);
+      const sut = new Sut([getActor(), getActor()]);
 
       const position = new Vector(5, 6);
       const direction = 2;
+
+      const members = sut.all();
 
       expect(sut.leader.direction).to.not.equal(2);
       expect(sut.leader.position.x).to.not.equal(5);
@@ -90,6 +92,10 @@ describe("Team", () => {
       expect(sut.leader.direction).to.equal(2);
       expect(sut.leader.position.x).to.equal(5);
       expect(sut.leader.position.y).to.equal(6);
+
+      expect(members[1].direction).to.equal(2);
+      expect(members[1].position.x).to.equal(9);
+      expect(members[1].position.y).to.equal(6);
     });
   });
 
@@ -143,5 +149,23 @@ describe("Team", () => {
 });
 
 const getActor = () => {
-  return new Enemy({ name: "test", type: "knight", width: 1, height: 1 });
+  return new Enemy(new Vector(1, 1), new Vector(1, 1), {
+    name: "test",
+    type: "knight",
+    width: 1,
+    height: 1,
+    x: 1,
+    y: 1,
+  });
+};
+
+const getVector = () => {
+  return <Vector>(<unknown>{
+    copy() {
+      return getVector();
+    },
+    times() {
+      return getVector();
+    },
+  });
 };

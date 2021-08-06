@@ -1,3 +1,4 @@
+import { LevelFixtureTemplate } from "@/level/LevelFixture";
 import { Stat } from "@/Stats";
 /**
  * Basic description for an entity
@@ -5,10 +6,14 @@ import { Stat } from "@/Stats";
  * @prop displayAs   - display name
  * @prop description - description
  */
-export interface EntityTemplate {
+export interface EntityConfig {
   displayAs: string;
   description: string;
 }
+
+export type EntityConfigFactory<T extends EntityConfig> = (
+  template: LevelFixtureTemplate
+) => T;
 
 /**
  * An ability constrained to a level

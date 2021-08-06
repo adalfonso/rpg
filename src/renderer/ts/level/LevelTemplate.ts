@@ -1,31 +1,14 @@
-import Clip from "@/inanimate/Clip";
-import Enemy from "@/actor/Enemy";
-import Entry from "@/inanimate/Entry";
 import InvalidDataError from "@/error/InvalidDataError";
-import Item from "@/inanimate/Item";
 import MissingDataError from "@/error/MissingDataError";
-import NonPlayer from "@/actor/NonPlayer";
-import Portal from "@/inanimate/Portal";
-import Vector from "@common/Vector";
-import config from "@/config";
+import { LevelFixture, LevelFixtureType } from "./LevelFixture";
+import { LevelFixtureFactory } from "./LevelFixtureFactory";
 
-/**
- * Type of fixtures to expect in a level
- */
-export type LevelFixture = Clip | Enemy | Portal | NonPlayer | Entry | Item;
-
-/**
- * LevelTemplate parses level json and provides easier acces to data
- */
-class LevelTemplate {
-  /**
-   * Main fixtures of the level
-   */
+/** LevelTemplate parses level json and provides easier acces to data */
+export class LevelTemplate {
+  /** Main fixtures of the level */
   private _fixtures: LevelFixture[] = [];
 
-  /**
-   * Visual layer/tileset data
-   */
+  /** Visual layer/tileset data */
   private _tiles: any[];
 
   /**
@@ -34,12 +17,10 @@ class LevelTemplate {
    * NOTE: Entries are considered level fixtures but are stored separately in an
    * object because they are queried often.
    */
-  private _entries: object = {};
+  private _entries: Record<string, unknown> = {};
 
-  /**
-   * Name reference to tile set image
-   */
-  private _tileSource: string;
+  /** Name reference to tile set image */
+  private _tile_source: string;
 
   /**
    * Create a new LevelTemplate instance
@@ -48,7 +29,10 @@ class LevelTemplate {
    *
    * @throws {MissingDataError} when tile layers or tile source are missing
    */
-  constructor(json: any) {
+  constructor(
+    json: Record<string, any>,
+    private _fixture_factory: LevelFixtureFactory
+  ) {
     let layers = json.layers ?? [];
 
     this._tiles = this.getTileLayers(layers);
@@ -59,9 +43,9 @@ class LevelTemplate {
       );
     }
 
-    this._tileSource = this.getJsonProperty(json, "tile_source");
+    this._tile_source = this.getJsonProperty(json, "tile_source");
 
-    if (!this._tileSource) {
+    if (!this._tile_source) {
       throw new MissingDataError(
         `Unable to find tile source when loading template.`
       );
@@ -71,19 +55,24 @@ class LevelTemplate {
     let entries = objectGroups.entry?.objects ?? [];
 
     entries.forEach((e: any) => {
-      this._entries[e.name] = this.createFixture("entry", e);
+      this._entries[e.name] = this._fixture_factory.create(
+        LevelFixtureType.Entry,
+        e
+      );
     });
 
-    ["clip", "enemy", "portal", "npc", "item"].forEach((type) => {
+    [
+      LevelFixtureType.Clip,
+      LevelFixtureType.Enemy,
+      LevelFixtureType.Portal,
+      LevelFixtureType.NonPlayer,
+      LevelFixtureType.Item,
+    ].forEach((type: LevelFixtureType) => {
       let group = objectGroups[type] ?? { objects: [] };
-      let fixtures = group.objects.flat();
+      let fixture_data = group.objects.flat();
 
-      if (!fixtures.length) {
-        return;
-      }
-
-      fixtures.forEach((object: any) => {
-        let fixture = this.createFixture(type, object);
+      fixture_data.forEach((object: unknown) => {
+        let fixture = this._fixture_factory.create(type, object);
 
         if (fixture !== null) {
           this._fixtures.push(fixture);
@@ -92,77 +81,24 @@ class LevelTemplate {
     });
   }
 
-  /**
-   * Visual layer/tileset data
-   */
+  /** Visual layer/tileset data */
   get tiles(): any[] {
     return this._tiles;
   }
 
-  /**
-   * Entry/loading points on a level
-   */
-  get entries(): object {
+  /** Entry/loading points on a level */
+  get entries(): Record<string, unknown> {
     return this._entries;
   }
 
-  /**
-   * Name reference to tile set image
-   */
+  /** Name reference to tile set image */
   get tileSource(): string {
-    return this._tileSource;
+    return this._tile_source;
   }
 
-  /**
-   * Main fixtures of the level
-   */
+  /** Main fixtures of the level */
   get fixtures(): LevelFixture[] {
     return this._fixtures;
-  }
-
-  /**
-   * Load a single fixture from a layer object
-   *
-   * @param type    - fixture type
-   * @param fixture - fixture data
-   *
-   * @return resulting fixture instance
-   *
-   * @throws {MissingDataError} when x, y, width, or height are missing
-   * @throws {InvalidDataError} when the type is invalid
-   */
-  private createFixture(type: string, fixture: any): LevelFixture {
-    ["x", "y", "width", "height"].forEach((prop) => {
-      if (!fixture.hasOwnProperty(prop)) {
-        throw new MissingDataError(
-          `Cannot find property "${prop}" when loading fixture "${type}".`
-        );
-      }
-    });
-
-    let position = new Vector(fixture.x, fixture.y).times(config.scale);
-    let size = new Vector(fixture.width, fixture.height).times(config.scale);
-
-    switch (type) {
-      case "clip":
-        return new Clip(position, size);
-      case "portal":
-        return new Portal(position, size, fixture);
-      case "entry":
-        return new Entry(position, size);
-      case "npc":
-        return new NonPlayer(fixture);
-      case "enemy":
-        let enemy = new Enemy(fixture);
-        return enemy.isDefeated ? null : enemy;
-      case "item":
-        let item = new Item(position, size, fixture);
-        return item.obtained ? null : item;
-      default:
-        throw new InvalidDataError(
-          `Unable to create fixture for object type "${type}".`
-        );
-    }
   }
 
   /**
@@ -173,7 +109,7 @@ class LevelTemplate {
    *
    * @return property's value
    */
-  private getJsonProperty(json: any, property: string): string {
+  private getJsonProperty(json: Record<string, any>, property: string): string {
     let properties = json.properties ?? [];
 
     return properties
@@ -188,7 +124,7 @@ class LevelTemplate {
    *
    * @return tile layers
    */
-  private getTileLayers(layers: any[]): object[] {
+  private getTileLayers(layers: any[]): Record<string, unknown>[] {
     return layers.filter((l) => l.type === "tilelayer");
   }
 
@@ -221,5 +157,3 @@ class LevelTemplate {
     return objectGroups;
   }
 }
-
-export default LevelTemplate;

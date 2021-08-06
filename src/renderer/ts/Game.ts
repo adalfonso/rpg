@@ -4,7 +4,6 @@ import CollisionHandler from "./CollisionHandler";
 import Dialogue from "./ui/Dialogue";
 import Inventory from "./menu/Inventory";
 import Level from "./level/Level";
-import LevelTemplate from "./level/LevelTemplate";
 import MissingDataError from "./error/MissingDataError";
 import Player from "./actor/Player";
 import StartMenu from "./menu/StartMenu";
@@ -13,6 +12,8 @@ import Vector from "@common/Vector";
 import levels from "./level/levels";
 import menus from "./menu/menus";
 import { Drawable, Eventful, CallableMap } from "./interfaces";
+import { LevelFixtureFactory } from "./level/LevelFixtureFactory";
+import { LevelTemplate } from "./level/LevelTemplate";
 import { bus } from "@/EventBus";
 
 /**
@@ -209,7 +210,7 @@ class Game implements Eventful, Drawable {
    */
   public start() {
     this.level = new Level(
-      new LevelTemplate(levels.sandbox_0),
+      new LevelTemplate(levels.sandbox_0, new LevelFixtureFactory()),
       this.player,
       new CollisionHandler(this.player)
     );

@@ -14,6 +14,7 @@ import config from "@/config";
 import { Collision } from "@/CollisionHandler";
 import { Drawable, Lockable } from "@/interfaces";
 import { LearnedAbility } from "@/combat/strategy/types";
+import { LevelFixtureTemplate } from "@/level/LevelFixture";
 import { RenderData } from "@/ui/types";
 import { getImagePath } from "@/util";
 
@@ -49,44 +50,25 @@ abstract class Actor implements Drawable, Lockable {
    */
   private savedDirection: number;
 
-  /**
-   * Unique identifier
-   */
+  /** Unique identifier */
   protected _id: string;
 
-  /**
-   * Game-related info about the actor
-   */
+  /** Game-related info about the actor */
   protected config: any;
 
-  /**
-   * Dialogue that the actor is the leader of
-   */
+  /** Dialogue that the actor is the leader of */
   protected dialogue: Dialogue = null;
 
-  /**
-   * If the actor has been defeated
-   */
+  /** If the actor has been defeated */
   protected _defeated: boolean = false;
 
-  /**
-   * If the actor is locked from updating
-   */
+  /** If the actor is locked from updating */
   protected locked: boolean;
 
-  /**
-   * Current position of the actor
-   */
-  public position: Vector;
-
-  /**
-   * An actor's stats
-   */
+  /** An actor's stats */
   public stats: Stats;
 
-  /**
-   * The weapon currently equipped to the actor
-   */
+  /** The weapon currently equipped to the actor */
   public weapon: Weapon;
 
   /**
@@ -96,9 +78,7 @@ abstract class Actor implements Drawable, Lockable {
    */
   public direction: number;
 
-  /**
-   * If the actor is in dialogue
-   */
+  /** If the actor is in dialogue */
   public inDialogue: boolean;
 
   /**
@@ -106,26 +86,18 @@ abstract class Actor implements Drawable, Lockable {
    *
    * @param position - positon of the actor
    * @param size     - size of the actor
-   * @param data     - additional info about the actor
+   * @param template - additional info about the actor
    *
    * @throws {MissingDataError} when name, type, or config are missing
    */
-  constructor(position: Vector, private _size: Vector, protected data: any) {
+  constructor(
+    public position: Vector,
+    private _size: Vector,
+    protected template: LevelFixtureTemplate
+  ) {
     let actorType = this.constructor.name;
 
-    if (!data?.name) {
-      throw new MissingDataError(`Missing unique identifier for ${actorType}.`);
-    }
-
-    if (!data?.type) {
-      throw new MissingDataError(`Missing "type" for ${actorType}.`);
-    }
-
-    this.config = actors[data.type];
-
-    if (this.config.baseStats) {
-      this.stats = new Stats(this.config.baseStats);
-    }
+    this.config = actors[template.type];
 
     if (!this.config) {
       throw new MissingDataError(
@@ -133,12 +105,13 @@ abstract class Actor implements Drawable, Lockable {
       );
     }
 
-    if (data.properties) {
-      this.assignCustomProperties(data.properties);
+    this.stats = new Stats(this.config.base_stats);
+
+    if (template.properties) {
+      this.assignCustomProperties(template.properties);
     }
 
-    this._id = data.name;
-    this.position = position.times(config.scale);
+    this._id = template.name;
     this.direction = 0;
     this.inDialogue = false;
     this.locked = false;
@@ -147,37 +120,27 @@ abstract class Actor implements Drawable, Lockable {
     this.savedDirection = this.direction;
   }
 
-  /**
-   * Get the actor's id
-   */
+  /** Get the actor's id */
   get id() {
     return this._id;
   }
 
-  /**
-   * Get the actor's defeated status
-   */
+  /** Get the actor's defeated status */
   get isDefeated() {
     return this._defeated || this.stats.hp <= 0;
   }
 
-  /**
-   * Get the actor's size
-   */
+  /** Get the actor's size */
   get size(): Vector {
     return this._size;
   }
 
-  /**
-   * Get the name used when rendering dialogue
-   */
+  /** Get the name used when rendering dialogue */
   get displayAs(): string {
     return this.config.displayAs;
   }
 
-  /**
-   * Get the abilities the actor currently knows
-   */
+  /** Get the abilities the actor currently knows */
   get abilities(): CombatStrategy[] {
     return this._getAllAbilities()
       .filter((ability) => ability.level <= this.stats.lvl)
@@ -447,9 +410,9 @@ abstract class Actor implements Drawable, Lockable {
    *
    * @return current state of the actor
    */
-  protected getState(): object {
+  protected getState(): Record<string, unknown> {
     return {
-      type: this.data.type,
+      type: this.template.type,
       defeated: this._defeated,
       dmg: this.stats.dmg,
       lvl: this.stats.lvl,

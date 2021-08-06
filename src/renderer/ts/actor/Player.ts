@@ -1,5 +1,4 @@
 import Actor from "./Actor";
-import InvalidDataError from "@/error/InvalidDataError";
 import MissingDataError from "@/error/MissingDataError";
 import Renderable from "@/ui/Renderable";
 import StateManager from "@/state/StateManager";
@@ -7,6 +6,7 @@ import Vector from "@common/Vector";
 import Weapon from "@/combat/strategy/Weapon";
 import config from "@/config";
 import { Drawable, Eventful, Lockable, CallableMap } from "@/interfaces";
+import { LevelFixtureTemplate } from "@/level/LevelFixture";
 import { bus } from "@/EventBus";
 
 /**
@@ -33,9 +33,10 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
    *
    * @param position - the player's position
    * @param size     - the player's size
+   * @param template - the player's data template
    */
-  constructor(position: Vector, size: Vector) {
-    super(position, size, { name: "Me", type: "player" });
+  constructor(position: Vector, size: Vector, template: LevelFixtureTemplate) {
+    super(position, size, template);
 
     this.speed = new Vector(0, 0);
     this.baseSpeed = size.x / 10;
@@ -59,7 +60,7 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
       new Renderable(sprite, scale, start.west, frames.west, ratio, fps),
     ];
 
-    this.resolveState(this.data.type);
+    this.resolveState(template.type);
 
     bus.register(this);
   }
@@ -280,7 +281,7 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
    *
    * @return current state of the player
    */
-  protected getState(): object {
+  protected getState(): Record<string, unknown> {
     return {
       ...super.getState(),
       exp: this.stats.exp,

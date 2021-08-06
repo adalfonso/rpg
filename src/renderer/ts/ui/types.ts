@@ -59,10 +59,12 @@ export type FrameRenderTemplate = {
 /**
  * Basic UI data
  *
- * @prop scale  - render scale
- * @prop sprite - name ref to sprite image
+ * @prop scale     - render scale
+ * @prop animation - optional animation
+ * @prop sprite    - name ref to sprite image
  */
 export type UiData = {
   scale?: number;
+  animation?: string;
   sprite: string;
 };

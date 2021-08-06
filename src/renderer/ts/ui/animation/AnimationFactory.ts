@@ -1,7 +1,10 @@
+import MissingDataError from "@/error/MissingDataError";
 import Vector from "@common/Vector";
-import { Animation } from "@/ui/animation/Animation";
+import { Animation, AnimationTemplate } from "@/ui/animation/Animation";
 import { AnimationStep, AnimationStepTemplate } from "./AnimationStep";
 import { resolution } from "@common/common";
+
+export type AnimationFactory = (name: string) => (subject: Vector) => Animation;
 
 /**
  * Generate an animation instance
@@ -13,15 +16,22 @@ import { resolution } from "@common/common";
  * @return animation
  */
 export const getAnimation =
-  (animations: any) =>
+  (animations: Record<string, AnimationTemplate>) =>
   (name: string) =>
   (subject: Vector): Animation => {
-    const config = animations[name];
+    const template = animations[name];
 
-    const steps = config.steps.map(
+    if (!template) {
+      throw new MissingDataError(`Cannot load animation "${name}"`);
+    }
+
+    const steps = template.steps.map(
       (step: AnimationStepTemplate) =>
         new AnimationStep(step, { subject, resolution })
     );
 
-    return new Animation({ type: config.type, steps });
+    const step_ctor = (template: AnimationStepTemplate) =>
+      new AnimationStep(template, { subject, resolution });
+
+    return new Animation(template, step_ctor);
   };

@@ -3,6 +3,7 @@ import Dialogue from "@/ui/Dialogue";
 import MissingDataError from "@/error/MissingDataError";
 import Vector from "@common/Vector";
 import { Drawable, Eventful, CallableMap } from "@/interfaces";
+import { LevelFixtureTemplate } from "@/level/LevelFixture";
 import { bus } from "@/EventBus";
 
 /**
@@ -19,14 +20,12 @@ class NonPlayer extends Actor implements Eventful, Drawable {
    *
    * TODO: handle sprites when they are available
    *
-   * @param data - info about the non-player
+   * @param position - the non-player's position
+   * @param size     - the non-player's size
+   * @param template - info about the non-player
    */
-  constructor(data: any) {
-    super(
-      new Vector(data.x, data.y),
-      new Vector(data.width, data.height),
-      data
-    );
+  constructor(position: Vector, size: Vector, template: LevelFixtureTemplate) {
+    super(position, size, template);
 
     this.resolveState(`nonPlayers.${this.id}`);
 
@@ -106,7 +105,9 @@ class NonPlayer extends Actor implements Eventful, Drawable {
       return;
     }
 
-    this.dialogue = new Dialogue(this.data.speech, this, actors);
+    // TODO: Fix this. Is does not conform to the interface and is temporarily
+    // disabled
+    //this.dialogue = new Dialogue(this.template.speech, this, actors);
   }
 }
 

@@ -2,7 +2,7 @@ import Damage from "../Damage";
 import Renderable from "@/ui/Renderable";
 import Vector from "@common/Vector";
 import { Constructor } from "@/mixins";
-import { EntityTemplate } from "./types";
+import { EntityConfig } from "./types";
 import { bus } from "@/EventBus";
 
 /**
@@ -18,7 +18,7 @@ export const Descriptive = <T extends Constructor>(Base: T) =>
     /**
      * Stores the descriptors
      */
-    protected _template: EntityTemplate;
+    protected _template: EntityConfig;
 
     /**
      * Get the display name

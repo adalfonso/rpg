@@ -10,7 +10,7 @@ export interface Drawable {
 /**
  * A map of callables
  */
-export type CallableMap = { [key: string]: Function };
+export type CallableMap = Record<string, (input: unknown) => unknown>;
 
 /**
  * Any class that interfaces with an event bus

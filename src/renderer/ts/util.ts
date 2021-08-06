@@ -37,10 +37,10 @@ export const ucFirst: Function = (input: string): string =>
  * @return merged object
  */
 export const merge: Function = (
-  obj1: object,
-  obj2: object,
+  obj1: Record<string, unknown>,
+  obj2: Record<string, unknown>,
   preserveReference: boolean = false
-): object => {
+): Record<string, unknown> => {
   if (!preserveReference) {
     obj1 = JSON.parse(JSON.stringify(obj1));
     obj2 = JSON.parse(JSON.stringify(obj2));

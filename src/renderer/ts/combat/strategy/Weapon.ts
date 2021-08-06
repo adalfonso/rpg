@@ -1,7 +1,7 @@
 import CombatStrategy from "./CombatStrategy";
 import Damage from "../Damage";
 import Renderable from "@/ui/Renderable";
-import { EntityTemplate } from "./types";
+import { EntityConfig } from "./types";
 import {
   Descriptive,
   DamageDealing,
@@ -24,7 +24,7 @@ class Weapon extends DamageDealing(
    * @param _id       - weapon type
    */
   constructor(
-    protected _template: EntityTemplate,
+    protected _template: EntityConfig,
     protected _ui: Renderable,
     protected _damage: Damage,
     private _id: string

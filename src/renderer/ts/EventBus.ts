@@ -20,7 +20,7 @@ class EventBus {
   /**
    * Event store
    */
-  private events: object = {};
+  private events: Record<string, BrokeredEventTemplate[]> = {};
 
   /**
    * Create a new instance or get the shared instance
@@ -70,7 +70,7 @@ class EventBus {
    * @param event  - event name
    * @param detail - additional detail to pass along
    */
-  public emit(event: string, detail?: object) {
+  public emit(event: string, detail?: Record<string, unknown>) {
     let e = new CustomEvent(event, { detail: detail });
     window.dispatchEvent(e);
   }
@@ -81,7 +81,10 @@ class EventBus {
    * @param observer - eventful entity
    * @param events   - a list of event callbacks
    */
-  private install(observer: Eventful, events: object) {
+  private install(
+    observer: Eventful,
+    events: Record<string, (input: unknown) => unknown>
+  ) {
     for (let event in events) {
       let brokeredEvent: BrokeredEventTemplate = {
         observer: observer,

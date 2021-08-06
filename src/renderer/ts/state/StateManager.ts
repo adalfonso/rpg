@@ -3,28 +3,18 @@ import { promises as fs } from "fs";
 import { bus } from "@/EventBus";
 import { Eventful, CallableMap } from "@/interfaces";
 
-/**
- * An intermediary between an on-disk JSON store and objects within the game
- */
+/** An intermediary between an on-disk JSON store and objects within the game */
 class StateManager implements Eventful {
-  /**
-   * The game state
-   */
-  private data: object = {};
+  /** The game state */
+  private data: Record<string, unknown> = {};
 
-  /**
-   * Location the state was last loaded from
-   */
+  /** Location the state was last loaded from */
   private lastLoadedFrom: string;
 
-  /**
-   * Singleton instance
-   */
+  /** Singleton instance */
   private static instance: StateManager;
 
-  /**
-   * Create a new StateManager instance
-   */
+  /** Create a new StateManager instance */
   constructor() {
     bus.register(this);
   }
@@ -74,9 +64,7 @@ class StateManager implements Eventful {
     }
   }
 
-  /**
-   * Completely wipe out the state
-   */
+  /** Completely wipe out the state */
   public empty() {
     this.data = {};
   }
@@ -88,7 +76,7 @@ class StateManager implements Eventful {
    *
    * @param data - data to merge in
    */
-  public merge(data: object) {
+  public merge(data: Record<string, unknown>) {
     this.data = merge(this.data, data);
   }
 
@@ -130,7 +118,7 @@ class StateManager implements Eventful {
    * @param ref - reference to a value within the state
    */
   public remove(ref: string) {
-    let current = this.data;
+    let current = <unknown>this.data;
 
     let keys = ref.split(".");
     try {

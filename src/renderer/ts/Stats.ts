@@ -79,9 +79,9 @@ export default class Stats {
   /**
    * Create a new Stats instance
    *
-   * @param baseStats - base stats for an entity
+   * @param base_stats - base stats for an entity
    */
-  constructor(private baseStats: StatTemplate) {
+  constructor(private base_stats: StatTemplate) {
     // Default to 5
     this._lvl = 5;
     this._exp = 0;
@@ -163,7 +163,7 @@ export default class Stats {
   get hp(): number {
     return Math.max(
       0,
-      this.currentStatValue(this.baseStats.hp) * this._getModifier("hp") -
+      this.currentStatValue(this.base_stats.hp) * this._getModifier("hp") -
         this._dmg
     );
   }
@@ -172,14 +172,18 @@ export default class Stats {
    * Get the current physical attack stat
    */
   get atk(): number {
-    return this.currentStatValue(this.baseStats.atk) * this._getModifier("atk");
+    return (
+      this.currentStatValue(this.base_stats.atk) * this._getModifier("atk")
+    );
   }
 
   /**
    * Get the current physical defense stat
    */
   get def(): number {
-    return this.currentStatValue(this.baseStats.def) * this._getModifier("def");
+    return (
+      this.currentStatValue(this.base_stats.def) * this._getModifier("def")
+    );
   }
 
   /**
@@ -187,7 +191,8 @@ export default class Stats {
    */
   get sp_atk(): number {
     return (
-      this.currentStatValue(this.baseStats.sp_atk) * this._getModifier("sp_atk")
+      this.currentStatValue(this.base_stats.sp_atk) *
+      this._getModifier("sp_atk")
     );
   }
 
@@ -196,7 +201,8 @@ export default class Stats {
    */
   get sp_def(): number {
     return (
-      this.currentStatValue(this.baseStats.sp_def) * this._getModifier("sp_def")
+      this.currentStatValue(this.base_stats.sp_def) *
+      this._getModifier("sp_def")
     );
   }
 
@@ -204,7 +210,9 @@ export default class Stats {
    * Get the current speed stat
    */
   get spd(): number {
-    return this.currentStatValue(this.baseStats.spd) * this._getModifier("spd");
+    return (
+      this.currentStatValue(this.base_stats.spd) * this._getModifier("spd")
+    );
   }
 
   /**
@@ -212,12 +220,12 @@ export default class Stats {
    */
   get givesExp(): number {
     return this.currentStatValue(
-      this.baseStats.hp +
-        this.baseStats.atk +
-        this.baseStats.def +
-        this.baseStats.sp_atk +
-        this.baseStats.sp_def +
-        this.baseStats.spd
+      this.base_stats.hp +
+        this.base_stats.atk +
+        this.base_stats.def +
+        this.base_stats.sp_atk +
+        this.base_stats.sp_def +
+        this.base_stats.spd
     );
   }
 
@@ -338,8 +346,8 @@ export default class Stats {
    * @return total of base stats
    */
   private getBaseStateTotal(): number {
-    return Object.keys(this.baseStats).reduce((carry, stat) => {
-      return carry + this.baseStats[stat];
+    return Object.keys(this.base_stats).reduce((carry, stat) => {
+      return carry + this.base_stats[stat];
     }, 0);
   }
 }

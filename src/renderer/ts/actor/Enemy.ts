@@ -4,6 +4,7 @@ import Renderable from "@/ui/Renderable";
 import StateManager from "@/state/StateManager";
 import Vector from "@common/Vector";
 import { Drawable } from "@/interfaces";
+import { LevelFixtureTemplate } from "@/level/LevelFixture";
 import { bus } from "@/EventBus";
 
 /**
@@ -18,14 +19,12 @@ class Enemy extends Actor implements Drawable {
   /**
    * Create a new Enemy instance
    *
-   * @param data - info about the enemy
+   * @param position - the enemy's position
+   * @param size     - the enemy's size
+   * @param template - info about the enemy
    */
-  constructor(data: any) {
-    super(
-      new Vector(data.x, data.y),
-      new Vector(data.width, data.height),
-      data
-    );
+  constructor(position: Vector, size: Vector, template: LevelFixtureTemplate) {
+    super(position, size, template);
 
     this.direction = 4;
 
@@ -84,7 +83,7 @@ class Enemy extends Actor implements Drawable {
    * @return the clone
    */
   public clone(): Enemy {
-    return new Enemy(this.data);
+    return new Enemy(this.position.copy(), this.size.copy(), this.template);
   }
 
   /**

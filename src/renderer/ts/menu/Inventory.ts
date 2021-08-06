@@ -45,7 +45,7 @@ class Inventory extends Menu implements Eventful, Drawable {
   /**
    * Get current state of the inventory for export to a state manager
    */
-  get state(): object {
+  get state(): Record<string, unknown> {
     return {
       menu: {
         item: this._getSubMenu("item").map((i: Item) => i.type),
