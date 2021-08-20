@@ -1,6 +1,6 @@
 {
   "name": "rpg",
-  "version": "0.44.0",
+  "version": "0.44.1",
   "description": "An RPG of some sort... we'll see.",
   "scripts": {
     "dev": "electron-webpack dev",
@@ -21,7 +21,7 @@
     "@types/node": "^12.12.37",
     "@types/sinon": "^9.0.3",
     "chai": "^4.2.0",
-    "electron": "8.2.0",
+    "electron": "^13.0.0",
     "electron-builder": "^22.4.1",
     "electron-webpack": "^2.8.2",
     "electron-webpack-ts": "^4.0.1",

@@ -5,27 +5,30 @@ import { resolution } from "../common/common";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
-// global reference to mainWindow (necessary to prevent window from being garbage collected)
-let mainWindow: BrowserWindow;
-
-function createMainWindow() {
-  const window = new BrowserWindow({
-    webPreferences: { nodeIntegration: true },
+function createWindow() {
+  const win = new BrowserWindow({
+    /**
+     * TODO: find out how to remove contextIsolation. It was added as a hack to
+     * get the app to work after upgrading to version 12.
+     * https://www.electronjs.org/docs/breaking-changes#default-changed-contextisolation-defaults-to-true
+     */
+    webPreferences: { nodeIntegration: true, contextIsolation: false },
     width: resolution.x,
     height: resolution.y,
     useContentSize: true,
   });
 
-  window.setMenu(null);
+  win.setMenu(null);
 
   if (isDevelopment) {
-    window.webContents.openDevTools();
+    win.webContents.openDevTools();
+    console.info(`Running Electron version ${app.getVersion()}`);
   }
 
   if (isDevelopment) {
-    window.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`);
+    win.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`);
   } else {
-    window.loadURL(
+    win.loadURL(
       formatUrl({
         pathname: path.join(__dirname, "index.html"),
         protocol: "file",
@@ -34,18 +37,14 @@ function createMainWindow() {
     );
   }
 
-  window.on("closed", () => {
-    mainWindow = null;
-  });
-
-  window.webContents.on("devtools-opened", () => {
-    window.focus();
+  win.webContents.on("devtools-opened", () => {
+    win.focus();
     setImmediate(() => {
-      window.focus();
+      win.focus();
     });
   });
 
-  return window;
+  return win;
 }
 
 // quit application when all windows are closed
@@ -56,14 +55,10 @@ app.on("window-all-closed", () => {
   }
 });
 
-app.on("activate", () => {
-  // on macOS it is common to re-create a window even after all windows have been closed
-  if (mainWindow === null) {
-    mainWindow = createMainWindow();
-  }
-});
+app.whenReady().then(() => {
+  createWindow();
 
-// create main BrowserWindow when electron is ready
-app.on("ready", () => {
-  mainWindow = createMainWindow();
+  app.on("activate", function () {
+    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+  });
 });
