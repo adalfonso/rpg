@@ -38,7 +38,7 @@ class NonPlayer extends Actor implements Eventful, Drawable {
    * @param dt - delta time
    */
   public update(dt: number) {
-    if (this.dialogue?.done) {
+    if (this.dialogue?.isDone) {
       this.dialogue = null;
     } else if (this.dialogue) {
       this.dialogue.update(dt);

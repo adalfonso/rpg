@@ -101,7 +101,7 @@ class Game implements Eventful, Drawable {
       this.dialogue.update(dt);
     }
 
-    if (this.dialogue?.done) {
+    if (this.dialogue?.isDone) {
       this.dialogue = null;
       this.unlock(GameState.Dialogue);
     }

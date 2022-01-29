@@ -5,24 +5,13 @@ import { Drawable, Eventful, CallableMap } from "../interfaces";
 import { bus } from "@/EventBus";
 
 class Dialogue implements Eventful, Drawable {
-  /**
-   * If waiting for user input
-   */
+  /** If waiting for user input */
   private waiting: boolean;
 
-  /**
-   * Done denotes that all texts have been fully rendered
-   */
-  public done: boolean;
-
-  /**
-   * The length of time in milliseconds between the rendering of each letter
-   */
+  /** The length of time in milliseconds between the rendering of each letter */
   private frameLength: number;
 
-  /**
-   * A bank of how many seconds have passed since the last rendering
-   */
+  /** A bank of how many seconds have passed since the last rendering */
   private timeStore: number;
 
   /**
@@ -38,7 +27,6 @@ class Dialogue implements Eventful, Drawable {
     private actors: Actor[]
   ) {
     this.waiting = false;
-    this.done = false;
 
     this.frameLength = 1000 / 24;
     this.timeStore = 0;
@@ -113,16 +101,19 @@ class Dialogue implements Eventful, Drawable {
           this.next(e);
         }
 
-        if (this.done) {
+        if (this.isDone) {
           this.stop();
         }
       },
     };
   }
 
-  /**
-   * Begin the dialogue
-   */
+  /** If the dialogue is done rendering */
+  get isDone(): boolean {
+    return this.stream.isDone && !this.waiting;
+  }
+
+  /** Begin the dialogue */
   private start() {
     this.actors.forEach((a) => {
       a.inDialogue = true;
@@ -132,9 +123,7 @@ class Dialogue implements Eventful, Drawable {
     bus.register(this);
   }
 
-  /**
-   * End the dialogue
-   */
+  /** End the dialogue */
   private stop() {
     this.actors.forEach((a) => {
       a.inDialogue = false;
@@ -150,17 +139,18 @@ class Dialogue implements Eventful, Drawable {
    * @param e - keyboard event
    */
   private next(e: KeyboardEvent) {
-    if (!this.waiting || this.done) {
+    if (!this.waiting) {
       return;
     }
 
+    this.waiting = false;
+
     if (this.stream.isDone) {
-      this.done = true;
-    } else {
-      this.stream.next();
-      this.timeStore = 0;
-      this.waiting = false;
+      return;
     }
+
+    this.stream.next();
+    this.timeStore = 0;
   }
 
   /**

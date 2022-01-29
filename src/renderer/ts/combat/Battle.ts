@@ -16,30 +16,26 @@ import { Drawable, Eventful, Lockable, CallableMap } from "@/interfaces";
 import { LearnedAbility } from "./strategy/types";
 import { bus } from "@/EventBus";
 
+interface BattleEvent {
+  isDone: boolean;
+  update(dt: number): void;
+  draw(ctx: CanvasRenderingContext2D, offset: Vector, resolution: Vector): void;
+}
+
 class Battle implements Eventful, Drawable, Lockable {
-  /**
-   * Menu for the battle
-   */
+  /** Menu for the battle */
   private _menu: BattleMenu;
 
-  /**
-   * Dialogue in the battle
-   */
-  private _dialogue: Dialogue = null;
-
-  /**
-   * If it is currently the player's turn
-   */
+  /** If it is currently the player's turn */
   private _herosTurn: boolean = true;
 
-  /**
-   * If the battle is locked
-   */
+  /** If the battle is locked */
   private _locked: boolean = false;
 
-  /**
-   * If the battle is currently active
-   */
+  /** Queue of animations and battle actions to execute */
+  private _event_queue: BattleEvent[] = [];
+
+  /** If the battle is currently active */
   public active: boolean;
 
   /**
@@ -48,7 +44,7 @@ class Battle implements Eventful, Drawable, Lockable {
    * @param _heroes         - heroes in battle
    * @param _foes           - enemies in battle
    * @param _opponentSelect - utility to traverse opponents in battle
-   * @param _text_animation - animation sequence occurring in the battle
+   * @param start_animation - animation sequence occurring at the start of battle
    *
    * @emits battle.action
    */
@@ -56,9 +52,10 @@ class Battle implements Eventful, Drawable, Lockable {
     private _heroes: HeroTeam,
     private _foes: Team,
     private _opponentSelect: OpponentSelect,
-    private _text_animation: AnimatedText
+    start_animation: AnimatedText
   ) {
     this.active = true;
+    this._event_queue.push(start_animation);
 
     // TODO: make these scale
     // TODO: Make this a enum direction
@@ -75,9 +72,7 @@ class Battle implements Eventful, Drawable, Lockable {
     }
   }
 
-  /**
-   * Determine if the battle is done
-   */
+  /** Determine if the battle is done */
   get isDone() {
     return this._heroes.areDefeated || this._foes.areDefeated;
   }
@@ -88,29 +83,22 @@ class Battle implements Eventful, Drawable, Lockable {
    * @param dt - delta time
    */
   public update(dt: number) {
-    if (this._text_animation) {
-      this._text_animation.update(dt);
+    if (this._event_queue.length > 0) {
+      const [event] = this._event_queue;
+      event.update(dt);
 
-      if (this._text_animation.isDone) {
-        this._text_animation = null;
+      // TODO: will this cause the final frame of the animation to not render
+      if (event.isDone) {
+        this._event_queue.shift();
       }
-    }
-
-    if (this._dialogue) {
-      this._dialogue.update(dt);
     }
 
     this._menu.wantsCombat
       ? this._opponentSelect.unlock()
       : this._opponentSelect.lock();
 
-    if (this._dialogue?.done) {
-      this._dialogue = null;
-
-      // End battle after exp/lvl growth dialogue has ended
-      if (this.isDone) {
-        this._stop();
-      }
+    if (this.isDone && this._event_queue.length === 0) {
+      this._stop();
     }
   }
 
@@ -149,12 +137,10 @@ class Battle implements Eventful, Drawable, Lockable {
       }
     }
 
-    if (this._dialogue) {
-      this._dialogue.draw(ctx, new Vector(0, 0), resolution);
-    }
+    const [event] = this._event_queue;
 
-    if (this._text_animation) {
-      this._text_animation.draw(ctx, new Vector(0, 0), resolution);
+    if (event) {
+      event.draw(ctx, new Vector(0, 0), resolution);
     }
   }
 
@@ -197,10 +183,12 @@ class Battle implements Eventful, Drawable, Lockable {
 
         let stream = new TextStream(dialogue);
 
-        this._dialogue = new Dialogue(stream, undefined, [
-          ...this._heroes.all(),
-          ...this._foes.all(),
-        ]);
+        this._event_queue.push(
+          new Dialogue(stream, undefined, [
+            ...this._heroes.all(),
+            ...this._foes.all(),
+          ])
+        );
         this.lock();
       },
     };
@@ -226,16 +214,16 @@ class Battle implements Eventful, Drawable, Lockable {
     return this._menu.unlock();
   }
 
-  /**
-   * Cause game over
-   */
+  /** Cause game over */
   private _doGameOver() {
     let stream = new TextStream(["You died!"]);
 
-    this._dialogue = new Dialogue(stream, this._heroes.leader, [
-      ...this._heroes.all(),
-      ...this._foes.all(),
-    ]);
+    this._event_queue.push(
+      new Dialogue(stream, this._heroes.leader, [
+        ...this._heroes.all(),
+        ...this._foes.all(),
+      ])
+    );
 
     this.lock();
   }
@@ -275,9 +263,7 @@ class Battle implements Eventful, Drawable, Lockable {
     }
   }
 
-  /**
-   * Handle battle action for the foes
-   */
+  /** Handle battle action for the foes */
   private _handleFoeAction() {
     const unarmed = new WeaponFactory().createStrategy("unarmed");
 
