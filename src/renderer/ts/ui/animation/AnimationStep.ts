@@ -9,10 +9,24 @@ export interface AnimationStepTemplate {
   fn: AnimationFunctionApplication;
 }
 
-/** Entities related to the animation */
+/**
+ * Entities related to the animation
+ *
+ * This reference contains entities used to calculate the end of an animation.
+ * e.g. for a translation, the entity's position would be relevant to the
+ * calculation. This is pretty open-ended to allow freedom with how the end of
+ * an animation step gets calculated. This is because there are various
+ * categories an animation falls into (position, size, rotation, etc.)
+ *
+ * These references may not be necessary if the calculation is static, e.g.
+ * move an entity 2 units left, or double the size of an entity.
+ **/
 export interface EntityReference {
-  subject: Vector;
-  resolution: Vector;
+  // Subject's size, position, etc., that's needed to calculate the animation end
+  subject?: Vector;
+
+  // Resolution of the canvas used when calculating an animation end
+  resolution?: Vector;
 }
 
 /**

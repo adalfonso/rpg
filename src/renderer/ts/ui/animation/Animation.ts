@@ -19,7 +19,14 @@ export interface AnimationUpdate {
   delta: Vector;
 }
 
-/** Queues up a sequence of animations and provides the deltas to the caller */
+/**
+ * Queues up a sequence of animations and provides the deltas to the caller
+ *
+ * This class represents the underlying animation data for some entity in the
+ * game, be it a player, enemy, item, text string, etc. This class keeps track of
+ * the state of the animation as a function of time. This class should be used
+ * by some other struct that will coordinate the entity's affected properties.
+ **/
 export class Animation {
   /**
    * If the animation is locked
@@ -54,7 +61,7 @@ export class Animation {
 
   /** Determine if all animations have finished n number of times*/
   private _hasCompleted(): boolean {
-    const iterations = this._template.repeat ?? 1;
+    const iterations = this._template.repeat ?? 0;
 
     return this._iterations >= iterations && this._hasIterated();
   }

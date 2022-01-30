@@ -28,7 +28,7 @@ export const animations = {
       // Wait 1000s
       {
         delay_ms: 1000,
-        duration_ms: 1000,
+        duration_ms: 750,
         end: () => new Vector(0, 0),
         fn: fn[AnimationFunction.Linear],
       },

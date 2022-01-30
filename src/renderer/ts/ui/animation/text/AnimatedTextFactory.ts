@@ -2,7 +2,7 @@ import Vector from "@common/Vector";
 import { AnimatedText } from "./AnimatedText";
 import { animations } from "./animations";
 import { config, RenderOptions } from "./text";
-import { getAnimation } from "../AnimationFactory";
+import { getAnimationFromName } from "../AnimationFactory";
 
 /**
  * Creates various types of animations
@@ -27,7 +27,8 @@ export class AnimatedTextFactory {
       font_size
     );
 
-    const animation = getAnimation(animations)(animation_name)(text_size);
+    const animation =
+      getAnimationFromName(animations)(animation_name)(text_size);
 
     return new AnimatedText(text, animation, new Vector(0, 0), options);
   }

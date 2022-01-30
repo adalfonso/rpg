@@ -4,32 +4,44 @@ import { Animation, AnimationTemplate } from "@/ui/animation/Animation";
 import { AnimationStep, AnimationStepTemplate } from "./AnimationStep";
 import { resolution } from "@common/common";
 
-export type AnimationFactory = (name: string) => (subject: Vector) => Animation;
+export type AnimationFactory = (
+  name: string
+) => (subject?: Vector) => Animation;
 
 /**
- * Generate an animation instance
+ * Generate an animation instance a name-lookup
  *
  * @param animations - record of animations
  * @param name       - name used to lookup record
- * @param subject    - subject entity as a vector
+ * @param subject    - subject entity as a vector (size, position, etc.)
+ *
  *
  * @return animation
  */
-export const getAnimation =
+export const getAnimationFromName =
   (animations: Record<string, AnimationTemplate>) =>
   (name: string) =>
-  (subject: Vector): Animation => {
+  (subject?: Vector): Animation => {
     const template = animations[name];
 
     if (!template) {
       throw new MissingDataError(`Cannot load animation "${name}"`);
     }
 
-    const steps = template.steps.map(
-      (step: AnimationStepTemplate) =>
-        new AnimationStep(step, { subject, resolution })
-    );
+    return getAnimation(template)(subject);
+  };
 
+/**
+ * Generate an animation from an AnimationTemplate
+ *
+ * @param template - template used to bootstrap the Animation
+ * @param subject - subject entity as a vector (size, position, etc.)
+ *
+ * @returns animation
+ */
+export const getAnimation =
+  (template: AnimationTemplate) =>
+  (subject?: Vector): Animation => {
     const step_ctor = (template: AnimationStepTemplate) =>
       new AnimationStep(template, { subject, resolution });
 

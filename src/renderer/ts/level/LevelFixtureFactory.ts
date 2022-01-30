@@ -10,7 +10,7 @@ import global_config from "@/config";
 import items from "@/item/items";
 import { Item } from "@/inanimate/Item";
 import { animations } from "@/ui/animation/animations";
-import { getAnimation } from "@/ui/animation/AnimationFactory";
+import { getAnimationFromName } from "@/ui/animation/AnimationFactory";
 import {
   isBasicLevelFixtureTemplate,
   isLevelFixtureTemplate,
@@ -19,7 +19,7 @@ import {
   LevelFixtureTemplate,
 } from "./LevelFixture";
 
-const animation_factory = getAnimation(animations);
+const animation_factory = getAnimationFromName(animations);
 
 /**
  * Creates a config for an Item
