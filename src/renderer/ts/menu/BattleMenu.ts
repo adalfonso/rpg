@@ -41,11 +41,11 @@ class BattleMenu extends Menu implements Eventful, Drawable {
     const tilePadding = new Vector(8, 0);
 
     const basePosition = new Vector(
-      offset.x - (tileSize.x + tilePadding.x) * this.menu.length,
+      offset.x - (tileSize.x + tilePadding.x) * this._menu.length,
       offset.y + tileSize.y
-    );
+    ).plus(this._position);
 
-    this.menu.forEach((option, index) => {
+    this._menu.forEach((option, index) => {
       const isSelected = option === this.selected[0];
       const position = new Vector(tileSize.x + tilePadding.x, 0)
         .times(index + 1)

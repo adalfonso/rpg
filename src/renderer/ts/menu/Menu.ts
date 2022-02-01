@@ -4,9 +4,7 @@ import { Drawable, Eventful, Lockable, CallableMap } from "@/interfaces";
 import { bus } from "@/EventBus";
 import { lcFirst } from "@/util";
 
-/**
- * A visual UI that can be opened, closed, and traversed
- */
+/** A visual UI that can be opened, closed, and traversed */
 abstract class Menu implements Eventful, Drawable, Lockable {
   /**
    * A stack of the currently selected menu options
@@ -15,42 +13,38 @@ abstract class Menu implements Eventful, Drawable, Lockable {
    */
   protected selected: any[];
 
-  /**
-   * If the menu is locked
-   */
+  /** If the menu is locked */
   protected locked: boolean = false;
 
-  /**
-   * If the menu is currently active
-   */
+  /** If the menu is currently active */
   public active: Boolean;
 
   /**
    * Create a Menu-based instance
    *
-   * @param menu - menu options
+   * @param _menu - menu options
+   * @param _position - menu position
    */
-  constructor(protected menu: any[]) {
+  constructor(
+    protected _menu: any[],
+    protected _position: Vector = new Vector(0, 0)
+  ) {
     this.selected = [];
-    this.selected.push(this.menu[0]);
+    this.selected.push(this._menu[0]);
 
     bus.register(this);
   }
 
-  /**
-   * Get the current selected menu option
-   */
+  /** Get the current selected menu option */
   get currentOption(): any {
     return this.selected[this.selected.length - 1];
   }
 
-  /**
-   * Get the current list of menu options being displayed.
-   */
+  /** Get the current list of menu options being displayed. */
   get currentMenu(): any {
     return this.selected.length > 1
       ? this.selected[this.selected.length - 2].menu
-      : this.menu;
+      : this._menu;
   }
 
   /**
@@ -114,21 +108,31 @@ abstract class Menu implements Eventful, Drawable, Lockable {
     };
   }
 
-  /**
-   * Open the menu
-   */
+  /** Open the menu */
   public open() {
     this.active = true;
     bus.emit(`menu.${lcFirst(this.constructor.name)}.open`);
   }
 
-  /**
-   * Close the menu
-   */
+  /** Close the menu */
   public close() {
-    this.selected = [this.menu[0]];
+    this.selected = [this._menu[0]];
     this.active = false;
     bus.emit(`menu.${lcFirst(this.constructor.name)}.close`);
+  }
+
+  /**
+   * Helper method to change the menu's position
+   *
+   * TODO: this method was copy-pasted from Actor and there should really be a
+   * unified way for descendants of Actors and Menus to share this behavior.
+   * We might also consider decoupling the data and UI components for these
+   * classes too
+   *
+   * @param position - position to move to
+   */
+  public moveTo(position: Vector) {
+    this._position = position.copy();
   }
 
   /**
@@ -153,9 +157,7 @@ abstract class Menu implements Eventful, Drawable, Lockable {
     return true;
   }
 
-  /**
-   * Completely remove the menu
-   */
+  /** Completely remove the menu */
   public destroy() {
     if (this.active) {
       this.close();
@@ -164,9 +166,7 @@ abstract class Menu implements Eventful, Drawable, Lockable {
     bus.unregister(this);
   }
 
-  /**
-   * Choose the currently selected menu option and run any associated action
-   */
+  /** Choose the currently selected menu option and run any associated action */
   protected select() {
     let option = this.currentOption;
 
@@ -177,9 +177,7 @@ abstract class Menu implements Eventful, Drawable, Lockable {
     }
   }
 
-  /**
-   * Traverse back one sub menu in the menu tree or close the menu
-   */
+  /** Traverse back one sub menu in the menu tree or close the menu */
   protected back() {
     if (this.selected.length > 1) {
       this.selected.pop();
@@ -189,9 +187,7 @@ abstract class Menu implements Eventful, Drawable, Lockable {
     this.close();
   }
 
-  /**
-   * Traverse back to the previous menu option within the same level
-   */
+  /** Traverse back to the previous menu option within the same level */
   protected previous() {
     let menu = this.currentMenu;
 
@@ -207,9 +203,7 @@ abstract class Menu implements Eventful, Drawable, Lockable {
     this.selected[this.selected.length - 1] = menu[previousIndex];
   }
 
-  /**
-   * Traverse forward to the next menu option within the same level
-   */
+  /** Traverse forward to the next menu option within the same level */
   protected next() {
     let menu = this.currentMenu;
 

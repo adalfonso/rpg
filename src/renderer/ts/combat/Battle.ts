@@ -76,6 +76,13 @@ class Battle implements Eventful, Drawable, Lockable {
 
     this._menu = this._getBattleMenu();
 
+    // TODO: this needs to be rerun whenever the attacking team member changes
+    //       when there are more than one member on the team this will be a
+    //       problem
+    this._menu.moveTo(
+      this._heroes.leader.position.plus(this._heroes.leader.size)
+    );
+
     bus.register(this);
 
     // Force enemy to attack if it is their turn first
@@ -146,9 +153,7 @@ class Battle implements Eventful, Drawable, Lockable {
     this._drawEnemyUiBar(ctx, resolution);
 
     if (this._herosTurn) {
-      const menuOffset = offset.plus(player.position).plus(player.size);
-
-      this._menu.draw(ctx, menuOffset, resolution);
+      this._menu.draw(ctx, offset, resolution);
 
       if (!this._opponentSelect.isLocked) {
         this._opponentSelect.draw(ctx, offset, resolution);

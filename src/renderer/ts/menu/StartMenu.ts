@@ -32,8 +32,8 @@ class StartMenu extends Menu implements Drawable {
     ctx.fillStyle = "#FFF";
     ctx.textAlign = "center";
 
-    this.menu.forEach((_option, index) => {
-      let current = this.menu[index];
+    this._menu.forEach((_option, index) => {
+      let current = this._menu[index];
       let selected = current === this.currentOption;
 
       if (selected) {
@@ -49,7 +49,7 @@ class StartMenu extends Menu implements Drawable {
       ctx.fillText(
         selected ? "▶ " + current.displayAs : current.displayAs,
         resolution.x / 2,
-        (resolution.y / (this.menu.length - index)) * 0.5
+        (resolution.y / (this._menu.length - index)) * 0.5
       );
     });
 

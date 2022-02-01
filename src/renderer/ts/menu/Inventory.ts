@@ -68,13 +68,13 @@ class Inventory extends Menu implements Eventful, Drawable {
     ctx: CanvasRenderingContext2D,
     offset: Vector,
     resolution: Vector,
-    menu = this.menu
+    menu = this._menu
   ) {
     if (!this.active) {
       return;
     }
 
-    let isMainMenu = menu === this.menu;
+    let isMainMenu = menu === this._menu;
     let margin = new Vector(60, isMainMenu ? 90 : 0);
 
     ctx.save();
@@ -407,7 +407,7 @@ class Inventory extends Menu implements Eventful, Drawable {
    * @return the submenu
    */
   private _getSubMenu(type: string): any[] {
-    return this.menu.filter((subMenu) => {
+    return this._menu.filter((subMenu) => {
       return subMenu.type === type;
     })[0]?.menu;
   }
