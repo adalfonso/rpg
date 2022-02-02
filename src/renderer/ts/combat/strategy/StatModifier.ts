@@ -3,15 +3,19 @@ import { Descriptive, Visual } from "./CombatStrategy";
 import { Stat } from "@/Stats";
 import { StatModifierTemplate } from "./types";
 import { bus } from "@/EventBus";
+import { Empty } from "@/mixins";
 
 /**
  * Temporary modifications made to an actor's stats
  */
-class StatModifier extends Descriptive(Visual(Object)) {
+class StatModifier extends Descriptive(Visual(Empty)) {
   /**
    * Number of turns this effect has taken effect
    */
   private _turnsApplied: number = 0;
+
+  /** TODO: eslint artifact. this was added as a hack to satisfy an interface */
+  public type = "u got hacked bro";
 
   /**
    * Create a new StatModifier instance

@@ -8,12 +8,12 @@ class TextStream {
   /**
    * Current text to display
    */
-  private _fragment: string = "";
+  private _fragment = "";
 
   /**
    * Index of the data that is currently rendering
    */
-  private _index: number = 0;
+  private _index = 0;
 
   /**
    * Buffer of current data split for line-by-line rendering
@@ -61,11 +61,7 @@ class TextStream {
    * @param resolution - render area
    * @param prefix     - prefix the current text line
    */
-  public fillBuffer(
-    ctx: CanvasRenderingContext2D,
-    area: Vector,
-    prefix: string = ""
-  ) {
+  public fillBuffer(ctx: CanvasRenderingContext2D, area: Vector, prefix = "") {
     this._data[this._index] = prefix + this._data[this._index];
 
     this._buffer = new TextBuffer(this._data[this._index]);
@@ -98,9 +94,9 @@ class TextStream {
    * @return if the current line is fully completed
    */
   public tick(ticks: number): boolean {
-    let lineLength = this._data[this._index].length;
-    let currentLength = ticks + this._fragment.length;
-    let endCharIndex = Math.min(lineLength, currentLength) + 1;
+    const lineLength = this._data[this._index].length;
+    const currentLength = ticks + this._fragment.length;
+    const endCharIndex = Math.min(lineLength, currentLength) + 1;
 
     this._fragment = this._data[this._index].substring(0, endCharIndex);
 

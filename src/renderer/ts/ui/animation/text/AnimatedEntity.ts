@@ -25,7 +25,7 @@ export class AnimatedEntity {
       return;
     }
 
-    let { type, delta } = this._animation.update(dt);
+    const { type, delta } = this._animation.update(dt);
 
     // only handles position animations for now
     if (type !== AnimationType.Position) {

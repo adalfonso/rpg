@@ -42,7 +42,7 @@ export class AnimatedText {
       return;
     }
 
-    let { type, delta } = this._animation.update(dt);
+    const { type, delta } = this._animation.update(dt);
 
     // only handles position animations for now
     if (type !== AnimationType.Position) {
@@ -64,11 +64,11 @@ export class AnimatedText {
     offset: Vector,
     _resolution: Vector
   ) {
-    let options = this._options;
+    const options = this._options;
 
     ctx.save();
 
-    for (let option in options) {
+    for (const option in options) {
       ctx[option] = options[option];
     }
 

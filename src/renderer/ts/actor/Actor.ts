@@ -347,7 +347,8 @@ abstract class Actor
   protected resolveState(ref: string): any {
     const state = StateManager.getInstance();
 
-    let stateManagerData = state.get(ref);
+    // TODO: eslint artifact (any)
+    let stateManagerData = state.get(ref) as any;
 
     if (stateManagerData === undefined) {
       state.mergeByRef(ref, this.getState());

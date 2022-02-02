@@ -60,8 +60,8 @@ describe("Inventory", () => {
 });
 
 const getSut = () => {
-  let menu = cloneByStringify(menus.inventory);
-  return new Sut(menu);
+  let menu = cloneByStringify(menus.inventory());
+  return new Sut(menu as any);
 };
 
 const getItem = (type: string) => {

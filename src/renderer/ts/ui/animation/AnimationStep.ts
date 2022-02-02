@@ -46,7 +46,7 @@ export class AnimationStep {
   private _locked = false;
 
   /** Current time relative to the start of the animation */
-  private _current_time: number = 0;
+  private _current_time = 0;
 
   /**
    * Create a new animation instance

@@ -1,20 +1,19 @@
 import CombatStrategy from "@/combat/strategy/CombatStrategy";
 import Menu from "./Menu";
 import Vector from "@common/Vector";
+import { BaseMenuItem } from "./menus";
 import { Drawable, Eventful, CallableMap } from "@/interfaces";
 
-/**
- * Anatomy of a BattleMenu option
- */
-type BattleMenuOption = {
-  type: string;
-  menu: any[];
-};
+export interface BattleMenuItem extends BaseMenuItem<BattleMenuItem> {
+  // TODO: eslint artifact. this was added to satisfy the run away action in a
+  // battle menu and is probably not needed
+  use?: () => void;
+}
 
 /**
  * In-battle menu of a player's items, attack, and abilities
  */
-class BattleMenu extends Menu implements Eventful, Drawable {
+class BattleMenu extends Menu<BattleMenuItem> implements Eventful, Drawable {
   /**
    * If the currently selection option is combat-oriented
    */
@@ -75,7 +74,7 @@ class BattleMenu extends Menu implements Eventful, Drawable {
 
       ctx.restore();
 
-      if (isSelected && option.menu?.length) {
+      if (isSelected && option.menu.length > 0) {
         option.menu.forEach((subOption: any, index: number) => {
           ctx.save();
 
@@ -142,7 +141,7 @@ class BattleMenu extends Menu implements Eventful, Drawable {
             break;
 
           case "Enter":
-            if (typeof option.use === "function") {
+            if ("use" in option && option.use instanceof Function) {
               option.use();
             }
             break;
@@ -159,7 +158,7 @@ class BattleMenu extends Menu implements Eventful, Drawable {
    */
   private applyHighlight(
     ctx: CanvasRenderingContext2D,
-    option: BattleMenuOption
+    option: BattleMenuItem
   ) {
     if (option === this.currentOption) {
       ctx.shadowOffsetX = 1;

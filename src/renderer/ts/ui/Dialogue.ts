@@ -55,7 +55,7 @@ class Dialogue implements Eventful, Drawable {
       return;
     }
 
-    let frames = Math.floor(this.timeStore / this.frameLength);
+    const frames = Math.floor(this.timeStore / this.frameLength);
 
     this.waiting = this.stream.tick(frames);
     this.timeStore = this.timeStore % this.frameLength;
@@ -73,12 +73,13 @@ class Dialogue implements Eventful, Drawable {
     offset: Vector = new Vector(0, 0),
     resolution: Vector
   ) {
-    let margin = new Vector(20, 20);
-    let size = new Vector(resolution.x - 2 * margin.x, 130);
+    const margin = new Vector(20, 20);
+    const size = new Vector(resolution.x - 2 * margin.x, 130);
 
-    let position = new Vector(margin.x, resolution.y - size.y - margin.y).plus(
-      offset
-    );
+    const position = new Vector(
+      margin.x,
+      resolution.y - size.y - margin.y
+    ).plus(offset);
 
     ctx.save();
     ctx.fillStyle = "#EEE";
@@ -138,7 +139,7 @@ class Dialogue implements Eventful, Drawable {
    *
    * @param e - keyboard event
    */
-  private next(e: KeyboardEvent) {
+  private next(_e: KeyboardEvent) {
     if (!this.waiting) {
       return;
     }
@@ -165,15 +166,15 @@ class Dialogue implements Eventful, Drawable {
     offset: Vector,
     resolution: Vector
   ) {
-    let lineHeight = 52;
-    let padding = new Vector(20, 20);
+    const lineHeight = 52;
+    const padding = new Vector(20, 20);
 
     ctx.font = "32px Minecraftia";
     ctx.textAlign = "left";
 
     // Reset text stream on first render
     if (this.stream.isEmpty) {
-      let prefix = this.speaker ? this.speaker.displayAs + ": " : "";
+      const prefix = this.speaker ? this.speaker.displayAs + ": " : "";
 
       this.stream.fillBuffer(ctx, resolution.minus(padding.times(2)), prefix);
     }
@@ -182,7 +183,7 @@ class Dialogue implements Eventful, Drawable {
     ctx.font = "32px Minecraftia";
     ctx.textAlign = "left";
 
-    let lines = this.stream.read();
+    const lines = this.stream.read();
     let fragment = this.stream.fragment;
 
     // Print each line in the buffer

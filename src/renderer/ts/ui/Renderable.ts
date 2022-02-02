@@ -31,7 +31,7 @@ export default class Renderable implements Drawable {
    * This is needed because HTMLImageElement.complete is set before the onload
    * event takes place.
    */
-  public ready: boolean = false;
+  public ready = false;
 
   /**
    * Create a new Renderable instance
@@ -82,7 +82,7 @@ export default class Renderable implements Drawable {
       return;
     }
 
-    let now = new Date().getTime();
+    const now = new Date().getTime();
 
     // Move to the next frame
     if (now >= this.nextAnimationTimestamp) {
@@ -95,9 +95,8 @@ export default class Renderable implements Drawable {
       this.frame = this.startFrame;
     }
 
-    let posX: number = (this.frame % this.gridRatio.x) * this.spriteSize.x;
-    let posY: number =
-      Math.floor(this.frame / this.gridRatio.x) * this.spriteSize.y;
+    const posX = (this.frame % this.gridRatio.x) * this.spriteSize.x;
+    const posY = Math.floor(this.frame / this.gridRatio.x) * this.spriteSize.y;
 
     ctx.drawImage(
       this.img,

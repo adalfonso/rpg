@@ -17,6 +17,7 @@ import { Drawable, Eventful, Lockable, CallableMap } from "@/interfaces";
 import { LearnedAbility } from "./strategy/types";
 import { bus } from "@/EventBus";
 import { createAnimation } from "@/ui/animation/CreateAnimation";
+import menus from "@/menu/menus";
 
 interface BattleEvent {
   isDone: boolean;
@@ -123,7 +124,7 @@ class Battle implements Eventful, Drawable, Lockable {
       : this._opponentSelect.lock();
 
     if (this.isDone && this._event_queue.length === 0) {
-      this._stop();
+      this.stop();
     }
   }
 
@@ -318,7 +319,12 @@ class Battle implements Eventful, Drawable, Lockable {
    *
    * @emits battle.end
    */
-  private _stop() {
+  public stop() {
+    // Safety check added after making this a public method
+    if (!this.isDone && this._event_queue.length > 0) {
+      return;
+    }
+
     this.unlock();
 
     this._heroes.each((hero: Actor) => hero.restorePosition());
@@ -396,39 +402,12 @@ class Battle implements Eventful, Drawable, Lockable {
   /**
    * Create a new battle menu
    *
-   * TODO: consider moving this to a factory
-   *
    * @return the battle menu
    */
   private _getBattleMenu(): BattleMenu {
     const player = this._heroes.leader;
 
-    return new BattleMenu([
-      {
-        type: "Items",
-        menu: [],
-      },
-      {
-        type: "Attack",
-        menu: player.weapon ? [player.weapon] : [],
-      },
-      {
-        type: "Abilities",
-        menu: player.abilities,
-      },
-      {
-        type: "Other",
-        menu: [
-          new StatModifierFactory().createModifier("defend"),
-          {
-            displayAs: "Run Away",
-            use: () => {
-              this._stop();
-            },
-          },
-        ],
-      },
-    ]);
+    return new BattleMenu(menus.battle(this, () => this._heroes.leader));
   }
 }
 

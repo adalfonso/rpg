@@ -72,8 +72,8 @@ class Game implements Eventful, Drawable {
   constructor(private player: Player) {
     this.state = GameState.Play;
 
-    this.menu = new StartMenu(menus.startMenu);
-    this.inventory = new Inventory(menus.inventory);
+    this.menu = new StartMenu(menus.start());
+    this.inventory = new Inventory(menus.inventory());
 
     bus.register(this);
 

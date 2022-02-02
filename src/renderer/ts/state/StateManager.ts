@@ -37,7 +37,7 @@ class StateManager implements Eventful {
    */
   public register(): CallableMap {
     return {
-      "state.save": (e: CustomEvent) => {
+      "state.save": (_e: CustomEvent) => {
         this.save();
       },
     };
@@ -50,7 +50,7 @@ class StateManager implements Eventful {
    *
    * @return data stored at the reference
    */
-  public get(ref?: string): any {
+  public get(ref?: string) {
     if (ref === undefined) {
       return this.data;
     }
@@ -86,19 +86,17 @@ class StateManager implements Eventful {
    * @param ref  - reference string
    * @param data - data to merge in
    */
-  public mergeByRef(ref: string, data: any) {
-    let obj = {};
+  public mergeByRef(ref: string, data: unknown) {
+    const obj = {};
 
-    ref
-      .split(".")
-      .reduce((carry: any, key: any, index: number, array: any[]) => {
-        if (index + 1 < array.length) {
-          carry[key] = {};
-        } else {
-          carry[key] = data;
-        }
-        return carry[key];
-      }, obj);
+    ref.split(".").reduce((carry, key, index, array) => {
+      if (index + 1 < array.length) {
+        carry[key] = {};
+      } else {
+        carry[key] = data;
+      }
+      return carry[key];
+    }, obj);
 
     this.merge(obj);
   }
@@ -120,10 +118,10 @@ class StateManager implements Eventful {
   public remove(ref: string) {
     let current = <unknown>this.data;
 
-    let keys = ref.split(".");
+    const keys = ref.split(".");
     try {
       for (let i = 0, length = keys.length; i < length; i++) {
-        let key = keys[i];
+        const key = keys[i];
 
         if (i + 1 === length) {
           delete current[key];
@@ -155,7 +153,7 @@ class StateManager implements Eventful {
       .then(() => {
         bus.emit("state.saved");
       })
-      .catch((err) => {
+      .catch((_err) => {
         console.error(`Could not save state to "${destination}".`);
       });
   }
@@ -178,7 +176,7 @@ class StateManager implements Eventful {
         this.data = JSON.parse(contents);
         bus.emit("file.load");
       })
-      .catch((err) => {
+      .catch((_err) => {
         console.error(`Could not load state from "${destination}".`);
         this.save(destination);
       })

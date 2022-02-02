@@ -44,7 +44,7 @@ export class AnimatedTextFactory {
   public static getTextWidth(text: string, options: RenderOptions): number {
     const ctx = document.createElement("canvas").getContext("2d");
 
-    for (let option in options) {
+    for (const option in options) {
       ctx[option] = options[option];
     }
 

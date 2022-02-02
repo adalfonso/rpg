@@ -6,37 +6,39 @@ import TextBuffer from "@/ui/TextBuffer";
 import Vector from "@common/Vector";
 import Weapon from "@/combat/strategy/Weapon";
 import WeaponFactory from "@/combat/strategy/WeaponFactory";
+import { BaseMenuItem } from "./menus";
 import { Drawable, Eventful, CallableMap } from "@/interfaces";
 
-/**
- * Template for a menu option
- */
-type MenuOption = {
-  type: string;
-  displayAs: string;
-  menu: any[];
-};
+type InventoryItem = Item | Weapon;
 
-/**
- * Main font size
- */
+const isInventoryItem = (input: unknown): input is InventoryItem =>
+  input instanceof Item || input instanceof Weapon;
+
+export interface InventoryMenuItem extends BaseMenuItem<InventoryMenuOption> {
+  equipable?: boolean;
+}
+
+type InventoryMenuOption = InventoryMenuItem | InventoryItem;
+
+/** Main font size */
 const TEXT_SIZE = 24;
 
-/**
- * Secondary font size
- */
+/** Secondary font size */
 const SUBTEXT_SIZE = 16;
 
 /**
  * A menu for managing things such as items and equipment
  */
-class Inventory extends Menu implements Eventful, Drawable {
+class Inventory
+  extends Menu<InventoryMenuOption>
+  implements Eventful, Drawable
+{
   /**
    * Create an Inventory instance
    *
    * @param menu - menu options
    */
-  constructor(menu: MenuOption[]) {
+  constructor(protected menu: InventoryMenuItem[]) {
     super(menu);
 
     this.resolveState(`inventory`);
@@ -104,11 +106,16 @@ class Inventory extends Menu implements Eventful, Drawable {
       let spacing = index ? TEXT_SIZE * 2 : 0;
 
       /**
-       * Make the assumption that this.selected with a length of two consists of
-       * a menu and one of its constituents. If this is the case, we want to
-       * draw the details of the contituent.
+       * This detects if an item/weapon is currently selected and is used to
+       * render the menu differently. When an item/weapon is selected, the
+       * "selected" stack will contain:
+       * sub menu (e.g. weapons) => sub menu item (e.g. sword)
+       *
+       * There is also a type check that the current option is an item/weapon
+       * and that was evaluated in the conditionals below because eslint wasn't
+       * able to understand it evaluated outside.
        */
-      const showDetails =
+      const isInventorySubMenuItem =
         option === this.currentOption && this.selected.length === 2;
 
       ctx.translate(0, spacing);
@@ -117,7 +124,7 @@ class Inventory extends Menu implements Eventful, Drawable {
 
       let detailSize;
 
-      if (showDetails) {
+      if (isInventorySubMenuItem && isInventoryItem(option)) {
         let offset = new Vector(-2, -TEXT_SIZE);
 
         detailSize = this.drawDetails(ctx, offset, resolution, option);
@@ -130,13 +137,14 @@ class Inventory extends Menu implements Eventful, Drawable {
       this.drawOptionText(ctx, new Vector(0, 0), resolution, option);
 
       // Account for height of equipable menu on next menu item
-      if (showDetails) {
+      if (isInventorySubMenuItem && isInventoryItem(option)) {
         ctx.translate(0, detailSize.y - TEXT_SIZE);
       }
 
       // Render sub-menu
-      if (this.selected.includes(option) && option.menu) {
+      if (this.selected.includes(option) && "menu" in option) {
         let offset = new Vector(textWidth, 0);
+
         this.draw(ctx, offset, resolution, option.menu);
       }
     });
@@ -156,12 +164,12 @@ class Inventory extends Menu implements Eventful, Drawable {
     ctx: CanvasRenderingContext2D,
     offset: Vector,
     resolution: Vector,
-    option: Weapon
+    option: InventoryItem
   ) {
     // y-value is not known until the description renders
     let descriptionSize = new Vector(400, Infinity);
 
-    const isEquipped = option.isEquipped ?? false;
+    const isEquipped = "isEquipped" in option ? option.isEquipped : false;
     const padding = new Vector(16, 16);
     const spriteSize = new Vector(64, 64);
     const spritePadding = new Vector(16, 8);
@@ -259,7 +267,7 @@ class Inventory extends Menu implements Eventful, Drawable {
     ctx: CanvasRenderingContext2D,
     offset: Vector,
     _resolution: Vector,
-    option: MenuOption
+    option: InventoryMenuOption
   ) {
     let isSelected = this.selected.includes(option);
     let isMainSelection = option === this.currentOption;
@@ -324,7 +332,7 @@ class Inventory extends Menu implements Eventful, Drawable {
    *
    * @return widest description in the menu
    */
-  private getWidestMenuDescription(menu: MenuOption[]): string {
+  private getWidestMenuDescription(menu: InventoryMenuOption[]): string {
     return menu.reduce((widestMenuText, option) => {
       let description = this.getOptionDescription(option);
 
@@ -332,20 +340,6 @@ class Inventory extends Menu implements Eventful, Drawable {
         ? widestMenuText
         : description;
     }, "");
-  }
-
-  /**
-   * Get the description of a MenuOption
-   *
-   * @param option - option to get description for
-   *
-   * @return description of the option
-   */
-  private getOptionDescription(option: MenuOption): string {
-    let subMenuCount = option.menu?.length ?? "";
-    subMenuCount = subMenuCount ? ` (${subMenuCount})` : "";
-
-    return option.displayAs + subMenuCount;
   }
 
   /**
@@ -406,10 +400,27 @@ class Inventory extends Menu implements Eventful, Drawable {
    *
    * @return the submenu
    */
-  private _getSubMenu(type: string): any[] {
-    return this._menu.filter((subMenu) => {
+  private _getSubMenu(type: string) {
+    const filtered = this._menu.filter((subMenu) => {
       return subMenu.type === type;
-    })[0]?.menu;
+    })[0];
+
+    return "menu" in filtered ? filtered.menu : undefined;
+  }
+
+  /**
+   * Get the description of a MenuOption
+   *
+   * @param option - option to get description for
+   *
+   * @return description of the option
+   */
+  private getOptionDescription(option: InventoryMenuOption): string {
+    if ("menu" in option) {
+      return `${option.displayAs} (${option.menu.length})`;
+    }
+
+    return option.displayAs;
   }
 
   /**
@@ -422,7 +433,8 @@ class Inventory extends Menu implements Eventful, Drawable {
   private resolveState(ref: string): any {
     const state = StateManager.getInstance();
 
-    let stateManagerData = state.get(ref);
+    // TODO: eslint artifact
+    let stateManagerData = state.get(ref) as any;
 
     if (stateManagerData === undefined) {
       state.mergeByRef(ref, this.state);
@@ -452,18 +464,14 @@ class Inventory extends Menu implements Eventful, Drawable {
     return stateManagerData;
   }
 
-  /**
-   * Update the inventory in the state
-   */
+  /** Update the inventory in the state */
   private updateState() {
     let state = StateManager.getInstance();
     state.remove("inventory");
     state.mergeByRef("inventory", this.state);
   }
 
-  /**
-   * Equip the currently selected option
-   */
+  /** Equip the currently selected option */
   private equipCurrentOption() {
     if (!(this.currentOption instanceof Weapon)) {
       return;
@@ -471,11 +479,13 @@ class Inventory extends Menu implements Eventful, Drawable {
 
     let menu = this.selected.slice(-2).shift();
 
-    menu.menu.forEach((option: any) => {
-      if (option === this.currentOption) {
-        option.equip();
-      }
-    });
+    if ("menu" in menu) {
+      menu.menu.forEach((option: any) => {
+        if (option === this.currentOption) {
+          option.equip();
+        }
+      });
+    }
   }
 }
 

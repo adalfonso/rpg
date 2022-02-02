@@ -34,8 +34,8 @@ class TextBuffer {
       let wordsPerLine = 0;
 
       for (let i = 0; i < words.length; i++) {
-        let tempText = words.slice(0, i + 1).join(" ");
-        let textWidth = ctx.measureText(tempText).width;
+        const tempText = words.slice(0, i + 1).join(" ");
+        const textWidth = ctx.measureText(tempText).width;
 
         if (textWidth > area.x) {
           this._buffer.push(words.slice(0, i).join(" "));

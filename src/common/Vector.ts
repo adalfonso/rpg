@@ -74,7 +74,7 @@ class Vector {
    *
    * @return resulting vector
    */
-  public apply(callback: Function): Vector {
+  public apply(callback: (scalar: number) => number): Vector {
     return new Vector(callback(this.x), callback(this.y));
   }
 }

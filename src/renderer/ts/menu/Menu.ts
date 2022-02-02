@@ -1,13 +1,14 @@
 import UnimplementedMethodError from "@/error/UnimplementMethodError";
 import Vector from "@common/Vector";
+import { BaseMenuItem } from "./menus";
 import { Drawable, Eventful, Lockable, CallableMap } from "@/interfaces";
+import { Empty } from "@/mixins";
+import { Movable } from "@/Entity";
 import { bus } from "@/EventBus";
 import { lcFirst } from "@/util";
-import { Movable } from "@/Entity";
-import { Empty } from "@/mixins";
 
 /** A visual UI that can be opened, closed, and traversed */
-abstract class Menu
+abstract class Menu<T extends BaseMenuItem<T>>
   extends Movable(Empty)
   implements Eventful, Drawable, Lockable
 {
@@ -16,13 +17,13 @@ abstract class Menu
    *
    * If the menu contains sub-menus, the stack will grow to store the menu path.
    */
-  protected selected: any[];
+  protected selected: (T | BaseMenuItem<T>)[];
 
   /** If the menu is locked */
-  protected locked: boolean = false;
+  protected locked = false;
 
   /** If the menu is currently active */
-  public active: Boolean;
+  public active: boolean;
 
   /**
    * Create a Menu-based instance
@@ -31,7 +32,7 @@ abstract class Menu
    * @param _position - menu position
    */
   constructor(
-    protected _menu: any[],
+    protected _menu: T[],
     protected _position: Vector = new Vector(0, 0)
   ) {
     super();
@@ -42,12 +43,12 @@ abstract class Menu
   }
 
   /** Get the current selected menu option */
-  get currentOption(): any {
+  get currentOption() {
     return this.selected[this.selected.length - 1];
   }
 
   /** Get the current list of menu options being displayed. */
-  get currentMenu(): any {
+  get currentMenu() {
     return this.selected.length > 1
       ? this.selected[this.selected.length - 2].menu
       : this._menu;
@@ -158,14 +159,10 @@ abstract class Menu
     bus.unregister(this);
   }
 
-  /** Choose the currently selected menu option and run any associated action */
+  /** Choose the currently selected menu option */
   protected select() {
-    let option = this.currentOption;
-
-    if (option.menu?.length) {
-      this.selected.push(option.menu[0]);
-    } else if (option.hasOwnProperty("action")) {
-      option.action(this);
+    if (this.currentOption.menu?.length > 0) {
+      this.selected.push(this.currentOption.menu[0]);
     }
   }
 
@@ -181,32 +178,33 @@ abstract class Menu
 
   /** Traverse back to the previous menu option within the same level */
   protected previous() {
-    let menu = this.currentMenu;
+    const menu = this.currentMenu;
 
-    let currentIndex = menu.reduce(
+    const currentIndex = menu.reduce(
       (carry: number, value: any, index: number) => {
         return value === this.currentOption ? index : carry;
       },
       0
     );
 
-    let previousIndex = currentIndex === 0 ? menu.length - 1 : currentIndex - 1;
+    const previousIndex =
+      currentIndex === 0 ? menu.length - 1 : currentIndex - 1;
 
     this.selected[this.selected.length - 1] = menu[previousIndex];
   }
 
   /** Traverse forward to the next menu option within the same level */
   protected next() {
-    let menu = this.currentMenu;
+    const menu = this.currentMenu;
 
-    let currentIndex = menu.reduce(
+    const currentIndex = menu.reduce(
       (carry: number, value: any, index: number) => {
         return value === this.currentOption ? index : carry;
       },
       0
     );
 
-    let nextIndex = currentIndex === menu.length - 1 ? 0 : currentIndex + 1;
+    const nextIndex = currentIndex === menu.length - 1 ? 0 : currentIndex + 1;
 
     this.selected[this.selected.length - 1] = menu[nextIndex];
   }
@@ -216,10 +214,10 @@ abstract class Menu
    *
    * @return if current menu option has a sub-menu
    */
-  protected hasSubMenu(): boolean {
-    let current = this.currentOption;
+  protected hasSubMenu() {
+    const current = this.currentOption;
 
-    return current.menu?.length;
+    return current.menu?.length > 0;
   }
 }
 

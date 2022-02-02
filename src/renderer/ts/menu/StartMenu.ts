@@ -1,7 +1,12 @@
 import Menu from "./Menu";
 import Vector from "@common/Vector";
+import { BaseMenuItem } from "./menus";
 import { Drawable, CallableMap } from "@/interfaces";
 import { bus } from "@/EventBus";
+
+export interface StartMenuItem extends BaseMenuItem<StartMenuItem> {
+  action: (menu: StartMenu) => void;
+}
 
 /**
  * The first menu to load when the game starts up
@@ -9,7 +14,7 @@ import { bus } from "@/EventBus";
  * It is responsible for higher level game functions like saving, changing
  * settings, and loading levels.
  */
-class StartMenu extends Menu implements Drawable {
+class StartMenu extends Menu<StartMenuItem> implements Drawable {
   /**
    * Draw StartMenu and all underlying entities
    *
@@ -33,8 +38,8 @@ class StartMenu extends Menu implements Drawable {
     ctx.textAlign = "center";
 
     this._menu.forEach((_option, index) => {
-      let current = this._menu[index];
-      let selected = current === this.currentOption;
+      const current = this._menu[index];
+      const selected = current === this.currentOption;
 
       if (selected) {
         ctx.shadowColor = "#FFF";
@@ -88,10 +93,19 @@ class StartMenu extends Menu implements Drawable {
             break;
         }
       },
-      "state.saved": (e: CustomEvent) => {
+      "state.saved": (_e: CustomEvent) => {
         this.close();
       },
     };
+  }
+
+  /** Run action for the menu item */
+  protected select() {
+    const option = this.currentOption;
+
+    if ("action" in option) {
+      option.action(this);
+    }
   }
 
   /**
@@ -99,7 +113,7 @@ class StartMenu extends Menu implements Drawable {
    *
    * @emits state.save
    */
-  private saveState() {
+  public saveState() {
     bus.emit("state.save");
   }
 }

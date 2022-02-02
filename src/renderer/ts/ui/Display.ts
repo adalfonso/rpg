@@ -67,7 +67,7 @@ class Display {
       return new Vector(0, 0);
     }
 
-    let center = this.game.renderPoint;
+    const center = this.game.renderPoint;
 
     return new Vector(this.width / 2 - center.x, this.height / 2 - center.y);
   }
@@ -95,9 +95,9 @@ class Display {
    */
   public register(): CallableMap {
     return {
-      resize: (e: Event) => this.resizetoWindow(),
-      "battle.start": (e: CustomEvent) => (this.renderMode = RenderMode.Static),
-      "battle.end": (e: CustomEvent) => (this.renderMode = RenderMode.Dynamic),
+      resize: (_: Event) => this.resizetoWindow(),
+      "battle.start": (_: CustomEvent) => (this.renderMode = RenderMode.Static),
+      "battle.end": (_: CustomEvent) => (this.renderMode = RenderMode.Dynamic),
     };
   }
 
@@ -110,7 +110,7 @@ class Display {
       return this.resizeCanvases();
     }
 
-    let ratio: number = this.height / this.width;
+    const ratio: number = this.height / this.width;
     let width: number = Math.floor(window.innerWidth);
     let height: number = Math.floor(window.innerWidth * ratio);
 
