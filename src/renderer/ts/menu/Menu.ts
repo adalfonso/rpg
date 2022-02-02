@@ -3,9 +3,14 @@ import Vector from "@common/Vector";
 import { Drawable, Eventful, Lockable, CallableMap } from "@/interfaces";
 import { bus } from "@/EventBus";
 import { lcFirst } from "@/util";
+import { Movable } from "@/Entity";
+import { Empty } from "@/mixins";
 
 /** A visual UI that can be opened, closed, and traversed */
-abstract class Menu implements Eventful, Drawable, Lockable {
+abstract class Menu
+  extends Movable(Empty)
+  implements Eventful, Drawable, Lockable
+{
   /**
    * A stack of the currently selected menu options
    *
@@ -29,6 +34,7 @@ abstract class Menu implements Eventful, Drawable, Lockable {
     protected _menu: any[],
     protected _position: Vector = new Vector(0, 0)
   ) {
+    super();
     this.selected = [];
     this.selected.push(this._menu[0]);
 
@@ -119,20 +125,6 @@ abstract class Menu implements Eventful, Drawable, Lockable {
     this.selected = [this._menu[0]];
     this.active = false;
     bus.emit(`menu.${lcFirst(this.constructor.name)}.close`);
-  }
-
-  /**
-   * Helper method to change the menu's position
-   *
-   * TODO: this method was copy-pasted from Actor and there should really be a
-   * unified way for descendants of Actors and Menus to share this behavior.
-   * We might also consider decoupling the data and UI components for these
-   * classes too
-   *
-   * @param position - position to move to
-   */
-  public moveTo(position: Vector) {
-    this._position = position.copy();
   }
 
   /**

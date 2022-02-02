@@ -9,34 +9,26 @@ import { Drawable, Eventful, Lockable, CallableMap } from "@/interfaces";
 import { LevelFixtureTemplate } from "@/level/LevelFixture";
 import { bus } from "@/EventBus";
 
-/**
- * The main entity of the game
- */
+/** The main entity of the game */
 class Player extends Actor implements Eventful, Drawable, Lockable {
-  /**
-   * The speed the player will move in any one direction
-   */
+  /** The speed the player will move in any one direction */
   private baseSpeed: number;
 
-  /**
-   * The current speed of the player in x/y directions
-   */
+  /** The current speed of the player in x/y directions */
   private speed: Vector;
 
-  /**
-   * Each sprite of the player's movement animation
-   */
+  /** Each sprite of the player's movement animation */
   private sprites: Renderable[];
 
   /**
    * Create a new Player instance
    *
-   * @param position - the player's position
+   * @param _position - the player's position
    * @param size     - the player's size
    * @param template - the player's data template
    */
-  constructor(position: Vector, size: Vector, template: LevelFixtureTemplate) {
-    super(position, size, template);
+  constructor(_position: Vector, size: Vector, template: LevelFixtureTemplate) {
+    super(_position, size, template);
 
     this.speed = new Vector(0, 0);
     this.baseSpeed = size.x / 10;
@@ -87,9 +79,8 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
     }
 
     let distance = this.speed.times(config.scale).times(speedModifier);
-    let position = this.position.plus(distance);
 
-    this.moveTo(position);
+    this.moveTo(this._position.plus(distance));
 
     if (Math.abs(this.speed.x) + Math.abs(this.speed.y)) {
       bus.emit("player.move", { player: this });
@@ -110,7 +101,7 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
   ) {
     super.draw(ctx, offset, resolution);
 
-    this.sprites[this.direction].draw(ctx, this.position.plus(offset));
+    this.sprites[this.direction].draw(ctx, this._position.plus(offset));
   }
 
   /**

@@ -15,18 +15,16 @@ import { Collision } from "@/CollisionHandler";
 import { Drawable, Lockable } from "@/interfaces";
 import { LearnedAbility } from "@/combat/strategy/types";
 import { LevelFixtureTemplate } from "@/level/LevelFixture";
+import { Movable } from "@/Entity";
 import { RenderData } from "@/ui/types";
 import { getImagePath } from "@/util";
+import { Empty } from "@/mixins";
 
-/**
- * General purpose entity that interacts with fixtures in the game
- */
+/** General purpose entity that interacts with fixtures in the game */
 type Entity = Actor | Inanimate;
 
-/**
- * Base class for entities that affect change within the game
- */
-abstract class Actor implements Drawable, Lockable {
+/** Base class for entities that affect change within the game */
+abstract class Actor extends Movable(Empty) implements Drawable, Lockable {
   /**
    * The position the actor was previously at
    *
@@ -84,17 +82,18 @@ abstract class Actor implements Drawable, Lockable {
   /**
    * Create a new Actor-based instance
    *
-   * @param position - positon of the actor
+   * @param _position - positon of the actor
    * @param size     - size of the actor
    * @param template - additional info about the actor
    *
    * @throws {MissingDataError} when name, type, or config are missing
    */
   constructor(
-    public position: Vector,
+    protected _position: Vector,
     private _size: Vector,
     protected template: LevelFixtureTemplate
   ) {
+    super();
     let actorType = this.constructor.name;
 
     this.config = actors[template.type];
@@ -115,8 +114,8 @@ abstract class Actor implements Drawable, Lockable {
     this.direction = 0;
     this.inDialogue = false;
     this.locked = false;
-    this.lastPosition = this.position.copy();
-    this.savedPosition = this.position.copy();
+    this.lastPosition = this._position.copy();
+    this.savedPosition = this._position.copy();
     this.savedDirection = this.direction;
   }
 
@@ -157,7 +156,7 @@ abstract class Actor implements Drawable, Lockable {
       return;
     }
 
-    this.lastPosition = this.position.copy();
+    this.lastPosition = this._position.copy();
   }
 
   /**
@@ -175,15 +174,6 @@ abstract class Actor implements Drawable, Lockable {
     if (config.debug) {
       this.debugDraw(ctx, offset, resolution);
     }
-  }
-
-  /**
-   * Helper method to change the actor's position
-   *
-   * @param position - position to move to
-   */
-  public moveTo(position: Vector) {
-    this.position = position.copy();
   }
 
   /**
@@ -229,9 +219,9 @@ abstract class Actor implements Drawable, Lockable {
         prevCollisionPoint.x < collision.position.x ||
         prevCollisionPoint.x > collision.position.x + collision.size.x
       ) {
-        this.position.x = this.lastPosition.x;
+        this._position = new Vector(this.lastPosition.x, this._position.y);
       } else {
-        this.position.y = this.lastPosition.y;
+        this._position = new Vector(this.position.x, this.lastPosition.y);
       }
     } else {
       this.moveTo(this.lastPosition);
@@ -274,7 +264,7 @@ abstract class Actor implements Drawable, Lockable {
   public savePosition(useLast: boolean = false) {
     this.savedPosition = useLast
       ? this.lastPosition.copy()
-      : this.position.copy();
+      : this._position.copy();
 
     this.savedDirection = this.direction;
   }
@@ -428,8 +418,8 @@ abstract class Actor implements Drawable, Lockable {
    */
   private collisionPoint(prev: boolean = false): Vector {
     return new Vector(
-      (prev ? this.lastPosition.x : this.position.x) + this.size.x * 0.5,
-      (prev ? this.lastPosition.y : this.position.y) + this.size.y * 0.8
+      (prev ? this.lastPosition.x : this._position.x) + this.size.x * 0.5,
+      (prev ? this.lastPosition.y : this._position.y) + this.size.y * 0.8
     );
   }
 
@@ -458,7 +448,7 @@ abstract class Actor implements Drawable, Lockable {
     offset: Vector,
     _resolution: Vector
   ) {
-    let position = this.position.plus(offset);
+    let position = this._position.plus(offset);
 
     ctx.save();
     ctx.strokeStyle = "#F00";

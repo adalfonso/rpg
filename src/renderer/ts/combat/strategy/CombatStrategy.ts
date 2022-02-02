@@ -15,21 +15,15 @@ export const Descriptive = <T extends Constructor>(Base: T) =>
    * Descriptive classes store UI description information about itself
    */
   class Descriptive extends Base {
-    /**
-     * Stores the descriptors
-     */
+    /** Stores the descriptors */
     protected _template: EntityConfig;
 
-    /**
-     * Get the display name
-     */
+    /** Get the display name */
     get displayAs(): string {
       return this._template.displayAs;
     }
 
-    /**
-     * Get the description
-     */
+    /** Get the description */
     get description(): string {
       return this._template.description;
     }
@@ -41,18 +35,12 @@ export const Descriptive = <T extends Constructor>(Base: T) =>
  * @param Base - base class
  */
 export const Visual = <T extends Constructor>(Base: T) =>
-  /**
-   * Classes that have a UI component
-   */
+  /** Classes that have a UI component */
   class Visual extends Base {
-    /**
-     * Reference to UI component
-     */
+    /** Reference to UI component */
     protected _ui: Renderable;
 
-    /**
-     * Get the UI component
-     */
+    /** Get the UI component */
     get ui() {
       return this._ui;
     }
@@ -79,18 +67,12 @@ export const Visual = <T extends Constructor>(Base: T) =>
  * @param Base - base class
  */
 export const DamageDealing = <T extends Constructor>(Base: T) =>
-  /**
-   * A class that can deal some variety of damage
-   */
+  /** A class that can deal some variety of damage */
   class DamageDealing extends Base {
-    /**
-     * Reference to damage
-     */
+    /** Reference to damage */
     protected _damage: Damage;
 
-    /**
-     * Get the damage reference
-     */
+    /** Get the damage reference */
     get damage(): Damage {
       return this._damage;
     }
@@ -102,18 +84,12 @@ export const DamageDealing = <T extends Constructor>(Base: T) =>
  * @param Base - base class
  */
 export const Equipable = <T extends Constructor>(Base: T) =>
-  /**
-   * A class that maintains equipment
-   */
+  /** A class that maintains equipment */
   class Equipable extends Base {
-    /**
-     * If the equipment is currently equipped
-     */
+    /** If the equipment is currently equipped */
     protected _isEquipped: boolean = false;
 
-    /**
-     * Get if the equipment is equippped
-     */
+    /** Get if the equipment is equippped */
     get isEquipped(): boolean {
       return this._isEquipped;
     }
@@ -129,9 +105,7 @@ export const Equipable = <T extends Constructor>(Base: T) =>
       bus.emit("equipment.equip", { equipment: this });
     }
 
-    /**
-     * Unequip the equipment
-     */
+    /** Unequip the equipment */
     public unequip() {
       this._isEquipped = false;
     }
@@ -141,9 +115,7 @@ interface CombatStrategy {
   damage: Damage;
 }
 
-/**
- * Basis for a combat strategy
- */
+/** Basis for a combat strategy */
 class CombatStrategy {
   /**
    * Emit an event when the strategy is invoked

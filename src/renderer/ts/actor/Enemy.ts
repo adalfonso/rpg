@@ -19,12 +19,12 @@ class Enemy extends Actor implements Drawable {
   /**
    * Create a new Enemy instance
    *
-   * @param position - the enemy's position
+   * @param _position - the enemy's position
    * @param size     - the enemy's size
    * @param template - info about the enemy
    */
-  constructor(position: Vector, size: Vector, template: LevelFixtureTemplate) {
-    super(position, size, template);
+  constructor(_position: Vector, size: Vector, template: LevelFixtureTemplate) {
+    super(_position, size, template);
 
     this.direction = 4;
 
@@ -74,7 +74,7 @@ class Enemy extends Actor implements Drawable {
 
     super.draw(ctx, offset, resolution);
 
-    this.sprites[this.direction].draw(ctx, this.position.plus(offset));
+    this.sprites[this.direction].draw(ctx, this._position.plus(offset));
   }
 
   /**
@@ -83,7 +83,7 @@ class Enemy extends Actor implements Drawable {
    * @return the clone
    */
   public clone(): Enemy {
-    return new Enemy(this.position.copy(), this.size.copy(), this.template);
+    return new Enemy(this._position.copy(), this.size.copy(), this.template);
   }
 
   /**

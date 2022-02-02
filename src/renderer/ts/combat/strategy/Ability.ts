@@ -1,8 +1,11 @@
-import CombatStrategy from "./CombatStrategy";
 import Damage from "../Damage";
 import Renderable from "@/ui/Renderable";
-import { Descriptive, DamageDealing, Visual } from "./CombatStrategy";
 import { EntityConfig } from "./types";
+import CombatStrategy, {
+  Descriptive,
+  DamageDealing,
+  Visual,
+} from "./CombatStrategy";
 
 /**
  * Technique learned by an actor
