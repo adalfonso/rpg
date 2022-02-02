@@ -15,7 +15,7 @@ import { Collision } from "@/CollisionHandler";
 import { Drawable, Lockable } from "@/interfaces";
 import { LearnedAbility } from "@/combat/strategy/types";
 import { LevelFixtureTemplate } from "@/level/LevelFixture";
-import { Movable } from "@/Entity";
+import { Movable, Resizable } from "@/Entity";
 import { RenderData } from "@/ui/types";
 import { getImagePath } from "@/util";
 import { Empty } from "@/mixins";
@@ -24,7 +24,10 @@ import { Empty } from "@/mixins";
 type Entity = Actor | Inanimate;
 
 /** Base class for entities that affect change within the game */
-abstract class Actor extends Movable(Empty) implements Drawable, Lockable {
+abstract class Actor
+  extends Resizable(Movable(Empty))
+  implements Drawable, Lockable
+{
   /**
    * The position the actor was previously at
    *
@@ -83,14 +86,14 @@ abstract class Actor extends Movable(Empty) implements Drawable, Lockable {
    * Create a new Actor-based instance
    *
    * @param _position - positon of the actor
-   * @param size     - size of the actor
+   * @param _size     - size of the actor
    * @param template - additional info about the actor
    *
    * @throws {MissingDataError} when name, type, or config are missing
    */
   constructor(
     protected _position: Vector,
-    private _size: Vector,
+    protected _size: Vector,
     protected template: LevelFixtureTemplate
   ) {
     super();
@@ -127,11 +130,6 @@ abstract class Actor extends Movable(Empty) implements Drawable, Lockable {
   /** Get the actor's defeated status */
   get isDefeated() {
     return this._defeated || this.stats.hp <= 0;
-  }
-
-  /** Get the actor's size */
-  get size(): Vector {
-    return this._size;
   }
 
   /** Get the name used when rendering dialogue */
@@ -212,19 +210,19 @@ abstract class Actor extends Movable(Empty) implements Drawable, Lockable {
    * @param collision - collision to consider
    */
   public backstep(collision?: Collision) {
+    if (!collision) {
+      return this.moveTo(this.lastPosition);
+    }
+
     let prevCollisionPoint = this.collisionPoint(true);
 
-    if (collision) {
-      if (
-        prevCollisionPoint.x < collision.position.x ||
-        prevCollisionPoint.x > collision.position.x + collision.size.x
-      ) {
-        this._position = new Vector(this.lastPosition.x, this._position.y);
-      } else {
-        this._position = new Vector(this.position.x, this.lastPosition.y);
-      }
+    if (
+      prevCollisionPoint.x < collision.position.x ||
+      prevCollisionPoint.x > collision.position.x + collision.size.x
+    ) {
+      this._position = new Vector(this.lastPosition.x, this._position.y);
     } else {
-      this.moveTo(this.lastPosition);
+      this._position = new Vector(this.position.x, this.lastPosition.y);
     }
   }
 

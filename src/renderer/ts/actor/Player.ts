@@ -24,14 +24,18 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
    * Create a new Player instance
    *
    * @param _position - the player's position
-   * @param size     - the player's size
+   * @param _size - the player's size
    * @param template - the player's data template
    */
-  constructor(_position: Vector, size: Vector, template: LevelFixtureTemplate) {
-    super(_position, size, template);
+  constructor(
+    _position: Vector,
+    _size: Vector,
+    template: LevelFixtureTemplate
+  ) {
+    super(_position, _size, template);
 
     this.speed = new Vector(0, 0);
-    this.baseSpeed = size.x / 10;
+    this.baseSpeed = _size.x / 10;
 
     const { fps, frames, ratio, scale, sprite } = this.getUiInfo();
 

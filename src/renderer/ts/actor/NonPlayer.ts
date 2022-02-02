@@ -1,14 +1,11 @@
 import Actor from "./Actor";
-import Dialogue from "@/ui/Dialogue";
 import MissingDataError from "@/error/MissingDataError";
 import Vector from "@common/Vector";
 import { Drawable, Eventful, CallableMap } from "@/interfaces";
 import { LevelFixtureTemplate } from "@/level/LevelFixture";
 import { bus } from "@/EventBus";
 
-/**
- * A non-playable character
- */
+/** A non-playable character */
 class NonPlayer extends Actor implements Eventful, Drawable {
   /**
    * Entities that were recently collided with
@@ -20,12 +17,16 @@ class NonPlayer extends Actor implements Eventful, Drawable {
    *
    * TODO: handle sprites when they are available
    *
-   * @param position - the non-player's position
-   * @param size     - the non-player's size
+   * @param _position - the non-player's position
+   * @param _size     - the non-player's size
    * @param template - info about the non-player
    */
-  constructor(position: Vector, size: Vector, template: LevelFixtureTemplate) {
-    super(position, size, template);
+  constructor(
+    _position: Vector,
+    _size: Vector,
+    template: LevelFixtureTemplate
+  ) {
+    super(_position, _size, template);
 
     this.resolveState(`nonPlayers.${this.id}`);
 

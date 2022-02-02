@@ -7,24 +7,24 @@ import { Drawable } from "@/interfaces";
 import { LevelFixtureTemplate } from "@/level/LevelFixture";
 import { bus } from "@/EventBus";
 
-/**
- * Main class for baddies
- */
+/** Main class for baddies */
 class Enemy extends Actor implements Drawable {
-  /**
-   * Each sprite of the enemy's movement animation
-   */
+  /** Each sprite of the enemy's movement animation */
   private sprites: Renderable[];
 
   /**
    * Create a new Enemy instance
    *
    * @param _position - the enemy's position
-   * @param size     - the enemy's size
+   * @param _size     - the enemy's size
    * @param template - info about the enemy
    */
-  constructor(_position: Vector, size: Vector, template: LevelFixtureTemplate) {
-    super(_position, size, template);
+  constructor(
+    _position: Vector,
+    _size: Vector,
+    template: LevelFixtureTemplate
+  ) {
+    super(_position, _size, template);
 
     this.direction = 4;
 
@@ -42,9 +42,7 @@ class Enemy extends Actor implements Drawable {
     this.resolveState(`enemies.${this.id}`);
   }
 
-  /**
-   * Get the string reference to the team type
-   */
+  /** Get the string reference to the team type */
   get teamType() {
     return this.config?.teamType;
   }
@@ -104,9 +102,7 @@ class Enemy extends Actor implements Drawable {
     });
   }
 
-  /**
-   * Kill off the enemy
-   */
+  /** Kill off the enemy */
   public kill() {
     this._defeated = true;
 

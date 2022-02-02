@@ -25,3 +25,19 @@ export const Movable = <T extends Constructor>(Base: T) =>
       this._position = position.copy();
     }
   };
+
+/**
+ * Generate a Resizable mixin
+ *
+ * @param Base - base class
+ */
+export const Resizable = <T extends Constructor>(Base: T) =>
+  /** A class that has a size and can be resized */
+  class Resizable extends Base {
+    /** Size of the entity */
+    protected _size: Vector;
+
+    get size(): Vector {
+      return this._size;
+    }
+  };
