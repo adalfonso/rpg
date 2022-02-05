@@ -27,12 +27,8 @@ class Level implements Drawable {
    */
   private map: Map;
 
-  /**
-   * Entry points that an fixture has to the level
-   *
-   * TODO: Better solution for typing these
-   */
-  private entries: any;
+  /** Entry points that an fixture has to the level */
+  private entries: Record<string, Entry>;
 
   /** A mix of fixtures that interact in the level */
   private fixtures: LevelFixture[] = [];

@@ -37,7 +37,7 @@ class Portal extends Inanimate {
      * TODO: Input should be more concise. At some point wrap map data in some
      * class so we can make assumptions about the input data.
      */
-    template.properties?.forEach((prop: any) => {
+    template.properties?.forEach((prop) => {
       this[prop.name] = prop.value;
     });
 

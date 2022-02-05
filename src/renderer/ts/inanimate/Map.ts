@@ -2,6 +2,7 @@ import Renderable from "@/ui/Renderable";
 import Vector from "@common/Vector";
 import config from "@/config";
 import { Drawable } from "@/interfaces";
+import { TiledLayerTilelayer } from "tiled-types/types";
 
 /**
  * A visual representation of the level
@@ -26,7 +27,7 @@ class Map implements Drawable {
    * @param layers - layer data
    * @param img    - source path for sprite sheet
    */
-  constructor(private layers: unknown[], img: string) {
+  constructor(private layers: TiledLayerTilelayer[], img: string) {
     this.scale = config.scale;
 
     this.renderable = new Renderable(
@@ -58,7 +59,14 @@ class Map implements Drawable {
     const r = this.renderable;
     const size = r.spriteSize.times(r.scale);
 
-    this.layers.forEach((layer: any) => {
+    this.layers.forEach((layer) => {
+      if (typeof layer.data === "string") {
+        console.error(
+          'Detected string "data" when reading tile layer; Expected number[]'
+        );
+        return;
+      }
+
       layer.data.forEach((value: number, index: number) => {
         r.frame = value - 1;
 

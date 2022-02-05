@@ -3,12 +3,13 @@ import Renderable from "@/ui/Renderable";
 import Vector from "@common/Vector";
 import config from "@/config";
 import items from "@/item/items";
+import { ItemConfig } from "./types";
 import { ucFirst, getImagePath } from "@/util";
 
 /** An item in the context of an inventory */
 class Item {
   /** Game-related info about the item */
-  private _config: any;
+  private _config: ItemConfig;
 
   /** UI aspect of the item */
   private _renderable: Renderable;

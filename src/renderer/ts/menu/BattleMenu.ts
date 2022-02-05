@@ -75,16 +75,15 @@ class BattleMenu extends Menu<BattleMenuItem> implements Eventful, Drawable {
       ctx.restore();
 
       if (isSelected && option.menu.length > 0) {
-        option.menu.forEach((subOption: any, index: number) => {
+        option.menu.forEach((subOption, index) => {
           ctx.save();
 
           this.applyHighlight(ctx, subOption);
 
-          const displayAs = subOption.displayAs ?? subOption;
           const subOffset = new Vector(0, 18 * (index + 1) + 32);
 
           ctx.fillText(
-            displayAs,
+            subOption.displayAs,
             position.x + subOffset.x,
             position.y + subOffset.y
           );

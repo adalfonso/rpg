@@ -8,6 +8,7 @@ import Weapon from "@/combat/strategy/Weapon";
 import WeaponFactory from "@/combat/strategy/WeaponFactory";
 import { BaseMenuItem } from "./menus";
 import { Drawable, Eventful, CallableMap } from "@/interfaces";
+import { InventoryState, isInventoryState } from "@/state/InventoryState";
 
 type InventoryItem = Item | Weapon;
 
@@ -47,7 +48,7 @@ class Inventory
   /**
    * Get current state of the inventory for export to a state manager
    */
-  get state(): Record<string, unknown> {
+  get state(): InventoryState {
     return {
       menu: {
         item: this._getSubMenu("item").map((i: Item) => i.type),
@@ -430,19 +431,20 @@ class Inventory
    */
   private resolveState(ref: string) {
     const state = StateManager.getInstance();
-
     const data = state.get(ref);
 
     if (data === undefined) {
       state.mergeByRef(ref, this.state);
       return state.get(ref);
+    } else if (!isInventoryState(data)) {
+      throw new Error("Invalid state resolution for Inventory Menu");
     }
 
-    ["item", "weapon", "armor", "ability"].forEach((menuType) => {
+    ["item", "weapon", "armor", "special"].forEach((menuType) => {
       if (this._hasMenu(data)) {
-        const subMenu = data.menu?.[menuType] ?? [];
+        const subMenu = data.menu[menuType as keyof InventoryState["menu"]];
 
-        subMenu.forEach((item: any) => {
+        subMenu.forEach((item) => {
           if (this._getSubMenu(menuType)) {
             this.store(new Item(item));
           }
@@ -479,9 +481,12 @@ class Inventory
     const menu = this.selected.slice(-2).shift();
 
     if ("menu" in menu) {
-      menu.menu.forEach((option: any) => {
-        if (option === this.currentOption) {
-          option.equip();
+      menu.menu.forEach((option: unknown) => {
+        if (
+          option === this.currentOption &&
+          option["equip"] instanceof Function
+        ) {
+          option["equip"]();
         }
       });
     }

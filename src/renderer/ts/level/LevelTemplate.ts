@@ -6,6 +6,7 @@ import TiledMap, {
   TiledLayerTilelayer,
   TiledLayerObjectgroup,
 } from "tiled-types";
+import Entry from "@/inanimate/Entry";
 
 /** LevelTemplate parses level json and provides easier acces to data */
 export class LevelTemplate {
@@ -21,7 +22,7 @@ export class LevelTemplate {
    * NOTE: Entries are considered level fixtures but are stored separately in an
    * object because they are queried often.
    */
-  private _entries: Record<string, unknown> = {};
+  private _entries: Record<string, Entry> = {};
 
   /** Name reference to tile set image */
   private _tile_source: string;
@@ -42,7 +43,7 @@ export class LevelTemplate {
       );
     }
 
-    this._tile_source = this.getJsonProperty(map, "tile_source");
+    this._tile_source = this.getMapProperty(map, "tile_source");
 
     if (!this._tile_source) {
       throw new MissingDataError(
@@ -53,12 +54,12 @@ export class LevelTemplate {
     const objectGroups = this.getObjectGroups(map);
     const entries = objectGroups.entry?.objects ?? [];
 
-    entries.forEach((e: any) => {
-      this._entries[e.name] = this._fixture_factory.create(
-        LevelFixtureType.Entry,
-        e
-      );
-    });
+    this._entries = entries.reduce((carry, e) => {
+      return {
+        ...carry,
+        [e.name]: this._fixture_factory.create(LevelFixtureType.Entry, e),
+      };
+    }, {});
 
     [
       LevelFixtureType.Clip,
@@ -81,22 +82,22 @@ export class LevelTemplate {
   }
 
   /** Visual layer/tileset data */
-  get tiles(): any[] {
+  get tiles() {
     return this._tiles;
   }
 
   /** Entry/loading points on a level */
-  get entries(): Record<string, unknown> {
+  get entries() {
     return this._entries;
   }
 
   /** Name reference to tile set image */
-  get tileSource(): string {
+  get tileSource() {
     return this._tile_source;
   }
 
   /** Main fixtures of the level */
-  get fixtures(): LevelFixture[] {
+  get fixtures() {
     return this._fixtures;
   }
 
@@ -108,12 +109,13 @@ export class LevelTemplate {
    *
    * @return property's value
    */
-  private getJsonProperty(json: Record<string, any>, property: string): string {
-    const properties = json.properties ?? [];
+  private getMapProperty(map: TiledMap, property: string) {
+    const properties = map.properties ?? [];
 
     return properties
-      .filter((prop: any) => prop.name === property)
-      .map((prop: any) => prop.value)[0];
+      .filter(({ name }) => name === property)
+      .map(({ value }) => value)
+      .map(String)[0];
   }
 
   /**
@@ -123,7 +125,7 @@ export class LevelTemplate {
    *
    * @return tile layers
    */
-  private getTileLayers(map: TiledMap): TiledLayerTilelayer[] {
+  private getTileLayers(map: TiledMap) {
     return map.layers.filter(
       (l): l is TiledLayerTilelayer => l.type === "tilelayer"
     );
