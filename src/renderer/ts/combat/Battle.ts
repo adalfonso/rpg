@@ -6,7 +6,6 @@ import Dialogue from "@/ui/Dialogue";
 import HeroTeam from "./HeroTeam";
 import OpponentSelect from "./OpponentSelect";
 import StatModifier from "./strategy/StatModifier";
-import StatModifierFactory from "./strategy/StatModifierFactory";
 import Team from "./Team";
 import TextStream from "@/ui/TextStream";
 import Vector from "@common/Vector";
@@ -39,7 +38,7 @@ class Battle implements Eventful, Drawable, Lockable {
   private _menu: BattleMenu;
 
   /** If it is currently the player's turn */
-  private _herosTurn: boolean = true;
+  private _herosTurn = true;
 
   /** Queue of animations and battle actions to execute */
   private _event_queue: (BattleEvent | Function)[] = [];
@@ -180,11 +179,11 @@ class Battle implements Eventful, Drawable, Lockable {
       },
 
       "actor.gainExp": (e: CustomEvent) => {
-        let name = this._heroes.leader.displayAs;
-        let exp = e.detail.exp;
-        let levels = e.detail.levels;
-        let abilities = e.detail.abilities;
-        let dialogue = [`${name} gained ${exp} exp.`];
+        const name = this._heroes.leader.displayAs;
+        const exp = e.detail.exp;
+        const levels = e.detail.levels;
+        const abilities = e.detail.abilities;
+        const dialogue = [`${name} gained ${exp} exp.`];
 
         levels.forEach((lvl: number) => {
           dialogue.push(`${name} grew to level ${lvl}!`);
@@ -198,7 +197,7 @@ class Battle implements Eventful, Drawable, Lockable {
             });
         });
 
-        let stream = new TextStream(dialogue);
+        const stream = new TextStream(dialogue);
 
         this._event_queue.push(
           new Dialogue(stream, undefined, [
@@ -231,7 +230,7 @@ class Battle implements Eventful, Drawable, Lockable {
 
   /** Cause game over */
   private _doGameOver() {
-    let stream = new TextStream(["You died!"]);
+    const stream = new TextStream(["You died!"]);
 
     this._event_queue.push(
       new Dialogue(stream, this._heroes.leader, [
@@ -355,7 +354,7 @@ class Battle implements Eventful, Drawable, Lockable {
    * @param resolution - render resolution
    */
   private _drawUiBar(ctx: CanvasRenderingContext2D, resolution: Vector) {
-    let uiBarSize = this._getUiBarSize(resolution);
+    const uiBarSize = this._getUiBarSize(resolution);
 
     ctx.fillStyle = "#000";
     ctx.fillRect(0, 0, uiBarSize.x, uiBarSize.y);

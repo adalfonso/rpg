@@ -82,7 +82,7 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
       speedModifier *= 0.75;
     }
 
-    let distance = this.speed.times(config.scale).times(speedModifier);
+    const distance = this.speed.times(config.scale).times(speedModifier);
 
     this.moveTo(this._position.plus(distance));
 
@@ -128,7 +128,7 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
       },
 
       "equipment.equip": (e: CustomEvent) => {
-        let equipment = e.detail.equipment;
+        const equipment = e.detail.equipment;
 
         if (!equipment) {
           throw new MissingDataError(
@@ -151,9 +151,9 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
    * @emits actor.gainExp
    */
   public gainExp(exp: number) {
-    let expData = this.stats.gainExp(exp);
+    const expData = this.stats.gainExp(exp);
 
-    let data = {
+    const data = {
       abilities: this._getAllAbilities(),
       ...expData,
     };

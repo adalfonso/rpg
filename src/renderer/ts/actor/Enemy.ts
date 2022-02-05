@@ -28,7 +28,7 @@ class Enemy extends Actor implements Drawable {
 
     this.direction = 4;
 
-    let { fps, ratio, scale, sprite } = this.getUiInfo();
+    const { fps, ratio, scale, sprite } = this.getUiInfo();
 
     this.sprites = [
       // img, scale, startFrame, frameCount, framesX, framesY, speed

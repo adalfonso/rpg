@@ -55,19 +55,19 @@ class Map implements Drawable {
       return;
     }
 
-    let r = this.renderable;
-    let size = r.spriteSize.times(r.scale);
+    const r = this.renderable;
+    const size = r.spriteSize.times(r.scale);
 
     this.layers.forEach((layer: any) => {
       layer.data.forEach((value: number, index: number) => {
         r.frame = value - 1;
 
-        let position = new Vector(
+        const position = new Vector(
           index % layer.width,
           Math.floor(index / layer.width)
         ).times(size);
 
-        let visible =
+        const visible =
           position.x + offset.x + size.x >= 0 &&
           position.x + offset.x <= resolution.x &&
           position.y + offset.y + size.y >= 0 &&

@@ -87,7 +87,7 @@ export const Equipable = <T extends Constructor>(Base: T) =>
   /** A class that maintains equipment */
   class Equipable extends Base {
     /** If the equipment is currently equipped */
-    protected _isEquipped: boolean = false;
+    protected _isEquipped = false;
 
     /** Get if the equipment is equippped */
     get isEquipped(): boolean {

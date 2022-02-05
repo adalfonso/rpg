@@ -76,8 +76,8 @@ class Inventory
       return;
     }
 
-    let isMainMenu = menu === this._menu;
-    let margin = new Vector(60, isMainMenu ? 90 : 0);
+    const isMainMenu = menu === this._menu;
+    const margin = new Vector(60, isMainMenu ? 90 : 0);
 
     ctx.save();
 
@@ -96,14 +96,14 @@ class Inventory
     // Calculate max width of menu
     ctx.save();
     ctx.font = `${TEXT_SIZE}px Minecraftia`;
-    let widestText = this.getWidestMenuDescription(menu);
-    let textWidth = ctx.measureText(widestText).width;
+    const widestText = this.getWidestMenuDescription(menu);
+    const textWidth = ctx.measureText(widestText).width;
     ctx.restore();
 
     // Render each menu item
     menu.forEach((option, index) => {
       // Offset all options after the first option
-      let spacing = index ? TEXT_SIZE * 2 : 0;
+      const spacing = index ? TEXT_SIZE * 2 : 0;
 
       /**
        * This detects if an item/weapon is currently selected and is used to
@@ -125,7 +125,7 @@ class Inventory
       let detailSize;
 
       if (isInventorySubMenuItem && isInventoryItem(option)) {
-        let offset = new Vector(-2, -TEXT_SIZE);
+        const offset = new Vector(-2, -TEXT_SIZE);
 
         detailSize = this.drawDetails(ctx, offset, resolution, option);
 
@@ -143,7 +143,7 @@ class Inventory
 
       // Render sub-menu
       if (this.selected.includes(option) && "menu" in option) {
-        let offset = new Vector(textWidth, 0);
+        const offset = new Vector(textWidth, 0);
 
         this.draw(ctx, offset, resolution, option.menu);
       }
@@ -167,8 +167,7 @@ class Inventory
     option: InventoryItem
   ) {
     // y-value is not known until the description renders
-    let descriptionSize = new Vector(400, Infinity);
-
+    const descriptionSize = new Vector(400, Infinity);
     const isEquipped = "isEquipped" in option ? option.isEquipped : false;
     const padding = new Vector(16, 16);
     const spriteSize = new Vector(64, 64);
@@ -269,9 +268,9 @@ class Inventory
     _resolution: Vector,
     option: InventoryMenuOption
   ) {
-    let isSelected = this.selected.includes(option);
-    let isMainSelection = option === this.currentOption;
-    let text = this.getOptionDescription(option);
+    const isSelected = this.selected.includes(option);
+    const isMainSelection = option === this.currentOption;
+    const text = this.getOptionDescription(option);
 
     if (isSelected) {
       ctx.font = `bold ${TEXT_SIZE}px Minecraftia`;
@@ -310,8 +309,7 @@ class Inventory
     ctx.font = `${SUBTEXT_SIZE}px Minecraftia`;
     ctx.shadowColor = "#000";
 
-    let buffer = new TextBuffer(text);
-
+    const buffer = new TextBuffer(text);
     const SPACING_MODIFIER = 0.4;
     const LINE_HEIGHT = Math.ceil((1 + SPACING_MODIFIER) * SUBTEXT_SIZE);
 
@@ -334,7 +332,7 @@ class Inventory
    */
   private getWidestMenuDescription(menu: InventoryMenuOption[]): string {
     return menu.reduce((widestMenuText, option) => {
-      let description = this.getOptionDescription(option);
+      const description = this.getOptionDescription(option);
 
       return widestMenuText.length > description.length
         ? widestMenuText
@@ -348,7 +346,7 @@ class Inventory
    * @return events to register
    */
   public register(): CallableMap {
-    let parent = super.register();
+    const parent = super.register();
 
     return {
       keyup: (e: KeyboardEvent) => {
@@ -363,7 +361,7 @@ class Inventory
         }
       },
       "item.obtain": (e: CustomEvent) => {
-        let item = e.detail?.item;
+        const item = e.detail?.item;
 
         if (!item) {
           throw new MissingDataError(
@@ -430,11 +428,10 @@ class Inventory
    *
    * @return inventory data as stored in the state
    */
-  private resolveState(ref: string): any {
+  private resolveState(ref: string) {
     const state = StateManager.getInstance();
 
-    // TODO: eslint artifact
-    let stateManagerData = state.get(ref) as any;
+    const stateManagerData = state.get(ref);
 
     if (stateManagerData === undefined) {
       state.mergeByRef(ref, this.state);
@@ -442,7 +439,7 @@ class Inventory
     }
 
     ["item", "weapon", "armor", "ability"].forEach((menuType) => {
-      let subMenu = stateManagerData?.menu?.[menuType] ?? [];
+      const subMenu = stateManagerData?.menu?.[menuType] ?? [];
 
       subMenu.forEach((item: any) => {
         if (this._getSubMenu(menuType)) {
@@ -466,7 +463,7 @@ class Inventory
 
   /** Update the inventory in the state */
   private updateState() {
-    let state = StateManager.getInstance();
+    const state = StateManager.getInstance();
     state.remove("inventory");
     state.mergeByRef("inventory", this.state);
   }
@@ -477,7 +474,7 @@ class Inventory
       return;
     }
 
-    let menu = this.selected.slice(-2).shift();
+    const menu = this.selected.slice(-2).shift();
 
     if ("menu" in menu) {
       menu.menu.forEach((option: any) => {

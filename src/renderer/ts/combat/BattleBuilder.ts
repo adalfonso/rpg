@@ -73,7 +73,7 @@ class BattleBuilder {
     const blueprint = this._getBattleBlueprint(enemy);
 
     // Default team leader
-    let team = [enemy];
+    const team = [enemy];
 
     let teamSize =
       blueprint.limit[Math.floor(Math.random() * blueprint.limit.length)];

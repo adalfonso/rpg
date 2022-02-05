@@ -1,4 +1,3 @@
-import Damage from "../Damage";
 import MissingDataError from "@/error/MissingDataError";
 import RenderableFactory from "@/ui/RenderableFactory";
 import StatModifier from "./StatModifier";

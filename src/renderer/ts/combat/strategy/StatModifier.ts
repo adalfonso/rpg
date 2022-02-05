@@ -12,7 +12,7 @@ class StatModifier extends Descriptive(Visual(Empty)) {
   /**
    * Number of turns this effect has taken effect
    */
-  private _turnsApplied: number = 0;
+  private _turnsApplied = 0;
 
   /** TODO: eslint artifact. this was added as a hack to satisfy an interface */
   public type = "u got hacked bro";

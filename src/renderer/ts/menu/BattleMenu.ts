@@ -108,8 +108,8 @@ class BattleMenu extends Menu<BattleMenuItem> implements Eventful, Drawable {
           return;
         }
 
-        let menu = this.currentMenu;
-        let option = this.currentOption;
+        const menu = this.currentMenu;
+        const option = this.currentOption;
 
         switch (e.key) {
           case "ArrowDown":

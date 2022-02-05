@@ -78,7 +78,7 @@ class Level implements Drawable {
   public register(): CallableMap {
     return {
       "portal.enter": (e: CustomEvent) => {
-        let portal = e.detail?.portal;
+        const portal = e.detail?.portal;
 
         if (!portal) {
           throw new MissingDataError(
@@ -86,8 +86,8 @@ class Level implements Drawable {
           );
         }
 
-        let to = portal?.to;
-        let level = levels[to];
+        const to = portal?.to;
+        const level = levels[to];
 
         if (!level) {
           throw new MissingDataError(
@@ -132,7 +132,7 @@ class Level implements Drawable {
   public load(template: LevelTemplate, portal?: Portal) {
     this.cleanup();
 
-    let tileSet = getImagePath(`tileset.${template.tileSource}`);
+    const tileSet = getImagePath(`tileset.${template.tileSource}`);
 
     this.map = new Map(template.tiles, tileSet);
 
@@ -140,7 +140,7 @@ class Level implements Drawable {
     this.fixtures = template.fixtures;
     this.collisionHandler.loadFixtures(template.fixtures);
 
-    let entry: Entry = portal ? this.entries[portal.from] : this.entries.origin;
+    const entry: Entry = portal ? this.entries[portal.from] : this.entries.origin;
 
     if (!entry) {
       throw new MissingDataError(

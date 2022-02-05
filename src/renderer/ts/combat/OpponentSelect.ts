@@ -14,12 +14,12 @@ class OpponentSelect implements Eventful, Drawable, Lockable {
   /**
    * Currently selected index of the opponents
    */
-  private _index: number = 0;
+  private _index = 0;
 
   /**
    * If this selection is locked from changing
    */
-  private _locked: boolean = true;
+  private _locked = true;
 
   /**
    * Create a new OpponentSelect instance
@@ -124,7 +124,7 @@ class OpponentSelect implements Eventful, Drawable, Lockable {
    * Select the first non-defeated enemy
    */
   public resolveSelected() {
-    let opponents = this._opponents.all();
+    const opponents = this._opponents.all();
 
     for (let i = 0; i < opponents.length; i++) {
       if (!opponents[i].isDefeated) {

@@ -35,12 +35,12 @@ type GainedExpSummary = {
 /**
  * Modifier to scale experience calculations down to a certain range
  */
-const EXP_MODIFIER: number = 0.05;
+const EXP_MODIFIER = 0.05;
 
 /**
  * Max attainable level
  */
-const MAX_LEVEL: number = 100;
+const MAX_LEVEL = 100;
 
 /**
  * Actor's innate value
@@ -59,7 +59,7 @@ export default class Stats {
   /**
    * Amount of damage currently inflicted on the entity
    */
-  private _dmg: number = 0;
+  private _dmg = 0;
 
   /**
    * Amount of experience points the entity has gained between levels
@@ -74,7 +74,7 @@ export default class Stats {
   /**
    * Multiplier used to expand the range that base stats take
    */
-  private multiplier: number = 2.5;
+  private multiplier = 2.5;
 
   /**
    * Create a new Stats instance
@@ -250,7 +250,7 @@ export default class Stats {
   public gainExp(exp: number): GainedExpSummary {
     this._exp += exp;
 
-    let data: GainedExpSummary = {
+    const data: GainedExpSummary = {
       exp: exp,
       levels: [],
     };
@@ -284,7 +284,7 @@ export default class Stats {
    * @return if a level increased
    */
   private gainLevel(): boolean {
-    let experienceNeeded = this.expToNextLevel();
+    const experienceNeeded = this.expToNextLevel();
 
     if (this._exp < experienceNeeded) {
       return false;

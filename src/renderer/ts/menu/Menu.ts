@@ -180,12 +180,9 @@ abstract class Menu<T extends BaseMenuItem<T>>
   protected previous() {
     const menu = this.currentMenu;
 
-    const currentIndex = menu.reduce(
-      (carry: number, value: any, index: number) => {
-        return value === this.currentOption ? index : carry;
-      },
-      0
-    );
+    const currentIndex = menu.reduce((carry, value, index) => {
+      return value === this.currentOption ? index : carry;
+    }, 0);
 
     const previousIndex =
       currentIndex === 0 ? menu.length - 1 : currentIndex - 1;
@@ -197,12 +194,9 @@ abstract class Menu<T extends BaseMenuItem<T>>
   protected next() {
     const menu = this.currentMenu;
 
-    const currentIndex = menu.reduce(
-      (carry: number, value: any, index: number) => {
-        return value === this.currentOption ? index : carry;
-      },
-      0
-    );
+    const currentIndex = menu.reduce((carry, value, index) => {
+      return value === this.currentOption ? index : carry;
+    }, 0);
 
     const nextIndex = currentIndex === menu.length - 1 ? 0 : currentIndex + 1;
 

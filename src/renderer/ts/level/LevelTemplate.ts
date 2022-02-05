@@ -33,7 +33,7 @@ export class LevelTemplate {
     json: Record<string, any>,
     private _fixture_factory: LevelFixtureFactory
   ) {
-    let layers = json.layers ?? [];
+    const layers = json.layers ?? [];
 
     this._tiles = this.getTileLayers(layers);
 
@@ -51,8 +51,8 @@ export class LevelTemplate {
       );
     }
 
-    let objectGroups = this.getObjectGroups(layers);
-    let entries = objectGroups.entry?.objects ?? [];
+    const objectGroups = this.getObjectGroups(layers);
+    const entries = objectGroups.entry?.objects ?? [];
 
     entries.forEach((e: any) => {
       this._entries[e.name] = this._fixture_factory.create(
@@ -68,11 +68,11 @@ export class LevelTemplate {
       LevelFixtureType.NonPlayer,
       LevelFixtureType.Item,
     ].forEach((type: LevelFixtureType) => {
-      let group = objectGroups[type] ?? { objects: [] };
-      let fixture_data = group.objects.flat();
+      const group = objectGroups[type] ?? { objects: [] };
+      const fixture_data = group.objects.flat();
 
       fixture_data.forEach((object: unknown) => {
-        let fixture = this._fixture_factory.create(type, object);
+        const fixture = this._fixture_factory.create(type, object);
 
         if (fixture !== null) {
           this._fixtures.push(fixture);
@@ -110,7 +110,7 @@ export class LevelTemplate {
    * @return property's value
    */
   private getJsonProperty(json: Record<string, any>, property: string): string {
-    let properties = json.properties ?? [];
+    const properties = json.properties ?? [];
 
     return properties
       .filter((prop: any) => prop.name === property)
@@ -138,7 +138,7 @@ export class LevelTemplate {
    * @throws {InvalidDataError} when multiple object layers share a name
    */
   private getObjectGroups(layers: any[]): any {
-    let objectGroups: any = {};
+    const objectGroups: any = {};
 
     layers.filter((l) => {
       if (l.type !== "objectgroup") {

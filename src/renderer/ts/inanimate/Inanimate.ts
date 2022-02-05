@@ -55,7 +55,7 @@ abstract class Inanimate {
     offset: Vector,
     _resolution: Vector
   ) {
-    let position = this.position.plus(offset);
+    const position = this.position.plus(offset);
 
     ctx.save();
     ctx.strokeStyle = "#FF0";

@@ -98,7 +98,7 @@ class CollisionHandler {
    * @return if the clip is stale
    */
   private handleClip(clip: Clip): boolean {
-    let collision = this._player.collidesWith(clip);
+    const collision = this._player.collidesWith(clip);
 
     if (collision) {
       this._player.backstep(collision);

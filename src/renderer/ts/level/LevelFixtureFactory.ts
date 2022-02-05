@@ -62,10 +62,10 @@ export class LevelFixtureFactory {
       );
     }
 
-    let position = new Vector(template.x, template.y).times(
+    const position = new Vector(template.x, template.y).times(
       global_config.scale
     );
-    let size = new Vector(template.width, template.height).times(
+    const size = new Vector(template.width, template.height).times(
       global_config.scale
     );
 
@@ -90,11 +90,11 @@ export class LevelFixtureFactory {
       case "npc":
         return new NonPlayer(position, size, template);
       case "enemy":
-        let enemy = new Enemy(position, size, template);
+        const enemy = new Enemy(position, size, template);
         // If the enemy is previously defeated, set to null to be cleared
         return enemy.isDefeated ? null : enemy;
       case "item":
-        let item = new Item(
+        const item = new Item(
           position,
           size,
           template,

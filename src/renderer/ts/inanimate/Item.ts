@@ -23,7 +23,7 @@ export class Item extends Inanimate {
   private _id: string;
 
   /** If the item was picked up */
-  private _obtained: boolean = false;
+  private _obtained = false;
 
   /** UI aspect of the item */
   private _renderable: Renderable;
@@ -100,7 +100,7 @@ export class Item extends Inanimate {
       return;
     }
 
-    let { type, delta } = this._animation.update(dt);
+    const { type, delta } = this._animation.update(dt);
 
     // only handles position animations for now
     if (type !== AnimationType.Position) {
@@ -149,7 +149,7 @@ export class Item extends Inanimate {
     const state = StateManager.getInstance();
 
     // TODO: eslint artifact (any)
-    let stateManagerData = state.get(ref) as any;
+    const stateManagerData = state.get(ref) as any;
 
     if (stateManagerData === undefined) {
       state.mergeByRef(ref, this.getState());

@@ -125,10 +125,10 @@ class Game implements Eventful, Drawable {
     offset: Vector,
     resolution: Vector
   ) {
-    let noOffset = new Vector(0, 0);
+    const noOffset = new Vector(0, 0);
 
     if (this.hasActiveBattle()) {
-      let battleOffset = new Vector(
+      const battleOffset = new Vector(
         resolution.x / 2 - 128 - 64,
         resolution.y / 2 - 64 - 64
       );
@@ -180,7 +180,7 @@ class Game implements Eventful, Drawable {
         this.unlock(GameState.StartMenu),
 
       "item.obtain": (e: CustomEvent) => {
-        let item = e.detail?.item;
+        const item = e.detail?.item;
 
         if (!item) {
           throw new MissingDataError(
@@ -188,13 +188,13 @@ class Game implements Eventful, Drawable {
           );
         }
 
-        let itemName = item.displayAs;
+        const itemName = item.displayAs;
 
-        let useVowel = ["a", "e", "i", "o", "u"].includes(
+        const useVowel = ["a", "e", "i", "o", "u"].includes(
           itemName[0].toLowerCase()
         );
 
-        let stream = new TextStream([
+        const stream = new TextStream([
           `Picked up ${useVowel ? "an" : "a"} ${itemName}!`,
         ]);
 

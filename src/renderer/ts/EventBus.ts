@@ -39,7 +39,7 @@ class EventBus {
    * @param observer - entity to register
    */
   public register(observer: Eventful) {
-    let events = observer.register();
+    const events = observer.register();
 
     // An array here indicates that a classes's parents events are included
     if (Array.isArray(events)) {
@@ -55,7 +55,7 @@ class EventBus {
    * @param observer - eventful entity
    */
   public unregister(observer: Eventful) {
-    for (let event in this.events) {
+    for (const event in this.events) {
       this.events[event] = this.events[event].filter(
         (e: BrokeredEventTemplate) => {
           return e.observer !== observer;
@@ -71,7 +71,7 @@ class EventBus {
    * @param detail - additional detail to pass along
    */
   public emit(event: string, detail?: Record<string, unknown>) {
-    let e = new CustomEvent(event, { detail: detail });
+    const e = new CustomEvent(event, { detail: detail });
     window.dispatchEvent(e);
   }
 
@@ -85,8 +85,8 @@ class EventBus {
     observer: Eventful,
     events: Record<string, (input: unknown) => unknown>
   ) {
-    for (let event in events) {
-      let brokeredEvent: BrokeredEventTemplate = {
+    for (const event in events) {
+      const brokeredEvent: BrokeredEventTemplate = {
         observer: observer,
         handle: events[event],
       };

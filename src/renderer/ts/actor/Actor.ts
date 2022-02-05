@@ -61,7 +61,7 @@ abstract class Actor
   protected dialogue: Dialogue = null;
 
   /** If the actor has been defeated */
-  protected _defeated: boolean = false;
+  protected _defeated = false;
 
   /** If the actor is locked from updating */
   protected locked: boolean;
@@ -97,7 +97,7 @@ abstract class Actor
     protected template: LevelFixtureTemplate
   ) {
     super();
-    let actorType = this.constructor.name;
+    const actorType = this.constructor.name;
 
     this.config = actors[template.type];
 
@@ -214,7 +214,7 @@ abstract class Actor
       return this.moveTo(this.lastPosition);
     }
 
-    let prevCollisionPoint = this.collisionPoint(true);
+    const prevCollisionPoint = this.collisionPoint(true);
 
     if (
       prevCollisionPoint.x < collision.position.x ||
@@ -236,9 +236,9 @@ abstract class Actor
    * @return collision indicator
    */
   public collidesWith(entity: Entity): Collision | false {
-    let collisionPoint = this.collisionPoint();
+    const collisionPoint = this.collisionPoint();
 
-    let collision =
+    const collision =
       collisionPoint.x > entity.position.x &&
       collisionPoint.x < entity.position.x + entity.size.x &&
       collisionPoint.y > entity.position.y &&
@@ -259,7 +259,7 @@ abstract class Actor
    *
    * @param - whether to use the last position instead of the current
    */
-  public savePosition(useLast: boolean = false) {
+  public savePosition(useLast = false) {
     this.savedPosition = useLast
       ? this.lastPosition.copy()
       : this._position.copy();
@@ -272,7 +272,7 @@ abstract class Actor
    *
    * @param unlock - if the actor should be unlocked too
    */
-  public restorePosition(unlock: boolean = true) {
+  public restorePosition(unlock = true) {
     this.moveTo(this.savedPosition);
     this.direction = this.savedDirection;
 
@@ -348,7 +348,7 @@ abstract class Actor
     const state = StateManager.getInstance();
 
     // TODO: eslint artifact (any)
-    let stateManagerData = state.get(ref) as any;
+    const stateManagerData = state.get(ref) as any;
 
     if (stateManagerData === undefined) {
       state.mergeByRef(ref, this.getState());
@@ -415,7 +415,7 @@ abstract class Actor
    *
    * @param prev - use previous position instead of current position
    */
-  private collisionPoint(prev: boolean = false): Vector {
+  private collisionPoint(prev = false): Vector {
     return new Vector(
       (prev ? this.lastPosition.x : this._position.x) + this.size.x * 0.5,
       (prev ? this.lastPosition.y : this._position.y) + this.size.y * 0.8
@@ -428,7 +428,7 @@ abstract class Actor
    * @param props - list of properties
    */
   private assignCustomProperties(props: any[]) {
-    let lvl = props.filter((prop) => prop.name === "lvl")[0]?.value;
+    const lvl = props.filter((prop) => prop.name === "lvl")[0]?.value;
 
     if (lvl && this.stats) {
       this.stats.lvl = +lvl;
@@ -447,7 +447,7 @@ abstract class Actor
     offset: Vector,
     _resolution: Vector
   ) {
-    let position = this._position.plus(offset);
+    const position = this._position.plus(offset);
 
     ctx.save();
     ctx.strokeStyle = "#F00";
