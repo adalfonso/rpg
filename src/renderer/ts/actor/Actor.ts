@@ -11,14 +11,18 @@ import Vector from "@common/Vector";
 import Weapon from "@/combat/strategy/Weapon";
 import actors from "./actors";
 import config from "@/config";
+import { ActorConfig } from "./types";
 import { Collision } from "@/CollisionHandler";
 import { Drawable, Lockable } from "@/interfaces";
+import { Empty } from "@/mixins";
 import { LearnedAbility } from "@/combat/strategy/types";
-import { LevelFixtureTemplate } from "@/level/LevelFixture";
+import {
+  LevelFixtureProperty,
+  LevelFixtureTemplate,
+} from "@/level/LevelFixture";
 import { Movable, Resizable } from "@/Entity";
 import { RenderData } from "@/ui/types";
 import { getImagePath } from "@/util";
-import { Empty } from "@/mixins";
 
 /** General purpose entity that interacts with fixtures in the game */
 type Entity = Actor | Inanimate;
@@ -55,7 +59,7 @@ abstract class Actor
   protected _id: string;
 
   /** Game-related info about the actor */
-  protected config: any;
+  protected config: ActorConfig;
 
   /** Dialogue that the actor is the leader of */
   protected dialogue: Dialogue = null;
@@ -133,7 +137,7 @@ abstract class Actor
   }
 
   /** Get the name used when rendering dialogue */
-  get displayAs(): string {
+  get displayAs() {
     return this.config.displayAs;
   }
 
@@ -149,7 +153,7 @@ abstract class Actor
    *
    * @param dt - delta time
    */
-  public update(dt: number) {
+  public update(_dt: number) {
     if (this.locked) {
       return;
     }
@@ -344,28 +348,28 @@ abstract class Actor
    *
    * @return actor data as stored in the state
    */
-  protected resolveState(ref: string): any {
+  protected resolveState(ref: string) {
     const state = StateManager.getInstance();
 
     // TODO: eslint artifact (any)
-    const stateManagerData = state.get(ref) as any;
+    const data = state.get(ref);
 
-    if (stateManagerData === undefined) {
+    if (data === undefined) {
       state.mergeByRef(ref, this.getState());
       return state.get(ref);
     }
 
     ["lvl", "exp", "dmg"].forEach((stat) => {
-      if (stateManagerData?.[stat]) {
-        this.stats[stat] = stateManagerData[stat];
+      if (data?.[stat]) {
+        this.stats[stat] = data[stat];
       }
     });
 
-    if (stateManagerData?.defeated) {
-      this._defeated = stateManagerData.defeated;
+    if (typeof data === "object" && "defeated" in data) {
+      this._defeated = data["defeated"];
     }
 
-    return stateManagerData;
+    return data;
   }
 
   /**
@@ -427,7 +431,7 @@ abstract class Actor
    *
    * @param props - list of properties
    */
-  private assignCustomProperties(props: any[]) {
+  private assignCustomProperties(props: LevelFixtureProperty[]) {
     const lvl = props.filter((prop) => prop.name === "lvl")[0]?.value;
 
     if (lvl && this.stats) {

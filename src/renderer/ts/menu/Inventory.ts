@@ -431,21 +431,23 @@ class Inventory
   private resolveState(ref: string) {
     const state = StateManager.getInstance();
 
-    const stateManagerData = state.get(ref);
+    const data = state.get(ref);
 
-    if (stateManagerData === undefined) {
+    if (data === undefined) {
       state.mergeByRef(ref, this.state);
       return state.get(ref);
     }
 
     ["item", "weapon", "armor", "ability"].forEach((menuType) => {
-      const subMenu = stateManagerData?.menu?.[menuType] ?? [];
+      if (this._hasMenu(data)) {
+        const subMenu = data.menu?.[menuType] ?? [];
 
-      subMenu.forEach((item: any) => {
-        if (this._getSubMenu(menuType)) {
-          this.store(new Item(item));
-        }
-      });
+        subMenu.forEach((item: any) => {
+          if (this._getSubMenu(menuType)) {
+            this.store(new Item(item));
+          }
+        });
+      }
     });
 
     const equipped = state.get("player.equipped");
@@ -458,7 +460,7 @@ class Inventory
       });
     }
 
-    return stateManagerData;
+    return data;
   }
 
   /** Update the inventory in the state */

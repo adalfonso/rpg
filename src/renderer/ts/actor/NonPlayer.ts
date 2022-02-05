@@ -101,7 +101,7 @@ class NonPlayer extends Actor implements Eventful, Drawable {
    *
    * @param actors - actors recently collided with
    */
-  private speak(actors: Actor[]) {
+  private speak(_actors: Actor[]) {
     if (this.dialogue) {
       return;
     }

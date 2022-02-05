@@ -5,13 +5,13 @@ import MissingDataError from "@/error/MissingDataError";
 import Player from "@/actor/Player";
 import Portal from "@/inanimate/Portal";
 import Vector from "@common/Vector";
-import levels from "./levels";
 import { Drawable, Eventful, CallableMap } from "@/interfaces";
 import { LevelFixture } from "./LevelFixture";
 import { LevelFixtureFactory } from "./LevelFixtureFactory";
 import { LevelTemplate } from "./LevelTemplate";
 import { bus } from "@/EventBus";
 import { getImagePath } from "@/util";
+import { getLevels } from "./levels";
 
 /**
  * A discrete area of the game
@@ -87,7 +87,7 @@ class Level implements Drawable {
         }
 
         const to = portal?.to;
-        const level = levels[to];
+        const level = getLevels()[to];
 
         if (!level) {
           throw new MissingDataError(
@@ -140,7 +140,9 @@ class Level implements Drawable {
     this.fixtures = template.fixtures;
     this.collisionHandler.loadFixtures(template.fixtures);
 
-    const entry: Entry = portal ? this.entries[portal.from] : this.entries.origin;
+    const entry: Entry = portal
+      ? this.entries[portal.from]
+      : this.entries.origin;
 
     if (!entry) {
       throw new MissingDataError(

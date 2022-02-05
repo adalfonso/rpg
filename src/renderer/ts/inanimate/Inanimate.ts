@@ -24,7 +24,9 @@ abstract class Inanimate {
    *
    * @param dt - delta time
    */
-  public update(dt: number) {}
+  public update(_dt: number) {
+    //
+  }
 
   /**
    * Draw the inanimate

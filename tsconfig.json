@@ -6,9 +6,8 @@
     "noUnusedLocals": false,
     "strictNullChecks": false,
     "strictFunctionTypes": false,
-
     "resolveJsonModule": true,
-
+    "lib": ["es2019", "dom"],
     "baseUrl": ".",
     "paths": {
       "@common/*": ["./src/common/*"],

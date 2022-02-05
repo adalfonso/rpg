@@ -28,10 +28,10 @@ interface BattleEvent {
   ): void;
 }
 
-const isBattleEvent = (event: any): event is BattleEvent =>
+const isBattleEvent = (event: unknown): event is BattleEvent =>
   typeof event === "object" &&
-  typeof event.isDone === "boolean" &&
-  typeof event.update === "function";
+  typeof event["isDone"] === "boolean" &&
+  event["update"] instanceof Function;
 
 class Battle implements Eventful, Drawable, Lockable {
   /** Menu for the battle */
@@ -41,7 +41,7 @@ class Battle implements Eventful, Drawable, Lockable {
   private _herosTurn = true;
 
   /** Queue of animations and battle actions to execute */
-  private _event_queue: (BattleEvent | Function)[] = [];
+  private _event_queue: (BattleEvent | (() => void))[] = [];
 
   /** If the battle is currently active */
   public active: boolean;
@@ -141,8 +141,6 @@ class Battle implements Eventful, Drawable, Lockable {
   ) {
     const width: number = resolution.x;
     const height: number = resolution.y;
-    const player = this._heroes.leader;
-
     ctx.fillStyle = "#CCC";
     ctx.fillRect(0, 0, width, height);
 
@@ -404,8 +402,6 @@ class Battle implements Eventful, Drawable, Lockable {
    * @return the battle menu
    */
   private _getBattleMenu(): BattleMenu {
-    const player = this._heroes.leader;
-
     return new BattleMenu(menus.battle(this, () => this._heroes.leader));
   }
 }

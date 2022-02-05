@@ -10,7 +10,7 @@
     "dist:dir": "npm dist --dir -c.compression=store -c.mac.identity=null",
     "test": "mochapack --colors -r jsdom-global/register --webpack-config tests/webpack.config.js tests/**/*.test.ts",
     "coverage": "nyc -r lcov -e .ts -x \"*.test.ts\" npm run test",
-    "lint": "npx eslint --ext .ts src/"
+    "lint": "npx eslint --fix --ext .ts src/"
   },
   "author": "Anthony Dalfonso <anthonyjdalfonso@gmail.com>",
   "license": "BSD",
@@ -39,6 +39,7 @@
     "nyc": "^14.1.1",
     "sass-loader": "^10.2.1",
     "sinon": "^9.2.4",
+    "tiled-types": "^1.3.0",
     "tsconfig-paths-webpack-plugin": "^3.2.0",
     "typescript": "^3.9.10",
     "webpack": "~4.42.1"

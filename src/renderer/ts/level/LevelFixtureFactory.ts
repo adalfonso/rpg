@@ -89,11 +89,12 @@ export class LevelFixtureFactory {
         return new Portal(position, size, template);
       case "npc":
         return new NonPlayer(position, size, template);
-      case "enemy":
+      case "enemy": {
         const enemy = new Enemy(position, size, template);
         // If the enemy is previously defeated, set to null to be cleared
         return enemy.isDefeated ? null : enemy;
-      case "item":
+      }
+      case "item": {
         const item = new Item(
           position,
           size,
@@ -103,6 +104,7 @@ export class LevelFixtureFactory {
         );
         // If the item is previously obtained, set to null to be cleared
         return item.obtained ? null : item;
+      }
       default:
         throw new InvalidDataError(
           `Unable to create fixture for object type "${type}".`

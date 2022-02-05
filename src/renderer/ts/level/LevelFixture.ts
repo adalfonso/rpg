@@ -26,11 +26,18 @@ export interface BasicLevelFixtureTemplate {
   width: number;
 }
 
+/** Custom props added to a level fixture */
+export interface LevelFixtureProperty {
+  name: string;
+  type: string;
+  value: string;
+}
+
 /** More advanced level fixture template */
 export interface LevelFixtureTemplate extends BasicLevelFixtureTemplate {
   name: string;
   type: string;
-  properties?: Record<string, unknown>[];
+  properties?: LevelFixtureProperty[];
 }
 
 /**
@@ -50,6 +57,18 @@ export const isBasicLevelFixtureTemplate = (
   typeof template["width"] === "number";
 
 /**
+ * Determine if the property match the correct shape
+ * @param prop - template property
+ *
+ * @returns if the property is valid
+ */
+const isLevelFixtureProperty = (prop: unknown) =>
+  typeof prop === "object" &&
+  typeof prop["name"] === "string" &&
+  typeof prop["type"] === "string" &&
+  typeof prop["value"] === "string";
+
+/**
  * Determine if template supports anadvanced level fixture
  *
  * @param template - fixture template
@@ -58,8 +77,16 @@ export const isBasicLevelFixtureTemplate = (
  */
 export const isLevelFixtureTemplate = (
   template: unknown
-): template is LevelFixtureTemplate =>
-  isBasicLevelFixtureTemplate(template) &&
-  typeof template["name"] === "string" &&
-  typeof template["type"] === "string" &&
-  ["undefined", "object"].includes(typeof template["properties"]);
+): template is LevelFixtureTemplate => {
+  const hasValidProperties = Array.isArray(template["properties"])
+    ? template["properties"].filter((prop) => !isLevelFixtureProperty(prop))
+        .length === 0
+    : template["properties"] === undefined;
+
+  return (
+    isBasicLevelFixtureTemplate(template) &&
+    typeof template["name"] === "string" &&
+    typeof template["type"] === "string" &&
+    hasValidProperties
+  );
+};

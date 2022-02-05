@@ -145,22 +145,22 @@ export class Item extends Inanimate {
    *
    * @return item data as stored in the state
    */
-  protected resolveState(ref: string): any {
+  protected resolveState(ref: string) {
     const state = StateManager.getInstance();
 
     // TODO: eslint artifact (any)
-    const stateManagerData = state.get(ref) as any;
+    const data = state.get(ref);
 
-    if (stateManagerData === undefined) {
+    if (data === undefined) {
       state.mergeByRef(ref, this.getState());
       return state.get(ref);
     }
 
-    if (stateManagerData.obtained) {
+    if (data["obtained"]) {
       this._obtained = true;
     }
 
-    return stateManagerData;
+    return data;
   }
 
   /**

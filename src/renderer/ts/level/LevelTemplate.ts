@@ -2,6 +2,10 @@ import InvalidDataError from "@/error/InvalidDataError";
 import MissingDataError from "@/error/MissingDataError";
 import { LevelFixture, LevelFixtureType } from "./LevelFixture";
 import { LevelFixtureFactory } from "./LevelFixtureFactory";
+import TiledMap, {
+  TiledLayerTilelayer,
+  TiledLayerObjectgroup,
+} from "tiled-types";
 
 /** LevelTemplate parses level json and provides easier acces to data */
 export class LevelTemplate {
@@ -9,7 +13,7 @@ export class LevelTemplate {
   private _fixtures: LevelFixture[] = [];
 
   /** Visual layer/tileset data */
-  private _tiles: any[];
+  private _tiles: TiledLayerTilelayer[];
 
   /**
    * Entry/loading points on a level
@@ -25,17 +29,12 @@ export class LevelTemplate {
   /**
    * Create a new LevelTemplate instance
    *
-   * @param json - level data
+   * @param map - level data
    *
    * @throws {MissingDataError} when tile layers or tile source are missing
    */
-  constructor(
-    json: Record<string, any>,
-    private _fixture_factory: LevelFixtureFactory
-  ) {
-    const layers = json.layers ?? [];
-
-    this._tiles = this.getTileLayers(layers);
+  constructor(map: TiledMap, private _fixture_factory: LevelFixtureFactory) {
+    this._tiles = this.getTileLayers(map);
 
     if (!this._tiles.length) {
       throw new MissingDataError(
@@ -43,7 +42,7 @@ export class LevelTemplate {
       );
     }
 
-    this._tile_source = this.getJsonProperty(json, "tile_source");
+    this._tile_source = this.getJsonProperty(map, "tile_source");
 
     if (!this._tile_source) {
       throw new MissingDataError(
@@ -51,7 +50,7 @@ export class LevelTemplate {
       );
     }
 
-    const objectGroups = this.getObjectGroups(layers);
+    const objectGroups = this.getObjectGroups(map);
     const entries = objectGroups.entry?.objects ?? [];
 
     entries.forEach((e: any) => {
@@ -68,7 +67,7 @@ export class LevelTemplate {
       LevelFixtureType.NonPlayer,
       LevelFixtureType.Item,
     ].forEach((type: LevelFixtureType) => {
-      const group = objectGroups[type] ?? { objects: [] };
+      const group = objectGroups[type] ?? { objects: [] as unknown[] };
       const fixture_data = group.objects.flat();
 
       fixture_data.forEach((object: unknown) => {
@@ -124,8 +123,10 @@ export class LevelTemplate {
    *
    * @return tile layers
    */
-  private getTileLayers(layers: any[]): Record<string, unknown>[] {
-    return layers.filter((l) => l.type === "tilelayer");
+  private getTileLayers(map: TiledMap): TiledLayerTilelayer[] {
+    return map.layers.filter(
+      (l): l is TiledLayerTilelayer => l.type === "tilelayer"
+    );
   }
 
   /**
@@ -137,23 +138,19 @@ export class LevelTemplate {
    *
    * @throws {InvalidDataError} when multiple object layers share a name
    */
-  private getObjectGroups(layers: any[]): any {
-    const objectGroups: any = {};
+  private getObjectGroups(
+    map: TiledMap
+  ): Record<string, TiledLayerObjectgroup> {
+    return map.layers
+      .filter((l): l is TiledLayerObjectgroup => l.type === "objectgroup")
+      .reduce((carry, l) => {
+        if (carry[l.name]) {
+          throw new InvalidDataError(
+            `Duplicate name for object layers: ${l.name}`
+          );
+        }
 
-    layers.filter((l) => {
-      if (l.type !== "objectgroup") {
-        return;
-      }
-
-      if (objectGroups[l.name]) {
-        throw new InvalidDataError(
-          `Duplicate name for object layers: ${l.name}`
-        );
-      }
-
-      objectGroups[l.name] = l;
-    });
-
-    return objectGroups;
+        return { ...carry, [l.name]: l };
+      }, {});
   }
 }

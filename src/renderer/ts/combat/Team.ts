@@ -61,9 +61,7 @@ class Team {
   ) {
     this._members
       .filter((member) => !member.isDefeated)
-      .forEach((member: Actor, index: number) => {
-        member.draw(ctx, offset, resolution);
-      });
+      .forEach((member) => member.draw(ctx, offset, resolution));
   }
 
   /**
@@ -102,8 +100,8 @@ class Team {
    *
    * @param callable - action for each team member
    */
-  public each(callable: Function) {
-    this._members.forEach((member: Actor, index: number) => {
+  public each(callable: (member: Actor, index: number) => void) {
+    this._members.forEach((member, index) => {
       callable(member, index);
     });
   }

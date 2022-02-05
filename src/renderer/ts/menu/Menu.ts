@@ -204,14 +204,21 @@ abstract class Menu<T extends BaseMenuItem<T>>
   }
 
   /**
+   * Determine if input contains a menu
+   *
+   * @param input - input to test
+   * @returns if input has a menu
+   */
+  protected _hasMenu = (input: unknown): input is { menu: unknown } =>
+    typeof input === "object" && "menu" in input;
+
+  /**
    * Determine if current menu option has a sub-menu
    *
    * @return if current menu option has a sub-menu
    */
-  protected hasSubMenu() {
-    const current = this.currentOption;
-
-    return current.menu?.length > 0;
+  protected _hasSubMenu() {
+    return this.currentOption.menu?.length > 0;
   }
 }
 

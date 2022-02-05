@@ -2,10 +2,11 @@ import example from "../../assets/example.json";
 import { LevelFixtureFactory } from "@/level/LevelFixtureFactory";
 import { LevelTemplate as Sut } from "@/level/LevelTemplate";
 import { expect } from "chai";
+import TiledMap from "tiled-types/types";
 
 describe("LevelTemplate", () => {
   it("parses template json", () => {
-    let sut = new Sut(example, getFixtureFactory());
+    let sut = new Sut(example as unknown as TiledMap, getFixtureFactory());
 
     expect(2).to.equal(sut.tiles.length);
 

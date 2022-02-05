@@ -113,7 +113,7 @@ class BattleMenu extends Menu<BattleMenuItem> implements Eventful, Drawable {
 
         switch (e.key) {
           case "ArrowDown":
-            if (this.hasSubMenu()) {
+            if (this._hasSubMenu()) {
               this.select();
             } else if (this.selected.length > 1) {
               this.next();

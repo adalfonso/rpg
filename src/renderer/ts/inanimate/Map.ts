@@ -26,7 +26,7 @@ class Map implements Drawable {
    * @param layers - layer data
    * @param img    - source path for sprite sheet
    */
-  constructor(private layers: any[], img: string) {
+  constructor(private layers: unknown[], img: string) {
     this.scale = config.scale;
 
     this.renderable = new Renderable(

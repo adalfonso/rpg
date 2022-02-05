@@ -48,13 +48,6 @@ class Enemy extends Actor implements Drawable {
   }
 
   /**
-   * Update the enemy
-   *
-   * @param dt - delta time
-   */
-  public update(dt: number) {}
-
-  /**
    * Draw Enemy and all underlying entities
    *
    * @param ctx        - render context

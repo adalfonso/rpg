@@ -8,7 +8,7 @@ import { Eventful } from "./interfaces";
  */
 type BrokeredEventTemplate = {
   observer: Eventful;
-  handle: Function;
+  handle: (e: Event) => void;
 };
 
 class EventBus {
@@ -91,7 +91,7 @@ class EventBus {
         handle: events[event],
       };
 
-      if (!this.events.hasOwnProperty(event)) {
+      if (this.events[event] === undefined) {
         this.events[event] = [];
 
         window.addEventListener(event, (e) => {

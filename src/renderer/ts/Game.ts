@@ -9,12 +9,12 @@ import Player from "./actor/Player";
 import StartMenu from "./menu/StartMenu";
 import TextStream from "./ui/TextStream";
 import Vector from "@common/Vector";
-import levels from "./level/levels";
 import menus from "./menu/menus";
 import { Drawable, Eventful, CallableMap } from "./interfaces";
 import { LevelFixtureFactory } from "./level/LevelFixtureFactory";
 import { LevelTemplate } from "./level/LevelTemplate";
 import { bus } from "@/EventBus";
+import { getLevels } from "./level/levels";
 
 /**
  * Different states a game can be in
@@ -164,19 +164,21 @@ class Game implements Eventful, Drawable {
         this.lock(GameState.Battle);
       },
 
-      "battle.end": (e: CustomEvent) => {
+      "battle.end": (_e: CustomEvent) => {
         this.battle = null;
         this.unlock(GameState.Battle);
       },
 
-      "menu.inventory.open": (e: CustomEvent) => this.lock(GameState.Inventory),
+      "menu.inventory.open": (_e: CustomEvent) =>
+        this.lock(GameState.Inventory),
 
-      "menu.inventory.close": (e: CustomEvent) =>
+      "menu.inventory.close": (_e: CustomEvent) =>
         this.unlock(GameState.Inventory),
 
-      "menu.startMenu.open": (e: CustomEvent) => this.lock(GameState.StartMenu),
+      "menu.startMenu.open": (_e: CustomEvent) =>
+        this.lock(GameState.StartMenu),
 
-      "menu.startMenu.close": (e: CustomEvent) =>
+      "menu.startMenu.close": (_e: CustomEvent) =>
         this.unlock(GameState.StartMenu),
 
       "item.obtain": (e: CustomEvent) => {
@@ -210,7 +212,7 @@ class Game implements Eventful, Drawable {
    */
   public start() {
     this.level = new Level(
-      new LevelTemplate(levels.sandbox_0, new LevelFixtureFactory()),
+      new LevelTemplate(getLevels().sandbox_0, new LevelFixtureFactory()),
       this.player,
       new CollisionHandler(this.player)
     );
