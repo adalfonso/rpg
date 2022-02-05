@@ -350,8 +350,6 @@ abstract class Actor
    */
   protected resolveState(ref: string) {
     const state = StateManager.getInstance();
-
-    // TODO: eslint artifact (any)
     const data = state.get(ref);
 
     if (data === undefined) {

@@ -49,8 +49,11 @@ export const merge = (
   for (const p in obj2) {
     try {
       if (obj2[p].constructor == Object) {
-        // TODO: eslint artifact (any)
-        obj1[p] = merge(obj1[p] as any, obj2[p] as any, true);
+        obj1[p] = merge(
+          obj1[p] as Record<string, unknown>,
+          obj2[p] as Record<string, unknown>,
+          true
+        );
       } else {
         obj1[p] = obj2[p];
       }
