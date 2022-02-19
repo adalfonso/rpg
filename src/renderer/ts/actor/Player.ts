@@ -1,4 +1,4 @@
-import Actor from "./Actor";
+import Actor, { Direction } from "./Actor";
 import MissingDataError from "@/error/MissingDataError";
 import Renderable from "@/ui/Renderable";
 import StateManager from "@/state/StateManager";
@@ -40,20 +40,15 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
     const { fps, frames, ratio, scale, sprite } = this.getUiInfo();
 
     // This assumes that each direction has its own row and is in NESW order
-    const start = {
-      north: 0 * frames.x,
-      east: 1 * frames.x,
-      south: 2 * frames.x,
-      west: 3 * frames.x,
-    };
+    const [north, east, south, west] = [0, 1, 2, 3].map((i) => i * frames.x);
 
     this.sprites = [
       // img, scale, startFrame, frameCount, framesX, framesY, speed
-      new Renderable(sprite, scale, start.south, frames.idle, ratio, fps),
-      new Renderable(sprite, scale, start.north, frames.north, ratio, fps),
-      new Renderable(sprite, scale, start.east, frames.east, ratio, fps),
-      new Renderable(sprite, scale, start.south, frames.south, ratio, fps),
-      new Renderable(sprite, scale, start.west, frames.west, ratio, fps),
+      new Renderable(sprite, scale, south, frames.idle, ratio, fps),
+      new Renderable(sprite, scale, north, frames.north, ratio, fps),
+      new Renderable(sprite, scale, east, frames.east, ratio, fps),
+      new Renderable(sprite, scale, south, frames.south, ratio, fps),
+      new Renderable(sprite, scale, west, frames.west, ratio, fps),
     ];
 
     this.resolveState(template.type);
@@ -253,22 +248,14 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
     }
 
     if (this.speed.x > 0) {
-      // east
-      this.direction = 2;
+      this.direction = Direction.East;
     } else if (this.speed.x < 0) {
-      // west
-      this.direction = 4;
+      this.direction = Direction.West;
     } else if (this.speed.y > 0) {
-      // south
-      this.direction = 3;
+      this.direction = Direction.South;
     } else if (this.speed.y < 0) {
-      // north
-      this.direction = 1;
+      this.direction = Direction.North;
     }
-    // else {
-    //   // idle
-    //   this.direction = 0;
-    // }
   }
 
   /**

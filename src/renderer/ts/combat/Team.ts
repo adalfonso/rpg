@@ -1,4 +1,4 @@
-import Actor from "@/actor/Actor";
+import Actor, { Direction } from "@/actor/Actor";
 import MissingDataError from "@/error/MissingDataError";
 import Vector from "@common/Vector";
 
@@ -70,7 +70,7 @@ class Team {
    * @param direction - direction members will face
    * @param position  - position members are moved to
    */
-  public prepare(direction: number, position: Vector) {
+  public prepare(direction: Direction, position: Vector) {
     this._members.forEach((member: Actor, index: number) => {
       member.savePosition(true);
       member.direction = direction;

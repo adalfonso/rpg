@@ -24,6 +24,14 @@ import { Movable, Resizable } from "@/Entity";
 import { RenderData } from "@/ui/types";
 import { getImagePath } from "@/util";
 
+export enum Direction {
+  None,
+  North,
+  East,
+  South,
+  West,
+}
+
 /** General purpose entity that interacts with fixtures in the game */
 type Entity = Actor | Inanimate;
 
@@ -53,7 +61,7 @@ abstract class Actor
    * Recorded in case we need to restore the direction the actor was facing
    * after some period of time.
    */
-  private savedDirection: number;
+  private savedDirection: Direction;
 
   /** Unique identifier */
   protected _id: string;
@@ -76,12 +84,8 @@ abstract class Actor
   /** The weapon currently equipped to the actor */
   public weapon: Weapon;
 
-  /**
-   * Direction the actor is currently facing
-   *
-   * 1 = north; 2 = west; 3 = south; 4 = east;
-   */
-  public direction: number;
+  /** Direction the actor is currently facing */
+  public direction: Direction;
 
   /** If the actor is in dialogue */
   public inDialogue: boolean;
@@ -118,7 +122,7 @@ abstract class Actor
     }
 
     this._id = template.name;
-    this.direction = 0;
+    this.direction = Direction.None;
     this.inDialogue = false;
     this.locked = false;
     this.lastPosition = this._position.copy();

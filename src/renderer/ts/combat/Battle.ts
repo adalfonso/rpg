@@ -1,5 +1,5 @@
 import AbilityFactory from "./strategy/AbilityFactory";
-import Actor from "@/actor/Actor";
+import Actor, { Direction } from "@/actor/Actor";
 import BattleMenu from "@/menu/BattleMenu";
 import CombatStrategy from "./strategy/CombatStrategy";
 import Dialogue from "@/ui/Dialogue";
@@ -70,9 +70,8 @@ class Battle implements Eventful, Drawable, Lockable {
     );
 
     // TODO: make these scale
-    // TODO: Make this a enum direction
-    this._heroes.prepare(4, new Vector(64, 128));
-    this._foes.prepare(2, new Vector(256 + 64, 0));
+    this._heroes.prepare(Direction.East, new Vector(64, 128));
+    this._foes.prepare(Direction.West, new Vector(256 + 64, 0));
 
     this._menu = this._getBattleMenu();
 

@@ -1,4 +1,4 @@
-import Actor from "./Actor";
+import Actor, { Direction } from "./Actor";
 import Player from "./Player.js";
 import Renderable from "@/ui/Renderable";
 import StateManager from "@/state/StateManager";
@@ -26,7 +26,8 @@ class Enemy extends Actor implements Drawable {
   ) {
     super(_position, _size, template);
 
-    this.direction = 4;
+    // TODO: make configurable when needed
+    this.direction = Direction.West;
 
     const { fps, ratio, scale, sprite } = this.getUiInfo();
 
