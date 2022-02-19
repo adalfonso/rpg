@@ -17,16 +17,16 @@ class Item {
   /**
    * Create a new Item instance
    *
-   * @param _type - string reference to item type
+   * @param _ref - string reference to item type
    *
    * @throws {MissingDataError} when config is missing
    */
-  constructor(private _type: string) {
-    this._config = items[_type];
+  constructor(private _ref: string) {
+    this._config = items[_ref];
 
     if (!this._config) {
       throw new MissingDataError(
-        `Config data for item "${_type}" is not defined in items.ts`
+        `Config data for item "${_ref}" is not defined in items.ts`
       );
     }
 
@@ -51,15 +51,15 @@ class Item {
 
   /** Get the name used when rendering dialogue */
   get displayAs(): string {
-    return this._type
+    return this._ref
       .split("_")
       .map((s) => ucFirst(s))
       .join(" ");
   }
 
-  /** Get the item's type */
-  get type(): string {
-    return this._type;
+  /** Get the item's ref */
+  get ref(): string {
+    return this._ref;
   }
 
   /**

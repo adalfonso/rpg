@@ -51,10 +51,10 @@ class Inventory
   get state(): InventoryState {
     return {
       menu: {
-        item: this._getSubMenu("item").map((i: Item) => i.type),
-        weapon: this._getSubMenu("weapon").map((i: Item) => i.type),
-        armor: this._getSubMenu("armor").map((i: Item) => i.type),
-        special: this._getSubMenu("special").map((i: Item) => i.type),
+        item: this._getSubMenu("item").map((i: Item) => i.ref),
+        weapon: this._getSubMenu("weapon").map((i: Item) => i.ref),
+        armor: this._getSubMenu("armor").map((i: Item) => i.ref),
+        special: this._getSubMenu("special").map((i: Item) => i.ref),
       },
     };
   }
@@ -370,7 +370,7 @@ class Inventory
           );
         }
 
-        this.store(new Item(item.type));
+        this.store(new Item(item.ref));
       },
     };
   }
@@ -384,7 +384,7 @@ class Inventory
     const menu = this._getSubMenu(item.category);
 
     if (item.category == "weapon") {
-      menu.push(new WeaponFactory().createStrategy(item.type));
+      menu.push(new WeaponFactory().createStrategy(item.ref));
     } else {
       menu.push(item);
     }
@@ -395,13 +395,13 @@ class Inventory
   /**
    * Lookup a submenu by its type
    *
-   * @param type - the type of the submenu
+   * @param ref - the type of the submenu
    *
    * @return the submenu
    */
-  private _getSubMenu(type: string) {
+  private _getSubMenu(ref: string) {
     const filtered = this._menu.filter((subMenu) => {
-      return subMenu.type === type;
+      return subMenu.ref === ref;
     })[0];
 
     return "menu" in filtered ? filtered.menu : undefined;
@@ -444,9 +444,9 @@ class Inventory
       if (this._hasMenu(data)) {
         const subMenu = data.menu[menuType as keyof InventoryState["menu"]];
 
-        subMenu.forEach((item) => {
+        subMenu.forEach((ref) => {
           if (this._getSubMenu(menuType)) {
-            this.store(new Item(item));
+            this.store(new Item(ref));
           }
         });
       }
@@ -456,7 +456,7 @@ class Inventory
 
     if (equipped) {
       this._getSubMenu("weapon").forEach((weapon: Weapon) => {
-        if (weapon.type === equipped) {
+        if (weapon.ref === equipped) {
           weapon.equip();
         }
       });

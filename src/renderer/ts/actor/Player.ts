@@ -267,7 +267,7 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
     return {
       ...super.getState(),
       exp: this.stats.exp,
-      equipped: this.weapon?.type ?? null,
+      equipped: this.weapon?.ref ?? null,
     };
   }
 }

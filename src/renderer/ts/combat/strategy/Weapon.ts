@@ -30,13 +30,12 @@ class Weapon extends DamageDealing(
     private _id: string
   ) {
     super();
-    //_template.animation
   }
 
   /**
-   * Get the weapon's type
+   * Get the weapon's ref
    */
-  get type(): string {
+  get ref(): string {
     return this._id;
   }
 }

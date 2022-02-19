@@ -16,7 +16,7 @@ class AbilityFactory implements CombatStrategyFactory {
    * @return the ability
    */
   public createStrategy(ref: string): Ability {
-    const template = abilities[ref];
+    const template = abilities.damage[ref];
 
     if (!template) {
       throw new MissingDataError(

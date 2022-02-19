@@ -28,8 +28,8 @@ export class Item extends Inanimate {
   /** UI aspect of the item */
   private _renderable: Renderable;
 
-  /** The type of item */
-  private _type: string;
+  /** The item reference*/
+  private _ref: string;
 
   /**
    * Create a new Item instance
@@ -51,7 +51,7 @@ export class Item extends Inanimate {
   ) {
     super(position, size);
 
-    this._type = template.type;
+    this._ref = template.type;
     this._id = template.name;
 
     this._config = config_ctor(template);
@@ -72,19 +72,19 @@ export class Item extends Inanimate {
     this.resolveState(`items.${this._id}`);
   }
 
-  /** The type of item */
-  get type(): string {
-    return this._type;
+  /** The item reference */
+  get ref() {
+    return this._ref;
   }
 
   /** If the item was picked up */
-  get obtained(): boolean {
+  get obtained() {
     return this._obtained;
   }
 
   /** Get the name used for the item when rendering dialogue */
-  get displayAs(): string {
-    return this.type
+  get displayAs() {
+    return this.ref
       .split("_")
       .map((s) => ucFirst(s))
       .join(" ");

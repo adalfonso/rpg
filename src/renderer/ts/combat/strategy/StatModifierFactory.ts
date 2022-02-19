@@ -14,7 +14,7 @@ class StatModifierFactory {
    * @return the ability/modification
    */
   public createModifier(ref: string): StatModifier {
-    const template = abilities[ref];
+    const template = abilities.stat[ref];
 
     if (!template) {
       throw new MissingDataError(

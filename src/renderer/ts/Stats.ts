@@ -2,9 +2,7 @@ import Damage from "./combat/Damage";
 import InvalidDataError from "./error/InvalidDataError";
 import StatModifier from "./combat/strategy/StatModifier";
 
-/**
- * Different stat types
- */
+/** Different stat types */
 export type Stat = "hp" | "atk" | "def" | "sp_atk" | "sp_def" | "spd";
 
 /**
@@ -32,14 +30,13 @@ type GainedExpSummary = {
   levels: number[];
 };
 
-/**
- * Modifier to scale experience calculations down to a certain range
- */
+/** Modifier to scale experience calculations down to a certain range */
 const EXP_MODIFIER = 0.05;
 
-/**
- * Max attainable level
- */
+/** Default starting level */
+const BASE_LEVEL = 5;
+
+/** Max attainable level */
 const MAX_LEVEL = 100;
 
 /**
@@ -51,29 +48,19 @@ const MAX_LEVEL = 100;
  * points to other entitites that defeat the subject.
  */
 export default class Stats {
-  /**
-   * Experience level of the entity
-   */
+  /** Experience level of the entity */
   private _lvl: number;
 
-  /**
-   * Amount of damage currently inflicted on the entity
-   */
+  /** Amount of damage currently inflicted on the entity */
   private _dmg = 0;
 
-  /**
-   * Amount of experience points the entity has gained between levels
-   */
+  /** Amount of experience points the entity has gained between levels */
   private _exp: number;
 
-  /**
-   * Temporary modifications to the stats
-   */
+  /** Temporary modifications to the stats */
   private _modifiers: StatModifier[] = [];
 
-  /**
-   * Multiplier used to expand the range that base stats take
-   */
+  /** Multiplier used to expand the range that base stats take */
   private multiplier = 2.5;
 
   /**
@@ -83,14 +70,12 @@ export default class Stats {
    */
   constructor(private base_stats: StatTemplate) {
     // Default to 5
-    this._lvl = 5;
+    this._lvl = BASE_LEVEL;
     this._exp = 0;
     this._dmg = 0;
   }
 
-  /**
-   * Get the current level
-   */
+  /** Get the current level */
   get lvl(): number {
     return this._lvl;
   }
@@ -111,9 +96,7 @@ export default class Stats {
     this._lvl = lvl;
   }
 
-  /**
-   * Get the current damage
-   */
+  /** Get the current damage */
   get dmg(): number {
     return this._dmg;
   }
@@ -134,9 +117,7 @@ export default class Stats {
     this._dmg = dmg;
   }
 
-  /**
-   * Get the amount of experience points
-   */
+  /** Get the amount of experience points */
   get exp(): number {
     return this._exp;
   }
@@ -157,10 +138,8 @@ export default class Stats {
     this._exp = exp;
   }
 
-  /**
-   * Get the current health stat
-   */
-  get hp(): number {
+  /** Get the current health stat */
+  get hp() {
     return Math.max(
       0,
       this.currentStatValue(this.base_stats.hp) * this._getModifier("hp") -
@@ -168,57 +147,45 @@ export default class Stats {
     );
   }
 
-  /**
-   * Get the current physical attack stat
-   */
-  get atk(): number {
+  /** Get the current physical attack stat */
+  get atk() {
     return (
       this.currentStatValue(this.base_stats.atk) * this._getModifier("atk")
     );
   }
 
-  /**
-   * Get the current physical defense stat
-   */
-  get def(): number {
+  /** Get the current physical defense stat */
+  get def() {
     return (
       this.currentStatValue(this.base_stats.def) * this._getModifier("def")
     );
   }
 
-  /**
-   * Get the current special attack stat
-   */
-  get sp_atk(): number {
+  /** Get the current special attack stat */
+  get sp_atk() {
     return (
       this.currentStatValue(this.base_stats.sp_atk) *
       this._getModifier("sp_atk")
     );
   }
 
-  /**
-   * Get the current special defense stat
-   */
-  get sp_def(): number {
+  /** Get the current special defense stat */
+  get sp_def() {
     return (
       this.currentStatValue(this.base_stats.sp_def) *
       this._getModifier("sp_def")
     );
   }
 
-  /**
-   * Get the current speed stat
-   */
-  get spd(): number {
+  /** Get the current speed stat */
+  get spd() {
     return (
       this.currentStatValue(this.base_stats.spd) * this._getModifier("spd")
     );
   }
 
-  /**
-   * Get the experience yield from defeating the subject
-   */
-  get givesExp(): number {
+  /** Get the experience yield from defeating the subject */
+  get givesExp() {
     return this.currentStatValue(
       this.base_stats.hp +
         this.base_stats.atk +
@@ -247,7 +214,7 @@ export default class Stats {
    *
    * @return - experience data
    */
-  public gainExp(exp: number): GainedExpSummary {
+  public gainExp(exp: number) {
     this._exp += exp;
 
     const data: GainedExpSummary = {
@@ -271,9 +238,7 @@ export default class Stats {
     this._modifiers.push(modifier);
   }
 
-  /**
-   * Cycle modifiers once and discard any that have expired
-   */
+  /** Cycle modifiers once and discard any that have expired */
   public expireModifiers() {
     this._modifiers = this._modifiers.filter((m) => !m.consume());
   }
@@ -283,7 +248,7 @@ export default class Stats {
    *
    * @return if a level increased
    */
-  private gainLevel(): boolean {
+  private gainLevel() {
     const experienceNeeded = this.expToNextLevel();
 
     if (this._exp < experienceNeeded) {
@@ -303,7 +268,7 @@ export default class Stats {
    *
    * @return modifier
    */
-  private _getModifier(stat: Stat): number {
+  private _getModifier(stat: Stat) {
     return (
       1 +
       this._modifiers
@@ -321,7 +286,7 @@ export default class Stats {
    *
    * @return adjusted stat value
    */
-  private currentStatValue(baseStat: number): number {
+  private currentStatValue(baseStat: number) {
     return Math.floor(((baseStat * this._lvl) / 100) * this.multiplier);
   }
 
@@ -330,7 +295,7 @@ export default class Stats {
    *
    * @param lvl - level to grow
    */
-  private expToNextLevel(lvl = this._lvl): number {
+  private expToNextLevel(lvl = this._lvl) {
     if (this._lvl >= MAX_LEVEL) {
       return Infinity;
     }
@@ -345,7 +310,7 @@ export default class Stats {
    *
    * @return total of base stats
    */
-  private getBaseStateTotal(): number {
+  private getBaseStateTotal() {
     return Object.keys(this.base_stats).reduce((carry, stat) => {
       return carry + this.base_stats[stat];
     }, 0);

@@ -6,7 +6,7 @@ import { BattleMenuItem } from "./BattleMenu";
 import { InventoryMenuItem } from "./Inventory";
 
 export interface BaseMenuItem<M> {
-  type: string;
+  ref: string;
   displayAs: string;
   menu?: (BaseMenuItem<M> | M)[];
 }
@@ -15,14 +15,14 @@ export interface BaseMenuItem<M> {
 export const menus = {
   start: (): StartMenuItem[] => [
     {
-      type: "start",
+      ref: "start",
       displayAs: "Start Game!",
       action: (menu: StartMenu) => {
         menu.close();
       },
     },
     {
-      type: "save",
+      ref: "save",
       displayAs: "Save Game",
       action: (menu: StartMenu) => {
         menu.saveState();
@@ -31,51 +31,51 @@ export const menus = {
   ],
   inventory: (): InventoryMenuItem[] => [
     {
-      type: "item",
+      ref: "item",
       displayAs: "Items",
       menu: [],
     },
     {
-      type: "weapon",
+      ref: "weapon",
       displayAs: "Weapons",
       equipable: true,
       menu: [],
     },
     {
-      type: "armor",
+      ref: "armor",
       displayAs: "Armor",
       equipable: true,
       menu: [],
     },
     {
-      type: "special",
+      ref: "special",
       displayAs: "Special",
       menu: [],
     },
   ],
   battle: (battle: Battle, getUser: () => Actor): BattleMenuItem[] => [
     {
-      type: "Items",
+      ref: "item",
       displayAs: "Items",
       menu: [],
     },
     {
-      type: "Attack",
+      ref: "attack",
       displayAs: "Attack",
       menu: getUser().weapon ? [getUser().weapon] : [],
     },
     {
-      type: "Abilities",
+      ref: "ability",
       displayAs: "Abilities",
       menu: getUser().abilities,
     },
     {
-      type: "Other",
+      ref: "other",
       displayAs: "Other",
       menu: [
         new StatModifierFactory().createModifier("defend"),
         {
-          type: "run_away", // TODO: eslint artifact - unused
+          ref: "run_away",
           displayAs: "Run Away",
           use: () => {
             battle.stop();

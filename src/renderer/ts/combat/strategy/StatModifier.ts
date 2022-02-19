@@ -15,7 +15,7 @@ class StatModifier extends Descriptive(Visual(Empty)) {
   private _turnsApplied = 0;
 
   /** TODO: eslint artifact. this was added as a hack to satisfy an interface */
-  public type = "u got hacked bro";
+  public ref = "u got hacked bro";
 
   /**
    * Create a new StatModifier instance

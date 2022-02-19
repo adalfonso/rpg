@@ -138,7 +138,7 @@ class CollisionHandler {
       return false;
     }
 
-    bus.emit("item.obtain", { item: item });
+    bus.emit("item.obtain", { item });
     item.obtain();
     return true;
   }

@@ -34,7 +34,7 @@ describe("Inventory", () => {
 
       expected.menu.weapon.push(itemType);
 
-      sinon.stub(sword, "type").value(itemType);
+      sinon.stub(sword, "ref").value(itemType);
       sinon.stub(sword, "category").value(itemCategory);
 
       sut.store(sword);

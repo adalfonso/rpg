@@ -5,8 +5,11 @@ import { BaseMenuItem } from "./menus";
 import { Drawable, Eventful, CallableMap } from "@/interfaces";
 
 export interface BattleMenuItem extends BaseMenuItem<BattleMenuItem> {
-  // TODO: eslint artifact. this was added to satisfy the run away action in a
-  // battle menu and is probably not needed
+  /**
+   * Battle menu items typically have a use method (CombatStrategy, Ability,
+   * etc.), but not always because a sub-menu may also be used to represent a
+   * menu item.
+   */
   use?: () => void;
 }
 
@@ -67,7 +70,7 @@ class BattleMenu extends Menu<BattleMenuItem> implements Eventful, Drawable {
       const textOffset = new Vector(4, 4 + 20);
 
       ctx.fillText(
-        option.type,
+        option.displayAs,
         position.x + textOffset.x,
         position.y + textOffset.y
       );

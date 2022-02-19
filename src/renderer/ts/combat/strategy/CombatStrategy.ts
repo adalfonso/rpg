@@ -112,9 +112,7 @@ export const Equipable = <T extends Constructor>(Base: T) =>
   };
 
 interface CombatStrategy {
-  // TODO: eslint artifact. type and displayAs were added as part of the eslint
-  // refactor. Determine if still needed.
-  type: string;
+  ref: string;
   displayAs: string;
   damage: Damage;
 }
