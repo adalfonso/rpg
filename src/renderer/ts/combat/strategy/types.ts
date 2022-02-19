@@ -26,21 +26,26 @@ export type LearnedAbility = {
   ref: string;
 };
 
-/**
- * An temporary effect placed on an actor's stats
- *
- * @prop displayAs   - display name
- * @prop description - description
- * @prop stat        - target stat
- * @prop self        - if the modifier is applied to the user
- * @prop value       - amount to affect stat by
- * @prop duration    - number of turns to persist effect
- */
-export type StatModifierTemplate = {
+export interface BaseAbilityTemplate {
   displayAs: string;
   description: string;
-  stat: Stat;
-  self: boolean;
   value: number;
+  ui: {
+    sprite: string;
+  };
+}
+
+export interface StatModifierTemplate extends BaseAbilityTemplate {
+  stat: Stat;
   duration: number;
-};
+  self: boolean;
+}
+
+export interface DamageDealingAbilityTemplate extends BaseAbilityTemplate {
+  isSpecial: boolean;
+}
+
+export interface AbilityManifest {
+  damage: Record<string, DamageDealingAbilityTemplate>;
+  stat: Record<string, StatModifierTemplate>;
+}

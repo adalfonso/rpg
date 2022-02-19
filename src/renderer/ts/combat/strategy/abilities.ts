@@ -1,28 +1,4 @@
-import { Stat } from "@/Stats";
-
-export interface BaseAbilityTemplate {
-  displayAs: string;
-  description: string;
-  value: number;
-  ui: {
-    sprite: string;
-  };
-}
-
-export interface StatModifierTemplate extends BaseAbilityTemplate {
-  stat: Stat;
-  duration: number;
-  self: boolean;
-}
-
-export interface DamageDealingAbilityTemplate extends BaseAbilityTemplate {
-  isSpecial: boolean;
-}
-
-interface AbilityManifest {
-  damage: Record<string, DamageDealingAbilityTemplate>;
-  stat: Record<string, StatModifierTemplate>;
-}
+import { AbilityManifest } from "./types";
 
 /** All abilities in the game */
 const abilities: AbilityManifest = {

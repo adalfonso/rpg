@@ -259,6 +259,9 @@ const getModifier = (config: any = {}) => {
       self: true,
       value: 0,
       duration: config.duration ?? 1,
+      ui: {
+        sprite: "default missing",
+      },
     },
     renderable
   );
