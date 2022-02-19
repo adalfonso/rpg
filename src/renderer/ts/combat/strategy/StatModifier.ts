@@ -14,9 +14,6 @@ class StatModifier extends Descriptive(Visual(Empty)) {
    */
   private _turnsApplied = 0;
 
-  /** TODO: eslint artifact. this was added as a hack to satisfy an interface */
-  public ref = "u got hacked bro";
-
   /**
    * Create a new StatModifier instance
    *
@@ -25,28 +22,28 @@ class StatModifier extends Descriptive(Visual(Empty)) {
    */
   constructor(
     protected _template: StatModifierTemplate,
+    protected _ref: string,
     protected _ui: Renderable
   ) {
     super();
   }
 
-  /**
-   * Determine if the effect will apply to the user
-   */
+  /** Get string reference */
+  get ref() {
+    return this._ref;
+  }
+
+  /** Determine if the effect will apply to the user */
   get appliesToSelf(): boolean {
     return this._template.self;
   }
 
-  /**
-   * Get the stat type that the modification affects
-   */
+  /** Get the stat type that the modification affects */
   get stat(): Stat {
     return this._template.stat;
   }
 
-  /**
-   * Get the numeric value of the modification
-   */
+  /** Get the numeric value of the modification */
   get value(): number {
     return this._template.value;
   }

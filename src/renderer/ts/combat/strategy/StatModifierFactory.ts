@@ -24,7 +24,7 @@ class StatModifierFactory {
 
     const ui = RenderableFactory.createRenderable(template.ui.sprite);
 
-    return new StatModifier(template, ui);
+    return new StatModifier(template, ref, ui);
   }
 }
 

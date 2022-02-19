@@ -263,6 +263,7 @@ const getModifier = (config: any = {}) => {
         sprite: "default missing",
       },
     },
+    "foo",
     renderable
   );
 };
