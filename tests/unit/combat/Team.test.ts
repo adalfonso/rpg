@@ -5,6 +5,7 @@ import Sut from "@/combat/Team";
 import Vector from "@common/Vector";
 import sinon from "sinon";
 import { expect } from "chai";
+import { Direction } from "@/ui/types";
 
 const state = StateManager.getInstance();
 
@@ -79,21 +80,21 @@ describe("Team", () => {
       const sut = new Sut([getActor(), getActor()]);
 
       const position = new Vector(5, 6);
-      const direction = 2;
+      const direction = Direction.East;
 
       const members = sut.all();
 
-      expect(sut.leader.direction).to.not.equal(2);
+      expect(sut.leader.direction).to.not.equal(Direction.East);
       expect(sut.leader.position.x).to.not.equal(5);
       expect(sut.leader.position.y).to.not.equal(6);
 
       sut.prepare(direction, position);
 
-      expect(sut.leader.direction).to.equal(2);
+      expect(sut.leader.direction).to.equal(Direction.East);
       expect(sut.leader.position.x).to.equal(5);
       expect(sut.leader.position.y).to.equal(6);
 
-      expect(members[1].direction).to.equal(2);
+      expect(members[1].direction).to.equal(Direction.East);
       expect(members[1].position.x).to.equal(9);
       expect(members[1].position.y).to.equal(6);
     });

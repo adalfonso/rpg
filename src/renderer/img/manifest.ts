@@ -4,8 +4,8 @@ import dungeon_blue from "./dungeon_sheet.png";
 import empanada from "./item/empanada.png";
 import knight from "./enemy/knight.png";
 import missing from "./missing_image.png";
-import player from "./player_new.png";
 import pisti from "./pisti.png";
+import player from "./player_new.png";
 import water_bottle from "./item/water_bottle.png";
 
 export default {

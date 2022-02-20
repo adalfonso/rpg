@@ -1,5 +1,5 @@
 import AbilityFactory from "./strategy/AbilityFactory";
-import Actor, { Direction } from "@/actor/Actor";
+import Actor from "@/actor/Actor";
 import BattleMenu from "@/menu/BattleMenu";
 import CombatStrategy from "./strategy/CombatStrategy";
 import Dialogue from "@/ui/Dialogue";
@@ -10,13 +10,14 @@ import Team from "./Team";
 import TextStream from "@/ui/TextStream";
 import Vector from "@common/Vector";
 import WeaponFactory from "./strategy/WeaponFactory";
+import menus from "@/menu/menus";
 import { AnimatedEntity } from "@/ui/animation/text/AnimatedEntity";
 import { AnimatedText } from "@/ui/animation/text/AnimatedText";
+import { Direction } from "@/ui/types";
 import { Drawable, Eventful, Lockable, CallableMap } from "@/interfaces";
 import { LearnedAbility } from "./strategy/types";
 import { bus } from "@/EventBus";
 import { createAnimation } from "@/ui/animation/CreateAnimation";
-import menus from "@/menu/menus";
 
 interface BattleEvent {
   isDone: boolean;

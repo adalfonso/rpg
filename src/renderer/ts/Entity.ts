@@ -1,11 +1,6 @@
 import Vector from "@common/Vector";
 import { Constructor } from "./mixins";
 
-/**
- * Generate a Movable mixin
- *
- * @param Base - base class
- */
 export const Movable = <T extends Constructor>(Base: T) =>
   /** A class that has a position and can be moved */
   class Movable extends Base {
@@ -26,11 +21,6 @@ export const Movable = <T extends Constructor>(Base: T) =>
     }
   };
 
-/**
- * Generate a Resizable mixin
- *
- * @param Base - base class
- */
 export const Resizable = <T extends Constructor>(Base: T) =>
   /** A class that has a size and can be resized */
   class Resizable extends Base {

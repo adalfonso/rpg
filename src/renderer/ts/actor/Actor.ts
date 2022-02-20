@@ -13,31 +13,24 @@ import actors from "./actors";
 import config from "@/config";
 import { ActorConfig } from "./types";
 import { Collision } from "@/CollisionHandler";
+import { Direction, RenderData } from "@/ui/types";
 import { Drawable, Lockable } from "@/interfaces";
 import { Empty } from "@/mixins";
 import { LearnedAbility } from "@/combat/strategy/types";
+import { Movable, Resizable } from "@/Entity";
+import { MultiSprite } from "@/ui/MultiSprite";
+import { getImagePath } from "@/util";
 import {
   LevelFixtureProperty,
   LevelFixtureTemplate,
 } from "@/level/LevelFixture";
-import { Movable, Resizable } from "@/Entity";
-import { RenderData } from "@/ui/types";
-import { getImagePath } from "@/util";
-
-export enum Direction {
-  None,
-  North,
-  East,
-  South,
-  West,
-}
 
 /** General purpose entity that interacts with fixtures in the game */
 type Entity = Actor | Inanimate;
 
 /** Base class for entities that affect change within the game */
 abstract class Actor
-  extends Resizable(Movable(Empty))
+  extends MultiSprite(Resizable(Movable(Empty)))
   implements Drawable, Lockable
 {
   /**
@@ -84,9 +77,6 @@ abstract class Actor
   /** The weapon currently equipped to the actor */
   public weapon: Weapon;
 
-  /** Direction the actor is currently facing */
-  public direction: Direction;
-
   /** If the actor is in dialogue */
   public inDialogue: boolean;
 
@@ -128,6 +118,8 @@ abstract class Actor
     this.lastPosition = this._position.copy();
     this.savedPosition = this._position.copy();
     this.savedDirection = this.direction;
+
+    this._setSprites(this.getUiInfo());
   }
 
   /** Get the actor's id */
@@ -180,6 +172,8 @@ abstract class Actor
     if (config.debug) {
       this.debugDraw(ctx, offset, resolution);
     }
+
+    this.sprites[this.direction].draw(ctx, this._position.plus(offset));
   }
 
   /**

@@ -1,10 +1,10 @@
-import Actor, { Direction } from "./Actor";
+import Actor from "./Actor";
 import MissingDataError from "@/error/MissingDataError";
-import Renderable from "@/ui/Renderable";
 import StateManager from "@/state/StateManager";
 import Vector from "@common/Vector";
 import Weapon from "@/combat/strategy/Weapon";
 import config from "@/config";
+import { Direction } from "@/ui/types";
 import { Drawable, Eventful, Lockable, CallableMap } from "@/interfaces";
 import { LevelFixtureTemplate } from "@/level/LevelFixture";
 import { bus } from "@/EventBus";
@@ -16,9 +16,6 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
 
   /** The current speed of the player in x/y directions */
   private speed: Vector;
-
-  /** Each sprite of the player's movement animation */
-  private sprites: Renderable[];
 
   /**
    * Create a new Player instance
@@ -36,20 +33,6 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
 
     this.speed = new Vector(0, 0);
     this.baseSpeed = _size.x / 10;
-
-    const { fps, frames, ratio, scale, sprite } = this.getUiInfo();
-
-    // This assumes that each direction has its own row and is in NESW order
-    const [north, east, south, west] = [0, 1, 2, 3].map((i) => i * frames.x);
-
-    this.sprites = [
-      // img, scale, startFrame, frameCount, framesX, framesY, speed
-      new Renderable(sprite, scale, south, frames.idle, ratio, fps),
-      new Renderable(sprite, scale, north, frames.north, ratio, fps),
-      new Renderable(sprite, scale, east, frames.east, ratio, fps),
-      new Renderable(sprite, scale, south, frames.south, ratio, fps),
-      new Renderable(sprite, scale, west, frames.west, ratio, fps),
-    ];
 
     this.resolveState(template.type);
 
@@ -99,8 +82,6 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
     resolution: Vector
   ) {
     super.draw(ctx, offset, resolution);
-
-    this.sprites[this.direction].draw(ctx, this._position.plus(offset));
   }
 
   /**

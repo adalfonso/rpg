@@ -1,6 +1,7 @@
-import Actor, { Direction } from "@/actor/Actor";
+import Actor from "@/actor/Actor";
 import MissingDataError from "@/error/MissingDataError";
 import Vector from "@common/Vector";
+import { Direction } from "@/ui/types";
 
 /**
  * A battle-centric collection of actors that are related in some way

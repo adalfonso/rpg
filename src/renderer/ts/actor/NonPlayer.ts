@@ -4,7 +4,6 @@ import Vector from "@common/Vector";
 import { Drawable, Eventful, CallableMap } from "@/interfaces";
 import { LevelFixtureTemplate } from "@/level/LevelFixture";
 import { bus } from "@/EventBus";
-import Renderable from "@/ui/Renderable";
 
 /** A non-playable character */
 class NonPlayer extends Actor implements Eventful, Drawable {
@@ -12,9 +11,6 @@ class NonPlayer extends Actor implements Eventful, Drawable {
    * Entities that were recently collided with
    */
   private collisions: Actor[] = [];
-
-  /** Each sprite of the player's movement animation */
-  private sprites: Renderable[];
 
   /**
    * Create a new NonPlayer instance
@@ -35,23 +31,6 @@ class NonPlayer extends Actor implements Eventful, Drawable {
     this.resolveState(`nonPlayers.${this.id}`);
 
     bus.register(this);
-
-    // TODO: All this stuff should be part of a shared mixin between NPC and
-    // player
-
-    const { fps, frames, ratio, scale, sprite } = this.getUiInfo();
-
-    // This assumes that each direction has its own row and is in NESW order
-    const [north, east, south, west] = [0, 1, 2, 3].map((i) => i * frames.x);
-
-    this.sprites = [
-      // img, scale, startFrame, frameCount, framesX, framesY, speed
-      new Renderable(sprite, scale, south, frames.idle, ratio, fps),
-      new Renderable(sprite, scale, north, frames.north, ratio, fps),
-      new Renderable(sprite, scale, east, frames.east, ratio, fps),
-      new Renderable(sprite, scale, south, frames.south, ratio, fps),
-      new Renderable(sprite, scale, west, frames.west, ratio, fps),
-    ];
   }
 
   /**
@@ -84,8 +63,6 @@ class NonPlayer extends Actor implements Eventful, Drawable {
     }
 
     super.draw(ctx, offset, resolution);
-
-    this.sprites[this.direction].draw(ctx, this._position.plus(offset));
   }
 
   /**

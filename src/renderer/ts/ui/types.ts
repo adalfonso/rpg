@@ -68,3 +68,19 @@ export type UiData = {
   animation?: string;
   sprite: string;
 };
+
+export enum Direction {
+  None,
+  North,
+  East,
+  South,
+  West,
+}
+
+export interface CardinalInitFrame {
+  none: number;
+  north: number;
+  east: number;
+  south: number;
+  west: number;
+}

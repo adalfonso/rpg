@@ -1,8 +1,9 @@
-import Actor, { Direction } from "./Actor";
+import Actor from "./Actor";
 import Player from "./Player.js";
 import Renderable from "@/ui/Renderable";
 import StateManager from "@/state/StateManager";
 import Vector from "@common/Vector";
+import { Direction } from "@/ui/types";
 import { Drawable } from "@/interfaces";
 import { LevelFixtureTemplate } from "@/level/LevelFixture";
 import { bus } from "@/EventBus";
@@ -31,6 +32,7 @@ class Enemy extends Actor implements Drawable {
 
     const { fps, ratio, scale, sprite } = this.getUiInfo();
 
+    // TODO: hardcode these for now
     this.sprites = [
       // img, scale, startFrame, frameCount, framesX, framesY, speed
       new Renderable(sprite, scale, 0, 8, ratio, fps),
