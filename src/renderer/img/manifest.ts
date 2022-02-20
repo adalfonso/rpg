@@ -1,27 +1,29 @@
-import bigSword from "./weapon/big_sword.png";
+import big_sword from "./weapon/big_sword.png";
 import dungeon from "./dungeon.png";
-import dungeonBlue from "./dungeon_sheet.png";
+import dungeon_blue from "./dungeon_sheet.png";
 import empanada from "./item/empanada.png";
 import knight from "./enemy/knight.png";
-import missingImage from "./missing_image.png";
+import missing from "./missing_image.png";
 import player from "./player_new.png";
-import waterBottle from "./item/water_bottle.png";
+import pisti from "./pisti.png";
+import water_bottle from "./item/water_bottle.png";
 
 export default {
-  missing: missingImage,
+  missing,
   actor: {
-    player: player,
-    knight: knight,
+    player,
+    pisti,
+    knight,
   },
   item: {
-    empanada: empanada,
-    water_bottle: waterBottle,
+    empanada,
+    water_bottle,
   },
   tileset: {
-    dungeon: dungeon,
-    dungeon_blue: dungeonBlue,
+    dungeon,
+    dungeon_blue,
   },
   weapon: {
-    big_sword: bigSword,
+    big_sword,
   },
 };

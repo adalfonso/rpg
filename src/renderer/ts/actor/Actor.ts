@@ -111,7 +111,7 @@ abstract class Actor
 
     if (!this.config) {
       throw new MissingDataError(
-        `Config data for ${actorType} is not defined in actors.json`
+        `Config data for ${actorType} is not defined in actors.ts`
       );
     }
 

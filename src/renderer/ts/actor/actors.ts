@@ -39,6 +39,41 @@ const actors: ActorList = {
       },
     ],
   },
+  pisti: {
+    displayAs: "Pisti",
+    base_stats: {
+      hp: 120,
+      atk: 85,
+      def: 125,
+      sp_atk: 115,
+      sp_def: 35,
+      spd: 105,
+    },
+    ui: {
+      sprite: "actor.pisti",
+      frames: {
+        x: 1,
+        y: 4,
+        idle: 1,
+        north: 1,
+        east: 1,
+        south: 1,
+        west: 1,
+      },
+      scale: 1,
+      fps: 8,
+    },
+    abilities: [
+      {
+        ref: "proosti",
+        level: 6,
+      },
+      {
+        ref: "eat",
+        level: 6,
+      },
+    ],
+  },
   knight: {
     displayAs: "Knight",
     base_stats: {

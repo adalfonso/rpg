@@ -21,6 +21,24 @@ const abilities: AbilityManifest = {
         sprite: "missing",
       },
     },
+    proosti: {
+      displayAs: "PROOOSTI!",
+      description: "PROST!",
+      value: 25,
+      isSpecial: true,
+      ui: {
+        sprite: "missing",
+      },
+    },
+    eat: {
+      displayAs: "Eat",
+      description: "Nom Nom!",
+      value: 15,
+      isSpecial: false,
+      ui: {
+        sprite: "missing",
+      },
+    },
   },
   stat: {
     defend: {
