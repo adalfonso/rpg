@@ -1,6 +1,7 @@
 import "./scss/app.scss";
 import Display from "@/ui/Display";
 import Game from "@/Game";
+import HeroTeam from "@/combat/HeroTeam";
 import Player from "@/actor/Player";
 import StateManager from "@/state/StateManager";
 import Vector from "@common/Vector";
@@ -31,8 +32,9 @@ document.addEventListener("DOMContentLoaded", async (_event) => {
     player_size.times(config.scale),
     player_template
   );
-  const game: Game = new Game(player);
-  const display: Display = new Display(resolution, canvas, game);
+  const team = new HeroTeam([player]);
+  const game = new Game(team);
+  const display = new Display(resolution, canvas, game);
 
   game.start();
 

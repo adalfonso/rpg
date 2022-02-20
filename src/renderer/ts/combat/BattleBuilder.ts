@@ -1,6 +1,5 @@
 import Battle from "./Battle";
 import Enemy from "@/actor/Enemy";
-import HeroTeam from "./HeroTeam";
 import MissingDataError from "@/error/MissingDataError";
 import OpponentSelect from "./OpponentSelect";
 import Team from "./Team";
@@ -39,12 +38,12 @@ class BattleBuilder {
    * @throws {MissingDataError} when the player/enemy aren't provided
    */
   public createFromEvent(e: CustomEvent): Battle {
-    const player = e.detail?.player;
+    const heroes = e.detail?.heroes;
     const enemy = e.detail?.enemy;
 
-    if (!player) {
+    if (!heroes) {
       throw new MissingDataError(
-        `Missing player when creating a battle from an event.`
+        `Missing hero team when creating a battle from an event.`
       );
     }
 
@@ -57,7 +56,7 @@ class BattleBuilder {
     const enemyTeam = this._createTeamFromEnemy(enemy);
 
     return new Battle(
-      new HeroTeam([player]),
+      heroes,
       enemyTeam,
       new OpponentSelect(enemyTeam),
       AnimatedTextFactory.createStartBattleAnimation()
@@ -69,7 +68,7 @@ class BattleBuilder {
    *
    * @param enemy - enemy to create team for
    */
-  private _createTeamFromEnemy(enemy: Enemy): Team {
+  private _createTeamFromEnemy(enemy: Enemy) {
     const blueprint = this._getBattleBlueprint(enemy);
 
     // Default team leader

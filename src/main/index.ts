@@ -1,5 +1,5 @@
-import { app, BrowserWindow } from "electron";
 import * as path from "path";
+import { app, BrowserWindow } from "electron";
 import { format as formatUrl } from "url";
 import { resolution } from "../common/common";
 

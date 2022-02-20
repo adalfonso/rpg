@@ -2,10 +2,10 @@ import Battle from "./combat/Battle";
 import BattleBuilder from "./combat/BattleBuilder";
 import CollisionHandler from "./CollisionHandler";
 import Dialogue from "./ui/Dialogue";
+import HeroTeam from "./combat/HeroTeam";
 import Inventory from "./menu/Inventory";
 import Level from "./level/Level";
 import MissingDataError from "./error/MissingDataError";
-import Player from "./actor/Player";
 import StartMenu from "./menu/StartMenu";
 import TextStream from "./ui/TextStream";
 import Vector from "@common/Vector";
@@ -67,9 +67,9 @@ class Game implements Eventful, Drawable {
   /**
    * Create a new game instance
    *
-   * @param player - main player instance
+   * @param _heroes - main characters
    */
-  constructor(private player: Player) {
+  constructor(private _heroes: HeroTeam) {
     this.state = GameState.Play;
 
     this.menu = new StartMenu(menus.start());
@@ -80,10 +80,13 @@ class Game implements Eventful, Drawable {
     this.menu.open();
   }
 
-  /**
-   * Get the focal point that the game revolves around, the player
-   */
-  get renderPoint(): Vector {
+  /** Current player from the team */
+  get player() {
+    return this._heroes.leader;
+  }
+
+  /** Get the focal point that the game revolves around, the player */
+  get renderPoint() {
     return this.player.position.copy();
   }
 
@@ -214,7 +217,7 @@ class Game implements Eventful, Drawable {
     this.level = new Level(
       new LevelTemplate(getLevels().sandbox_0, new LevelFixtureFactory()),
       this.player,
-      new CollisionHandler(this.player)
+      new CollisionHandler(this._heroes)
     );
   }
 

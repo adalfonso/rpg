@@ -1,5 +1,5 @@
 import Actor from "./Actor";
-import Player from "./Player.js";
+import HeroTeam from "@/combat/HeroTeam";
 import Renderable from "@/ui/Renderable";
 import StateManager from "@/state/StateManager";
 import Vector from "@common/Vector";
@@ -87,13 +87,13 @@ class Enemy extends Actor implements Drawable {
    *
    * @emits battle.start
    */
-  public fight(player: Player) {
+  public fight(heroes: HeroTeam) {
     if (this._defeated) {
       return;
     }
 
     bus.emit("battle.start", {
-      player: player,
+      heroes,
       enemy: this,
     });
   }

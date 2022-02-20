@@ -4,7 +4,7 @@ import Team from "./Team";
 /**
  * Similar to a Team but specific to playable characters
  */
-class HeroTeam extends Team {
+class HeroTeam extends Team<Player> {
   /**
    * Create a new HeroTeam instance
    *

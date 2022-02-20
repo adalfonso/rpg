@@ -26,7 +26,7 @@ class OpponentSelect implements Eventful, Drawable, Lockable {
    *
    * @param _opponents - opponent team members
    */
-  constructor(private _opponents: Team) {
+  constructor(private _opponents: Team<Actor>) {
     bus.register(this);
   }
 

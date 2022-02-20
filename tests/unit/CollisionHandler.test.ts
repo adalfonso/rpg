@@ -1,4 +1,5 @@
 import Enemy from "@/actor/Enemy";
+import HeroTeam from "@/combat/HeroTeam";
 import Player from "@/actor/Player";
 import StateManager from "@/state/StateManager";
 import Sut, { Collision } from "@/CollisionHandler";
@@ -17,7 +18,8 @@ afterEach(() => {
 describe("CollisionHandler", () => {
   describe("update", () => {
     it("detects collision with a defeated enemy", () => {
-      let sut = new Sut(getPlayer());
+      // TODO: stub hero team
+      let sut = new Sut(new HeroTeam([getPlayer()]));
 
       let enemy = new Enemy(getVector(), getVector(), {
         x: 0,
@@ -39,7 +41,9 @@ describe("CollisionHandler", () => {
 
     it("detects collision with an item", () => {
       let player = getPlayer();
-      let sut = new Sut(player);
+
+      // TODO: stub hero team
+      let sut = new Sut(new HeroTeam([player]));
 
       let item = new Item(
         new Vector(1, 1),

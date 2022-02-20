@@ -1,6 +1,6 @@
 import Clip from "./inanimate/Clip";
 import Enemy from "./actor/Enemy";
-import Player from "./actor/Player";
+import HeroTeam from "./combat/HeroTeam";
 import Portal from "./inanimate/Portal";
 import Vector from "@common/Vector";
 import { Item } from "./inanimate/Item";
@@ -22,17 +22,15 @@ export type Collision = {
  * Manages collisions between a player and other fixtures
  */
 class CollisionHandler {
-  /**
-   * Fixtures that interact with the player
-   */
+  /** Fixtures that interact with the player */
   private _fixtures: LevelFixture[] = [];
 
   /**
    * Create a new CollisionHandler instance
    *
-   * @param _player - center of attention
+   * @param _heroes - center of attention
    */
-  constructor(private _player: Player) {}
+  constructor(private _heroes: HeroTeam) {}
 
   /**
    * Load a list of fixtures to manage
@@ -41,6 +39,11 @@ class CollisionHandler {
    */
   public loadFixtures(fixtures: LevelFixture[]) {
     this._fixtures = fixtures;
+  }
+
+  /** Get the current player of the team */
+  private get _player() {
+    return this._heroes.leader;
   }
 
   /**
@@ -84,7 +87,7 @@ class CollisionHandler {
     }
 
     if (enemy.collidesWith(this._player)) {
-      enemy.fight(this._player);
+      enemy.fight(this._heroes);
     }
 
     return false;
@@ -118,7 +121,7 @@ class CollisionHandler {
    */
   private handlePortal(portal: Portal): boolean {
     if (this._player.collidesWith(portal)) {
-      bus.emit("portal.enter", { portal: portal });
+      bus.emit("portal.enter", { portal });
     }
 
     return false;

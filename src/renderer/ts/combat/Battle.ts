@@ -3,6 +3,7 @@ import Actor from "@/actor/Actor";
 import BattleMenu from "@/menu/BattleMenu";
 import CombatStrategy from "./strategy/CombatStrategy";
 import Dialogue from "@/ui/Dialogue";
+import Enemy from "@/actor/Enemy";
 import HeroTeam from "./HeroTeam";
 import OpponentSelect from "./OpponentSelect";
 import StatModifier from "./strategy/StatModifier";
@@ -59,7 +60,7 @@ class Battle implements Eventful, Drawable, Lockable {
    */
   constructor(
     private _heroes: HeroTeam,
-    private _foes: Team,
+    private _foes: Team<Enemy>,
     private _opponentSelect: OpponentSelect,
     start_animation: AnimatedText
   ) {
