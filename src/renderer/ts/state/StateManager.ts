@@ -85,6 +85,8 @@ class StateManager implements Eventful {
    *
    * @param ref  - reference string
    * @param data - data to merge in
+   *
+   * @returns data after merge
    */
   public mergeByRef(ref: string, data: unknown) {
     const obj = {};
@@ -99,6 +101,29 @@ class StateManager implements Eventful {
     }, obj);
 
     this.merge(obj);
+
+    return this.get(ref);
+  }
+
+  /**
+   * Get part of the state by ref, or merge in a value if it is empty
+   *
+   * This is commonly used to resolve the state of a class when it loads
+   *
+   * @param ref - reference string
+   * @param data - data to merge
+   * @returns  - data stored at the reference or fallback data
+   */
+  public getOrMergeByRef(ref: string, data: unknown) {
+    const current = this.get(ref);
+
+    if (current !== undefined) {
+      return current;
+    }
+
+    this.mergeByRef(ref, data);
+
+    return this.get(ref);
   }
 
   /**

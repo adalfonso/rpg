@@ -150,8 +150,7 @@ export class Item extends Inanimate {
     const data = state.get(ref);
 
     if (data === undefined) {
-      state.mergeByRef(ref, this.getState());
-      return state.get(ref);
+      return state.mergeByRef(ref, this.getState());
     }
 
     if (data["obtained"]) {

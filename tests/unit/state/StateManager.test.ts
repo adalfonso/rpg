@@ -101,14 +101,12 @@ describe("StateManager", () => {
 
       expect(sut.get("actors.knight0.stats.hp")).to.equal(10);
 
-      sut.mergeByRef(
+      const result = sut.mergeByRef(
         "actors.knight0.stats",
         JSON.stringify({ hp: 4, atk: 13 })
       );
 
-      expect(sut.get("actors.knight0.stats")).to.equal(
-        JSON.stringify({ hp: 4, atk: 13 })
-      );
+      expect(result).to.equal(JSON.stringify({ hp: 4, atk: 13 }));
     });
 
     it("loads by ref for a non-existing ref", () => {
@@ -128,8 +126,9 @@ describe("StateManager", () => {
       expect(sut.get("actors.knight0")).to.equal(undefined);
       expect(sut.get("actors.knight0.stats.hp")).to.equal(undefined);
 
-      sut.mergeByRef("actors.knight0.stats.hp", 5);
+      const result = sut.mergeByRef("actors.knight0.stats.hp", 5);
 
+      expect(result).to.deep.equal(5);
       expect(sut.toJson()).to.equal(JSON.stringify(expected));
     });
   });

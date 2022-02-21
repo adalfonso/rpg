@@ -434,8 +434,7 @@ class Inventory
     const data = state.get(ref);
 
     if (data === undefined) {
-      state.mergeByRef(ref, this.state);
-      return state.get(ref);
+      return state.mergeByRef(ref, this.getState());
     } else if (!isInventoryState(data)) {
       throw new Error("Invalid state resolution for Inventory Menu");
     }
@@ -463,6 +462,15 @@ class Inventory
     }
 
     return data;
+  }
+
+  /**
+   * Get current state of the inventory
+   *
+   * @return current state of the milestone
+   */
+  private getState() {
+    return this.state;
   }
 
   /** Update the inventory in the state */

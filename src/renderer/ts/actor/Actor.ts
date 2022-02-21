@@ -351,8 +351,7 @@ abstract class Actor
     const data = state.get(ref);
 
     if (data === undefined) {
-      state.mergeByRef(ref, this.getState());
-      return state.get(ref);
+      return state.mergeByRef(ref, this.getState());
     }
 
     ["lvl", "exp", "dmg"].forEach((stat) => {

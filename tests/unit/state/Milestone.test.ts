@@ -26,7 +26,12 @@ describe("Milestone", () => {
     });
 
     it("detects an unobtained milestone (no state)", () => {
-      sinon.stub(StateManager.prototype, "get").returns(undefined);
+      sinon
+        .stub(StateManager.prototype, "get")
+        .onCall(0)
+        .returns(undefined)
+        .onCall(1)
+        .returns({ obtained: false });
 
       const milestone = new Milestone("unobtained_milestone");
 
