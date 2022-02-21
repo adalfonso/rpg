@@ -210,7 +210,13 @@
                 {
                  "height":32,
                  "id":19,
-                 "name":"pisti",
+                 "name":"pisti_meet",
+                 "properties":[
+                        {
+                         "name":"milestone",
+                         "type":"string",
+                         "value":"obtain_pisti"
+                        }],
                  "rotation":0,
                  "type":"pisti",
                  "visible":true,
@@ -224,8 +230,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":8,
- "nextobjectid":26,
+ "nextlayerid":9,
+ "nextobjectid":29,
  "orientation":"orthogonal",
  "properties":[
         {

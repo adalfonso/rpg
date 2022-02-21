@@ -88,6 +88,18 @@ describe("isLevelFixtureTemplate", () => {
   });
 });
 
+describe("levelPropertyLookup", () => {
+  describe("it looks up a non-existent value", () => {
+    const lookup = [] as any;
+    expect(Sut.levelPropertyLookup(lookup)("foo")).to.be.undefined;
+  });
+
+  describe("it looks up a value", () => {
+    const lookup = [{ name: "foo", value: "bar" }] as any;
+    expect(Sut.levelPropertyLookup(lookup)("foo")).to.equal("bar");
+  });
+});
+
 function getTemplate() {
   return { x: 1, y: 1, height: 1, width: 1, name: "foo", type: "bar" };
 }

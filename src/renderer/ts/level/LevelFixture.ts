@@ -90,3 +90,19 @@ export const isLevelFixtureTemplate = (
     hasValidProperties
   );
 };
+
+/**
+ * Lookup a property value
+ *
+ * TODO: This should be changed to work with the Tiled types
+ *
+ * @param lookup - propeties
+ * @param name - lookup name
+ *
+ * @returns property value
+ */
+export const levelPropertyLookup =
+  (lookup: LevelFixtureProperty[]) => (name: string) =>
+    lookup
+      .filter((record) => record.name === name)
+      .map((record) => record.value)[0];
