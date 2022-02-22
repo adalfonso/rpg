@@ -178,7 +178,7 @@ class Battle implements Eventful, Drawable, Lockable {
       },
 
       "actor.gainExp": (e: CustomEvent) => {
-        const name = this._heroes.leader.displayAs;
+        const name = e.detail.actor.displayAs;
         const exp = e.detail.exp;
         const levels = e.detail.levels;
         const abilities = e.detail.abilities;

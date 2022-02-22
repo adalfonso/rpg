@@ -2,6 +2,7 @@ import CollisionHandler from "../CollisionHandler";
 import Entry from "@/inanimate/Entry";
 import Map from "@/inanimate/Map";
 import MissingDataError from "@/error/MissingDataError";
+import NonPlayer from "@/actor/NonPlayer";
 import Player from "@/actor/Player";
 import Portal from "@/inanimate/Portal";
 import Vector from "@common/Vector";
@@ -55,6 +56,12 @@ class Level implements Drawable {
    * @param dt - delta time
    */
   public update(dt: number) {
+    this.fixtures.forEach((fixture) => {
+      if (fixture instanceof NonPlayer && fixture.isExpired) {
+        this.removeFixture(fixture);
+      }
+    });
+
     this.fixtures.forEach((fixture) => fixture.update(dt));
 
     // Remove any stale fixtures that are returned

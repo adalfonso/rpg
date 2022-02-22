@@ -1,16 +1,32 @@
 import Actor from "./Actor";
+import Dialogue from "@/ui/Dialogue";
 import MissingDataError from "@/error/MissingDataError";
+import TextStream from "@/ui/TextStream";
 import Vector from "@common/Vector";
 import { Drawable, Eventful, CallableMap } from "@/interfaces";
-import { LevelFixtureTemplate } from "@/level/LevelFixture";
+import { Milestone } from "@/state/milestone/Milestone";
+import { MilestoneAttainOn } from "@/state/milestone/types";
+import { Speech } from "./types";
 import { bus } from "@/EventBus";
+import { getSpeech } from "./speech";
+import {
+  LevelFixtureTemplate,
+  levelPropertyLookup,
+} from "@/level/LevelFixture";
 
 /** A non-playable character */
 class NonPlayer extends Actor implements Eventful, Drawable {
-  /**
-   * Entities that were recently collided with
-   */
+  /** Entities that were recently collided with */
   private collisions: Actor[] = [];
+
+  /** Speech/dialogue spoken by the npc */
+  private _speech: Speech;
+
+  /** Milestones tied to the npc */
+  private _milestone: Milestone;
+
+  /** If the npc is expired and should be torn down */
+  private _is_expired = false;
 
   /**
    * Create a new NonPlayer instance
@@ -18,7 +34,7 @@ class NonPlayer extends Actor implements Eventful, Drawable {
    * TODO: handle sprites when they are available
    *
    * @param _position - the non-player's position
-   * @param _size     - the non-player's size
+   * @param _size - the non-player's size
    * @param template - info about the non-player
    */
   constructor(
@@ -27,10 +43,38 @@ class NonPlayer extends Actor implements Eventful, Drawable {
     template: LevelFixtureTemplate
   ) {
     super(_position, _size, template);
+    const { type, name, properties } = template;
+    const speech_key = `${type}.${name}`;
+
+    this._speech = getSpeech(speech_key);
+
+    if (this._speech === undefined) {
+      throw new MissingDataError(
+        `Speech data for "${speech_key}" as NonPlayer is not defined in speech.ts`
+      );
+    }
+
+    const milestone_ref = levelPropertyLookup(properties)("milestone");
+
+    if (milestone_ref !== undefined) {
+      this._createMilestoneFromRef(milestone_ref);
+    }
 
     this.resolveState(`nonPlayers.${this.id}`);
 
     bus.register(this);
+  }
+
+  /** If the NPC is expired and should be torn down */
+  get isExpired() {
+    return this._is_expired;
+  }
+
+  /** Manually tear down the npc */
+  public expire() {
+    bus.unregister(this);
+    this.dialogue = null;
+    this._is_expired = true;
   }
 
   /**
@@ -40,7 +84,10 @@ class NonPlayer extends Actor implements Eventful, Drawable {
    */
   public update(dt: number) {
     if (this.dialogue?.isDone) {
-      this.dialogue = null;
+      this._milestone?.attain_on === MilestoneAttainOn.DialogueComplete &&
+        this._milestone.attain({ actor: this });
+
+      this.expire();
     } else if (this.dialogue) {
       this.dialogue.update(dt);
     }
@@ -59,7 +106,8 @@ class NonPlayer extends Actor implements Eventful, Drawable {
     resolution: Vector
   ) {
     if (this.dialogue) {
-      this.dialogue.draw(ctx, offset, resolution);
+      const noOffset = new Vector(0, 0);
+      this.dialogue.draw(ctx, noOffset, resolution);
     }
 
     super.draw(ctx, offset, resolution);
@@ -103,14 +151,28 @@ class NonPlayer extends Actor implements Eventful, Drawable {
    *
    * @param actors - actors recently collided with
    */
-  private speak(_actors: Actor[]) {
+  private speak(actors: Actor[]) {
     if (this.dialogue) {
       return;
     }
 
-    // TODO: Fix this. Is does not conform to the interface and is temporarily
-    // disabled
-    //this.dialogue = new Dialogue(this.template.speech, this, actors);
+    const stream = new TextStream([...this._speech.dialogue]);
+
+    this.dialogue = new Dialogue(stream, this, actors);
+  }
+
+  /**
+   * Create milestone for the NPC
+   *
+   * @param ref - ref name of milestone
+   */
+  private _createMilestoneFromRef(ref: string) {
+    this._milestone = new Milestone(ref);
+
+    // Assuming if there is a milestone related to the NPC they're not needed
+    if (this._milestone.attained) {
+      this.expire();
+    }
   }
 }
 

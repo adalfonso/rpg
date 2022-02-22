@@ -1,8 +1,6 @@
 import { ActorList } from "./types";
 
-/**
- * All actors contained in the game
- */
+/** All actors contained in the game */
 const actors: ActorList = {
   player: {
     displayAs: "Me",

@@ -9,7 +9,6 @@ import Vector from "@common/Vector";
 import global_config from "@/config";
 import items from "@/item/items";
 import { Item } from "@/inanimate/Item";
-import { Milestone } from "@/state/Milestone";
 import { animations } from "@/ui/animation/animations";
 import { getAnimationFromName } from "@/ui/animation/AnimationFactory";
 import {
@@ -18,7 +17,6 @@ import {
   LevelFixture,
   LevelFixtureType,
   LevelFixtureTemplate,
-  levelPropertyLookup,
 } from "./LevelFixture";
 
 const animation_factory = getAnimationFromName(animations);
@@ -90,16 +88,10 @@ export class LevelFixtureFactory {
       case "portal":
         return new Portal(position, size, template);
       case "npc": {
-        const milestone = levelPropertyLookup(template.properties)("milestone");
+        const npc = new NonPlayer(position, size, template);
 
-        if (milestone !== undefined) {
-          const milestone = new Milestone(template.properties["milestone"]);
-
-          if (milestone.obtained) {
-            return null;
-          }
-        }
-        return new NonPlayer(position, size, template);
+        // If the npc is expired, set to null to be cleared
+        return npc.isExpired ? null : npc;
       }
       case "enemy": {
         const enemy = new Enemy(position, size, template);

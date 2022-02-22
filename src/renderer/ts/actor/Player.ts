@@ -130,6 +130,7 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
     const expData = this.stats.gainExp(exp);
 
     const data = {
+      actor: this,
       abilities: this._getAllAbilities(),
       ...expData,
     };

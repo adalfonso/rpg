@@ -41,6 +41,15 @@ class Team<T extends Actor> {
   }
 
   /**
+   * Add a new member to the team
+   *
+   * @param member - member instance
+   */
+  public add(member: T) {
+    this._members = [...this._members, member];
+  }
+
+  /**
    * Draw opponent select
    *
    * @param ctx        - render context

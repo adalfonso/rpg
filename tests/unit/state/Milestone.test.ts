@@ -1,41 +1,48 @@
 import StateManager from "@/state/StateManager";
 import sinon from "sinon";
-import { Milestone } from "@/state/Milestone";
+import { Milestone } from "@/state/milestone/Milestone";
+import { MilestoneConfig } from "@/state/milestone/types";
 import { expect } from "chai";
+import { milestone_list } from "@/state/milestone/milestones";
+
+beforeEach(() => {
+  milestone_list._attained_milestone = {} as MilestoneConfig;
+  milestone_list._unattained_milestone = {} as MilestoneConfig;
+});
 
 afterEach(() => {
   sinon.restore();
 });
 
 describe("Milestone", () => {
-  describe("obtained", () => {
-    it("detects an obtained milestone", () => {
-      sinon.stub(StateManager.prototype, "get").returns({ obtained: true });
+  describe("attained", () => {
+    it("detects an attained milestone", () => {
+      sinon.stub(StateManager.prototype, "get").returns({ attained: true });
 
-      const milestone = new Milestone("obtained_milestone");
+      const milestone = new Milestone("_attained_milestone");
 
-      expect(milestone.obtained).to.be.true;
+      expect(milestone.attained).to.be.true;
     });
 
-    it("detects an unobtained milestone", () => {
-      sinon.stub(StateManager.prototype, "get").returns({ obtained: false });
+    it("detects an unattained milestone", () => {
+      sinon.stub(StateManager.prototype, "get").returns({ attained: false });
 
-      const milestone = new Milestone("unobtained_milestone");
+      const milestone = new Milestone("_unattained_milestone");
 
-      expect(milestone.obtained).to.be.false;
+      expect(milestone.attained).to.be.false;
     });
 
-    it("detects an unobtained milestone (no state)", () => {
+    it("detects an unattained milestone (no state)", () => {
       sinon
         .stub(StateManager.prototype, "get")
         .onCall(0)
         .returns(undefined)
         .onCall(1)
-        .returns({ obtained: false });
+        .returns({ attained: false });
 
-      const milestone = new Milestone("unobtained_milestone");
+      const milestone = new Milestone("_unattained_milestone");
 
-      expect(milestone.obtained).to.be.false;
+      expect(milestone.attained).to.be.false;
     });
   });
 });

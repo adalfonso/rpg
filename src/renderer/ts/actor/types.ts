@@ -19,5 +19,15 @@ export type ActorConfig = {
   ui: ActorUiData;
 };
 
-/** A list of actors */
 export type ActorList = Record<string, ActorConfig>;
+
+/**
+ * Template data for actor speech
+ *
+ * @prop dialogue - list of speech/dialogue
+ */
+export type Speech = {
+  dialogue: string[];
+};
+
+export type SpeechList = Record<string, Record<string, Speech>>;

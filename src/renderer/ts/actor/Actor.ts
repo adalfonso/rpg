@@ -85,33 +85,33 @@ abstract class Actor
    *
    * @param _position - positon of the actor
    * @param _size     - size of the actor
-   * @param template - additional info about the actor
+   * @param _template - additional info about the actor
    *
    * @throws {MissingDataError} when name, type, or config are missing
    */
   constructor(
     protected _position: Vector,
     protected _size: Vector,
-    protected template: LevelFixtureTemplate
+    protected _template: LevelFixtureTemplate
   ) {
     super();
-    const actorType = this.constructor.name;
+    const actor_type = this.constructor.name;
 
-    this.config = actors[template.type];
+    this.config = actors[_template.type];
 
     if (!this.config) {
       throw new MissingDataError(
-        `Config data for ${actorType} is not defined in actors.ts`
+        `Config data for ${actor_type} is not defined in actors.ts`
       );
     }
 
     this.stats = new Stats(this.config.base_stats);
 
-    if (template.properties) {
-      this.assignCustomProperties(template.properties);
+    if (_template.properties) {
+      this.assignCustomProperties(_template.properties);
     }
 
-    this._id = template.name;
+    this._id = _template.name;
     this.direction = Direction.None;
     this.inDialogue = false;
     this.locked = false;
@@ -135,6 +135,15 @@ abstract class Actor
   /** Get the name used when rendering dialogue */
   get displayAs() {
     return this.config.displayAs;
+  }
+
+  /**
+   * Get the actor's template
+   *
+   * Useful when creating different extensions of an actor, NPCs, players, etc.
+   * */
+  get template() {
+    return this._template;
   }
 
   /** Get the abilities the actor currently knows */
@@ -400,7 +409,7 @@ abstract class Actor
    */
   protected getState(): Record<string, unknown> {
     return {
-      type: this.template.type,
+      type: this._template.type,
       defeated: this._defeated,
       dmg: this.stats.dmg,
       lvl: this.stats.lvl,

@@ -3,11 +3,17 @@ import actors from "@/actor/actors";
 import sinon from "sinon";
 import { LevelFixtureFactory } from "@/level/LevelFixtureFactory";
 import { LevelFixtureType } from "@/level/LevelFixture";
-import { Milestone } from "@/state/Milestone";
+import { Milestone } from "@/state/milestone/Milestone";
+import { MilestoneConfig } from "@/state/milestone/types";
 import { expect } from "chai";
+import { getActorTemplate, getFixtureTemplate } from "./fixtures";
+import { milestone_list } from "@/state/milestone/milestones";
+import { speech_list } from "@/actor/speech";
 
 beforeEach(() => {
-  actors.foo = getActorTemplate();
+  actors.foo_fixture = getActorTemplate();
+  speech_list.foo_fixture = { foo_fixture: { dialogue: [] } };
+  milestone_list.foo = {} as MilestoneConfig;
 });
 
 afterEach(() => {
@@ -18,19 +24,25 @@ describe("LevelFixtureFactory", () => {
   describe("create", () => {
     it("creates a NonPlayer", () => {
       const factory = new LevelFixtureFactory();
-      const template = getFixtureTemplate();
+      const template = getFixtureTemplate({
+        type: "foo_fixture",
+        name: "foo_fixture",
+      });
 
       const result = factory.create(LevelFixtureType.NonPlayer, template);
 
       expect(result instanceof NonPlayer).to.be.true;
     });
 
-    it("doesnt create a NonPlayer when obtained", () => {
-      sinon.stub(Milestone.prototype, "obtained").value(true);
+    it("doesnt create a NonPlayer when attained", () => {
+      sinon.stub(Milestone.prototype, "attained").value(true);
 
       const factory = new LevelFixtureFactory();
       const template = {
-        ...getFixtureTemplate(),
+        ...getFixtureTemplate({
+          type: "foo_fixture",
+          name: "foo_fixture",
+        }),
         properties: [{ name: "milestone", type: "string", value: "foo" }],
       };
 
@@ -39,27 +51,4 @@ describe("LevelFixtureFactory", () => {
       expect(result).to.be.null;
     });
   });
-});
-
-const getFixtureTemplate = () => ({
-  x: 0,
-  y: 0,
-  height: 0,
-  width: 0,
-  name: "foo",
-  type: "foo",
-  value: "",
-  properties: [] as any[],
-});
-
-const getActorTemplate = () => ({
-  displayAs: "Mr Foo",
-  base_stats: { hp: 120, atk: 125, def: 85, sp_atk: 95, sp_def: 65, spd: 105 },
-  ui: {
-    sprite: "missing",
-    frames: { x: 1, y: 4, idle: 1, north: 1, east: 1, south: 1, west: 1 },
-    scale: 1,
-    fps: 8,
-  },
-  abilities: [{ ref: "bar", level: 6 }],
 });

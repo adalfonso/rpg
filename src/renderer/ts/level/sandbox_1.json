@@ -215,7 +215,7 @@
                         {
                          "name":"milestone",
                          "type":"string",
-                         "value":"obtain_pisti"
+                         "value":"team_member.join.pisti"
                         }],
                  "rotation":0,
                  "type":"pisti",

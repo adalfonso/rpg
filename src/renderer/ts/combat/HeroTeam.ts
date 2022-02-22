@@ -1,10 +1,15 @@
+import Actor from "@/actor/Actor";
+import MissingDataError from "@/error/MissingDataError";
 import Player from "@/actor/Player";
 import Team from "./Team";
+import Vector from "@common/Vector";
+import { CallableMap, Eventful } from "@/interfaces";
+import { bus } from "@/EventBus";
 
 /**
  * Similar to a Team but specific to playable characters
  */
-class HeroTeam extends Team<Player> {
+class HeroTeam extends Team<Player> implements Eventful {
   /**
    * Create a new HeroTeam instance
    *
@@ -12,6 +17,36 @@ class HeroTeam extends Team<Player> {
    */
   constructor(protected _members: Player[]) {
     super(_members);
+
+    bus.register(this);
+  }
+
+  /**
+   * Register events with the event bus
+   *
+   * @return events to register
+   */
+  public register(): CallableMap {
+    return {
+      "team.newMember": (e: CustomEvent) => {
+        const actor = e.detail?.target.actor;
+
+        if (!actor || !(actor instanceof Actor)) {
+          throw new MissingDataError(
+            `Could not locate team member when adding a new one to the hero team`
+          );
+        }
+
+        const member = new Player(
+          new Vector(0, 0),
+          // TODO: why do we have to provide a size if it is listed in the template?
+          new Vector(actor.template.width, actor.template.height),
+          actor.template
+        );
+
+        this.add(member);
+      },
+    };
   }
 
   /**
