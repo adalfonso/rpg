@@ -1,25 +1,21 @@
 import Battle from "./combat/Battle";
 import BattleBuilder from "./combat/BattleBuilder";
 import CollisionHandler from "./CollisionHandler";
-import Dialogue from "./ui/dialogue/Dialogue";
 import HeroTeam from "./combat/HeroTeam";
 import Inventory from "./menu/Inventory";
 import Level from "./level/Level";
 import MissingDataError from "./error/MissingDataError";
 import StartMenu from "./menu/StartMenu";
-import TextStream from "./ui/dialogue/TextStream";
 import Vector from "@common/Vector";
 import menus from "./menu/menus";
 import { DialogueMediator } from "./ui/dialogue/DialogueMediator";
-import { Drawable, Eventful, CallableMap } from "./interfaces";
+import { Drawable, Eventful, CallableMap, Updatable } from "./interfaces";
 import { LevelFixtureFactory } from "./level/LevelFixtureFactory";
 import { LevelTemplate } from "./level/LevelTemplate";
 import { bus } from "@/EventBus";
 import { getLevels } from "./level/levels";
 
-/**
- * Different states a game can be in
- */
+/** Different states a game can be in */
 enum GameState {
   StartMenu,
   Play,
@@ -34,37 +30,20 @@ enum GameState {
  *
  * Game hands off rendering to all of the game's constituents.
  */
-class Game implements Eventful, Drawable {
-  /**
-   * The current battle taking place
-   */
+class Game implements Eventful, Drawable, Updatable {
+  /** The current battle taking place */
   private battle: Battle = null;
 
-  /**
-   * Current level instance
-   */
+  /** Current level instance */
   private level: Level;
 
-  /**
-   * General game dialogue
-   *
-   * TODO: Refactor this to use the dialogue mediator instead
-   */
-  private dialogue: Dialogue = null;
-
-  /**
-   * Main game menu
-   */
+  /** Main game menu */
   private menu: StartMenu;
 
-  /**
-   * Inventory menu
-   */
+  /** Inventory menu */
   private inventory: Inventory;
 
-  /**
-   * Current state of game
-   */
+  /** Current state of game */
   private state: GameState;
 
   /**
@@ -106,20 +85,12 @@ class Game implements Eventful, Drawable {
       this.battle.update(dt);
     }
 
-    if (this.dialogue) {
-      this.dialogue.update(dt);
-    }
-
-    if (this.dialogue?.isDone) {
-      this.dialogue = null;
-      this.unlock(GameState.Dialogue);
-    }
+    this._dialogue_mediator.update(dt);
 
     if (this.state !== GameState.Play) {
       return;
     }
 
-    this._dialogue_mediator.update(dt);
     this.level.update(dt);
   }
 
@@ -150,11 +121,6 @@ class Game implements Eventful, Drawable {
     }
 
     this.menu.draw(ctx, noOffset, resolution);
-
-    if (this.dialogue) {
-      this.dialogue.draw(ctx, noOffset, resolution);
-    }
-
     this._dialogue_mediator.draw(ctx, noOffset, resolution);
   }
 
@@ -176,21 +142,23 @@ class Game implements Eventful, Drawable {
         this.lock(GameState.Battle);
       },
 
-      "battle.end": (_e: CustomEvent) => {
+      "battle.end": (_: CustomEvent) => {
         this.battle = null;
         this.unlock(GameState.Battle);
       },
 
-      "menu.inventory.open": (_e: CustomEvent) =>
-        this.lock(GameState.Inventory),
+      "dialogue.start": (_: CustomEvent) => this.lock(GameState.Dialogue),
 
-      "menu.inventory.close": (_e: CustomEvent) =>
+      "dialogue.end": (_: CustomEvent) => this.unlock(GameState.Dialogue),
+
+      "menu.inventory.open": (_: CustomEvent) => this.lock(GameState.Inventory),
+
+      "menu.inventory.close": (_: CustomEvent) =>
         this.unlock(GameState.Inventory),
 
-      "menu.startMenu.open": (_e: CustomEvent) =>
-        this.lock(GameState.StartMenu),
+      "menu.startMenu.open": (_: CustomEvent) => this.lock(GameState.StartMenu),
 
-      "menu.startMenu.close": (_e: CustomEvent) =>
+      "menu.startMenu.close": (_: CustomEvent) =>
         this.unlock(GameState.StartMenu),
 
       "item.obtain": (e: CustomEvent) => {
@@ -208,12 +176,9 @@ class Game implements Eventful, Drawable {
           itemName[0].toLowerCase()
         );
 
-        const stream = new TextStream([
-          `Picked up ${useVowel ? "an" : "a"} ${itemName}!`,
-        ]);
-
-        this.dialogue = new Dialogue(stream, undefined, [this.player]);
-        this.lock(GameState.Dialogue);
+        bus.emit("dialogue.create", {
+          speech: [`Picked up ${useVowel ? "an" : "a"} ${itemName}!`],
+        });
       },
     };
   }
@@ -272,7 +237,7 @@ class Game implements Eventful, Drawable {
    *
    * @return if a battle is underway
    */
-  private hasActiveBattle(): boolean {
+  private hasActiveBattle() {
     return this.battle !== null && this.battle.active;
   }
 }

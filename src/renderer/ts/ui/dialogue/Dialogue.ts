@@ -18,12 +18,12 @@ class Dialogue implements Eventful, Drawable {
    * Create a new Dialogue instance
    *
    * @param stream  - stores text used for render
-   * @param speaker - actor speaking the dialogue
+   * @param _speaker - actor speaking the dialogue
    * @param actors  - all actors in dialogue, excluding the speaker
    */
   constructor(
     private stream: TextStream,
-    private speaker: Actor | null,
+    private _speaker: Actor | null,
     private actors: Actor[]
   ) {
     this.waiting = false;
@@ -31,11 +31,15 @@ class Dialogue implements Eventful, Drawable {
     this.frameLength = 1000 / 24;
     this.timeStore = 0;
 
-    if (this.speaker) {
-      this.actors = [...this.actors, speaker];
+    if (this._speaker) {
+      this.actors = [...this.actors, _speaker];
     }
 
     this.start();
+  }
+
+  get speaker() {
+    return this._speaker;
   }
 
   /**
@@ -174,7 +178,7 @@ class Dialogue implements Eventful, Drawable {
 
     // Reset text stream on first render
     if (this.stream.isEmpty) {
-      const prefix = this.speaker ? this.speaker.displayAs + ": " : "";
+      const prefix = this._speaker ? this._speaker.displayAs + ": " : "";
 
       this.stream.fillBuffer(ctx, resolution.minus(padding.times(2)), prefix);
     }

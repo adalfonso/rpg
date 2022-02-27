@@ -1,7 +1,5 @@
 import Actor from "./Actor";
-import Dialogue from "@/ui/dialogue/Dialogue";
 import MissingDataError from "@/error/MissingDataError";
-import TextStream from "@/ui/dialogue/TextStream";
 import Vector from "@common/Vector";
 import { Drawable, Eventful, CallableMap } from "@/interfaces";
 import { Milestone } from "@/state/milestone/Milestone";
@@ -73,7 +71,6 @@ class NonPlayer extends Actor implements Eventful, Drawable {
   /** Manually tear down the npc */
   public expire() {
     bus.unregister(this);
-    this.dialogue = null;
     this._is_expired = true;
   }
 
@@ -82,16 +79,7 @@ class NonPlayer extends Actor implements Eventful, Drawable {
    *
    * @param dt - delta time
    */
-  public update(dt: number) {
-    if (this.dialogue?.isDone) {
-      this._milestone?.attain_on === MilestoneAttainOn.DialogueComplete &&
-        this._milestone.attain({ actor: this });
-
-      this.expire();
-    } else if (this.dialogue) {
-      this.dialogue.update(dt);
-    }
-  }
+  public update(dt: number) {}
 
   /**
    * Draw NPC and all underlying entities
@@ -105,11 +93,6 @@ class NonPlayer extends Actor implements Eventful, Drawable {
     offset: Vector,
     resolution: Vector
   ) {
-    if (this.dialogue) {
-      const noOffset = new Vector(0, 0);
-      this.dialogue.draw(ctx, noOffset, resolution);
-    }
-
     super.draw(ctx, offset, resolution);
   }
 
@@ -120,9 +103,35 @@ class NonPlayer extends Actor implements Eventful, Drawable {
    */
   public register(): CallableMap {
     return {
+      "dialogue.end": (e: CustomEvent) => {
+        /**
+         * TODO: Assuming this sort of data will be sent is fragile. We need a
+         * better way to enforce it. Maybe with a generic type.
+         */
+        const { speaker } = e.detail;
+
+        /**
+         * If the this actor was responsible for the dialogue and there is a
+         * milestone associated with it we are assuming that milestone is now
+         * attained.This may need to be refactored when milestone attainment
+         * becomes more complex
+         */
+        const caused_by_npc =
+          this._speech.dialogue.length > 0 && speaker === this;
+
+        if (!caused_by_npc) {
+          return;
+        }
+
+        this._milestone?.attain_on === MilestoneAttainOn.DialogueComplete &&
+          this._milestone.attain({ actor: this });
+
+        this.expire();
+      },
+
       keyup: (e: KeyboardEvent) => {
         if (e.key === "Enter" && this.collisions.length) {
-          this.speak([...this.collisions]);
+          this.speak();
         }
       },
 
@@ -146,19 +155,16 @@ class NonPlayer extends Actor implements Eventful, Drawable {
     };
   }
 
-  /**
-   * Start a dialogue with all actors the non-player has collided with
-   *
-   * @param actors - actors recently collided with
-   */
-  private speak(actors: Actor[]) {
-    if (this.dialogue) {
+  /** Start a dialogue with all actors the non-player has collided with */
+  private speak() {
+    if (this.locked) {
       return;
     }
 
-    const stream = new TextStream([...this._speech.dialogue]);
-
-    this.dialogue = new Dialogue(stream, this, actors);
+    bus.emit("dialogue.create", {
+      speech: [...this._speech.dialogue],
+      speaker: this,
+    });
   }
 
   /**

@@ -26,7 +26,7 @@ export class DialogueMediator implements Eventful, Updatable {
   }
 
   /**
-   * Update the current dialogu
+   * Update the current dialogue
    *
    * @param dt - delta time
    **/
@@ -36,9 +36,10 @@ export class DialogueMediator implements Eventful, Updatable {
     }
 
     if (this._dialogue.isDone) {
+      const speaker = this._dialogue.speaker;
       this._dialogue = null;
       this._target.each((member) => member.unlock());
-      return;
+      return bus.emit("dialogue.end", { speaker });
     }
 
     this._dialogue.update(dt);
@@ -83,7 +84,7 @@ export class DialogueMediator implements Eventful, Updatable {
       );
     }
 
-    if (speaker && speaker.constructor.name !== "Actor") {
+    if (speaker && !(speaker instanceof Actor)) {
       throw new InvalidDataError(
         'Invalid data type for "speaker" @ DialogueMediator/dialogue.create'
       );
@@ -91,5 +92,6 @@ export class DialogueMediator implements Eventful, Updatable {
 
     const stream = new TextStream(speech);
     this._dialogue = new Dialogue(stream, speaker ?? null, this._target.all());
+    bus.emit("dialogue.start");
   }
 }
