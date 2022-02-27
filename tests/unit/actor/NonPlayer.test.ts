@@ -3,7 +3,6 @@ import Vector from "@common/Vector";
 import actors from "@/actor/actors";
 import { expect } from "chai";
 import { getActorTemplate, getFixtureTemplate } from "../level/fixtures";
-import { speech_list } from "@/actor/speech";
 
 beforeEach(() => {
   actors.foo_non_player = getActorTemplate();
@@ -12,7 +11,6 @@ beforeEach(() => {
 describe("NonPlayer", () => {
   describe("constructor", () => {
     it("errors when it can't find speech", () => {
-      console.log({ speech_list });
       expect(
         () =>
           new NonPlayer(

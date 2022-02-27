@@ -39,6 +39,10 @@ export class Milestone {
       bus.emit("team.newMember", { target });
     }
 
+    if (this._config.dialogue) {
+      bus.emit("dialogue.create", { speech: this._config.dialogue });
+    }
+
     this._attained = true;
 
     StateManager.getInstance().mergeByRef(

@@ -10,5 +10,6 @@ export const milestone_list: MilestoneConfigList = {
   "team_member.join.pisti": {
     attain_on: AttainOn.DialogueComplete,
     type: MilestoneType.NewTeamMember,
+    dialogue: ["Pisti has joined the team!"],
   },
 };

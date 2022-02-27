@@ -7,6 +7,7 @@ export interface BaseMilestoneConfig {
 
 interface NewTeamMemberMilestoneConfig extends BaseMilestoneConfig {
   type: MilestoneType.NewTeamMember;
+  dialogue?: string[];
 }
 
 export type MilestoneConfig = NewTeamMemberMilestoneConfig;

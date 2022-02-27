@@ -2,7 +2,7 @@ import Item from "@/item/Item";
 import Menu from "./Menu";
 import MissingDataError from "@/error/MissingDataError";
 import StateManager from "@/state/StateManager";
-import TextBuffer from "@/ui/TextBuffer";
+import TextBuffer from "@/ui/dialogue/TextBuffer";
 import Vector from "@common/Vector";
 import Weapon from "@/combat/strategy/Weapon";
 import WeaponFactory from "@/combat/strategy/WeaponFactory";

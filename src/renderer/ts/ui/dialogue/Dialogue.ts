@@ -1,7 +1,7 @@
-import Actor from "../actor/Actor";
+import Actor from "../../actor/Actor";
 import TextStream from "./TextStream";
 import Vector from "@common/Vector";
-import { Drawable, Eventful, CallableMap } from "../interfaces";
+import { Drawable, Eventful, CallableMap } from "../../interfaces";
 import { bus } from "@/EventBus";
 
 class Dialogue implements Eventful, Drawable {
@@ -23,7 +23,7 @@ class Dialogue implements Eventful, Drawable {
    */
   constructor(
     private stream: TextStream,
-    private speaker: Actor,
+    private speaker: Actor | null,
     private actors: Actor[]
   ) {
     this.waiting = false;
@@ -32,7 +32,7 @@ class Dialogue implements Eventful, Drawable {
     this.timeStore = 0;
 
     if (this.speaker) {
-      this.actors.push(this.speaker);
+      this.actors = [...this.actors, speaker];
     }
 
     this.start();
@@ -110,7 +110,7 @@ class Dialogue implements Eventful, Drawable {
   }
 
   /** If the dialogue is done rendering */
-  get isDone(): boolean {
+  get isDone() {
     return this.stream.isDone && !this.waiting;
   }
 

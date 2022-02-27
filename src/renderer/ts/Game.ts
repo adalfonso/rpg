@@ -1,15 +1,16 @@
 import Battle from "./combat/Battle";
 import BattleBuilder from "./combat/BattleBuilder";
 import CollisionHandler from "./CollisionHandler";
-import Dialogue from "./ui/Dialogue";
+import Dialogue from "./ui/dialogue/Dialogue";
 import HeroTeam from "./combat/HeroTeam";
 import Inventory from "./menu/Inventory";
 import Level from "./level/Level";
 import MissingDataError from "./error/MissingDataError";
 import StartMenu from "./menu/StartMenu";
-import TextStream from "./ui/TextStream";
+import TextStream from "./ui/dialogue/TextStream";
 import Vector from "@common/Vector";
 import menus from "./menu/menus";
+import { DialogueMediator } from "./ui/dialogue/DialogueMediator";
 import { Drawable, Eventful, CallableMap } from "./interfaces";
 import { LevelFixtureFactory } from "./level/LevelFixtureFactory";
 import { LevelTemplate } from "./level/LevelTemplate";
@@ -46,6 +47,8 @@ class Game implements Eventful, Drawable {
 
   /**
    * General game dialogue
+   *
+   * TODO: Refactor this to use the dialogue mediator instead
    */
   private dialogue: Dialogue = null;
 
@@ -69,7 +72,10 @@ class Game implements Eventful, Drawable {
    *
    * @param _heroes - main characters
    */
-  constructor(private _heroes: HeroTeam) {
+  constructor(
+    private _heroes: HeroTeam,
+    private _dialogue_mediator: DialogueMediator
+  ) {
     this.state = GameState.Play;
 
     this.menu = new StartMenu(menus.start());
@@ -113,6 +119,7 @@ class Game implements Eventful, Drawable {
       return;
     }
 
+    this._dialogue_mediator.update(dt);
     this.level.update(dt);
   }
 
@@ -147,6 +154,8 @@ class Game implements Eventful, Drawable {
     if (this.dialogue) {
       this.dialogue.draw(ctx, noOffset, resolution);
     }
+
+    this._dialogue_mediator.draw(ctx, noOffset, resolution);
   }
 
   /**

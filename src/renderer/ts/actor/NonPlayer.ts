@@ -1,7 +1,7 @@
 import Actor from "./Actor";
-import Dialogue from "@/ui/Dialogue";
+import Dialogue from "@/ui/dialogue/Dialogue";
 import MissingDataError from "@/error/MissingDataError";
-import TextStream from "@/ui/TextStream";
+import TextStream from "@/ui/dialogue/TextStream";
 import Vector from "@common/Vector";
 import { Drawable, Eventful, CallableMap } from "@/interfaces";
 import { Milestone } from "@/state/milestone/Milestone";

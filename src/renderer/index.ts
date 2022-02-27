@@ -6,6 +6,7 @@ import Player from "@/actor/Player";
 import StateManager from "@/state/StateManager";
 import Vector from "@common/Vector";
 import config from "@/config";
+import { DialogueMediator } from "@/ui/dialogue/DialogueMediator";
 import { resolution } from "@common/common";
 import { startAnimation } from "@/util";
 
@@ -33,7 +34,8 @@ document.addEventListener("DOMContentLoaded", async (_event) => {
     player_template
   );
   const team = new HeroTeam([player]);
-  const game = new Game(team);
+  const dialogue = new DialogueMediator(team);
+  const game = new Game(team, dialogue);
   const display = new Display(resolution, canvas, game);
 
   game.start();

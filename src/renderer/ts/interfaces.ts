@@ -33,3 +33,8 @@ export interface Lockable {
 
   unlock(): boolean;
 }
+
+/** Any class that can update itself as a function of time */
+export interface Updatable {
+  update(dt: number): void;
+}
