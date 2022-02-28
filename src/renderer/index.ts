@@ -21,13 +21,13 @@ document.addEventListener("DOMContentLoaded", async (_event) => {
   const player_template = {
     x: 75,
     y: 75,
-    height: 18,
-    width: 32,
+    width: 18,
+    height: 32,
     name: "Me",
     type: "player",
   };
   const player_position = new Vector(player_template.x, player_template.y);
-  const player_size = new Vector(player_template.height, player_template.width);
+  const player_size = new Vector(player_template.width, player_template.height);
   const player: Player = new Player(
     player_position.times(config.scale),
     player_size.times(config.scale),

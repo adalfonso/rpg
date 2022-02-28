@@ -6,13 +6,16 @@ import { Direction } from "@/ui/types";
 /**
  * A battle-centric collection of actors that are related in some way
  */
-class Team<T extends Actor> {
+class Team<M extends Actor> {
+  /** Team members that have taken their turn */
+  private _have_taken_turn: M[] = [];
+
   /**
    * Create a new Team instance
    *
    * @param _members - members of the team
    */
-  constructor(protected _members: T[]) {
+  constructor(protected _members: M[]) {
     if (_members.length === 0) {
       throw new MissingDataError(`Cannot create a team without any members`);
     }
@@ -45,7 +48,7 @@ class Team<T extends Actor> {
    *
    * @param member - member instance
    */
-  public add(member: T) {
+  public add(member: M) {
     this._members = [...this._members, member];
   }
 
@@ -79,6 +82,7 @@ class Team<T extends Actor> {
       member.moveTo(position.plus(new Vector(member.size.x * index * 4, 0)));
       member.lock();
     });
+    this.cycle();
   }
 
   /**
@@ -93,6 +97,7 @@ class Team<T extends Actor> {
   /** Handle actions after a combat cycle has ended */
   public cycle() {
     this._members.forEach((m) => m.stats.expireModifiers());
+    this._have_taken_turn = [];
   }
 
   /**
@@ -100,7 +105,7 @@ class Team<T extends Actor> {
    *
    * @param callable - action for each team member
    */
-  public each(callable: (member: T, index: number) => void) {
+  public each(callable: (member: M, index: number) => void) {
     this._members.forEach((member, index) => {
       callable(member, index);
     });
@@ -111,8 +116,43 @@ class Team<T extends Actor> {
    *
    * @return all team members
    */
-  public all(): T[] {
+  public all(): M[] {
     return this._members;
+  }
+
+  /**
+   * Take a turn for a team member
+   *
+   * @param member - team member who is taking their turn
+   **/
+  public takeTurn(member: M) {
+    if (!this._members.includes(member)) {
+      throw new Error("Tried to take turn for actor who is not on this team");
+    }
+
+    this._have_taken_turn = [...this._have_taken_turn, member];
+  }
+
+  /** Determine if the turn is over */
+  get turnIsOver() {
+    return (
+      this._members
+        .filter((member) => !member.isDefeated)
+        .filter((member) => !this._have_taken_turn.includes(member)).length ===
+      0
+    );
+  }
+
+  /** Determine the next member to take their turn */
+  get nextToTakeTurn() {
+    return this._members.filter(
+      (member) => !member.isDefeated && !this._have_taken_turn.includes(member)
+    )[0];
+  }
+
+  /** Determine the previous member to take their turn */
+  get previousToTakeTurn() {
+    return [...this._have_taken_turn].pop();
   }
 }
 

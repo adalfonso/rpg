@@ -77,12 +77,7 @@ class Battle implements Eventful, Drawable, Lockable {
 
     this._menu = this._getBattleMenu();
 
-    // TODO: this needs to be rerun whenever the attacking team member changes
-    //       when there are more than one member on the team this will be a
-    //       problem
-    this._menu.moveTo(
-      this._heroes.leader.position.plus(this._heroes.leader.size)
-    );
+    this._moveBattleMenu();
 
     bus.register(this);
 
@@ -174,6 +169,10 @@ class Battle implements Eventful, Drawable, Lockable {
   public register(): CallableMap {
     return {
       "battle.action": (e: CustomEvent) => {
+        if (this._event_queue.length) {
+          return;
+        }
+
         this._herosTurn ? this._handleHeroAction(e) : this._handleFoeAction();
       },
 
@@ -227,6 +226,13 @@ class Battle implements Eventful, Drawable, Lockable {
     return this._menu.unlock();
   }
 
+  /** Move the battle menu to where it should be */
+  private _moveBattleMenu() {
+    const hero = this._heroes.nextToTakeTurn;
+
+    this._menu.moveTo(hero.position.plus(hero.size));
+  }
+
   /** Cause game over */
   private _doGameOver() {
     const stream = new TextStream(["You died!"]);
@@ -252,8 +258,6 @@ class Battle implements Eventful, Drawable, Lockable {
 
     if (!this._herosTurn) {
       bus.emit("battle.action");
-    } else {
-      this._opponentSelect.resolveSelected();
     }
   }
 
@@ -264,11 +268,10 @@ class Battle implements Eventful, Drawable, Lockable {
    */
   private _handleHeroAction(e: CustomEvent) {
     const opponent = this._opponentSelect.selected;
+    const hero = this._heroes.nextToTakeTurn;
 
     if (e.detail?.strategy instanceof CombatStrategy) {
-      const { leader } = this._heroes;
-
-      const translation = opponent.position.minus(leader.position);
+      const translation = opponent.position.minus(hero.position);
       const animation = createAnimation.translation({
         translation,
         duration_ms: 500,
@@ -279,26 +282,40 @@ class Battle implements Eventful, Drawable, Lockable {
       });
 
       this._event_queue.push(
-        new AnimatedEntity(animation, leader),
-        () => leader.attack(opponent, e.detail.strategy),
-        new AnimatedEntity(inverse_animation, leader),
-        () => this._handlePostTurn()
+        new AnimatedEntity(animation, hero),
+        () => hero.attack(opponent, e.detail.strategy),
+        new AnimatedEntity(inverse_animation, hero)
       );
     } else if (e.detail?.modifier instanceof StatModifier) {
-      const target = e.detail.modifier.appliesToSelf
-        ? this._heroes.leader
-        : opponent;
+      const target = e.detail.modifier.appliesToSelf ? hero : opponent;
 
       target.stats.modify(e.detail.modifier);
     }
+    this._heroes.takeTurn(hero);
+
+    this._event_queue.push(
+      () => (this._heroes.turnIsOver || this.isDone) && this._handlePostTurn(),
+      () => this._heroes.turnIsOver || this.isDone || this._moveBattleMenu(),
+      () => this._opponentSelect.resolveSelected()
+    );
   }
 
   /** Handle battle action for the foes */
   private _handleFoeAction() {
     const unarmed = new WeaponFactory().createStrategy("unarmed");
+    const foe = this._foes.nextToTakeTurn;
+    const hero =
+      this._heroes.all().filter((hero) => !hero.isDefeated)[0] ??
+      this._heroes.leader;
 
-    this._foes.each((foe: Actor) => foe.attack(this._heroes.leader, unarmed));
-    this._handlePostTurn();
+    foe.attack(hero, unarmed);
+    this._foes.takeTurn(foe);
+
+    if (this._foes.turnIsOver) {
+      this._handlePostTurn();
+    } else {
+      this._handleFoeAction();
+    }
   }
 
   /** Perform all necessary steps after any turn for heroes or foes */
@@ -355,11 +372,18 @@ class Battle implements Eventful, Drawable, Lockable {
   private _drawUiBar(ctx: CanvasRenderingContext2D, resolution: Vector) {
     const uiBarSize = this._getUiBarSize(resolution);
 
+    /**
+     * When the last player has taken their turn we will still need to reference
+     * them for the drawing of the ui bar. In this case we fall back to the last
+     * player to take their turn
+     */
+    const hero = this._heroes.nextToTakeTurn || this._heroes.previousToTakeTurn;
+
     ctx.fillStyle = "#000";
     ctx.fillRect(0, 0, uiBarSize.x, uiBarSize.y);
     ctx.fillStyle = "#FFF";
     ctx.font = "20px Arial";
-    ctx.fillText("HP : " + this._heroes.leader.stats.hp, 16, 32);
+    ctx.fillText("HP : " + hero.stats.hp, 16, 32);
   }
 
   /**
@@ -402,8 +426,10 @@ class Battle implements Eventful, Drawable, Lockable {
    *
    * @return the battle menu
    */
-  private _getBattleMenu(): BattleMenu {
-    return new BattleMenu(menus.battle(this, () => this._heroes.leader));
+  private _getBattleMenu() {
+    return new BattleMenu(
+      menus.battle(this, () => this._heroes.nextToTakeTurn)
+    );
   }
 }
 

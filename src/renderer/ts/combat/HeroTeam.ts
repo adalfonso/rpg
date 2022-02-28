@@ -3,6 +3,7 @@ import MissingDataError from "@/error/MissingDataError";
 import Player from "@/actor/Player";
 import Team from "./Team";
 import Vector from "@common/Vector";
+import config from "@/config";
 import { CallableMap, Eventful } from "@/interfaces";
 import { bus } from "@/EventBus";
 
@@ -37,10 +38,13 @@ class HeroTeam extends Team<Player> implements Eventful {
           );
         }
 
+        const position = new Vector(0, 0);
+        const size = new Vector(actor.template.width, actor.template.height);
+
         const member = new Player(
-          new Vector(0, 0),
+          position.times(config.scale),
           // TODO: why do we have to provide a size if it is listed in the template?
-          new Vector(actor.template.width, actor.template.height),
+          size.times(config.scale),
           actor.template
         );
 
