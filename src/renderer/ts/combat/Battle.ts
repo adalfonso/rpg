@@ -1,6 +1,5 @@
 import AbilityFactory from "./strategy/AbilityFactory";
 import Actor from "@/actor/Actor";
-import BattleMenu from "@/menu/BattleMenu";
 import CombatStrategy from "./strategy/CombatStrategy";
 import Dialogue from "@/ui/dialogue/Dialogue";
 import Enemy from "@/actor/Enemy";
@@ -14,9 +13,11 @@ import WeaponFactory from "./strategy/WeaponFactory";
 import menus from "@/menu/menus";
 import { AnimatedEntity } from "@/ui/animation/text/AnimatedEntity";
 import { AnimatedText } from "@/ui/animation/text/AnimatedText";
+import { BattleMenu } from "@/menu/BattleMenu";
 import { Direction } from "@/ui/types";
 import { Drawable, Eventful, Lockable, CallableMap } from "@/interfaces";
 import { LearnedAbility } from "./strategy/types";
+import { SubMenu } from "@/menu/SubMenu";
 import { bus } from "@/EventBus";
 import { createAnimation } from "@/ui/animation/CreateAnimation";
 
@@ -169,7 +170,8 @@ class Battle implements Eventful, Drawable, Lockable {
   public register(): CallableMap {
     return {
       "battle.action": (e: CustomEvent) => {
-        if (this._event_queue.length) {
+        // Cancel if the player's combat strategy emits before their turn ends
+        if (this._event_queue.length && e?.detail?.strategy) {
           return;
         }
 
@@ -428,7 +430,7 @@ class Battle implements Eventful, Drawable, Lockable {
    */
   private _getBattleMenu() {
     return new BattleMenu(
-      menus.battle(this, () => this._heroes.nextToTakeTurn)
+      new SubMenu(menus.battle(this, () => this._heroes.nextToTakeTurn))
     );
   }
 }

@@ -3,6 +3,7 @@ import StateManager from "@/state/StateManager";
 import Sut from "@/menu/Inventory";
 import menus from "@/menu/menus";
 import sinon from "sinon";
+import { SubMenu } from "@/menu/SubMenu";
 import { cloneByStringify } from "@/util";
 import { expect } from "chai";
 
@@ -61,7 +62,7 @@ describe("Inventory", () => {
 
 const getSut = () => {
   let menu = cloneByStringify(menus.inventory());
-  return new Sut(menu as any);
+  return new Sut(new SubMenu(menu as any));
 };
 
 const getItem = (type: string) => {

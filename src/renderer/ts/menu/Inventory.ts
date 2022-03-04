@@ -1,25 +1,23 @@
 import Item from "@/item/Item";
-import Menu from "./Menu";
 import MissingDataError from "@/error/MissingDataError";
 import StateManager from "@/state/StateManager";
 import TextBuffer from "@/ui/dialogue/TextBuffer";
 import Vector from "@common/Vector";
 import Weapon from "@/combat/strategy/Weapon";
 import WeaponFactory from "@/combat/strategy/WeaponFactory";
-import { BaseMenuItem } from "./menus";
+import { BaseMenuItemTemplate as Base } from "./menus";
 import { Drawable, Eventful, CallableMap } from "@/interfaces";
 import { InventoryState, isInventoryState } from "@/state/InventoryState";
+import { Menu } from "./Menu";
+import { MenuItem } from "./MenuItem";
+import { SubMenu } from "./SubMenu";
 
-type InventoryItem = Item | Weapon;
-
-const isInventoryItem = (input: unknown): input is InventoryItem =>
+const isInventoryItem = (input: unknown): input is Item | Weapon =>
   input instanceof Item || input instanceof Weapon;
 
-export interface InventoryMenuItem extends BaseMenuItem<InventoryMenuOption> {
+export interface InventoryMenuItem extends Base {
   equipable?: boolean;
 }
-
-type InventoryMenuOption = InventoryMenuItem | InventoryItem;
 
 /** Main font size */
 const TEXT_SIZE = 24;
@@ -27,11 +25,9 @@ const TEXT_SIZE = 24;
 /** Secondary font size */
 const SUBTEXT_SIZE = 16;
 
-/**
- * A menu for managing things such as items and equipment
- */
-class Inventory
-  extends Menu<InventoryMenuOption>
+/** A menu for managing things such as items and equipment */
+export class Inventory
+  extends Menu<InventoryMenuItem>
   implements Eventful, Drawable
 {
   /**
@@ -39,7 +35,7 @@ class Inventory
    *
    * @param menu - menu options
    */
-  constructor(protected menu: InventoryMenuItem[]) {
+  constructor(protected menu: SubMenu<InventoryMenuItem>) {
     super(menu);
 
     this.resolveState(`inventory`);
@@ -49,12 +45,13 @@ class Inventory
    * Get current state of the inventory for export to a state manager
    */
   get state(): InventoryState {
+    const def = { items: [] as Base[] };
     return {
       menu: {
-        item: this._getSubMenu("item").map((i: Item) => i.ref),
-        weapon: this._getSubMenu("weapon").map((i: Item) => i.ref),
-        armor: this._getSubMenu("armor").map((i: Item) => i.ref),
-        special: this._getSubMenu("special").map((i: Item) => i.ref),
+        item: (this._getSubMenu("item") || def).items.map((i) => i.ref),
+        weapon: (this._getSubMenu("weapon") || def).items.map((i) => i.ref),
+        armor: (this._getSubMenu("armor") || def).items.map((i) => i.ref),
+        special: (this._getSubMenu("special") || def).items.map((i) => i.ref),
       },
     };
   }
@@ -77,15 +74,14 @@ class Inventory
       return;
     }
 
-    const isMainMenu = menu === this._menu;
-    const margin = new Vector(60, isMainMenu ? 90 : 0);
+    const is_main_menu = menu === this._menu;
+    const margin = new Vector(60, is_main_menu ? 90 : 0);
 
     ctx.save();
-
     ctx.translate(offset.x, offset.y);
 
     // Draw background under main menu only
-    if (isMainMenu) {
+    if (is_main_menu) {
       ctx.fillStyle = "#555";
       ctx.fillRect(offset.x, offset.y, resolution.x, resolution.y);
       ctx.fillStyle = "#EEE";
@@ -97,54 +93,42 @@ class Inventory
     // Calculate max width of menu
     ctx.save();
     ctx.font = `${TEXT_SIZE}px Minecraftia`;
-    const widestText = this.getWidestMenuDescription(menu);
-    const textWidth = ctx.measureText(widestText).width;
+    const widest_text = this.getWidestMenuDescription(menu);
+    const text_width = ctx.measureText(widest_text).width;
     ctx.restore();
 
     // Render each menu item
-    menu.forEach((option, index) => {
+    menu.items.forEach((option, index) => {
       // Offset all options after the first option
       const spacing = index ? TEXT_SIZE * 2 : 0;
 
-      /**
-       * This detects if an item/weapon is currently selected and is used to
-       * render the menu differently. When an item/weapon is selected, the
-       * "selected" stack will contain:
-       * sub menu (e.g. weapons) => sub menu item (e.g. sword)
-       *
-       * There is also a type check that the current option is an item/weapon
-       * and that was evaluated in the conditionals below because eslint wasn't
-       * able to understand it evaluated outside.
-       */
-      const isInventorySubMenuItem =
+      const is_sub_menu_item =
         option === this.currentOption && this.selected.length === 2;
 
       ctx.translate(0, spacing);
-
       ctx.save();
 
-      let detailSize;
+      const { source } = option;
 
-      if (isInventorySubMenuItem && isInventoryItem(option)) {
+      if (is_sub_menu_item && isInventoryItem(source)) {
         const offset = new Vector(-2, -TEXT_SIZE);
-
-        detailSize = this.drawDetails(ctx, offset, resolution, option);
+        const detail_size = this.drawDetails(ctx, offset, resolution, source);
 
         // Move menu option a little bit away from the border
         ctx.translate(10, 0);
-      }
 
-      // Render the menu option text
-      this.drawOptionText(ctx, new Vector(0, 0), resolution, option);
+        // Render the menu option text
+        this.drawOptionText(ctx, new Vector(0, 0), resolution, option);
 
-      // Account for height of equipable menu on next menu item
-      if (isInventorySubMenuItem && isInventoryItem(option)) {
-        ctx.translate(0, detailSize.y - TEXT_SIZE);
+        // Account for height of equipable menu on next menu item
+        ctx.translate(0, detail_size.y - TEXT_SIZE);
+      } else {
+        this.drawOptionText(ctx, new Vector(0, 0), resolution, option);
       }
 
       // Render sub-menu
-      if (this.selected.includes(option) && "menu" in option) {
-        const offset = new Vector(textWidth, 0);
+      if (this.selected.includes(option) && option.menu) {
+        const offset = new Vector(text_width, 0);
 
         this.draw(ctx, offset, resolution, option.menu);
       }
@@ -165,43 +149,43 @@ class Inventory
     ctx: CanvasRenderingContext2D,
     offset: Vector,
     resolution: Vector,
-    option: InventoryItem
+    option: Item | Weapon
   ) {
     // y-value is not known until the description renders
-    const descriptionSize = new Vector(400, Infinity);
-    const isEquipped = "isEquipped" in option ? option.isEquipped : false;
+    const description_size = new Vector(400, Infinity);
+    const is_equipped = "isEquipped" in option ? option.isEquipped : false;
     const padding = new Vector(16, 16);
-    const spriteSize = new Vector(64, 64);
-    const spritePadding = new Vector(16, 8);
-    const descriptionPadding = new Vector(0, 8);
-    const equippedIndicatorHeight = isEquipped
-      ? SUBTEXT_SIZE + spritePadding.y
+    const sprite_size = new Vector(64, 64);
+    const sprite_padding = new Vector(16, 8);
+    const description_padding = new Vector(0, 8);
+    const equipped_indicator_height = is_equipped
+      ? SUBTEXT_SIZE + sprite_padding.y
       : 0;
 
-    descriptionSize.y = this.drawSubtext(
+    description_size.y = this.drawSubtext(
       ctx,
-      offset.plus(padding).plus(descriptionPadding),
-      descriptionSize,
+      offset.plus(padding).plus(description_padding),
+      description_size,
       option.description ?? "Description not found."
     );
 
-    const equippedIndicator = "Equipped";
+    const equipped_indicator = "Equipped";
 
     ctx.save();
     ctx.font = `${SUBTEXT_SIZE}px Minecraftia`;
-    const equippedIndicatorWidth = ctx.measureText(equippedIndicator).width;
+    const equipped_indicator_width = ctx.measureText(equipped_indicator).width;
     ctx.restore();
 
     const width =
-      descriptionSize.x +
+      description_size.x +
       padding.x * 2 +
-      Math.max(spriteSize.x, equippedIndicatorWidth) +
-      spritePadding.x;
+      Math.max(sprite_size.x, equipped_indicator_width) +
+      sprite_padding.x;
 
     const height =
       Math.max(
-        descriptionSize.y,
-        spriteSize.y + spritePadding.y + equippedIndicatorHeight
+        description_size.y,
+        sprite_size.y + sprite_padding.y + equipped_indicator_height
       ) +
       padding.y * 2;
 
@@ -209,25 +193,25 @@ class Inventory
 
     this.drawBox(ctx, offset, size);
 
-    const spriteOffset = new Vector(
-      size.x - spriteSize.x - padding.x,
-      padding.y + spritePadding.y
+    const sprite_offset = new Vector(
+      size.x - sprite_size.x - padding.x,
+      padding.y + sprite_padding.y
     ).plus(offset);
 
-    option.draw(ctx, spriteOffset, spriteSize);
+    option.draw(ctx, sprite_offset, sprite_size);
 
-    if (isEquipped) {
-      const textSize = new Vector(equippedIndicatorWidth, SUBTEXT_SIZE);
-      const equippedIndicatorOffset = offset
+    if (is_equipped) {
+      const text_size = new Vector(equipped_indicator_width, SUBTEXT_SIZE);
+      const equipped_indicator_offset = offset
         .plus(size)
-        .minus(textSize)
+        .minus(text_size)
         .minus(padding);
 
       this.drawSubtext(
         ctx,
-        equippedIndicatorOffset,
+        equipped_indicator_offset,
         resolution,
-        equippedIndicator
+        equipped_indicator
       );
     }
 
@@ -267,13 +251,13 @@ class Inventory
     ctx: CanvasRenderingContext2D,
     offset: Vector,
     _resolution: Vector,
-    option: InventoryMenuOption
+    option: MenuItem<InventoryMenuItem>
   ) {
-    const isSelected = this.selected.includes(option);
-    const isMainSelection = option === this.currentOption;
+    const is_selected = this.selected.includes(option);
+    const is_main_selection = option === this.currentOption;
     const text = this.getOptionDescription(option);
 
-    if (isSelected) {
+    if (is_selected) {
       ctx.font = `bold ${TEXT_SIZE}px Minecraftia`;
       ctx.shadowColor = "#000";
       ctx.shadowOffsetY = 4;
@@ -281,7 +265,7 @@ class Inventory
       ctx.font = `${TEXT_SIZE}px Minecraftia`;
     }
 
-    if (isMainSelection) {
+    if (is_main_selection) {
       ctx.shadowColor = "#0AA";
     }
 
@@ -304,7 +288,7 @@ class Inventory
     offset: Vector,
     resolution: Vector,
     text: string
-  ): number {
+  ) {
     ctx.save();
 
     ctx.font = `${SUBTEXT_SIZE}px Minecraftia`;
@@ -331,12 +315,12 @@ class Inventory
    *
    * @return widest description in the menu
    */
-  private getWidestMenuDescription(menu: InventoryMenuOption[]): string {
-    return menu.reduce((widestMenuText, option) => {
+  private getWidestMenuDescription(menu: SubMenu<InventoryMenuItem>) {
+    return menu.items.reduce((widest_text, option) => {
       const description = this.getOptionDescription(option);
 
-      return widestMenuText.length > description.length
-        ? widestMenuText
+      return widest_text.length > description.length
+        ? widest_text
         : description;
     }, "");
   }
@@ -381,12 +365,20 @@ class Inventory
    * @param item - an item to store in the inventory
    */
   public store(item: Item) {
-    const menu = this._getSubMenu(item.category);
+    const { category } = item;
+    const menu = this._getSubMenu(category);
 
-    if (item.category == "weapon") {
-      menu.push(new WeaponFactory().createStrategy(item.ref));
+    if (!menu) {
+      throw new Error(
+        `Tried to store an item in inventory sub-menu ${category} but sub-menu does not exist`
+      );
+    }
+
+    if (category === "weapon") {
+      const weapon = new WeaponFactory().createStrategy(item.ref);
+      menu.push(new MenuItem(weapon));
     } else {
-      menu.push(item);
+      menu.push(new MenuItem(item));
     }
 
     this.updateState();
@@ -400,11 +392,7 @@ class Inventory
    * @return the submenu
    */
   private _getSubMenu(ref: string) {
-    const filtered = this._menu.filter((subMenu) => {
-      return subMenu.ref === ref;
-    })[0];
-
-    return "menu" in filtered ? filtered.menu : undefined;
+    return this._menu.items.filter((item) => item.ref === ref)[0].menu;
   }
 
   /**
@@ -414,9 +402,9 @@ class Inventory
    *
    * @return description of the option
    */
-  private getOptionDescription(option: InventoryMenuOption): string {
-    if ("menu" in option) {
-      return `${option.displayAs} (${option.menu.length})`;
+  private getOptionDescription(option: MenuItem<InventoryMenuItem>) {
+    if (option.menu) {
+      return `${option.displayAs} (${option.menu.items.length})`;
     }
 
     return option.displayAs;
@@ -440,25 +428,29 @@ class Inventory
     }
 
     ["item", "weapon", "armor", "special"].forEach((menuType) => {
-      if (this._hasMenu(data)) {
-        const subMenu = data.menu[menuType as keyof InventoryState["menu"]];
-
-        subMenu.forEach((ref) => {
-          if (this._getSubMenu(menuType)) {
-            this.store(new Item(ref));
-          }
-        });
+      if (!this._hasMenu(data)) {
+        return;
       }
-    });
 
-    const equipped = state.get("player.equipped");
+      const subMenu = data.menu[menuType as keyof InventoryState["menu"]];
 
-    if (equipped) {
-      this._getSubMenu("weapon").forEach((weapon: Weapon) => {
-        if (weapon.ref === equipped) {
-          weapon.equip();
+      subMenu.forEach((ref) => {
+        if (this._getSubMenu(menuType)) {
+          this.store(new Item(ref));
         }
       });
+    });
+
+    const equipped_id = state.get("player.equipped");
+    const weapons = this._getSubMenu("weapon");
+
+    if (equipped_id && weapons !== undefined) {
+      weapons.items
+        .map(({ source }) => source)
+        .filter(
+          (source) => source instanceof Weapon && source.ref === equipped_id
+        )
+        .forEach((weapon: Weapon) => weapon.equip());
     }
 
     return data;
@@ -482,22 +474,19 @@ class Inventory
 
   /** Equip the currently selected option */
   private equipCurrentOption() {
-    if (!(this.currentOption instanceof Weapon)) {
+    const { source } = this.currentOption;
+
+    if (!(source instanceof Weapon)) {
       return;
     }
 
-    const menu = this.selected.slice(-2).shift();
+    const parent = this.selected.slice(-2).shift();
 
-    if ("menu" in menu) {
-      menu.menu.forEach((option: unknown) => {
-        if (
-          option === this.currentOption &&
-          option["equip"] instanceof Function
-        ) {
-          option["equip"]();
-        }
-      });
-    }
+    parent?.menu?.items?.forEach(({ source: current }) => {
+      if (source === current) {
+        source.equip();
+      }
+    });
   }
 }
 

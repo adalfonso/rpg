@@ -5,13 +5,14 @@ import HeroTeam from "./combat/HeroTeam";
 import Inventory from "./menu/Inventory";
 import Level from "./level/Level";
 import MissingDataError from "./error/MissingDataError";
-import StartMenu from "./menu/StartMenu";
 import Vector from "@common/Vector";
 import menus from "./menu/menus";
 import { DialogueMediator } from "./ui/dialogue/DialogueMediator";
 import { Drawable, Eventful, CallableMap, Updatable } from "./interfaces";
 import { LevelFixtureFactory } from "./level/LevelFixtureFactory";
 import { LevelTemplate } from "./level/LevelTemplate";
+import { StartMenu } from "./menu/StartMenu";
+import { SubMenu } from "./menu/SubMenu";
 import { bus } from "@/EventBus";
 import { getLevels } from "./level/levels";
 
@@ -57,8 +58,8 @@ class Game implements Eventful, Drawable, Updatable {
   ) {
     this.state = GameState.Play;
 
-    this.menu = new StartMenu(menus.start());
-    this.inventory = new Inventory(menus.inventory());
+    this.menu = new StartMenu(new SubMenu(menus.start()));
+    this.inventory = new Inventory(new SubMenu(menus.inventory()));
 
     bus.register(this);
 

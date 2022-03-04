@@ -1,10 +1,10 @@
 import CombatStrategy from "@/combat/strategy/CombatStrategy";
-import Menu from "./Menu";
 import Vector from "@common/Vector";
-import { BaseMenuItem } from "./menus";
 import { Drawable, Eventful, CallableMap } from "@/interfaces";
+import { Menu } from "./Menu";
+import { MenuItem } from "./MenuItem";
 
-export interface BattleMenuItem extends BaseMenuItem<BattleMenuItem> {
+export interface BattleMenuItem {
   /**
    * Battle menu items typically have a use method (CombatStrategy, Ability,
    * etc.), but not always because a sub-menu may also be used to represent a
@@ -13,15 +13,14 @@ export interface BattleMenuItem extends BaseMenuItem<BattleMenuItem> {
   use?: () => void;
 }
 
-/**
- * In-battle menu of a player's items, attack, and abilities
- */
-class BattleMenu extends Menu<BattleMenuItem> implements Eventful, Drawable {
-  /**
-   * If the currently selection option is combat-oriented
-   */
+/** In-battle menu of a player's items, attack, and abilities */
+export class BattleMenu
+  extends Menu<BattleMenuItem>
+  implements Eventful, Drawable
+{
+  /** If the currently selection option is combat-oriented */
   get wantsCombat() {
-    return this.currentOption instanceof CombatStrategy;
+    return this.currentOption.source instanceof CombatStrategy;
   }
 
   /**
@@ -39,28 +38,28 @@ class BattleMenu extends Menu<BattleMenuItem> implements Eventful, Drawable {
     ctx.save();
     ctx.font = "12px Minecraftia";
 
-    const tileSize = new Vector(72, 24);
-    const tilePadding = new Vector(8, 0);
+    const tile_size = new Vector(72, 24);
+    const tile_padding = new Vector(8, 0);
 
-    const basePosition = new Vector(
-      offset.x - (tileSize.x + tilePadding.x) * this._menu.length,
-      offset.y + tileSize.y
+    const base_position = new Vector(
+      offset.x - (tile_size.x + tile_padding.x) * this._menu.items.length,
+      offset.y + tile_size.y
     ).plus(this._position);
 
-    this._menu.forEach((option, index) => {
-      const isSelected = option === this.selected[0];
-      const position = new Vector(tileSize.x + tilePadding.x, 0)
+    this._menu.items.forEach((option, index) => {
+      const is_selected = option === this.selected[0];
+      const position = new Vector(tile_size.x + tile_padding.x, 0)
         .times(index + 1)
-        .plus(basePosition);
+        .plus(base_position);
 
       ctx.fillStyle = "#FFF";
 
       if (option === this.selected[0]) {
         ctx.fillStyle = "#DDD";
-        ctx.strokeRect(position.x, position.y, tileSize.x, tileSize.y);
+        ctx.strokeRect(position.x, position.y, tile_size.x, tile_size.y);
       }
 
-      ctx.fillRect(position.x, position.y, tileSize.x, tileSize.y);
+      ctx.fillRect(position.x, position.y, tile_size.x, tile_size.y);
       ctx.fillStyle = "#333";
 
       ctx.save();
@@ -77,8 +76,8 @@ class BattleMenu extends Menu<BattleMenuItem> implements Eventful, Drawable {
 
       ctx.restore();
 
-      if (isSelected && option.menu.length > 0) {
-        option.menu.forEach((subOption, index) => {
+      if (is_selected && option.menu) {
+        option.menu.items.forEach((subOption, index) => {
           ctx.save();
 
           this.applyHighlight(ctx, subOption);
@@ -122,13 +121,18 @@ class BattleMenu extends Menu<BattleMenuItem> implements Eventful, Drawable {
             }
             break;
 
-          case "ArrowUp":
-            if (option === menu[0]) {
+          case "ArrowUp": {
+            const [first_item] = menu.items;
+            const is_first_option =
+              option === first_item || option.source === first_item?.source;
+
+            if (is_first_option) {
               this.back();
             } else if (this.selected.length > 1) {
               this.previous();
             }
             break;
+          }
 
           case "ArrowLeft":
             if (this.selected.length === 1) {
@@ -142,11 +146,13 @@ class BattleMenu extends Menu<BattleMenuItem> implements Eventful, Drawable {
             }
             break;
 
-          case "Enter":
-            if ("use" in option && option.use instanceof Function) {
-              option.use();
-            }
+          case "Enter": {
+            const use = option.get("use");
+
+            use instanceof Function && use.bind(option.source)();
+
             break;
+          }
         }
       },
     };
@@ -160,15 +166,17 @@ class BattleMenu extends Menu<BattleMenuItem> implements Eventful, Drawable {
    */
   private applyHighlight(
     ctx: CanvasRenderingContext2D,
-    option: BattleMenuItem
+    option: MenuItem<BattleMenuItem>
   ) {
-    if (option === this.currentOption) {
-      ctx.shadowOffsetX = 1;
-      ctx.shadowOffsetY = 1;
-      ctx.shadowBlur = 0;
-      ctx.shadowColor = "#0DD";
+    if (
+      option !== this.currentOption &&
+      option.source !== this.currentOption.source
+    ) {
+      return;
     }
+    ctx.shadowOffsetX = 1;
+    ctx.shadowOffsetY = 1;
+    ctx.shadowBlur = 0;
+    ctx.shadowColor = "#0DD";
   }
 }
-
-export default BattleMenu;

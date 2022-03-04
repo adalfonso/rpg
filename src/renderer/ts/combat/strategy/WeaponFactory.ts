@@ -1,4 +1,3 @@
-import CombatStrategy from "./CombatStrategy";
 import CombatStrategyFactory from "./CombatStrategyFactory";
 import Damage from "../Damage";
 import MissingDataError from "@/error/MissingDataError";
@@ -16,7 +15,7 @@ class WeaponFactory implements CombatStrategyFactory {
    *
    * @return the weapon
    */
-  public createStrategy(ref: string): CombatStrategy {
+  public createStrategy(ref: string) {
     const template = items[ref];
 
     if (!template) {

@@ -14,6 +14,9 @@ class Item {
   /** UI aspect of the item */
   private _renderable: Renderable;
 
+  /** If the item is equippable */
+  private _equippable = false;
+
   /**
    * Create a new Item instance
    *
@@ -60,6 +63,23 @@ class Item {
   /** Get the item's ref */
   get ref(): string {
     return this._ref;
+  }
+
+  /** If the item can be equipped by a player */
+  get equippable() {
+    return this._equippable;
+  }
+
+  /**
+   * TODO: This was added to satisfy the InventoryMenuItem interface and will
+   * likely be needed in the future
+   */
+  public equip() {
+    if (!this.equippable) {
+      return;
+    }
+
+    console.info("Tried to equip an item. This has not happend before");
   }
 
   /**

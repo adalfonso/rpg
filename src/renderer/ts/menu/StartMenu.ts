@@ -1,10 +1,9 @@
-import Menu from "./Menu";
 import Vector from "@common/Vector";
-import { BaseMenuItem } from "./menus";
 import { Drawable, CallableMap } from "@/interfaces";
+import { Menu } from "./Menu";
 import { bus } from "@/EventBus";
 
-export interface StartMenuItem extends BaseMenuItem<StartMenuItem> {
+export interface StartMenuItem {
   action: (menu: StartMenu) => void;
 }
 
@@ -14,7 +13,7 @@ export interface StartMenuItem extends BaseMenuItem<StartMenuItem> {
  * It is responsible for higher level game functions like saving, changing
  * settings, and loading levels.
  */
-class StartMenu extends Menu<StartMenuItem> implements Drawable {
+export class StartMenu extends Menu<StartMenuItem> implements Drawable {
   /**
    * Draw StartMenu and all underlying entities
    *
@@ -37,8 +36,7 @@ class StartMenu extends Menu<StartMenuItem> implements Drawable {
     ctx.fillStyle = "#FFF";
     ctx.textAlign = "center";
 
-    this._menu.forEach((_option, index) => {
-      const current = this._menu[index];
+    this._menu.items.forEach((current, index) => {
       const selected = current === this.currentOption;
 
       if (selected) {
@@ -54,7 +52,7 @@ class StartMenu extends Menu<StartMenuItem> implements Drawable {
       ctx.fillText(
         selected ? "▶ " + current.displayAs : current.displayAs,
         resolution.x / 2,
-        (resolution.y / (this._menu.length - index)) * 0.5
+        (resolution.y / (this._menu.items.length - index)) * 0.5
       );
     });
 
@@ -103,9 +101,7 @@ class StartMenu extends Menu<StartMenuItem> implements Drawable {
   protected select() {
     const option = this.currentOption;
 
-    if ("action" in option) {
-      option.action(this);
-    }
+    option.get("action")(this);
   }
 
   /**
@@ -117,5 +113,3 @@ class StartMenu extends Menu<StartMenuItem> implements Drawable {
     bus.emit("state.save");
   }
 }
-
-export default StartMenu;

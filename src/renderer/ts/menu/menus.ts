@@ -1,35 +1,46 @@
 import Actor from "@/actor/Actor";
 import Battle from "@/combat/Battle";
-import StartMenu, { StartMenuItem } from "./StartMenu";
 import StatModifierFactory from "@/combat/strategy/StatModifierFactory";
 import { BattleMenuItem } from "./BattleMenu";
 import { InventoryMenuItem } from "./Inventory";
+import { StartMenu, StartMenuItem } from "./StartMenu";
 
-export interface BaseMenuItem<M> {
+export interface BaseMenuItemTemplate {
   ref: string;
   displayAs: string;
-  menu?: (BaseMenuItem<M> | M)[];
 }
+
+export type MenuItemTemplate<T> = T &
+  BaseMenuItemTemplate & {
+    menu?: MenuTemplate<T>;
+  };
+
+export const isMenuItemTemplate = <T extends Record<string, unknown>>(
+  input: T
+): input is MenuItemTemplate<T> =>
+  input.constructor.name === "Object" &&
+  typeof input.ref === "string" &&
+  typeof input.displayAs === "string";
+
+export type MenuGenerator<T> = () => MenuItemTemplate<T>[];
+
+export type MenuTemplate<T> = MenuItemTemplate<T>[] | MenuGenerator<T>;
 
 /** All menus in the game */
 export const menus = {
-  start: (): StartMenuItem[] => [
+  start: (): MenuItemTemplate<StartMenuItem>[] => [
     {
       ref: "start",
       displayAs: "Start Game!",
-      action: (menu: StartMenu) => {
-        menu.close();
-      },
+      action: (menu: StartMenu) => menu.close(),
     },
     {
       ref: "save",
       displayAs: "Save Game",
-      action: (menu: StartMenu) => {
-        menu.saveState();
-      },
+      action: (menu: StartMenu) => menu.saveState(),
     },
   ],
-  inventory: (): InventoryMenuItem[] => [
+  inventory: (): MenuItemTemplate<InventoryMenuItem>[] => [
     {
       ref: "item",
       displayAs: "Items",
@@ -53,7 +64,10 @@ export const menus = {
       menu: [],
     },
   ],
-  battle: (battle: Battle, getUser: () => Actor): BattleMenuItem[] => [
+  battle: (
+    battle: Battle,
+    getUser: () => Actor
+  ): MenuItemTemplate<BattleMenuItem>[] => [
     {
       ref: "item",
       displayAs: "Items",
@@ -63,12 +77,12 @@ export const menus = {
       ref: "attack",
       displayAs: "Attack",
       // TODO: need a menu refactor before this works for multiple players
-      menu: getUser().weapon ? [getUser().weapon] : [],
+      menu: () => (getUser().weapon ? [getUser().weapon] : []),
     },
     {
       ref: "ability",
       displayAs: "Abilities",
-      menu: getUser().abilities,
+      menu: () => getUser().abilities,
     },
     {
       ref: "other",
@@ -78,9 +92,7 @@ export const menus = {
         {
           ref: "run_away",
           displayAs: "Run Away",
-          use: () => {
-            battle.stop();
-          },
+          use: () => battle.stop(),
         },
       ],
     },

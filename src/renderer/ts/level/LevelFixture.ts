@@ -51,6 +51,7 @@ export const isBasicLevelFixtureTemplate = (
   template: unknown
 ): template is BasicLevelFixtureTemplate =>
   typeof template === "object" &&
+  template !== null &&
   typeof template["x"] === "number" &&
   typeof template["y"] === "number" &&
   typeof template["height"] === "number" &&
@@ -64,6 +65,7 @@ export const isBasicLevelFixtureTemplate = (
  */
 const isLevelFixtureProperty = (prop: unknown) =>
   typeof prop === "object" &&
+  prop !== null &&
   typeof prop["name"] === "string" &&
   typeof prop["type"] === "string" &&
   typeof prop["value"] === "string";

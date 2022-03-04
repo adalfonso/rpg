@@ -145,9 +145,12 @@ class Team<M extends Actor> {
 
   /** Determine the next member to take their turn */
   get nextToTakeTurn() {
-    return this._members.filter(
-      (member) => !member.isDefeated && !this._have_taken_turn.includes(member)
-    )[0];
+    return (
+      this._members.filter(
+        (member) =>
+          !member.isDefeated && !this._have_taken_turn.includes(member)
+      )[0] ?? this.leader
+    );
   }
 
   /** Determine the previous member to take their turn */

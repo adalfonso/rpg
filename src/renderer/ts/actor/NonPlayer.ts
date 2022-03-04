@@ -79,7 +79,9 @@ class NonPlayer extends Actor implements Eventful, Drawable {
    *
    * @param dt - delta time
    */
-  public update(dt: number) {}
+  public update(_dt: number) {
+    //
+  }
 
   /**
    * Draw NPC and all underlying entities

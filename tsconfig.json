@@ -4,8 +4,8 @@
   "compilerOptions": {
     "suppressImplicitAnyIndexErrors": true,
     "noUnusedLocals": false,
-    "strictNullChecks": false,
     "strictFunctionTypes": false,
+    "strictNullChecks": false,
     "resolveJsonModule": true,
     "lib": ["es2019", "dom"],
     "baseUrl": ".",
