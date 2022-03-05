@@ -15,7 +15,7 @@ import { AnimatedEntity } from "@/ui/animation/text/AnimatedEntity";
 import { AnimatedText } from "@/ui/animation/text/AnimatedText";
 import { BattleMenu } from "@/menu/BattleMenu";
 import { Direction } from "@/ui/types";
-import { Drawable, Eventful, Lockable, CallableMap } from "@/interfaces";
+import { Drawable, Lockable } from "@/interfaces";
 import { LearnedAbility } from "./strategy/types";
 import { SubMenu } from "@/menu/SubMenu";
 import { bus } from "@/EventBus";
@@ -36,7 +36,7 @@ const isBattleEvent = (event: unknown): event is BattleEvent =>
   typeof event["isDone"] === "boolean" &&
   event["update"] instanceof Function;
 
-class Battle implements Eventful, Drawable, Lockable {
+class Battle implements Drawable, Lockable {
   /** Menu for the battle */
   private _menu: BattleMenu;
 
@@ -167,7 +167,7 @@ class Battle implements Eventful, Drawable, Lockable {
    *
    * @return events to register
    */
-  public register(): CallableMap {
+  public register() {
     return {
       "battle.action": (e: CustomEvent) => {
         // Cancel if the player's combat strategy emits before their turn ends

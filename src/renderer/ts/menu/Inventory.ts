@@ -6,7 +6,7 @@ import Vector from "@common/Vector";
 import Weapon from "@/combat/strategy/Weapon";
 import WeaponFactory from "@/combat/strategy/WeaponFactory";
 import { BaseMenuItemTemplate as Base } from "./menus";
-import { Drawable, Eventful, CallableMap } from "@/interfaces";
+import { Drawable } from "@/interfaces";
 import { InventoryState, isInventoryState } from "@/state/InventoryState";
 import { Menu } from "./Menu";
 import { MenuItem } from "./MenuItem";
@@ -26,10 +26,7 @@ const TEXT_SIZE = 24;
 const SUBTEXT_SIZE = 16;
 
 /** A menu for managing things such as items and equipment */
-export class Inventory
-  extends Menu<InventoryMenuItem>
-  implements Eventful, Drawable
-{
+export class Inventory extends Menu<InventoryMenuItem> implements Drawable {
   /**
    * Create an Inventory instance
    *
@@ -330,7 +327,7 @@ export class Inventory
    *
    * @return events to register
    */
-  public register(): CallableMap {
+  public register() {
     const parent = super.register();
 
     return {
@@ -450,7 +447,7 @@ export class Inventory
         .filter(
           (source) => source instanceof Weapon && source.ref === equipped_id
         )
-        .forEach((weapon: Weapon) => weapon.equip());
+        .forEach((weapon) => (weapon as Weapon).equip());
     }
 
     return data;

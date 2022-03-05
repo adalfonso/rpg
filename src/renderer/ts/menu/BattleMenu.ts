@@ -1,6 +1,6 @@
 import CombatStrategy from "@/combat/strategy/CombatStrategy";
 import Vector from "@common/Vector";
-import { Drawable, Eventful, CallableMap } from "@/interfaces";
+import { Drawable } from "@/interfaces";
 import { Menu } from "./Menu";
 import { MenuItem } from "./MenuItem";
 
@@ -14,10 +14,7 @@ export interface BattleMenuItem {
 }
 
 /** In-battle menu of a player's items, attack, and abilities */
-export class BattleMenu
-  extends Menu<BattleMenuItem>
-  implements Eventful, Drawable
-{
+export class BattleMenu extends Menu<BattleMenuItem> implements Drawable {
   /** If the currently selection option is combat-oriented */
   get wantsCombat() {
     return this.currentOption.source instanceof CombatStrategy;
@@ -102,7 +99,7 @@ export class BattleMenu
    *
    * @return events to register
    */
-  public register(): CallableMap {
+  public register() {
     return {
       keyup: (e: KeyboardEvent) => {
         if (this.locked) {

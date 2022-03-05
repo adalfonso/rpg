@@ -1,5 +1,5 @@
 import Vector from "@common/Vector";
-import { Drawable, CallableMap } from "@/interfaces";
+import { Drawable } from "@/interfaces";
 import { Menu } from "./Menu";
 import { bus } from "@/EventBus";
 
@@ -64,7 +64,7 @@ export class StartMenu extends Menu<StartMenuItem> implements Drawable {
    *
    * @return events to register
    */
-  public register(): CallableMap {
+  public register() {
     return {
       keyup: (e: KeyboardEvent) => {
         if (this.locked) {

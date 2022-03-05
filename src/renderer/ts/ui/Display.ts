@@ -93,7 +93,7 @@ class Display {
    *
    * @return events to register
    */
-  public register(): CallableMap {
+  public register(): CallableMap<CustomEvent> {
     return {
       resize: (_: Event) => this.resizetoWindow(),
       "battle.start": (_: CustomEvent) => (this.renderMode = RenderMode.Static),

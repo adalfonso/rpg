@@ -60,11 +60,11 @@ describe("OpponentSelect", () => {
 
       sut.unlock();
 
-      listeners.keyup({ key: "ArrowLeft" });
+      listeners.keyup({ key: "ArrowLeft" } as KeyboardEvent);
 
       expect(sut.selected).to.equal(enemies[2]);
 
-      listeners.keyup({ key: "ArrowLeft" });
+      listeners.keyup({ key: "ArrowLeft" } as KeyboardEvent);
 
       expect(sut.selected).to.equal(enemies[1]);
     });
@@ -82,7 +82,7 @@ describe("OpponentSelect", () => {
 
       sut.unlock();
 
-      listeners.keyup({ key: "ArrowLeft" });
+      listeners.keyup({ key: "ArrowLeft" } as KeyboardEvent);
 
       expect(sut.selected).to.equal(enemies[1]);
     });
@@ -96,10 +96,10 @@ describe("OpponentSelect", () => {
 
       sut.unlock();
 
-      listeners.keyup({ key: "ArrowRight" });
+      listeners.keyup({ key: "ArrowRight" } as KeyboardEvent);
 
       expect(sut.selected).to.equal(enemies[1]);
-      listeners.keyup({ key: "ArrowRight" });
+      listeners.keyup({ key: "ArrowRight" } as KeyboardEvent);
 
       expect(sut.selected).to.equal(enemies[2]);
     });
@@ -117,7 +117,7 @@ describe("OpponentSelect", () => {
 
       sut.unlock();
 
-      listeners.keyup({ key: "ArrowRight" });
+      listeners.keyup({ key: "ArrowRight" } as KeyboardEvent);
 
       expect(sut.selected).to.equal(enemies[2]);
     });

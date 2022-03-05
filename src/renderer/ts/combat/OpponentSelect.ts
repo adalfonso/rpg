@@ -1,7 +1,7 @@
 import Actor from "@/actor/Actor";
 import Team from "./Team";
 import Vector from "@common/Vector";
-import { Eventful, CallableMap, Drawable, Lockable } from "@/interfaces";
+import { Drawable, Lockable } from "@/interfaces";
 import { bus } from "@/EventBus";
 
 /**
@@ -10,7 +10,7 @@ import { bus } from "@/EventBus";
  * This class allows members of a team to be traversed and targeted for combat.
  * It draws an arrow above their sprite as an indicator.
  */
-class OpponentSelect implements Eventful, Drawable, Lockable {
+class OpponentSelect implements Drawable, Lockable {
   /**
    * Currently selected index of the opponents
    */
@@ -49,7 +49,7 @@ class OpponentSelect implements Eventful, Drawable, Lockable {
    *
    * @return events to register
    */
-  public register(): CallableMap {
+  public register() {
     return {
       keyup: (e: KeyboardEvent) => {
         if (this._locked) {

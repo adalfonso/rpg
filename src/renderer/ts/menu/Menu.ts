@@ -1,6 +1,6 @@
 import UnimplementedMethodError from "@/error/UnimplementMethodError";
 import Vector from "@common/Vector";
-import { Drawable, Eventful, Lockable, CallableMap } from "@/interfaces";
+import { Drawable, Lockable } from "@/interfaces";
 import { Empty } from "@/mixins";
 import { MenuItem } from "./MenuItem";
 import { Movable } from "@/Entity";
@@ -11,7 +11,7 @@ import { lcFirst } from "@/util";
 /** A visual UI that can be opened, closed, and traversed */
 export abstract class Menu<T>
   extends Movable(Empty)
-  implements Eventful, Drawable, Lockable
+  implements Drawable, Lockable
 {
   /**
    * A stack of the currently selected menu options
@@ -92,7 +92,7 @@ export abstract class Menu<T>
    *
    * @return events to register
    */
-  public register(): CallableMap {
+  public register() {
     return {
       keyup: (e: KeyboardEvent) => {
         if (!this.active) {

@@ -5,12 +5,12 @@ import Vector from "@common/Vector";
 import Weapon from "@/combat/strategy/Weapon";
 import config from "@/config";
 import { Direction } from "@/ui/types";
-import { Drawable, Eventful, Lockable, CallableMap } from "@/interfaces";
+import { Drawable, Lockable } from "@/interfaces";
 import { LevelFixtureTemplate } from "@/level/LevelFixture";
 import { bus } from "@/EventBus";
 
 /** The main entity of the game */
-class Player extends Actor implements Eventful, Drawable, Lockable {
+class Player extends Actor implements Drawable, Lockable {
   /** The speed the player will move in any one direction */
   private baseSpeed: number;
 
@@ -89,7 +89,7 @@ class Player extends Actor implements Eventful, Drawable, Lockable {
    *
    * @return events to register
    */
-  public register(): CallableMap {
+  public register() {
     return {
       keydown: (e: KeyboardEvent) => {
         if (e.key.match(/Arrow/)) {

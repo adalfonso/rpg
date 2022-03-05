@@ -4,13 +4,12 @@ import Player from "@/actor/Player";
 import Team from "./Team";
 import Vector from "@common/Vector";
 import config from "@/config";
-import { CallableMap, Eventful } from "@/interfaces";
 import { bus } from "@/EventBus";
 
 /**
  * Similar to a Team but specific to playable characters
  */
-class HeroTeam extends Team<Player> implements Eventful {
+class HeroTeam extends Team<Player> {
   /**
    * Create a new HeroTeam instance
    *
@@ -27,7 +26,7 @@ class HeroTeam extends Team<Player> implements Eventful {
    *
    * @return events to register
    */
-  public register(): CallableMap {
+  public register() {
     return {
       "team.newMember": (e: CustomEvent) => {
         const actor = e.detail?.target.actor;

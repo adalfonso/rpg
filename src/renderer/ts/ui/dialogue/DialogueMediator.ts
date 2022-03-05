@@ -5,12 +5,12 @@ import MissingDataError from "@/error/MissingDataError";
 import Team from "@/combat/Team";
 import TextStream from "./TextStream";
 import Vector from "@common/Vector";
-import { CallableMap, Eventful, Updatable } from "@/interfaces";
+import { Updatable } from "@/interfaces";
 import { bus } from "@/EventBus";
 import { isStringArray } from "@/types";
 
 /** Used to start and stop dialogue with a team */
-export class DialogueMediator implements Eventful, Updatable {
+export class DialogueMediator implements Updatable {
   /** Dialogue instance */
   private _dialogue: Dialogue;
 
@@ -19,7 +19,7 @@ export class DialogueMediator implements Eventful, Updatable {
   }
 
   /** Register this with the event bus */
-  register(): CallableMap {
+  register() {
     return {
       "dialogue.create": this._createDialogue.bind(this),
     };

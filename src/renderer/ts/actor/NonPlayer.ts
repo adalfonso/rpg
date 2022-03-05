@@ -1,7 +1,7 @@
 import Actor from "./Actor";
 import MissingDataError from "@/error/MissingDataError";
 import Vector from "@common/Vector";
-import { Drawable, Eventful, CallableMap } from "@/interfaces";
+import { Drawable } from "@/interfaces";
 import { Milestone } from "@/state/milestone/Milestone";
 import { MilestoneAttainOn } from "@/state/milestone/types";
 import { Speech } from "./types";
@@ -13,7 +13,7 @@ import {
 } from "@/level/LevelFixture";
 
 /** A non-playable character */
-class NonPlayer extends Actor implements Eventful, Drawable {
+class NonPlayer extends Actor implements Drawable {
   /** Entities that were recently collided with */
   private collisions: Actor[] = [];
 
@@ -103,7 +103,7 @@ class NonPlayer extends Actor implements Eventful, Drawable {
    *
    * @return events to register
    */
-  public register(): CallableMap {
+  public register() {
     return {
       "dialogue.end": (e: CustomEvent) => {
         /**

@@ -1,5 +1,6 @@
-import { expect } from "chai";
 import Sut from "@/EventBus";
+import { Eventful } from "@/interfaces";
+import { expect } from "chai";
 
 describe("EventBus", () => {
   describe("getInstance", () => {
@@ -15,7 +16,7 @@ describe("EventBus", () => {
 
       let fooValue = 0;
 
-      let foo = {
+      let foo: Eventful<CustomEvent> = {
         register: () => {
           return {
             foo: (e: CustomEvent) => {
@@ -91,12 +92,12 @@ describe("EventBus", () => {
             },
           };
         },
-      };
+      } as Eventful<CustomEvent>;
 
       let bar = {
         register: () => {
           return {
-            bar: (e: CustomEvent) => {
+            bar: (_: CustomEvent) => {
               if (barValue !== 10) {
                 barValue = 10;
               } else {
@@ -106,7 +107,7 @@ describe("EventBus", () => {
             },
           };
         },
-      };
+      } as Eventful<CustomEvent>;
 
       sut.register(foo);
       sut.register(bar);

@@ -1,4 +1,4 @@
-import { Eventful } from "./interfaces";
+import { CallableMap, Eventful } from "./interfaces";
 
 /**
  * How events are stored locally
@@ -7,19 +7,15 @@ import { Eventful } from "./interfaces";
  * @prop handle   - how the event is handled
  */
 type BrokeredEventTemplate = {
-  observer: Eventful;
+  observer: Eventful<any>;
   handle: (e: Event) => void;
 };
 
 class EventBus {
-  /**
-   * Singleton instance
-   */
+  /** Singleton instance */
   private static instance: EventBus;
 
-  /**
-   * Event store
-   */
+  /** Event store */
   private events: Record<string, BrokeredEventTemplate[]> = {};
 
   /**
@@ -38,7 +34,7 @@ class EventBus {
    *
    * @param observer - entity to register
    */
-  public register(observer: Eventful) {
+  public register(observer: Eventful<any>) {
     const events = observer.register();
 
     // An array here indicates that a classes's parents events are included
@@ -54,7 +50,7 @@ class EventBus {
    *
    * @param observer - eventful entity
    */
-  public unregister(observer: Eventful) {
+  public unregister(observer: unknown) {
     for (const event in this.events) {
       this.events[event] = this.events[event].filter(
         (e: BrokeredEventTemplate) => {
@@ -81,10 +77,7 @@ class EventBus {
    * @param observer - eventful entity
    * @param events   - a list of event callbacks
    */
-  private install(
-    observer: Eventful,
-    events: Record<string, (input: unknown) => unknown>
-  ) {
+  private install(observer: Eventful<any>, events: CallableMap<any>) {
     for (const event in events) {
       const brokeredEvent: BrokeredEventTemplate = {
         observer: observer,
@@ -106,9 +99,7 @@ class EventBus {
   }
 }
 
-/**
- * Event bus singleton
- */
+/** Event bus singleton */
 export const bus: EventBus = EventBus.getInstance();
 
 export default EventBus;

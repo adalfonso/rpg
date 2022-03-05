@@ -8,7 +8,7 @@ import MissingDataError from "./error/MissingDataError";
 import Vector from "@common/Vector";
 import menus from "./menu/menus";
 import { DialogueMediator } from "./ui/dialogue/DialogueMediator";
-import { Drawable, Eventful, CallableMap, Updatable } from "./interfaces";
+import { Drawable, Updatable } from "./interfaces";
 import { LevelFixtureFactory } from "./level/LevelFixtureFactory";
 import { LevelTemplate } from "./level/LevelTemplate";
 import { StartMenu } from "./menu/StartMenu";
@@ -31,7 +31,7 @@ enum GameState {
  *
  * Game hands off rendering to all of the game's constituents.
  */
-class Game implements Eventful, Drawable, Updatable {
+class Game implements Drawable, Updatable {
   /** The current battle taking place */
   private battle: Battle = null;
 
@@ -130,7 +130,7 @@ class Game implements Eventful, Drawable, Updatable {
    *
    * @return events to register
    */
-  public register(): CallableMap {
+  public register() {
     return {
       "battle.start": (e: CustomEvent) => {
         /**

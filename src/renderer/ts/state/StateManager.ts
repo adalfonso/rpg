@@ -4,7 +4,7 @@ import { bus } from "@/EventBus";
 import { Eventful, CallableMap } from "@/interfaces";
 
 /** An intermediary between an on-disk JSON store and objects within the game */
-class StateManager implements Eventful {
+class StateManager implements Eventful<CustomEvent> {
   /** The game state */
   private data: Record<string, unknown> = {};
 
@@ -35,7 +35,7 @@ class StateManager implements Eventful {
    *
    * @return events to register
    */
-  public register(): CallableMap {
+  public register(): CallableMap<CustomEvent> {
     return {
       "state.save": (_e: CustomEvent) => {
         this.save();
@@ -50,14 +50,14 @@ class StateManager implements Eventful {
    *
    * @return data stored at the reference
    */
-  public get(ref?: string) {
+  public get(ref?: string): any {
     if (ref === undefined) {
       return this.data;
     }
 
     try {
       return ref.split(".").reduce((current, key) => {
-        return current[key];
+        return current[key] as any;
       }, this.data);
     } catch (e) {
       return undefined;
@@ -197,7 +197,10 @@ class StateManager implements Eventful {
 
     return fs
       .readFile(this.parseFileDestination(destination), "UTF-8")
-      .then((contents: string) => {
+      .then((contents) => {
+        if (typeof contents !== "string") {
+          throw new Error("Got unexpected Buffer when reading file.");
+        }
         this.data = JSON.parse(contents);
         bus.emit("file.load");
       })

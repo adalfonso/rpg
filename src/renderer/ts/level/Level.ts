@@ -6,7 +6,7 @@ import NonPlayer from "@/actor/NonPlayer";
 import Player from "@/actor/Player";
 import Portal from "@/inanimate/Portal";
 import Vector from "@common/Vector";
-import { Drawable, Eventful, CallableMap } from "@/interfaces";
+import { Drawable } from "@/interfaces";
 import { LevelFixture } from "./LevelFixture";
 import { LevelFixtureFactory } from "./LevelFixtureFactory";
 import { LevelTemplate } from "./LevelTemplate";
@@ -78,7 +78,7 @@ class Level implements Drawable {
    *
    * @return events to register
    */
-  public register(): CallableMap {
+  public register() {
     return {
       "portal.enter": (e: CustomEvent) => {
         const portal = e.detail?.portal;
@@ -165,7 +165,7 @@ class Level implements Drawable {
      * Force unregister every fixture, even if they aren't really eventful to
      * prevent memory leaks.
      */
-    this.fixtures.forEach((e) => bus.unregister(<Eventful>e));
+    this.fixtures.forEach((e) => bus.unregister(e));
     this.fixtures = [];
     this.entries = {};
   }

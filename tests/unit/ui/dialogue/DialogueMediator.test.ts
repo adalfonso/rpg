@@ -19,7 +19,9 @@ describe("DialogueMediator", () => {
 
       const events = mediator.register();
 
-      expect(() => events["dialogue.create"]({ detail: {} })).to.throw(
+      expect(() =>
+        events["dialogue.create"]({ detail: {} } as CustomEvent)
+      ).to.throw(
         "Unable to find speech or speaker when creating dialogue from DialogueMediator"
       );
     });
@@ -30,7 +32,7 @@ describe("DialogueMediator", () => {
       const events = mediator.register();
 
       expect(() =>
-        events["dialogue.create"]({ detail: { speech: "foo" } })
+        events["dialogue.create"]({ detail: { speech: "foo" } } as CustomEvent)
       ).to.throw(
         'Invalid data type for "speech" @ DialogueMediator/dialogue.create'
       );
@@ -42,7 +44,9 @@ describe("DialogueMediator", () => {
       const events = mediator.register();
 
       expect(() =>
-        events["dialogue.create"]({ detail: { speech: ["foo"], speaker: {} } })
+        events["dialogue.create"]({
+          detail: { speech: ["foo"], speaker: {} },
+        } as CustomEvent)
       ).to.throw(
         'Invalid data type for "speaker" @ DialogueMediator/dialogue.create'
       );
@@ -60,7 +64,7 @@ describe("DialogueMediator", () => {
       const mediator = new DialogueMediator(team);
       const events = mediator.register();
 
-      events["dialogue.create"]({ detail: { speech: ["foo"] } });
+      events["dialogue.create"]({ detail: { speech: ["foo"] } } as CustomEvent);
 
       sinon.assert.calledOnce(spy.lock);
       sinon.assert.notCalled(spy.unlock);

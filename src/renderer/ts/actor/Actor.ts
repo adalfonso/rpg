@@ -359,7 +359,7 @@ abstract class Actor
     const state = StateManager.getInstance();
     const data = state.get(ref);
 
-    if (data === undefined) {
+    if (data === undefined || data === null) {
       return state.mergeByRef(ref, this.getState());
     }
 
@@ -370,7 +370,7 @@ abstract class Actor
     });
 
     if (typeof data === "object" && "defeated" in data) {
-      this._defeated = data["defeated"];
+      this._defeated = !!data["defeated"];
     }
 
     return data;

@@ -57,11 +57,13 @@ describe("Vector", () => {
 
   describe("times", () => {
     it("multiplies a vector by a scalar", () => {
-      [
+      const test: [Sut, number, Sut][] = [
         [new Sut(0, 0), 4, new Sut(0, 0)],
         [new Sut(2, 4), 1.5, new Sut(3, 6)],
         [new Sut(-5, -100), -1, new Sut(5, 100)],
-      ].forEach((data: [Sut, number, Sut]) => {
+      ];
+
+      test.forEach((data) => {
         let [sut, input, expected] = data;
 
         expect(sut.times(input)).to.deep.equal(expected);
@@ -82,10 +84,12 @@ describe("Vector", () => {
 
   describe("toArray", () => {
     it("turns the vector into an array", () => {
-      [
+      const tests: [Sut, [number, number]][] = [
         [new Sut(0, 0), [0, 0]],
         [new Sut(2, 4), [2, 4]],
-      ].forEach((data: [Sut, [number, number]]) => {
+      ];
+
+      tests.forEach((data) => {
         let [sut, expected] = data;
 
         expect(sut.toArray()).to.deep.equal(expected);
@@ -98,7 +102,7 @@ describe("Vector", () => {
       [
         [new Sut(1.1, 2.9), new Sut(1, 3)],
         [new Sut(2, 4.5), new Sut(2, 5)],
-      ].forEach((data: [Sut, Sut]) => {
+      ].forEach((data: Sut[]) => {
         let [sut, expected] = data;
 
         expect(sut.apply(Math.round)).to.deep.equal(expected);
