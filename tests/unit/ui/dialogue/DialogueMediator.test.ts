@@ -13,8 +13,6 @@ beforeEach(() => {
 });
 
 describe("DialogueMediator", () => {
-  const sandbox = sinon.createSandbox();
-
   describe("_createDialogue", () => {
     it("detects missing speech", () => {
       const mediator = new DialogueMediator([] as any);

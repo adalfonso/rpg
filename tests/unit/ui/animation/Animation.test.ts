@@ -125,23 +125,10 @@ const getAnimationStepTemplates = (): AnimationStepTemplate[] => {
 };
 
 function getStepTemplates() {
-  const count = 0;
-  return (percent: number, end: Vector) => {
+  return (_percent: number, _end: Vector) => {
     return <Vector>{};
   };
 }
 
 const createBasicStep = (step: AnimationStepTemplate) =>
   <AnimationStep>(<any>step);
-
-function createStep() {
-  let done = false;
-
-  return <AnimationStep>{
-    update(dt: number) {
-      if (dt === 666) {
-        done = true;
-      }
-    },
-  };
-}

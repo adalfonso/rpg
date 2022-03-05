@@ -3,7 +3,6 @@
 
   "compilerOptions": {
     "suppressImplicitAnyIndexErrors": true,
-    "noUnusedLocals": false,
     "strictFunctionTypes": false,
     "strictNullChecks": false,
     "resolveJsonModule": true,
