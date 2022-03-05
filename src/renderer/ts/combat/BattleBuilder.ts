@@ -6,9 +6,7 @@ import Team from "./Team";
 import config from "./battle.json";
 import { AnimatedTextFactory } from "@/ui/animation/text/AnimatedTextFactory";
 
-/**
- * Blueprint for an enemy team
- */
+/** Blueprint for an enemy team */
 type TeamBlueprint = {
   limit: number[];
   include: string[];

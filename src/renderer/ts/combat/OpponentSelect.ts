@@ -11,14 +11,10 @@ import { bus } from "@/EventBus";
  * It draws an arrow above their sprite as an indicator.
  */
 class OpponentSelect implements Drawable, Lockable {
-  /**
-   * Currently selected index of the opponents
-   */
+  /** Currently selected index of the opponents */
   private _index = 0;
 
-  /**
-   * If this selection is locked from changing
-   */
+  /** If this selection is locked from changing */
   private _locked = true;
 
   /**
@@ -30,16 +26,12 @@ class OpponentSelect implements Drawable, Lockable {
     bus.register(this);
   }
 
-  /**
-   * Get the locked state of the selection
-   */
+  /** Get the locked state of the selection */
   get isLocked(): boolean {
     return this._locked;
   }
 
-  /**
-   * Get the currently selected opponent
-   */
+  /** Get the currently selected opponent */
   get selected(): Actor {
     return this._opponents.all()[this._index];
   }
@@ -120,9 +112,7 @@ class OpponentSelect implements Drawable, Lockable {
     return true;
   }
 
-  /**
-   * Select the first non-defeated enemy
-   */
+  /** Select the first non-defeated enemy */
   public resolveSelected() {
     const opponents = this._opponents.all();
 
@@ -134,9 +124,7 @@ class OpponentSelect implements Drawable, Lockable {
     }
   }
 
-  /**
-   * Switch to the next selection
-   */
+  /** Switch to the next selection */
   private _next() {
     if (this._opponents.areDefeated) {
       return;
@@ -157,9 +145,7 @@ class OpponentSelect implements Drawable, Lockable {
     }
   }
 
-  /**
-   * Switch to the previous selection
-   */
+  /** Switch to the previous selection */
   private _previous() {
     if (this._opponents.areDefeated) {
       return;

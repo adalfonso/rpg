@@ -1,9 +1,7 @@
 import Stats from "@/Stats";
 import { DamageType } from "./types";
 
-/**
- * A compact summary of damage
- */
+/** A compact summary of damage */
 class Damage {
   /**
    * Create a new damage instance
@@ -13,16 +11,12 @@ class Damage {
    */
   constructor(private _value: number, private _type: DamageType) {}
 
-  /**
-   * Determine if the damage dealt is special
-   */
+  /** Determine if the damage dealt is special */
   get isSpecial(): boolean {
     return this._type === "special";
   }
 
-  /**
-   * Get the amount of damage dealt
-   */
+  /** Get the amount of damage dealt */
   get value(): number {
     return this._value;
   }

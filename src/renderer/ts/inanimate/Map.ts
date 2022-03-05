@@ -4,18 +4,12 @@ import config from "@/config";
 import { Drawable } from "@/interfaces";
 import { TiledLayerTilelayer } from "tiled-types/types";
 
-/**
- * A visual representation of the level
- */
+/** A visual representation of the level */
 class Map implements Drawable {
-  /**
-   * Rendering asset
-   */
+  /** Rendering asset */
   private renderable: Renderable;
 
-  /**
-   * Scale of the map
-   */
+  /** Scale of the map */
   private scale: number;
 
   /**

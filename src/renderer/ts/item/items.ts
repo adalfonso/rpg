@@ -1,8 +1,6 @@
 import { ItemList } from "./types";
 
-/**
- * All items contained in the game
- */
+/** All items contained in the game */
 const items: ItemList = {
   empanada: {
     description: "A tasty treat! Restore 50 HP.",

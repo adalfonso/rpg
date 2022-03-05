@@ -1,17 +1,11 @@
 import Vector from "@common/Vector";
 
-/**
- * Splits a string of text into multiple lines
- */
+/** Splits a string of text into multiple lines */
 class TextBuffer {
-  /**
-   * The inner array buffer
-   */
+  /** The inner array buffer */
   private _buffer: string[] = [];
 
-  /**
-   * Create a new TextBuffer instance
-   */
+  /** Create a new TextBuffer instance */
   constructor(private _text: string) {}
 
   /**
@@ -55,16 +49,12 @@ class TextBuffer {
     return this._buffer;
   }
 
-  /**
-   * Determine if the buffer is empty
-   */
+  /** Determine if the buffer is empty */
   get isEmpty(): boolean {
     return this._buffer.length === 0;
   }
 
-  /**
-   * Clear the text buffer
-   */
+  /** Clear the text buffer */
   public clear() {
     this._buffer = [];
   }

@@ -18,9 +18,7 @@ export type Collision = {
   size: Vector;
 };
 
-/**
- * Manages collisions between a player and other fixtures
- */
+/** Manages collisions between a player and other fixtures */
 class CollisionHandler {
   /** Fixtures that interact with the player */
   private _fixtures: LevelFixture[] = [];

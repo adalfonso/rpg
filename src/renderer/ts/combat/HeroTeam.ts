@@ -6,9 +6,7 @@ import Vector from "@common/Vector";
 import config from "@/config";
 import { bus } from "@/EventBus";
 
-/**
- * Similar to a Team but specific to playable characters
- */
+/** Similar to a Team but specific to playable characters */
 class HeroTeam extends Team<Player> {
   /**
    * Create a new HeroTeam instance

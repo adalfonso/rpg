@@ -7,9 +7,7 @@ import CombatStrategy, {
   Visual,
 } from "./CombatStrategy";
 
-/**
- * Technique learned by an actor
- */
+/** Technique learned by an actor */
 class Ability extends DamageDealing(Visual(Descriptive(CombatStrategy))) {
   /**
    * Create a new Ability instance

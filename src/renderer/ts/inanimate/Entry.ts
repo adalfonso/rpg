@@ -1,9 +1,7 @@
 import Inanimate from "./Inanimate";
 import Vector from "@common/Vector";
 
-/**
- * An area on the map that an entity can be loaded on
- */
+/** An area on the map that an entity can be loaded on */
 class Entry extends Inanimate {
   /**
    * Create a new Entry instance

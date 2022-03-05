@@ -14,9 +14,7 @@ class Portal extends Inanimate {
    */
   public from: string;
 
-  /**
-   * Reference to the name of the area that the portal leads to
-   */
+  /** Reference to the name of the area that the portal leads to */
   public to: string;
 
   /**

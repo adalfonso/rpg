@@ -3,9 +3,7 @@ import MissingDataError from "@/error/MissingDataError";
 import Vector from "@common/Vector";
 import { Direction } from "@/ui/types";
 
-/**
- * A battle-centric collection of actors that are related in some way
- */
+/** A battle-centric collection of actors that are related in some way */
 class Team<M extends Actor> {
   /** Team members that have taken their turn */
   private _have_taken_turn: M[] = [];

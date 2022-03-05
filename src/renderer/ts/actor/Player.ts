@@ -140,9 +140,7 @@ class Player extends Actor implements Drawable, Lockable {
     StateManager.getInstance().mergeByRef("player", this.getState());
   }
 
-  /**
-   * Kill off the player
-   */
+  /** Kill off the player */
   public kill() {
     this._defeated = true;
 

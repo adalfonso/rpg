@@ -3,9 +3,7 @@ import Renderable from "./Renderable";
 import Vector from "@common/Vector";
 import { getImagePath } from "@/util";
 
-/**
- * Generate a new renderable
- */
+/** Generate a new renderable */
 class RenderableFactory {
   /**
    * Create a new Renderable

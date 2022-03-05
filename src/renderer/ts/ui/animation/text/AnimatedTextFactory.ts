@@ -4,9 +4,7 @@ import { animations } from "./animations";
 import { config, RenderOptions } from "./text";
 import { getAnimationFromName } from "../AnimationFactory";
 
-/**
- * Creates various types of animations
- */
+/** Creates various types of animations */
 export class AnimatedTextFactory {
   /**
    * Create the animation for the start of a battle.

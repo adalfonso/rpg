@@ -11,9 +11,7 @@ import { bus } from "@/EventBus";
  * @param Base - base class
  */
 export const Descriptive = <T extends Constructor>(Base: T) =>
-  /**
-   * Descriptive classes store UI description information about itself
-   */
+  /** Descriptive classes store UI description information about itself */
   class Descriptive extends Base {
     /** Stores the descriptors */
     protected _template: EntityConfig;

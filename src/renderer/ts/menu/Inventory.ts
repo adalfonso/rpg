@@ -38,9 +38,7 @@ export class Inventory extends Menu<InventoryMenuItem> implements Drawable {
     this.resolveState(`inventory`);
   }
 
-  /**
-   * Get current state of the inventory for export to a state manager
-   */
+  /** Get current state of the inventory for export to a state manager */
   get state(): InventoryState {
     const def = { items: [] as Base[] };
     return {

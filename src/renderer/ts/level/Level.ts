@@ -23,9 +23,7 @@ import { getLevels } from "./levels";
  * string into memory when a new area is entered.
  */
 class Level implements Drawable {
-  /**
-   * World area associated with the level
-   */
+  /** World area associated with the level */
   private map: Map;
 
   /** Entry points that an fixture has to the level */
@@ -157,9 +155,7 @@ class Level implements Drawable {
     this.player.moveTo(entry.position);
   }
 
-  /**
-   * Clean up residual data from previous level
-   */
+  /** Clean up residual data from previous level */
   private cleanup() {
     /**
      * Force unregister every fixture, even if they aren't really eventful to

@@ -3,19 +3,13 @@ import config from "@/config";
 import { Drawable } from "@/interfaces";
 
 export default class Renderable implements Drawable {
-  /**
-   * Image element to render
-   */
+  /** Image element to render */
   private img: HTMLImageElement;
 
-  /**
-   * Current frame in animation sequence
-   */
+  /** Current frame in animation sequence */
   public frame: number;
 
-  /**
-   * Unix time at which the next animation frame should render
-   */
+  /** Unix time at which the next animation frame should render */
   private nextAnimationTimestamp: number;
 
   /**

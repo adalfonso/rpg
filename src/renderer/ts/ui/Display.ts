@@ -15,24 +15,16 @@ enum RenderMode {
 }
 
 class Display {
-  /**
-   * Main rendering context
-   */
+  /** Main rendering context */
   private ctx: CanvasRenderingContext2D;
 
-  /**
-   * Height of the display
-   */
+  /** Height of the display */
   private height: number;
 
-  /**
-   * Width of the display
-   */
+  /** Width of the display */
   private width: number;
 
-  /**
-   * Whether the contents of the display move dependently on a center point
-   */
+  /** Whether the contents of the display move dependently on a center point */
   private renderMode: RenderMode;
 
   /**
@@ -59,9 +51,7 @@ class Display {
     bus.register(this);
   }
 
-  /**
-   * The drawing offset relative to the current render mode
-   */
+  /** The drawing offset relative to the current render mode */
   get offset(): Vector {
     if (this.renderMode === RenderMode.Static) {
       return new Vector(0, 0);
@@ -72,9 +62,7 @@ class Display {
     return new Vector(this.width / 2 - center.x, this.height / 2 - center.y);
   }
 
-  /**
-   * The current resolution
-   */
+  /** The current resolution */
   get resolution() {
     return new Vector(this.width, this.height);
   }

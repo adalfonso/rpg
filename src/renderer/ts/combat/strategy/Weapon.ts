@@ -9,9 +9,7 @@ import {
   Visual,
 } from "./CombatStrategy";
 
-/**
- * Items used by the player to deal damage against an entity
- */
+/** Items used by the player to deal damage against an entity */
 class Weapon extends DamageDealing(
   Equipable(Visual(Descriptive(CombatStrategy)))
 ) {

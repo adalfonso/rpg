@@ -1,23 +1,15 @@
 import TextBuffer from "./TextBuffer";
 import Vector from "@common/Vector";
 
-/**
- * Handles to usage of several TextBuffers
- */
+/** Handles to usage of several TextBuffers */
 class TextStream {
-  /**
-   * Current text to display
-   */
+  /** Current text to display */
   private _fragment = "";
 
-  /**
-   * Index of the data that is currently rendering
-   */
+  /** Index of the data that is currently rendering */
   private _index = 0;
 
-  /**
-   * Buffer of current data split for line-by-line rendering
-   */
+  /** Buffer of current data split for line-by-line rendering */
   private _buffer: TextBuffer;
 
   /**
@@ -27,23 +19,17 @@ class TextStream {
    */
   constructor(private _data: string[]) {}
 
-  /**
-   * Get the current text fragment
-   */
+  /** Get the current text fragment */
   get fragment(): string {
     return this._fragment;
   }
 
-  /**
-   * Determine if the buffer is empty
-   */
+  /** Determine if the buffer is empty */
   get isEmpty(): boolean {
     return this._buffer ? this._buffer.isEmpty : true;
   }
 
-  /**
-   * Determine if the stream has completed
-   */
+  /** Determine if the stream has completed */
   get isDone(): boolean {
     return (
       this._index + 1 >= this._data.length &&
@@ -68,9 +54,7 @@ class TextStream {
     this._buffer.fill(ctx, area);
   }
 
-  /**
-   * Empty the buffer
-   */
+  /** Empty the buffer */
   public next() {
     this._buffer.clear();
     this._index++;
