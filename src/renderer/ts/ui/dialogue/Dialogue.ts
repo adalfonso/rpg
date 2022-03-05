@@ -2,7 +2,7 @@ import Actor from "../../actor/Actor";
 import TextStream from "./TextStream";
 import Vector from "@common/Vector";
 import { Drawable } from "../../interfaces";
-import { bus } from "@/EventBus";
+import { bus, EventType } from "@/EventBus";
 
 class Dialogue implements Drawable {
   /** If waiting for user input */
@@ -101,14 +101,16 @@ class Dialogue implements Drawable {
    */
   public register() {
     return {
-      keyup: (e: KeyboardEvent) => {
-        if (e.key === "Enter") {
-          this.next(e);
-        }
+      [EventType.Keyboard]: {
+        keyup: (e: KeyboardEvent) => {
+          if (e.key === "Enter") {
+            this.next(e);
+          }
 
-        if (this.isDone) {
-          this.stop();
-        }
+          if (this.isDone) {
+            this.stop();
+          }
+        },
       },
     };
   }

@@ -7,7 +7,7 @@ import config from "@/config";
 import { Direction } from "@/ui/types";
 import { Drawable, Lockable } from "@/interfaces";
 import { LevelFixtureTemplate } from "@/level/LevelFixture";
-import { bus } from "@/EventBus";
+import { bus, EventType } from "@/EventBus";
 
 /** The main entity of the game */
 class Player extends Actor implements Drawable, Lockable {
@@ -91,30 +91,33 @@ class Player extends Actor implements Drawable, Lockable {
    */
   public register() {
     return {
-      keydown: (e: KeyboardEvent) => {
-        if (e.key.match(/Arrow/)) {
-          this.changeSpeed(e.key);
-        }
+      [EventType.Keyboard]: {
+        keydown: (e: KeyboardEvent) => {
+          if (e.key.match(/Arrow/)) {
+            this.changeSpeed(e.key);
+          }
+        },
+
+        keyup: (e: KeyboardEvent) => {
+          if (e.key.match(/Arrow/)) {
+            this.stop(e.key);
+          }
+        },
       },
+      [EventType.Custom]: {
+        "equipment.equip": (e: CustomEvent) => {
+          const equipment = e.detail.equipment;
 
-      keyup: (e: KeyboardEvent) => {
-        if (e.key.match(/Arrow/)) {
-          this.stop(e.key);
-        }
-      },
+          if (!equipment) {
+            throw new MissingDataError(
+              `Player unable to equip equipment because it is missing.`
+            );
+          }
 
-      "equipment.equip": (e: CustomEvent) => {
-        const equipment = e.detail.equipment;
-
-        if (!equipment) {
-          throw new MissingDataError(
-            `Player unable to equip equipment because it is missing.`
-          );
-        }
-
-        if (equipment instanceof Weapon) {
-          this.equip(equipment);
-        }
+          if (equipment instanceof Weapon) {
+            this.equip(equipment);
+          }
+        },
       },
     };
   }

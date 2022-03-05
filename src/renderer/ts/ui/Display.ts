@@ -1,8 +1,6 @@
 import Game from "@/Game";
 import Vector from "@common/Vector";
-import { bus } from "@/EventBus";
-import { CallableMap } from "@/interfaces";
-
+import { bus, EventType } from "@/EventBus";
 /**
  * Different modes for rendering the display
  *
@@ -81,11 +79,17 @@ class Display {
    *
    * @return events to register
    */
-  public register(): CallableMap<CustomEvent> {
+  public register() {
     return {
-      resize: (_: Event) => this.resizetoWindow(),
-      "battle.start": (_: CustomEvent) => (this.renderMode = RenderMode.Static),
-      "battle.end": (_: CustomEvent) => (this.renderMode = RenderMode.Dynamic),
+      [EventType.Default]: {
+        resize: (_: Event) => this.resizetoWindow(),
+      },
+      [EventType.Custom]: {
+        "battle.start": (_: CustomEvent) =>
+          (this.renderMode = RenderMode.Static),
+        "battle.end": (_: CustomEvent) =>
+          (this.renderMode = RenderMode.Dynamic),
+      },
     };
   }
 

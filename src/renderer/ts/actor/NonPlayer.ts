@@ -5,7 +5,7 @@ import { Drawable } from "@/interfaces";
 import { Milestone } from "@/state/milestone/Milestone";
 import { MilestoneAttainOn } from "@/state/milestone/types";
 import { Speech } from "./types";
-import { bus } from "@/EventBus";
+import { bus, EventType } from "@/EventBus";
 import { getSpeech } from "./speech";
 import {
   LevelFixtureTemplate,
@@ -105,54 +105,59 @@ class NonPlayer extends Actor implements Drawable {
    */
   public register() {
     return {
-      "dialogue.end": (e: CustomEvent) => {
-        /**
-         * TODO: Assuming this sort of data will be sent is fragile. We need a
-         * better way to enforce it. Maybe with a generic type.
-         */
-        const { speaker } = e.detail;
+      [EventType.Custom]: {
+        "dialogue.end": (e: CustomEvent) => {
+          /**
+           * TODO: Assuming this sort of data will be sent is fragile. We need a
+           * better way to enforce it. Maybe with a generic type.
+           */
+          const { speaker } = e.detail;
 
-        /**
-         * If the this actor was responsible for the dialogue and there is a
-         * milestone associated with it we are assuming that milestone is now
-         * attained.This may need to be refactored when milestone attainment
-         * becomes more complex
-         */
-        const caused_by_npc =
-          this._speech.dialogue.length > 0 && speaker === this;
+          /**
+           * If the this actor was responsible for the dialogue and there is a
+           * milestone associated with it we are assuming that milestone is now
+           * attained.This may need to be refactored when milestone attainment
+           * becomes more complex
+           */
+          const caused_by_npc =
+            this._speech.dialogue.length > 0 && speaker === this;
 
-        if (!caused_by_npc) {
-          return;
-        }
-
-        this._milestone?.attain_on === MilestoneAttainOn.DialogueComplete &&
-          this._milestone.attain({ actor: this });
-
-        this.expire();
-      },
-
-      keyup: (e: KeyboardEvent) => {
-        if (e.key === "Enter" && this.collisions.length) {
-          this.speak();
-        }
-      },
-
-      "player.move": (e: CustomEvent) => {
-        const player = e.detail?.player;
-
-        if (!player) {
-          throw new MissingDataError(
-            "Player missing on player.move event as tracked by non-player."
-          );
-        }
-
-        if (this.collidesWith(player)) {
-          if (!this.collisions.includes(player)) {
-            this.collisions.push(player);
+          if (!caused_by_npc) {
+            return;
           }
-        } else if (this.collisions.includes(player)) {
-          this.collisions = this.collisions.filter((actor) => actor !== player);
-        }
+
+          this._milestone?.attain_on === MilestoneAttainOn.DialogueComplete &&
+            this._milestone.attain({ actor: this });
+
+          this.expire();
+        },
+
+        "player.move": (e: CustomEvent) => {
+          const player = e.detail?.player;
+
+          if (!player) {
+            throw new MissingDataError(
+              "Player missing on player.move event as tracked by non-player."
+            );
+          }
+
+          if (this.collidesWith(player)) {
+            if (!this.collisions.includes(player)) {
+              this.collisions.push(player);
+            }
+          } else if (this.collisions.includes(player)) {
+            this.collisions = this.collisions.filter(
+              (actor) => actor !== player
+            );
+          }
+        },
+      },
+      [EventType.Keyboard]: {
+        keyup: (e: KeyboardEvent) => {
+          if (e.key === "Enter" && this.collisions.length) {
+            this.speak();
+          }
+        },
       },
     };
   }

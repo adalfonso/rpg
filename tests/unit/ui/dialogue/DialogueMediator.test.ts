@@ -1,12 +1,13 @@
+import Dialogue from "@/ui/dialogue/Dialogue";
 import Player from "@/actor/Player";
 import Team from "@/combat/Team";
 import Vector from "@common/Vector";
 import actors from "@/actor/actors";
 import sinon from "sinon";
 import { DialogueMediator } from "@/ui/dialogue/DialogueMediator";
+import { EventType } from "@/EventBus";
 import { expect } from "chai";
 import { getActorTemplate } from "tests/unit/level/fixtures";
-import Dialogue from "@/ui/dialogue/Dialogue";
 
 beforeEach(() => {
   actors._foo_dialogue_mediator = getActorTemplate();
@@ -20,7 +21,9 @@ describe("DialogueMediator", () => {
       const events = mediator.register();
 
       expect(() =>
-        events["dialogue.create"]({ detail: {} } as CustomEvent)
+        events[EventType.Custom]["dialogue.create"]({
+          detail: {},
+        } as CustomEvent)
       ).to.throw(
         "Unable to find speech or speaker when creating dialogue from DialogueMediator"
       );
@@ -32,19 +35,21 @@ describe("DialogueMediator", () => {
       const events = mediator.register();
 
       expect(() =>
-        events["dialogue.create"]({ detail: { speech: "foo" } } as CustomEvent)
+        events[EventType.Custom]["dialogue.create"]({
+          detail: { speech: "foo" },
+        } as CustomEvent)
       ).to.throw(
         'Invalid data type for "speech" @ DialogueMediator/dialogue.create'
       );
     });
 
-    it("detects invlaid speaker", () => {
+    it("detects invalid speaker", () => {
       const mediator = new DialogueMediator([] as any);
 
       const events = mediator.register();
 
       expect(() =>
-        events["dialogue.create"]({
+        events[EventType.Custom]["dialogue.create"]({
           detail: { speech: ["foo"], speaker: {} },
         } as CustomEvent)
       ).to.throw(
@@ -64,7 +69,9 @@ describe("DialogueMediator", () => {
       const mediator = new DialogueMediator(team);
       const events = mediator.register();
 
-      events["dialogue.create"]({ detail: { speech: ["foo"] } } as CustomEvent);
+      events[EventType.Custom]["dialogue.create"]({
+        detail: { speech: ["foo"] },
+      } as CustomEvent);
 
       sinon.assert.calledOnce(spy.lock);
       sinon.assert.notCalled(spy.unlock);

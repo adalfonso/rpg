@@ -5,7 +5,7 @@ import { Empty } from "@/mixins";
 import { MenuItem } from "./MenuItem";
 import { Movable } from "@/Entity";
 import { SubMenu } from "./SubMenu";
-import { bus } from "@/EventBus";
+import { bus, EventType } from "@/EventBus";
 import { lcFirst } from "@/util";
 
 /** A visual UI that can be opened, closed, and traversed */
@@ -94,31 +94,33 @@ export abstract class Menu<T>
    */
   public register() {
     return {
-      keyup: (e: KeyboardEvent) => {
-        if (!this.active) {
-          return;
-        }
+      [EventType.Keyboard]: {
+        keyup: (e: KeyboardEvent) => {
+          if (!this.active) {
+            return;
+          }
 
-        if (e.key === "Escape") {
-          return this.close();
-        }
+          if (e.key === "Escape") {
+            return this.close();
+          }
 
-        switch (e.key) {
-          case "ArrowRight":
-          case "Enter":
-            this.select();
-            break;
-          case "ArrowLeft":
-          case "Backspace":
-            this.back();
-            break;
-          case "ArrowUp":
-            this.previous();
-            break;
-          case "ArrowDown":
-            this.next();
-            break;
-        }
+          switch (e.key) {
+            case "ArrowRight":
+            case "Enter":
+              this.select();
+              break;
+            case "ArrowLeft":
+            case "Backspace":
+              this.back();
+              break;
+            case "ArrowUp":
+              this.previous();
+              break;
+            case "ArrowDown":
+              this.next();
+              break;
+          }
+        },
       },
     };
   }

@@ -7,6 +7,7 @@ import Weapon from "@/combat/strategy/Weapon";
 import WeaponFactory from "@/combat/strategy/WeaponFactory";
 import { BaseMenuItemTemplate as Base } from "./menus";
 import { Drawable } from "@/interfaces";
+import { EventType } from "@/EventBus";
 import { InventoryState, isInventoryState } from "@/state/InventoryState";
 import { Menu } from "./Menu";
 import { MenuItem } from "./MenuItem";
@@ -329,27 +330,31 @@ export class Inventory extends Menu<InventoryMenuItem> implements Drawable {
     const parent = super.register();
 
     return {
-      keyup: (e: KeyboardEvent) => {
-        parent.keyup(e);
+      [EventType.Custom]: {
+        "item.obtain": (e: CustomEvent) => {
+          const item = e.detail?.item;
 
-        if (this.locked) {
-          return;
-        } else if (e.key === "i") {
-          this.active ? this.close() : this.open();
-        } else if (e.key === "Enter") {
-          this.equipCurrentOption();
-        }
+          if (!item) {
+            throw new MissingDataError(
+              `Inventory unable to detect item on "item.obtain: event.`
+            );
+          }
+
+          this.store(new Item(item.ref));
+        },
       },
-      "item.obtain": (e: CustomEvent) => {
-        const item = e.detail?.item;
+      [EventType.Keyboard]: {
+        keyup: (e: KeyboardEvent) => {
+          parent[EventType.Keyboard].keyup(e);
 
-        if (!item) {
-          throw new MissingDataError(
-            `Inventory unable to detect item on "item.obtain: event.`
-          );
-        }
-
-        this.store(new Item(item.ref));
+          if (this.locked) {
+            return;
+          } else if (e.key === "i") {
+            this.active ? this.close() : this.open();
+          } else if (e.key === "Enter") {
+            this.equipCurrentOption();
+          }
+        },
       },
     };
   }

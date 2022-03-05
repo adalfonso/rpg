@@ -4,6 +4,7 @@ import Sut from "@/combat/OpponentSelect";
 import Team from "@/combat/Team";
 import Vector from "@common/Vector";
 import { expect } from "chai";
+import { EventType } from "@/EventBus";
 
 const state = StateManager.getInstance();
 
@@ -60,11 +61,15 @@ describe("OpponentSelect", () => {
 
       sut.unlock();
 
-      listeners.keyup({ key: "ArrowLeft" } as KeyboardEvent);
+      listeners[EventType.Keyboard].keyup({
+        key: "ArrowLeft",
+      } as KeyboardEvent);
 
       expect(sut.selected).to.equal(enemies[2]);
 
-      listeners.keyup({ key: "ArrowLeft" } as KeyboardEvent);
+      listeners[EventType.Keyboard].keyup({
+        key: "ArrowLeft",
+      } as KeyboardEvent);
 
       expect(sut.selected).to.equal(enemies[1]);
     });
@@ -82,7 +87,9 @@ describe("OpponentSelect", () => {
 
       sut.unlock();
 
-      listeners.keyup({ key: "ArrowLeft" } as KeyboardEvent);
+      listeners[EventType.Keyboard].keyup({
+        key: "ArrowLeft",
+      } as KeyboardEvent);
 
       expect(sut.selected).to.equal(enemies[1]);
     });
@@ -96,10 +103,14 @@ describe("OpponentSelect", () => {
 
       sut.unlock();
 
-      listeners.keyup({ key: "ArrowRight" } as KeyboardEvent);
+      listeners[EventType.Keyboard].keyup({
+        key: "ArrowRight",
+      } as KeyboardEvent);
 
       expect(sut.selected).to.equal(enemies[1]);
-      listeners.keyup({ key: "ArrowRight" } as KeyboardEvent);
+      listeners[EventType.Keyboard].keyup({
+        key: "ArrowRight",
+      } as KeyboardEvent);
 
       expect(sut.selected).to.equal(enemies[2]);
     });
@@ -117,7 +128,9 @@ describe("OpponentSelect", () => {
 
       sut.unlock();
 
-      listeners.keyup({ key: "ArrowRight" } as KeyboardEvent);
+      listeners[EventType.Keyboard].keyup({
+        key: "ArrowRight",
+      } as KeyboardEvent);
 
       expect(sut.selected).to.equal(enemies[2]);
     });

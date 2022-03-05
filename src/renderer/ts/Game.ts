@@ -13,7 +13,7 @@ import { LevelFixtureFactory } from "./level/LevelFixtureFactory";
 import { LevelTemplate } from "./level/LevelTemplate";
 import { StartMenu } from "./menu/StartMenu";
 import { SubMenu } from "./menu/SubMenu";
-import { bus } from "@/EventBus";
+import { bus, EventType } from "@/EventBus";
 import { getLevels } from "./level/levels";
 
 /** Different states a game can be in */
@@ -132,54 +132,58 @@ class Game implements Drawable, Updatable {
    */
   public register() {
     return {
-      "battle.start": (e: CustomEvent) => {
-        /**
-         * TODO: in the future, check if a battle will ever be started while
-         * another battle is already underway. If an enemy jumps on the player
-         * during a battle animation, it is plausible that battle.start would
-         * occur.
-         */
-        this.battle = this.battle || BattleBuilder.create(e);
-        this.lock(GameState.Battle);
-      },
+      [EventType.Custom]: {
+        "battle.start": (e: CustomEvent) => {
+          /**
+           * TODO: in the future, check if a battle will ever be started while
+           * another battle is already underway. If an enemy jumps on the player
+           * during a battle animation, it is plausible that battle.start would
+           * occur.
+           */
+          this.battle = this.battle || BattleBuilder.create(e);
+          this.lock(GameState.Battle);
+        },
 
-      "battle.end": (_: CustomEvent) => {
-        this.battle = null;
-        this.unlock(GameState.Battle);
-      },
+        "battle.end": (_: CustomEvent) => {
+          this.battle = null;
+          this.unlock(GameState.Battle);
+        },
 
-      "dialogue.start": (_: CustomEvent) => this.lock(GameState.Dialogue),
+        "dialogue.start": (_: CustomEvent) => this.lock(GameState.Dialogue),
 
-      "dialogue.end": (_: CustomEvent) => this.unlock(GameState.Dialogue),
+        "dialogue.end": (_: CustomEvent) => this.unlock(GameState.Dialogue),
 
-      "menu.inventory.open": (_: CustomEvent) => this.lock(GameState.Inventory),
+        "menu.inventory.open": (_: CustomEvent) =>
+          this.lock(GameState.Inventory),
 
-      "menu.inventory.close": (_: CustomEvent) =>
-        this.unlock(GameState.Inventory),
+        "menu.inventory.close": (_: CustomEvent) =>
+          this.unlock(GameState.Inventory),
 
-      "menu.startMenu.open": (_: CustomEvent) => this.lock(GameState.StartMenu),
+        "menu.startMenu.open": (_: CustomEvent) =>
+          this.lock(GameState.StartMenu),
 
-      "menu.startMenu.close": (_: CustomEvent) =>
-        this.unlock(GameState.StartMenu),
+        "menu.startMenu.close": (_: CustomEvent) =>
+          this.unlock(GameState.StartMenu),
 
-      "item.obtain": (e: CustomEvent) => {
-        const item = e.detail?.item;
+        "item.obtain": (e: CustomEvent) => {
+          const item = e.detail?.item;
 
-        if (!item) {
-          throw new MissingDataError(
-            `Inventory unable to detect item on "item.obtain" event.`
+          if (!item) {
+            throw new MissingDataError(
+              `Inventory unable to detect item on "item.obtain" event.`
+            );
+          }
+
+          const itemName = item.displayAs;
+
+          const useVowel = ["a", "e", "i", "o", "u"].includes(
+            itemName[0].toLowerCase()
           );
-        }
 
-        const itemName = item.displayAs;
-
-        const useVowel = ["a", "e", "i", "o", "u"].includes(
-          itemName[0].toLowerCase()
-        );
-
-        bus.emit("dialogue.create", {
-          speech: [`Picked up ${useVowel ? "an" : "a"} ${itemName}!`],
-        });
+          bus.emit("dialogue.create", {
+            speech: [`Picked up ${useVowel ? "an" : "a"} ${itemName}!`],
+          });
+        },
       },
     };
   }

@@ -6,11 +6,11 @@ import NonPlayer from "@/actor/NonPlayer";
 import Player from "@/actor/Player";
 import Portal from "@/inanimate/Portal";
 import Vector from "@common/Vector";
-import { Drawable } from "@/interfaces";
+import { Drawable, Eventful } from "@/interfaces";
 import { LevelFixture } from "./LevelFixture";
 import { LevelFixtureFactory } from "./LevelFixtureFactory";
 import { LevelTemplate } from "./LevelTemplate";
-import { bus } from "@/EventBus";
+import { bus, EventType } from "@/EventBus";
 import { getImagePath } from "@/util";
 import { getLevels } from "./levels";
 
@@ -78,25 +78,30 @@ class Level implements Drawable {
    */
   public register() {
     return {
-      "portal.enter": (e: CustomEvent) => {
-        const portal = e.detail?.portal;
+      [EventType.Custom]: {
+        "portal.enter": (e: CustomEvent) => {
+          const portal = e.detail?.portal;
 
-        if (!portal) {
-          throw new MissingDataError(
-            `Could not find portal during "portal.enter" event as observed by "Level".`
+          if (!portal) {
+            throw new MissingDataError(
+              `Could not find portal during "portal.enter" event as observed by "Level".`
+            );
+          }
+
+          const to = portal?.to;
+          const level = getLevels()[to];
+
+          if (!level) {
+            throw new MissingDataError(
+              `Unable to locate level json for "${to}".`
+            );
+          }
+
+          this.load(
+            new LevelTemplate(level, new LevelFixtureFactory()),
+            portal
           );
-        }
-
-        const to = portal?.to;
-        const level = getLevels()[to];
-
-        if (!level) {
-          throw new MissingDataError(
-            `Unable to locate level json for "${to}".`
-          );
-        }
-
-        this.load(new LevelTemplate(level, new LevelFixtureFactory()), portal);
+        },
       },
     };
   }
@@ -161,7 +166,7 @@ class Level implements Drawable {
      * Force unregister every fixture, even if they aren't really eventful to
      * prevent memory leaks.
      */
-    this.fixtures.forEach((e) => bus.unregister(e));
+    this.fixtures.forEach((e) => bus.unregister(e as Eventful));
     this.fixtures = [];
     this.entries = {};
   }

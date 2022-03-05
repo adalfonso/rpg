@@ -1,14 +1,18 @@
 import Vector from "@common/Vector";
+import { EventType } from "./EventBus";
 
 /** Any class that renders itself on a canvas */
 export interface Drawable {
   draw(ctx: CanvasRenderingContext2D, offset: Vector, resolution: Vector): void;
 }
 
-export type Callable<T extends Event> = (e: T) => void;
+export type Callable<T extends Event> = Record<string, (e: T) => void>;
 
-/** A map of callables */
-export type CallableMap<T extends Event> = Record<string, Callable<T>>;
+export interface CallableMap {
+  [EventType.Default]?: Callable<Event>;
+  [EventType.Custom]?: Callable<CustomEvent>;
+  [EventType.Keyboard]?: Callable<KeyboardEvent>;
+}
 
 /**
  * Any class that interfaces with an event bus
@@ -17,8 +21,8 @@ export type CallableMap<T extends Event> = Record<string, Callable<T>>;
  * the their underlying instance which allows an event bus to easily register
  * all of their events.
  */
-export interface Eventful<T extends Event> {
-  register(): CallableMap<T>;
+export interface Eventful {
+  register(): CallableMap;
 }
 
 /**

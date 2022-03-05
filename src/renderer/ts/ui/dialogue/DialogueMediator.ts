@@ -6,7 +6,7 @@ import Team from "@/combat/Team";
 import TextStream from "./TextStream";
 import Vector from "@common/Vector";
 import { Updatable } from "@/interfaces";
-import { bus } from "@/EventBus";
+import { bus, EventType } from "@/EventBus";
 import { isStringArray } from "@/types";
 
 /** Used to start and stop dialogue with a team */
@@ -19,9 +19,11 @@ export class DialogueMediator implements Updatable {
   }
 
   /** Register this with the event bus */
-  register() {
+  public register() {
     return {
-      "dialogue.create": this._createDialogue.bind(this),
+      [EventType.Custom]: {
+        "dialogue.create": this._createDialogue.bind(this),
+      },
     };
   }
 

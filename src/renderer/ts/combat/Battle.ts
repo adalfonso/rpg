@@ -18,7 +18,7 @@ import { Direction } from "@/ui/types";
 import { Drawable, Lockable } from "@/interfaces";
 import { LearnedAbility } from "./strategy/types";
 import { SubMenu } from "@/menu/SubMenu";
-import { bus } from "@/EventBus";
+import { bus, EventType } from "@/EventBus";
 import { createAnimation } from "@/ui/animation/CreateAnimation";
 
 interface BattleEvent {
@@ -169,43 +169,47 @@ class Battle implements Drawable, Lockable {
    */
   public register() {
     return {
-      "battle.action": (e: CustomEvent) => {
-        // Cancel if the player's combat strategy emits before their turn ends
-        if (this._event_queue.length && e?.detail?.strategy) {
-          return;
-        }
+      [EventType.Custom]: {
+        "battle.action": (e: CustomEvent) => {
+          // Cancel if the player's combat strategy emits before their turn ends
+          if (this._event_queue.length && e?.detail?.strategy) {
+            return;
+          }
 
-        this._herosTurn ? this._handleHeroAction(e) : this._handleFoeAction();
-      },
+          this._herosTurn ? this._handleHeroAction(e) : this._handleFoeAction();
+        },
 
-      "actor.gainExp": (e: CustomEvent) => {
-        const name = e.detail.actor.displayAs;
-        const exp = e.detail.exp;
-        const levels = e.detail.levels;
-        const abilities = e.detail.abilities;
-        const dialogue = [`${name} gained ${exp} exp.`];
+        "actor.gainExp": (e: CustomEvent) => {
+          const name = e.detail.actor.displayAs;
+          const exp = e.detail.exp;
+          const levels = e.detail.levels;
+          const abilities = e.detail.abilities;
+          const dialogue = [`${name} gained ${exp} exp.`];
 
-        levels.forEach((lvl: number) => {
-          dialogue.push(`${name} grew to level ${lvl}!`);
+          levels.forEach((lvl: number) => {
+            dialogue.push(`${name} grew to level ${lvl}!`);
 
-          abilities
-            .filter((ability: LearnedAbility) => ability.level === lvl)
-            .forEach((ability: LearnedAbility) => {
-              const instance = new AbilityFactory().createStrategy(ability.ref);
+            abilities
+              .filter((ability: LearnedAbility) => ability.level === lvl)
+              .forEach((ability: LearnedAbility) => {
+                const instance = new AbilityFactory().createStrategy(
+                  ability.ref
+                );
 
-              dialogue.push(`${name} learned ${instance.displayAs}!`);
-            });
-        });
+                dialogue.push(`${name} learned ${instance.displayAs}!`);
+              });
+          });
 
-        const stream = new TextStream(dialogue);
+          const stream = new TextStream(dialogue);
 
-        this._event_queue.push(
-          new Dialogue(stream, undefined, [
-            ...this._heroes.all(),
-            ...this._foes.all(),
-          ])
-        );
-        this.lock();
+          this._event_queue.push(
+            new Dialogue(stream, undefined, [
+              ...this._heroes.all(),
+              ...this._foes.all(),
+            ])
+          );
+          this.lock();
+        },
       },
     };
   }

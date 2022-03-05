@@ -4,7 +4,7 @@ import Player from "@/actor/Player";
 import Team from "./Team";
 import Vector from "@common/Vector";
 import config from "@/config";
-import { bus } from "@/EventBus";
+import { bus, EventType } from "@/EventBus";
 
 /** Similar to a Team but specific to playable characters */
 class HeroTeam extends Team<Player> {
@@ -26,26 +26,28 @@ class HeroTeam extends Team<Player> {
    */
   public register() {
     return {
-      "team.newMember": (e: CustomEvent) => {
-        const actor = e.detail?.target.actor;
+      [EventType.Custom]: {
+        "team.newMember": (e: CustomEvent) => {
+          const actor = e.detail?.target.actor;
 
-        if (!actor || !(actor instanceof Actor)) {
-          throw new MissingDataError(
-            `Could not locate team member when adding a new one to the hero team`
+          if (!actor || !(actor instanceof Actor)) {
+            throw new MissingDataError(
+              `Could not locate team member when adding a new one to the hero team`
+            );
+          }
+
+          const position = new Vector(0, 0);
+          const size = new Vector(actor.template.width, actor.template.height);
+
+          const member = new Player(
+            position.times(config.scale),
+            // TODO: why do we have to provide a size if it is listed in the template?
+            size.times(config.scale),
+            actor.template
           );
-        }
 
-        const position = new Vector(0, 0);
-        const size = new Vector(actor.template.width, actor.template.height);
-
-        const member = new Player(
-          position.times(config.scale),
-          // TODO: why do we have to provide a size if it is listed in the template?
-          size.times(config.scale),
-          actor.template
-        );
-
-        this.add(member);
+          this.add(member);
+        },
       },
     };
   }

@@ -1,10 +1,9 @@
 import { merge } from "@/util";
 import { promises as fs } from "fs";
-import { bus } from "@/EventBus";
-import { Eventful, CallableMap } from "@/interfaces";
+import { bus, EventType } from "@/EventBus";
 
 /** An intermediary between an on-disk JSON store and objects within the game */
-class StateManager implements Eventful<CustomEvent> {
+class StateManager {
   /** The game state */
   private data: Record<string, unknown> = {};
 
@@ -35,10 +34,12 @@ class StateManager implements Eventful<CustomEvent> {
    *
    * @return events to register
    */
-  public register(): CallableMap<CustomEvent> {
+  public register() {
     return {
-      "state.save": (_e: CustomEvent) => {
-        this.save();
+      [EventType.Custom]: {
+        "state.save": (_e: CustomEvent) => {
+          this.save();
+        },
       },
     };
   }

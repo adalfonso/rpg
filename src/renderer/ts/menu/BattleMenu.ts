@@ -1,6 +1,7 @@
 import CombatStrategy from "@/combat/strategy/CombatStrategy";
 import Vector from "@common/Vector";
 import { Drawable } from "@/interfaces";
+import { EventType } from "@/EventBus";
 import { Menu } from "./Menu";
 import { MenuItem } from "./MenuItem";
 
@@ -101,56 +102,58 @@ export class BattleMenu extends Menu<BattleMenuItem> implements Drawable {
    */
   public register() {
     return {
-      keyup: (e: KeyboardEvent) => {
-        if (this.locked) {
-          return;
-        }
-
-        const menu = this.currentMenu;
-        const option = this.currentOption;
-
-        switch (e.key) {
-          case "ArrowDown":
-            if (this._hasSubMenu()) {
-              this.select();
-            } else if (this.selected.length > 1) {
-              this.next();
-            }
-            break;
-
-          case "ArrowUp": {
-            const [first_item] = menu.items;
-            const is_first_option =
-              option === first_item || option.source === first_item?.source;
-
-            if (is_first_option) {
-              this.back();
-            } else if (this.selected.length > 1) {
-              this.previous();
-            }
-            break;
+      [EventType.Keyboard]: {
+        keyup: (e: KeyboardEvent) => {
+          if (this.locked) {
+            return;
           }
 
-          case "ArrowLeft":
-            if (this.selected.length === 1) {
-              this.previous();
+          const menu = this.currentMenu;
+          const option = this.currentOption;
+
+          switch (e.key) {
+            case "ArrowDown":
+              if (this._hasSubMenu()) {
+                this.select();
+              } else if (this.selected.length > 1) {
+                this.next();
+              }
+              break;
+
+            case "ArrowUp": {
+              const [first_item] = menu.items;
+              const is_first_option =
+                option === first_item || option.source === first_item?.source;
+
+              if (is_first_option) {
+                this.back();
+              } else if (this.selected.length > 1) {
+                this.previous();
+              }
+              break;
             }
-            break;
 
-          case "ArrowRight":
-            if (this.selected.length === 1) {
-              this.next();
+            case "ArrowLeft":
+              if (this.selected.length === 1) {
+                this.previous();
+              }
+              break;
+
+            case "ArrowRight":
+              if (this.selected.length === 1) {
+                this.next();
+              }
+              break;
+
+            case "Enter": {
+              const use = option.get("use");
+
+              use instanceof Function && use.bind(option.source)();
+
+              break;
             }
-            break;
-
-          case "Enter": {
-            const use = option.get("use");
-
-            use instanceof Function && use.bind(option.source)();
-
-            break;
           }
-        }
+        },
       },
     };
   }

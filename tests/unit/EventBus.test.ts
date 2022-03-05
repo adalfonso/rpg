@@ -1,5 +1,4 @@
-import Sut from "@/EventBus";
-import { Eventful } from "@/interfaces";
+import { EventBus as Sut, EventType } from "@/EventBus";
 import { expect } from "chai";
 
 describe("EventBus", () => {
@@ -16,11 +15,13 @@ describe("EventBus", () => {
 
       let fooValue = 0;
 
-      let foo: Eventful<CustomEvent> = {
+      let foo = {
         register: () => {
           return {
-            foo: (e: CustomEvent) => {
-              fooValue++;
+            [EventType.Custom]: {
+              foo: (e: CustomEvent) => {
+                fooValue++;
+              },
             },
           };
         },
@@ -45,8 +46,10 @@ describe("EventBus", () => {
       let foo = {
         register: () => {
           return {
-            foo: (e: CustomEvent) => {
-              fooValue++;
+            [EventType.Custom]: {
+              foo: (e: CustomEvent) => {
+                fooValue++;
+              },
             },
           };
         },
@@ -73,41 +76,47 @@ describe("EventBus", () => {
       let emittedDetails = false;
 
       let fooParent = {
-        foo: (e: CustomEvent) => {
-          fooValue = 5;
+        [EventType.Custom]: {
+          foo: (e: CustomEvent) => {
+            fooValue = 5;
+          },
         },
       };
 
       let foo = {
         register: () => {
           return {
-            foo: (e: CustomEvent) => {
-              fooParent.foo(e);
-              fooValue += 10;
+            [EventType.Custom]: {
+              foo: (e: CustomEvent) => {
+                fooParent[EventType.Custom].foo(e);
+                fooValue += 10;
 
-              if (e.detail?.bar === barValue) {
-                emittedDetails = true;
-                fooValue += barValue;
-              }
+                if (e.detail?.bar === barValue) {
+                  emittedDetails = true;
+                  fooValue += barValue;
+                }
+              },
             },
           };
         },
-      } as Eventful<CustomEvent>;
+      };
 
       let bar = {
         register: () => {
           return {
-            bar: (_: CustomEvent) => {
-              if (barValue !== 10) {
-                barValue = 10;
-              } else {
-                barValue = 100;
-              }
-              sut.emit("foo", { bar: barValue });
+            [EventType.Custom]: {
+              bar: (_: CustomEvent) => {
+                if (barValue !== 10) {
+                  barValue = 10;
+                } else {
+                  barValue = 100;
+                }
+                sut.emit("foo", { bar: barValue });
+              },
             },
           };
         },
-      } as Eventful<CustomEvent>;
+      };
 
       sut.register(foo);
       sut.register(bar);

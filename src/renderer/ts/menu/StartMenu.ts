@@ -1,7 +1,7 @@
 import Vector from "@common/Vector";
 import { Drawable } from "@/interfaces";
 import { Menu } from "./Menu";
-import { bus } from "@/EventBus";
+import { bus, EventType } from "@/EventBus";
 
 export interface StartMenuItem {
   action: (menu: StartMenu) => void;
@@ -66,33 +66,37 @@ export class StartMenu extends Menu<StartMenuItem> implements Drawable {
    */
   public register() {
     return {
-      keyup: (e: KeyboardEvent) => {
-        if (this.locked) {
-          return;
-        }
-
-        if (e.key === "Escape") {
-          this.active ? this.close() : this.open();
-        }
-
-        if (!this.active) {
-          return;
-        }
-
-        switch (e.key) {
-          case "Enter":
-            this.select();
-            break;
-          case "ArrowUp":
-            this.previous();
-            break;
-          case "ArrowDown":
-            this.next();
-            break;
-        }
+      [EventType.Custom]: {
+        "state.saved": (_e: CustomEvent) => {
+          this.close();
+        },
       },
-      "state.saved": (_e: CustomEvent) => {
-        this.close();
+      [EventType.Keyboard]: {
+        keyup: (e: KeyboardEvent) => {
+          if (this.locked) {
+            return;
+          }
+
+          if (e.key === "Escape") {
+            this.active ? this.close() : this.open();
+          }
+
+          if (!this.active) {
+            return;
+          }
+
+          switch (e.key) {
+            case "Enter":
+              this.select();
+              break;
+            case "ArrowUp":
+              this.previous();
+              break;
+            case "ArrowDown":
+              this.next();
+              break;
+          }
+        },
       },
     };
   }

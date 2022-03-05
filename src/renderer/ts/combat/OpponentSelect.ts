@@ -2,7 +2,7 @@ import Actor from "@/actor/Actor";
 import Team from "./Team";
 import Vector from "@common/Vector";
 import { Drawable, Lockable } from "@/interfaces";
-import { bus } from "@/EventBus";
+import { bus, EventType } from "@/EventBus";
 
 /**
  * A tool to select which opponent to attack
@@ -43,18 +43,20 @@ class OpponentSelect implements Drawable, Lockable {
    */
   public register() {
     return {
-      keyup: (e: KeyboardEvent) => {
-        if (this._locked) {
-          return;
-        }
+      [EventType.Keyboard]: {
+        keyup: (e: KeyboardEvent) => {
+          if (this._locked) {
+            return;
+          }
 
-        switch (e.key) {
-          case "ArrowRight":
-            return this._next();
+          switch (e.key) {
+            case "ArrowRight":
+              return this._next();
 
-          case "ArrowLeft":
-            return this._previous();
-        }
+            case "ArrowLeft":
+              return this._previous();
+          }
+        },
       },
     };
   }
