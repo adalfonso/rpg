@@ -15,7 +15,7 @@ class AbilityFactory implements CombatStrategyFactory {
    *
    * @return the ability
    */
-  public createStrategy(ref: string): Ability {
+  public createStrategy(ref: string) {
     const template = abilities.damage[ref];
 
     if (!template) {

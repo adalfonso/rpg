@@ -2,15 +2,20 @@ import Dialogue from "@/ui/dialogue/Dialogue";
 import Player from "@/actor/Player";
 import Team from "@/combat/Team";
 import Vector from "@common/Vector";
+import abilities from "@/combat/strategy/abilities";
 import actors from "@/actor/actors";
 import sinon from "sinon";
 import { DialogueMediator } from "@/ui/dialogue/DialogueMediator";
 import { EventType } from "@/EventBus";
 import { expect } from "chai";
-import { getActorTemplate } from "tests/unit/level/fixtures";
+import {
+  getAbilityTemplate,
+  getActorTemplate,
+} from "tests/unit/level/fixtures";
 
-beforeEach(() => {
+before(() => {
   actors._foo_dialogue_mediator = getActorTemplate();
+  abilities.damage._default_ability = getAbilityTemplate();
 });
 
 describe("DialogueMediator", () => {

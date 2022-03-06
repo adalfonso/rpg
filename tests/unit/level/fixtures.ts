@@ -21,5 +21,15 @@ export const getActorTemplate = () => ({
     scale: 1,
     fps: 8,
   },
-  abilities: [{ ref: "bar", level: 6 }],
+  abilities: [{ ref: "_default_ability", level: 6 }],
+});
+
+export const getAbilityTemplate = () => ({
+  displayAs: "default",
+  description: "default",
+  value: 20,
+  isSpecial: false,
+  ui: {
+    sprite: "missing",
+  },
 });

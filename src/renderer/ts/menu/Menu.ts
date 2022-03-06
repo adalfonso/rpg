@@ -200,7 +200,10 @@ export abstract class Menu<T>
     const menu = this.currentMenu;
 
     const current_index = menu.items.reduce((carry, value, index) => {
-      return value === this.currentOption ? index : carry;
+      return value === this.currentOption ||
+        value.source === this.currentOption.source
+        ? index
+        : carry;
     }, 0);
 
     const previous_index =
@@ -214,7 +217,10 @@ export abstract class Menu<T>
     const menu = this.currentMenu;
 
     const current_index = menu.items.reduce((carry, value, index) => {
-      return value === this.currentOption ? index : carry;
+      return value === this.currentOption ||
+        value.source === this.currentOption.source
+        ? index
+        : carry;
     }, 0);
 
     const next_index =

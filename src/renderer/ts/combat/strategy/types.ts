@@ -1,3 +1,4 @@
+import Ability from "./Ability";
 import { LevelFixtureTemplate } from "@/level/LevelFixture";
 import { Stat } from "@/Stats";
 /**
@@ -25,6 +26,12 @@ export type LearnedAbility = {
   level: number;
   ref: string;
 };
+
+/** Used to store an ability on the Actor*/
+export interface AbilityList {
+  level: number;
+  ability: Ability;
+}
 
 export interface BaseAbilityTemplate {
   displayAs: string;

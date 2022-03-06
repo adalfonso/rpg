@@ -11,12 +11,12 @@ import Vector from "@common/Vector";
 import Weapon from "@/combat/strategy/Weapon";
 import actors from "./actors";
 import config from "@/config";
+import { AbilityList, LearnedAbility } from "@/combat/strategy/types";
 import { ActorConfig } from "./types";
 import { Collision } from "@/CollisionHandler";
 import { Direction, RenderData } from "@/ui/types";
 import { Drawable, Lockable } from "@/interfaces";
 import { Empty } from "@/mixins";
-import { LearnedAbility } from "@/combat/strategy/types";
 import { Movable, Resizable } from "@/Entity";
 import { MultiSprite } from "@/ui/MultiSprite";
 import { Nullable } from "@/types";
@@ -56,6 +56,9 @@ abstract class Actor
    * after some period of time.
    */
   private savedDirection: Direction;
+
+  /** Battle abilities */
+  private _abilities: AbilityList[];
 
   /** Unique identifier */
   protected _id: string;
@@ -121,6 +124,11 @@ abstract class Actor
     this.savedDirection = this.direction;
 
     this._setSprites(this.getUiInfo());
+
+    this._abilities = this._getAllAbilities().map(({ ref, level }) => ({
+      level,
+      ability: new AbilityFactory().createStrategy(ref),
+    }));
   }
 
   /** Get the actor's id */
@@ -149,9 +157,9 @@ abstract class Actor
 
   /** Get the abilities the actor currently knows */
   get abilities(): CombatStrategy[] {
-    return this._getAllAbilities()
+    return this._abilities
       .filter((ability) => ability.level <= this.stats.lvl)
-      .map((ability) => new AbilityFactory().createStrategy(ability.ref));
+      .map((ability) => ability.ability);
   }
 
   /**
