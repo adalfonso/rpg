@@ -56,7 +56,7 @@ class Battle implements Drawable, Lockable {
    * @param _heroes         - heroes in battle
    * @param _foes           - enemies in battle
    * @param _opponentSelect - utility to traverse opponents in battle
-   * @param start_animation - animation sequence occurring at the start of battle
+   * @param intro_animation - animation sequence occurring at the start of battle
    *
    * @emits battle.action
    */
@@ -64,12 +64,12 @@ class Battle implements Drawable, Lockable {
     private _heroes: HeroTeam,
     private _foes: Team<Enemy>,
     private _opponentSelect: OpponentSelect,
-    start_animation: AnimatedText
+    intro_animation: AnimatedText
   ) {
     this.active = true;
     this._event_queue.push(
       () => this.lock(),
-      start_animation,
+      intro_animation,
       () => this.unlock()
     );
 
@@ -278,13 +278,12 @@ class Battle implements Drawable, Lockable {
     const hero = this._heroes.nextToTakeTurn;
 
     if (e.detail?.strategy instanceof CombatStrategy) {
-      const translation = opponent.position.minus(hero.position);
       const animation = createAnimation.translation({
-        translation,
+        translation: opponent.position.minus(hero.position),
         duration_ms: 500,
       });
       const inverse_animation = createAnimation.translation({
-        translation: translation.times(-1),
+        translation: opponent.position.minus(hero.position).times(-1),
         duration_ms: 500,
       });
 
@@ -315,14 +314,27 @@ class Battle implements Drawable, Lockable {
       this._heroes.all().filter((hero) => !hero.isDefeated)[0] ??
       this._heroes.leader;
 
-    foe.attack(hero, unarmed);
-    this._foes.takeTurn(foe);
+    const animation = createAnimation.translation({
+      translation: hero.position.minus(foe.position),
+      duration_ms: 500,
+    });
+    const inverse_animation = createAnimation.translation({
+      translation: hero.position.minus(foe.position).times(-1),
+      duration_ms: 500,
+    });
 
-    if (this._foes.turnIsOver) {
-      this._handlePostTurn();
-    } else {
-      this._handleFoeAction();
-    }
+    const onAttackEnd = () => {
+      this._foes.takeTurn(foe);
+
+      this._foes.turnIsOver ? this._handlePostTurn() : this._handleFoeAction();
+    };
+
+    this._event_queue.push(
+      new AnimatedEntity(animation, foe),
+      () => foe.attack(hero, unarmed),
+      new AnimatedEntity(inverse_animation, foe),
+      onAttackEnd
+    );
   }
 
   /** Perform all necessary steps after any turn for heroes or foes */
