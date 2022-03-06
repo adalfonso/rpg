@@ -31,7 +31,7 @@ class Player extends Actor implements Drawable, Lockable {
   ) {
     super(_position, _size, template);
 
-    this.speed = new Vector(0, 0);
+    this.speed = Vector.empty();
     this.baseSpeed = _size.x / 10;
 
     this.resolveState(template.type);

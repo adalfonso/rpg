@@ -85,7 +85,7 @@ describe("HeroTeam", () => {
 });
 
 const getActor = () => {
-  return new Player(new Vector(0, 0), new Vector(0, 0), {
+  return new Player(Vector.empty(), Vector.empty(), {
     x: 1,
     y: 1,
     height: 1,

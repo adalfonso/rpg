@@ -1,6 +1,7 @@
+import { DEFAULT_SAVE_LOCATION } from "src/renderer/constants";
+import { bus, EventType } from "@/EventBus";
 import { merge } from "@/util";
 import { promises as fs } from "fs";
-import { bus, EventType } from "@/EventBus";
 
 /** An intermediary between an on-disk JSON store and objects within the game */
 class StateManager {
@@ -8,7 +9,7 @@ class StateManager {
   private data: Record<string, unknown> = {};
 
   /** Location the state was last loaded from */
-  private lastLoadedFrom: string;
+  private lastLoadedFrom: string = DEFAULT_SAVE_LOCATION;
 
   /** Singleton instance */
   private static instance: StateManager;
@@ -142,7 +143,7 @@ class StateManager {
    * @param ref - reference to a value within the state
    */
   public remove(ref: string) {
-    let current = <unknown>this.data;
+    let current = this.data;
 
     const keys = ref.split(".");
     try {
@@ -152,7 +153,7 @@ class StateManager {
         if (i + 1 === length) {
           delete current[key];
         } else {
-          current = current[key];
+          current = current[key] as any;
         }
       }
     } catch (e) {

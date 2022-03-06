@@ -12,6 +12,11 @@ class Vector {
    */
   constructor(public x: number, public y: number) {}
 
+  /** Create an empty vector */
+  static empty() {
+    return new Vector(0, 0);
+  }
+
   /**
    * Create a copy of this vector
    *

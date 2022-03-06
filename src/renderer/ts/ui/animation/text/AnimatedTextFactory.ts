@@ -1,3 +1,4 @@
+import MissingDataError from "@/error/MissingDataError";
 import Vector from "@common/Vector";
 import { AnimatedText } from "./AnimatedText";
 import { animations } from "./animations";
@@ -28,7 +29,7 @@ export class AnimatedTextFactory {
     const animation =
       getAnimationFromName(animations)(animation_name)(text_size);
 
-    return new AnimatedText(text, animation, new Vector(0, 0), options);
+    return new AnimatedText(text, animation, Vector.empty(), options);
   }
 
   /**
@@ -39,8 +40,14 @@ export class AnimatedTextFactory {
    *
    * @return text's width (in pixels)
    */
-  public static getTextWidth(text: string, options: RenderOptions): number {
+  public static getTextWidth(text: string, options: RenderOptions) {
     const ctx = document.createElement("canvas").getContext("2d");
+
+    if (ctx === null) {
+      throw new MissingDataError(
+        `Failed to read context when calculating text width`
+      );
+    }
 
     for (const option in options) {
       ctx[option] = options[option];

@@ -1,13 +1,21 @@
+import MissingDataError from "./error/MissingDataError";
 import Vector from "@common/Vector";
 import { Constructor } from "./mixins";
+import { Nullable } from "./types";
 
 export const Movable = <T extends Constructor>(Base: T) =>
   /** A class that has a position and can be moved */
   class Movable extends Base {
     /** Position of the entity */
-    protected _position: Vector;
+    protected _position: Nullable<Vector> = null;
 
-    get position(): Vector {
+    get position() {
+      if (!this._position) {
+        throw new MissingDataError(
+          "Failed to locate position on Movable instance"
+        );
+      }
+
       return this._position;
     }
 
@@ -25,9 +33,15 @@ export const Resizable = <T extends Constructor>(Base: T) =>
   /** A class that has a size and can be resized */
   class Resizable extends Base {
     /** Size of the entity */
-    protected _size: Vector;
+    protected _size: Nullable<Vector> = null;
 
-    get size(): Vector {
+    get size() {
+      if (!this._size) {
+        throw new MissingDataError(
+          "Failed to locate size on Resizable instance"
+        );
+      }
+
       return this._size;
     }
   };

@@ -19,6 +19,7 @@ import { Empty } from "@/mixins";
 import { LearnedAbility } from "@/combat/strategy/types";
 import { Movable, Resizable } from "@/Entity";
 import { MultiSprite } from "@/ui/MultiSprite";
+import { Nullable } from "@/types";
 import { getImagePath } from "@/util";
 import {
   LevelFixtureProperty,
@@ -63,7 +64,7 @@ abstract class Actor
   protected config: ActorConfig;
 
   /** Dialogue that the actor is the leader of */
-  protected dialogue: Dialogue = null;
+  protected dialogue: Nullable<Dialogue> = null;
 
   /** If the actor has been defeated */
   protected _defeated = false;
@@ -75,7 +76,7 @@ abstract class Actor
   public stats: Stats;
 
   /** The weapon currently equipped to the actor */
-  public weapon: Weapon;
+  public weapon: Nullable<Weapon> = null;
 
   /** If the actor is in dialogue */
   public inDialogue: boolean;

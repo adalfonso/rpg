@@ -47,7 +47,7 @@ describe("CollisionHandler", () => {
 
       let item = new Item(
         new Vector(1, 1),
-        new Vector(0, 0),
+        Vector.empty(),
         {
           name: "empanada",
           type: "empanada",
@@ -74,7 +74,7 @@ describe("CollisionHandler", () => {
 });
 
 const getPlayer = () => {
-  return new Player(new Vector(0, 0), new Vector(0, 0), {
+  return new Player(Vector.empty(), Vector.empty(), {
     x: 1,
     y: 1,
     height: 1,
@@ -86,8 +86,8 @@ const getPlayer = () => {
 
 const getCollision = (): Collision => {
   return {
-    position: new Vector(0, 0),
-    size: new Vector(0, 0),
+    position: Vector.empty(),
+    size: Vector.empty(),
   };
 };
 

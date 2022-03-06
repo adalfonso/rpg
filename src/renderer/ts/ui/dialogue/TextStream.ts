@@ -1,5 +1,6 @@
 import TextBuffer from "./TextBuffer";
 import Vector from "@common/Vector";
+import { Nullable } from "@/types";
 
 /** Handles to usage of several TextBuffers */
 class TextStream {
@@ -10,7 +11,7 @@ class TextStream {
   private _index = 0;
 
   /** Buffer of current data split for line-by-line rendering */
-  private _buffer: TextBuffer;
+  private _buffer: Nullable<TextBuffer> = null;
 
   /**
    * Create a new TextStream
@@ -20,17 +21,17 @@ class TextStream {
   constructor(private _data: string[]) {}
 
   /** Get the current text fragment */
-  get fragment(): string {
+  get fragment() {
     return this._fragment;
   }
 
   /** Determine if the buffer is empty */
-  get isEmpty(): boolean {
+  get isEmpty() {
     return this._buffer ? this._buffer.isEmpty : true;
   }
 
   /** Determine if the stream has completed */
-  get isDone(): boolean {
+  get isDone() {
     return (
       this._index + 1 >= this._data.length &&
       this._fragment === this._data[this._index]
@@ -56,6 +57,10 @@ class TextStream {
 
   /** Empty the buffer */
   public next() {
+    if (this._buffer === null) {
+      throw new Error("Tried to advance missing text buffer");
+    }
+
     this._buffer.clear();
     this._index++;
     this._fragment = "";
@@ -66,7 +71,10 @@ class TextStream {
    *
    * @return buffer contents
    */
-  public read(): string[] {
+  public read() {
+    if (this._buffer === null) {
+      throw new Error("Tried to read from missing text buffer");
+    }
     return this._buffer.read();
   }
 
@@ -77,7 +85,7 @@ class TextStream {
    *
    * @return if the current line is fully completed
    */
-  public tick(ticks: number): boolean {
+  public tick(ticks: number) {
     const lineLength = this._data[this._index].length;
     const currentLength = ticks + this._fragment.length;
     const endCharIndex = Math.min(lineLength, currentLength) + 1;

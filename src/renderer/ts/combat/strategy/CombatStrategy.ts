@@ -1,8 +1,10 @@
 import Damage from "../Damage";
+import MissingDataError from "@/error/MissingDataError";
 import Renderable from "@/ui/Renderable";
 import Vector from "@common/Vector";
 import { Constructor } from "@/mixins";
 import { EntityConfig } from "./types";
+import { Nullable } from "@/types";
 import { bus } from "@/EventBus";
 
 /**
@@ -14,15 +16,27 @@ export const Descriptive = <T extends Constructor>(Base: T) =>
   /** Descriptive classes store UI description information about itself */
   class Descriptive extends Base {
     /** Stores the descriptors */
-    protected _template: EntityConfig;
+    protected _template: Nullable<EntityConfig> = null;
 
     /** Get the display name */
-    get displayAs(): string {
+    get displayAs() {
+      if (!this._template) {
+        throw new MissingDataError(
+          `Failed to locate template for Descriptive.displayAs`
+        );
+      }
+
       return this._template.displayAs;
     }
 
     /** Get the description */
-    get description(): string {
+    get description() {
+      if (!this._template) {
+        throw new MissingDataError(
+          `Failed to locate template for Descriptive.description`
+        );
+      }
+
       return this._template.description;
     }
   };
@@ -36,7 +50,7 @@ export const Visual = <T extends Constructor>(Base: T) =>
   /** Classes that have a UI component */
   class Visual extends Base {
     /** Reference to UI component */
-    protected _ui: Renderable;
+    protected _ui: Nullable<Renderable> = null;
 
     /** Get the UI component */
     get ui() {
@@ -55,6 +69,10 @@ export const Visual = <T extends Constructor>(Base: T) =>
       offset: Vector,
       resolution: Vector
     ) {
+      if (!this._ui) {
+        throw new MissingDataError("Missing UI when trying to draw Visual");
+      }
+
       this._ui.draw(ctx, offset, resolution);
     }
   };
@@ -68,10 +86,10 @@ export const DamageDealing = <T extends Constructor>(Base: T) =>
   /** A class that can deal some variety of damage */
   class DamageDealing extends Base {
     /** Reference to damage */
-    protected _damage: Damage;
+    protected _damage: Nullable<Damage> = null;
 
     /** Get the damage reference */
-    get damage(): Damage {
+    get damage() {
       return this._damage;
     }
   };

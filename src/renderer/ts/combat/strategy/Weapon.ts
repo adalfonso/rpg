@@ -30,9 +30,6 @@ class Weapon extends DamageDealing(
     super();
   }
 
-  /**
-   * Get the weapon's ref
-   */
   get ref(): string {
     return this._id;
   }

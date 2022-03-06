@@ -2,20 +2,17 @@ import Inanimate from "./Inanimate";
 import MissingDataError from "@/error/MissingDataError";
 import Vector from "@common/Vector";
 import { LevelFixtureTemplate } from "@/level/LevelFixture";
-
 /**
  * An invisible area on the map
  *
  * Portals transport entities that enter it into a different area.
  */
 class Portal extends Inanimate {
-  /**
-   * Reference to the current area's name
-   */
-  public from: string;
+  /** Reference to the current area's name */
+  public from = "";
 
   /** Reference to the name of the area that the portal leads to */
-  public to: string;
+  public to = "";
 
   /**
    * Create a new Portal instance

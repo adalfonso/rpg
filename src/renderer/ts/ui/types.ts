@@ -11,7 +11,7 @@ import Vector from "@common/Vector";
 export type ActorUiData = {
   fps: number;
   frames: FrameRenderTemplate;
-  scale?: number;
+  scale: number;
   sprite: string;
 };
 

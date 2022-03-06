@@ -11,6 +11,7 @@ import { DialogueMediator } from "./ui/dialogue/DialogueMediator";
 import { Drawable, Updatable } from "./interfaces";
 import { LevelFixtureFactory } from "./level/LevelFixtureFactory";
 import { LevelTemplate } from "./level/LevelTemplate";
+import { Nullable } from "./types";
 import { StartMenu } from "./menu/StartMenu";
 import { SubMenu } from "./menu/SubMenu";
 import { bus, EventType } from "@/EventBus";
@@ -33,19 +34,19 @@ enum GameState {
  */
 class Game implements Drawable, Updatable {
   /** The current battle taking place */
-  private battle: Battle = null;
+  private _battle: Nullable<Battle> = null;
 
   /** Current level instance */
-  private level: Level;
+  private _level: Level;
 
   /** Main game menu */
-  private menu: StartMenu;
+  private _menu: StartMenu;
 
   /** Inventory menu */
-  private inventory: Inventory;
+  private _inventory: Inventory;
 
   /** Current state of game */
-  private state: GameState;
+  private _state: GameState;
 
   /**
    * Create a new game instance
@@ -56,14 +57,20 @@ class Game implements Drawable, Updatable {
     private _heroes: HeroTeam,
     private _dialogue_mediator: DialogueMediator
   ) {
-    this.state = GameState.Play;
+    this._state = GameState.Play;
 
-    this.menu = new StartMenu(new SubMenu(menus.start()));
-    this.inventory = new Inventory(new SubMenu(menus.inventory()));
+    this._menu = new StartMenu(new SubMenu(menus.start()));
+    this._inventory = new Inventory(new SubMenu(menus.inventory()));
 
     bus.register(this);
 
-    this.menu.open();
+    this._menu.open();
+
+    this._level = new Level(
+      new LevelTemplate(getLevels().sandbox_0, new LevelFixtureFactory()),
+      this.player,
+      new CollisionHandler(this._heroes)
+    );
   }
 
   /** Current player from the team */
@@ -82,17 +89,17 @@ class Game implements Drawable, Updatable {
    * @param dt - delta time since last update
    */
   public update(dt: number) {
-    if (this.battle) {
-      this.battle.update(dt);
+    if (this._battle) {
+      this._battle.update(dt);
     }
 
     this._dialogue_mediator.update(dt);
 
-    if (this.state !== GameState.Play) {
+    if (this._state !== GameState.Play) {
       return;
     }
 
-    this.level.update(dt);
+    this._level.update(dt);
   }
 
   /**
@@ -107,21 +114,21 @@ class Game implements Drawable, Updatable {
     offset: Vector,
     resolution: Vector
   ) {
-    const noOffset = new Vector(0, 0);
+    const noOffset = Vector.empty();
 
-    if (this.hasActiveBattle()) {
+    if (this._battle !== null && this._battle.active) {
       const battleOffset = new Vector(
         resolution.x / 2 - 128 - 64,
         resolution.y / 2 - 64 - 64
       );
-      this.battle.draw(ctx, battleOffset, resolution);
-    } else if (this.inventory.active) {
-      this.inventory.draw(ctx, noOffset, resolution);
+      this._battle.draw(ctx, battleOffset, resolution);
+    } else if (this._inventory.active) {
+      this._inventory.draw(ctx, noOffset, resolution);
     } else {
-      this.level.draw(ctx, offset, resolution);
+      this._level.draw(ctx, offset, resolution);
     }
 
-    this.menu.draw(ctx, noOffset, resolution);
+    this._menu.draw(ctx, noOffset, resolution);
     this._dialogue_mediator.draw(ctx, noOffset, resolution);
   }
 
@@ -140,12 +147,12 @@ class Game implements Drawable, Updatable {
            * during a battle animation, it is plausible that battle.start would
            * occur.
            */
-          this.battle = this.battle || BattleBuilder.create(e);
+          this._battle = this._battle || BattleBuilder.create(e);
           this.lock(GameState.Battle);
         },
 
         "battle.end": (_: CustomEvent) => {
-          this.battle = null;
+          this._battle = null;
           this.unlock(GameState.Battle);
         },
 
@@ -189,36 +196,24 @@ class Game implements Drawable, Updatable {
   }
 
   /**
-   * Hacky method to initiate the game at the first level
-   * TODO: Create a better way to load a game state instead of a static level
-   */
-  public start() {
-    this.level = new Level(
-      new LevelTemplate(getLevels().sandbox_0, new LevelFixtureFactory()),
-      this.player,
-      new CollisionHandler(this._heroes)
-    );
-  }
-
-  /**
    * Lock player movement when non-play state is requested
    *
    * @param state - the game state to active
    */
   private lock(state: GameState) {
-    if (this.state !== GameState.Play) {
+    if (this._state !== GameState.Play) {
       return;
     }
 
-    this.state = state;
+    this._state = state;
     this.player.lock();
 
     if (state !== GameState.Inventory) {
-      this.inventory.lock();
+      this._inventory.lock();
     }
 
     if (state !== GameState.StartMenu) {
-      this.menu.lock();
+      this._menu.lock();
     }
   }
 
@@ -228,22 +223,13 @@ class Game implements Drawable, Updatable {
    * @param state - the game to deactivate
    */
   private unlock(state: GameState) {
-    if (this.state !== state) {
+    if (this._state !== state) {
       return;
     }
     this.player.unlock();
-    this.inventory.unlock();
-    this.menu.unlock();
-    this.state = GameState.Play;
-  }
-
-  /**
-   * Determine if a battle is underway
-   *
-   * @return if a battle is underway
-   */
-  private hasActiveBattle() {
-    return this.battle !== null && this.battle.active;
+    this._inventory.unlock();
+    this._menu.unlock();
+    this._state = GameState.Play;
   }
 }
 

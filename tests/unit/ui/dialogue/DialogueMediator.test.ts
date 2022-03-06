@@ -58,7 +58,7 @@ describe("DialogueMediator", () => {
     });
 
     it("locks targets while dialogue is active", () => {
-      const player = new Player(new Vector(0, 0), new Vector(0, 0), {
+      const player = new Player(Vector.empty(), Vector.empty(), {
         type: "_foo_dialogue_mediator",
       } as any);
 

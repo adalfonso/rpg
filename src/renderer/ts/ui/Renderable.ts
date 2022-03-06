@@ -17,7 +17,7 @@ export default class Renderable implements Drawable {
    *
    * (The effective dimensions of sprite)
    */
-  public spriteSize: Vector;
+  public spriteSize: Vector = Vector.empty();
 
   /**
    * If the image has loaded

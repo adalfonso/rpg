@@ -33,6 +33,7 @@ interface BattleEvent {
 
 const isBattleEvent = (event: unknown): event is BattleEvent =>
   typeof event === "object" &&
+  event !== null &&
   typeof event["isDone"] === "boolean" &&
   event["update"] instanceof Function;
 
@@ -158,7 +159,7 @@ class Battle implements Drawable, Lockable {
     const [event] = this._event_queue;
 
     if (isBattleEvent(event) && event?.draw) {
-      event.draw(ctx, new Vector(0, 0), resolution);
+      event.draw(ctx, Vector.empty(), resolution);
     }
   }
 
@@ -203,7 +204,7 @@ class Battle implements Drawable, Lockable {
           const stream = new TextStream(dialogue);
 
           this._event_queue.push(
-            new Dialogue(stream, undefined, [
+            new Dialogue(stream, null, [
               ...this._heroes.all(),
               ...this._foes.all(),
             ])

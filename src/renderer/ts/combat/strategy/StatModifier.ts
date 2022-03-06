@@ -5,9 +5,7 @@ import { StatModifierTemplate } from "./types";
 import { bus } from "@/EventBus";
 import { Empty } from "@/mixins";
 
-/**
- * Temporary modifications made to an actor's stats
- */
+/** Temporary modifications made to an actor's stats */
 class StatModifier extends Descriptive(Visual(Empty)) {
   /** Number of turns this effect has taken effect */
   private _turnsApplied = 0;

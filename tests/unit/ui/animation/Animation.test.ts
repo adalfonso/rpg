@@ -15,7 +15,7 @@ describe("Animation", () => {
 
       (<AnimationStep>(<any>steps[0])).update = () => {
         count++;
-        return count === 2 ? new Vector(1, 1) : new Vector(0, 0);
+        return count === 2 ? new Vector(1, 1) : Vector.empty();
       };
 
       const template = {
@@ -27,7 +27,7 @@ describe("Animation", () => {
 
       const expected = {
         type: AnimationType.Position,
-        delta: new Vector(0, 0),
+        delta: Vector.empty(),
       };
 
       expect(sut.update(0)).to.deep.equal(expected);

@@ -10,6 +10,7 @@ import { Drawable, Eventful } from "@/interfaces";
 import { LevelFixture } from "./LevelFixture";
 import { LevelFixtureFactory } from "./LevelFixtureFactory";
 import { LevelTemplate } from "./LevelTemplate";
+import { Nullable } from "@/types";
 import { bus, EventType } from "@/EventBus";
 import { getImagePath } from "@/util";
 import { getLevels } from "./levels";
@@ -24,13 +25,13 @@ import { getLevels } from "./levels";
  */
 class Level implements Drawable {
   /** World area associated with the level */
-  private map: Map;
+  private _map: Nullable<Map> = null;
 
   /** Entry points that an fixture has to the level */
-  private entries: Record<string, Entry>;
+  private _entries: Record<string, Entry> = {};
 
   /** A mix of fixtures that interact in the level */
-  private fixtures: LevelFixture[] = [];
+  private _fixtures: LevelFixture[] = [];
 
   /**
    * Create a new level instance
@@ -54,13 +55,13 @@ class Level implements Drawable {
    * @param dt - delta time
    */
   public update(dt: number) {
-    this.fixtures.forEach((fixture) => {
+    this._fixtures.forEach((fixture) => {
       if (fixture instanceof NonPlayer && fixture.isExpired) {
         this.removeFixture(fixture);
       }
     });
 
-    this.fixtures.forEach((fixture) => fixture.update(dt));
+    this._fixtures.forEach((fixture) => fixture.update(dt));
 
     // Remove any stale fixtures that are returned
     this.collisionHandler.update(dt).forEach((fixture) => {
@@ -68,7 +69,7 @@ class Level implements Drawable {
     });
 
     // Reload fixtures incase any have been recently removed
-    this.collisionHandler.loadFixtures(this.fixtures);
+    this.collisionHandler.loadFixtures(this._fixtures);
   }
 
   /**
@@ -118,11 +119,15 @@ class Level implements Drawable {
     offset: Vector,
     resolution: Vector
   ) {
-    this.map.draw(ctx, offset, resolution);
+    if (!this._map) {
+      throw new MissingDataError(`Cannot draw level when map is not set`);
+    }
 
-    [this.player, ...this.fixtures].forEach((fixture) => {
-      fixture.draw(ctx, offset, resolution);
-    });
+    this._map.draw(ctx, offset, resolution);
+
+    [this.player, ...this._fixtures].forEach((fixture) =>
+      fixture.draw(ctx, offset, resolution)
+    );
   }
 
   /**
@@ -140,15 +145,15 @@ class Level implements Drawable {
 
     const tileSet = getImagePath(`tileset.${template.tileSource}`);
 
-    this.map = new Map(template.tiles, tileSet);
+    this._map = new Map(template.tiles, tileSet);
 
-    this.entries = template.entries;
-    this.fixtures = template.fixtures;
+    this._entries = template.entries;
+    this._fixtures = template.fixtures;
     this.collisionHandler.loadFixtures(template.fixtures);
 
     const entry: Entry = portal
-      ? this.entries[portal.from]
-      : this.entries.origin;
+      ? this._entries[portal.from]
+      : this._entries.origin;
 
     if (!entry) {
       throw new MissingDataError(
@@ -166,9 +171,9 @@ class Level implements Drawable {
      * Force unregister every fixture, even if they aren't really eventful to
      * prevent memory leaks.
      */
-    this.fixtures.forEach((e) => bus.unregister(e as Eventful));
-    this.fixtures = [];
-    this.entries = {};
+    this._fixtures.forEach((e) => bus.unregister(e as Eventful));
+    this._fixtures = [];
+    this._entries = {};
   }
 
   /**
@@ -177,7 +182,7 @@ class Level implements Drawable {
    * @param fixture - fixture to remove
    */
   private removeFixture(fixture: LevelFixture) {
-    this.fixtures = this.fixtures.filter((f) => f !== fixture);
+    this._fixtures = this._fixtures.filter((f) => f !== fixture);
   }
 }
 

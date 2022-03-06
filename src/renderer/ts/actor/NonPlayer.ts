@@ -4,6 +4,7 @@ import Vector from "@common/Vector";
 import { Drawable } from "@/interfaces";
 import { Milestone } from "@/state/milestone/Milestone";
 import { MilestoneAttainOn } from "@/state/milestone/types";
+import { Nullable } from "@/types";
 import { Speech } from "./types";
 import { bus, EventType } from "@/EventBus";
 import { getSpeech } from "./speech";
@@ -21,7 +22,7 @@ class NonPlayer extends Actor implements Drawable {
   private _speech: Speech;
 
   /** Milestones tied to the npc */
-  private _milestone: Milestone;
+  private _milestone: Nullable<Milestone> = null;
 
   /** If the npc is expired and should be torn down */
   private _is_expired = false;
@@ -44,18 +45,25 @@ class NonPlayer extends Actor implements Drawable {
     const { type, name, properties } = template;
     const speech_key = `${type}.${name}`;
 
-    this._speech = getSpeech(speech_key);
+    const speech = getSpeech(speech_key);
 
-    if (this._speech === undefined) {
+    if (!speech) {
       throw new MissingDataError(
         `Speech data for "${speech_key}" as NonPlayer is not defined in speech.ts`
       );
     }
 
-    const milestone_ref = levelPropertyLookup(properties)("milestone");
+    this._speech = speech;
+
+    const milestone_ref = levelPropertyLookup(properties ?? [])("milestone");
 
     if (milestone_ref !== undefined) {
-      this._createMilestoneFromRef(milestone_ref);
+      this._milestone = new Milestone(milestone_ref);
+
+      // Assuming if there is a milestone related to the NPC they're not needed
+      if (this._milestone.attained) {
+        this.expire();
+      }
     }
 
     this.resolveState(`nonPlayers.${this.id}`);
@@ -172,20 +180,6 @@ class NonPlayer extends Actor implements Drawable {
       speech: [...this._speech.dialogue],
       speaker: this,
     });
-  }
-
-  /**
-   * Create milestone for the NPC
-   *
-   * @param ref - ref name of milestone
-   */
-  private _createMilestoneFromRef(ref: string) {
-    this._milestone = new Milestone(ref);
-
-    // Assuming if there is a milestone related to the NPC they're not needed
-    if (this._milestone.attained) {
-      this.expire();
-    }
   }
 }
 

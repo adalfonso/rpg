@@ -36,7 +36,7 @@ class HeroTeam extends Team<Player> {
             );
           }
 
-          const position = new Vector(0, 0);
+          const position = Vector.empty();
           const size = new Vector(actor.template.width, actor.template.height);
 
           const member = new Player(

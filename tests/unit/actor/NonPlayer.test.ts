@@ -14,8 +14,8 @@ describe("NonPlayer", () => {
       expect(
         () =>
           new NonPlayer(
-            new Vector(0, 0),
-            new Vector(0, 0),
+            Vector.empty(),
+            Vector.empty(),
             getFixtureTemplate({
               type: "foo_non_player",
               name: "foo_non_player",

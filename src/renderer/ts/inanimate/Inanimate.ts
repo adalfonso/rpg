@@ -15,8 +15,8 @@ abstract class Inanimate {
    * @param size     - size of the inanimate
    */
   constructor(
-    public position: Vector = new Vector(0, 0),
-    public size: Vector = new Vector(0, 0)
+    public position: Vector = Vector.empty(),
+    public size: Vector = Vector.empty()
   ) {}
 
   /**

@@ -8,7 +8,7 @@ import pisti from "./pisti.png";
 import player from "./player_new.png";
 import water_bottle from "./item/water_bottle.png";
 
-export default {
+const manifest: Record<string, unknown> = {
   missing,
   actor: {
     player,
@@ -27,3 +27,5 @@ export default {
     big_sword,
   },
 };
+
+export default manifest;

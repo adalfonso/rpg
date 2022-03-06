@@ -83,13 +83,13 @@ export class Animation {
 
     // Animation is officially done
     if (this.isDone) {
-      return { type, delta: new Vector(0, 0) };
+      return { type, delta: Vector.empty() };
     }
 
     const sum = (carry: Vector, update: Vector) => carry.plus(update);
     const delta = this._steps
       .map((step) => step.update(dt))
-      .reduce(sum, new Vector(0, 0));
+      .reduce(sum, Vector.empty());
 
     /**
      * Animation has run (iterated) at least once but is not fully completed.

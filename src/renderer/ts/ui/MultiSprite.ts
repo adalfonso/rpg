@@ -14,10 +14,10 @@ export const MultiSprite = <T extends Constructor>(Base: T) =>
   /** An entity that renders a series of sprites */
   class MultiSprite extends Base {
     /** List of all entity's sprites */
-    protected _sprites: Renderable;
+    protected sprites: Renderable[] = [];
 
     /** Direction entity is facing */
-    protected _direction: Direction;
+    protected _direction: Direction = Direction.None;
 
     /**
      * Set initial sprite from UI data

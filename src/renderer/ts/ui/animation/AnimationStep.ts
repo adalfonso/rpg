@@ -97,7 +97,7 @@ export class AnimationStep {
     this._current_time += dt;
 
     if (this._current_time < delay_ms || this.isDone) {
-      return new Vector(0, 0);
+      return Vector.empty();
     }
 
     if (this._hasCompleted()) {

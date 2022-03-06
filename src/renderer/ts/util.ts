@@ -1,5 +1,7 @@
+import InvalidDataError from "./error/InvalidDataError";
 import MissingDataError from "./error/MissingDataError";
 import manifest from "@img/manifest";
+import { isRecord } from "./types";
 
 /**
  * Lowercase the first character of a string
@@ -48,12 +50,11 @@ export const merge = (
 
   for (const p in obj2) {
     try {
-      if (obj2[p].constructor == Object) {
-        obj1[p] = merge(
-          obj1[p] as Record<string, unknown>,
-          obj2[p] as Record<string, unknown>,
-          true
-        );
+      const obj1_p = obj1[p];
+      const obj2_p = obj2[p];
+
+      if (isRecord(obj1_p) && isRecord(obj2_p)) {
+        obj1[p] = merge(obj1_p, obj2_p, true);
       } else {
         obj1[p] = obj2[p];
       }
@@ -109,11 +110,24 @@ export const cloneByStringify = (input: unknown): unknown => {
  *
  * @throws {MissingDataError} when manifest lookup is missing
  */
-export const getImagePath = (resource: string): string => {
-  return resource.split(".").reduce((carry: unknown, key: string) => {
+export const getImagePath = (resource: string) => {
+  const path = resource.split(".").reduce((carry: any, key) => {
+    if (!isRecord(carry)) {
+      throw new InvalidDataError();
+    }
+
     if (!carry[key]) {
       throw new MissingDataError(`Cannot find resource: ${key}`);
     }
+
     return carry[key];
   }, manifest);
+
+  if (typeof path === "string") {
+    return path;
+  }
+
+  throw new InvalidDataError(
+    `Expected string returned from getImagePath but got ${typeof path} instead`
+  );
 };

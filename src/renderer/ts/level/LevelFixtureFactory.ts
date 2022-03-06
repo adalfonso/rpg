@@ -14,7 +14,6 @@ import { getAnimationFromName } from "@/ui/animation/AnimationFactory";
 import {
   isBasicLevelFixtureTemplate,
   isLevelFixtureTemplate,
-  LevelFixture,
   LevelFixtureType,
   LevelFixtureTemplate,
 } from "./LevelFixture";
@@ -53,7 +52,7 @@ export class LevelFixtureFactory {
    * @throws {MissingDataError} when x, y, width, or height are missing
    * @throws {InvalidDataError} when the type is invalid
    */
-  public create(type: LevelFixtureType, template: unknown): LevelFixture {
+  public create(type: LevelFixtureType, template: unknown) {
     if (!isBasicLevelFixtureTemplate(template)) {
       throw new MissingDataError(
         `Invalid template used to create a basic level fixture: ${JSON.stringify(
@@ -62,12 +61,10 @@ export class LevelFixtureFactory {
       );
     }
 
-    const position = new Vector(template.x, template.y).times(
-      global_config.scale
-    );
-    const size = new Vector(template.width, template.height).times(
-      global_config.scale
-    );
+    const { scale } = global_config;
+
+    const position = new Vector(template.x, template.y).times(scale);
+    const size = new Vector(template.width, template.height).times(scale);
 
     switch (type) {
       case "clip":

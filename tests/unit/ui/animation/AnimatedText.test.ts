@@ -8,7 +8,7 @@ describe("AnimatedText", () => {
     it("updates text position", () => {
       let animation = getAnimation();
 
-      let sut = new Sut("", animation, new Vector(0, 0), {});
+      let sut = new Sut("", animation, Vector.empty(), {});
 
       sut.update(100);
 
@@ -23,7 +23,7 @@ describe("AnimatedText", () => {
         restore: () => {},
       };
 
-      sut.draw(ctx, new Vector(0, 0), new Vector(0, 0));
+      sut.draw(ctx, Vector.empty(), Vector.empty());
 
       expect(results).to.deep.equal(expected);
     });
@@ -33,7 +33,7 @@ describe("AnimatedText", () => {
     it("detects when it is done", () => {
       let animation = getAnimation();
 
-      let sut = new Sut("", animation, new Vector(0, 0), {});
+      let sut = new Sut("", animation, Vector.empty(), {});
       expect(sut.isDone).to.be.false;
       (<any>animation).isDone = true;
       expect(sut.isDone).to.be.true;

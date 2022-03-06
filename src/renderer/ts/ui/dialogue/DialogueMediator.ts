@@ -7,12 +7,12 @@ import TextStream from "./TextStream";
 import Vector from "@common/Vector";
 import { Updatable } from "@/interfaces";
 import { bus, EventType } from "@/EventBus";
-import { isStringArray } from "@/types";
+import { isStringArray, Nullable } from "@/types";
 
 /** Used to start and stop dialogue with a team */
 export class DialogueMediator implements Updatable {
   /** Dialogue instance */
-  private _dialogue: Dialogue;
+  private _dialogue: Nullable<Dialogue> = null;
 
   constructor(private _target: Team<Actor>) {
     bus.register(this);
@@ -56,7 +56,7 @@ export class DialogueMediator implements Updatable {
    */
   public draw(
     ctx: CanvasRenderingContext2D,
-    offset: Vector = new Vector(0, 0),
+    offset: Vector = Vector.empty(),
     resolution: Vector
   ) {
     this._dialogue?.draw(ctx, offset, resolution);

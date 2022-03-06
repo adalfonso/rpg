@@ -27,6 +27,7 @@ const isInventoryStateMenu = (menu: unknown): menu is string[] =>
  */
 export const isInventoryState = (data: unknown): data is InventoryState =>
   typeof data === "object" &&
+  data !== null &&
   typeof data["menu"] === "object" &&
   ["item", "weapon", "armor", "special"].filter((category) =>
     isInventoryStateMenu(data["menu"][category])

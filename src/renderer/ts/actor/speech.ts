@@ -1,4 +1,4 @@
-import { Speech, SpeechList } from "./types";
+import { SpeechList } from "./types";
 
 /** All non-players contained in the game */
 export const speech_list: SpeechList = {
@@ -15,14 +15,11 @@ export const speech_list: SpeechList = {
  * @param ref - dot notation ref of type.name
  * @returns speech or undefined
  */
-export const getSpeech = (
-  ref: string,
-  lookup: SpeechList = speech_list
-): Speech | undefined => {
+export const getSpeech = (ref: string, lookup: SpeechList = speech_list) => {
   const [type, name] = ref.split(".");
 
   if (type === undefined || name === undefined) {
-    return undefined;
+    return null;
   }
 
   return lookup[type]?.[name];

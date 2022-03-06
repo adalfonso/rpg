@@ -6,13 +6,12 @@ import Player from "@/actor/Player";
 import StateManager from "@/state/StateManager";
 import Vector from "@common/Vector";
 import config from "@/config";
+import { DEFAULT_SAVE_LOCATION } from "./constants";
 import { DialogueMediator } from "@/ui/dialogue/DialogueMediator";
 import { resolution } from "@common/common";
 import { startAnimation } from "@/util";
 
 document.addEventListener("DOMContentLoaded", async (_event) => {
-  const DEFAULT_SAVE_LOCATION = "./data/save_state.json";
-
   const state: StateManager = StateManager.getInstance();
 
   await state.load(DEFAULT_SAVE_LOCATION);
@@ -37,8 +36,6 @@ document.addEventListener("DOMContentLoaded", async (_event) => {
   const dialogue = new DialogueMediator(team);
   const game = new Game(team, dialogue);
   const display = new Display(resolution, canvas, game);
-
-  game.start();
 
   startAnimation((dt: number) => {
     game.update(dt);

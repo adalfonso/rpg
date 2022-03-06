@@ -1,4 +1,5 @@
 import Game from "@/Game";
+import MissingDataError from "@/error/MissingDataError";
 import Vector from "@common/Vector";
 import { bus, EventType } from "@/EventBus";
 /**
@@ -39,10 +40,14 @@ class Display {
   ) {
     this.width = aspectRatio.x;
     this.height = aspectRatio.y;
-
     this.renderMode = RenderMode.Dynamic;
+    const ctx = canvas.getContext("2d");
 
-    this.ctx = canvas.getContext("2d");
+    if (ctx === null) {
+      throw new MissingDataError(`Failed to get rendering context for display`);
+    }
+
+    this.ctx = ctx;
 
     this.resizetoWindow();
 
@@ -52,7 +57,7 @@ class Display {
   /** The drawing offset relative to the current render mode */
   get offset(): Vector {
     if (this.renderMode === RenderMode.Static) {
-      return new Vector(0, 0);
+      return Vector.empty();
     }
 
     const center = this.game.renderPoint;
@@ -65,9 +70,7 @@ class Display {
     return new Vector(this.width, this.height);
   }
 
-  /**
-   * Hand off to game instance for drawing.
-   */
+  /** Hand off to game instance for drawing. */
   public draw() {
     this.ctx.clearRect(0, 0, this.width, this.height);
 
@@ -93,9 +96,7 @@ class Display {
     };
   }
 
-  /**
-   * Determine if a canvas resize is imminent based on window's width
-   */
+  /** Determine if a canvas resize is imminent based on window's width */
   private resizetoWindow(): void {
     // Does the view port fit a full-width render?
     if (window.innerWidth >= this.aspectRatio.x) {

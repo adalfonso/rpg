@@ -77,7 +77,10 @@ export const menus = {
       ref: "attack",
       displayAs: "Attack",
       // TODO: need a menu refactor before this works for multiple players
-      menu: () => (getUser().weapon ? [getUser().weapon] : []),
+      menu: () => {
+        const weapon = getUser().weapon;
+        return weapon ? [weapon] : [];
+      },
     },
     {
       ref: "ability",

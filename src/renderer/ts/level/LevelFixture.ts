@@ -4,6 +4,7 @@ import Entry from "@/inanimate/Entry";
 import NonPlayer from "@/actor/NonPlayer";
 import Portal from "@/inanimate/Portal";
 import { Item } from "@/inanimate/Item";
+import { isRecord } from "@/types";
 
 /** Available types of level fixtures */
 export enum LevelFixtureType {
@@ -80,16 +81,20 @@ const isLevelFixtureProperty = (prop: unknown) =>
 export const isLevelFixtureTemplate = (
   template: unknown
 ): template is LevelFixtureTemplate => {
+  if (!isRecord(template)) {
+    return false;
+  }
+
   const hasValidProperties = Array.isArray(template["properties"])
     ? template["properties"].filter((prop) => !isLevelFixtureProperty(prop))
         .length === 0
     : template["properties"] === undefined;
 
   return (
+    hasValidProperties &&
     isBasicLevelFixtureTemplate(template) &&
     typeof template["name"] === "string" &&
-    typeof template["type"] === "string" &&
-    hasValidProperties
+    typeof template["type"] === "string"
   );
 };
 

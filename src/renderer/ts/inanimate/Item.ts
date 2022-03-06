@@ -9,12 +9,13 @@ import { AnimationType } from "@/ui/animation/Animation";
 import { EntityConfigFactory } from "@/combat/strategy/types";
 import { ItemConfig } from "@/item/types";
 import { LevelFixtureTemplate } from "@/level/LevelFixture";
+import { Nullable } from "@/types";
 import { ucFirst, getImagePath } from "@/util";
 
 /** An item in the context of a map/level */
 export class Item extends Inanimate {
   /** Visual animation */
-  private _animation: Animation | null;
+  private _animation: Nullable<Animation> = null;
 
   /** Game-related info about the item */
   private _config: ItemConfig;

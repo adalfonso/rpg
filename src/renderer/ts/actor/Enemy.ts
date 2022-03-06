@@ -11,7 +11,7 @@ import { bus } from "@/EventBus";
 /** Main class for baddies */
 class Enemy extends Actor implements Drawable {
   /** Each sprite of the enemy's movement animation */
-  private sprites: Renderable[];
+  protected sprites: Renderable[];
 
   /**
    * Create a new Enemy instance

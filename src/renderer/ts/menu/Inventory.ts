@@ -114,12 +114,12 @@ export class Inventory extends Menu<InventoryMenuItem> implements Drawable {
         ctx.translate(10, 0);
 
         // Render the menu option text
-        this.drawOptionText(ctx, new Vector(0, 0), resolution, option);
+        this.drawOptionText(ctx, Vector.empty(), resolution, option);
 
         // Account for height of equipable menu on next menu item
         ctx.translate(0, detail_size.y - TEXT_SIZE);
       } else {
-        this.drawOptionText(ctx, new Vector(0, 0), resolution, option);
+        this.drawOptionText(ctx, Vector.empty(), resolution, option);
       }
 
       // Render sub-menu

@@ -22,7 +22,7 @@ describe("CreateAnimation", () => {
           expected: [
             {
               type: AnimationType.Position,
-              delta: new Vector(0, 0),
+              delta: Vector.empty(),
             },
             {
               type: AnimationType.Position,
@@ -44,7 +44,7 @@ describe("CreateAnimation", () => {
           expected: [
             {
               type: AnimationType.Position,
-              delta: new Vector(0, 0),
+              delta: Vector.empty(),
             },
             {
               type: AnimationType.Position,

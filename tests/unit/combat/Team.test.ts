@@ -82,17 +82,18 @@ describe("Team", () => {
       const position = new Vector(5, 6);
       const direction = Direction.East;
 
-      const members = sut.all();
+      const members = sut.all() as any;
+      const leader = sut.leader as any;
 
-      expect(sut.leader.direction).to.not.equal(Direction.East);
-      expect(sut.leader.position.x).to.not.equal(5);
-      expect(sut.leader.position.y).to.not.equal(6);
+      expect(leader.direction).to.not.equal(Direction.East);
+      expect(leader.position.x).to.not.equal(5);
+      expect(leader.position.y).to.not.equal(6);
 
       sut.prepare(direction, position);
 
-      expect(sut.leader.direction).to.equal(Direction.East);
-      expect(sut.leader.position.x).to.equal(5);
-      expect(sut.leader.position.y).to.equal(6);
+      expect(leader.direction).to.equal(Direction.East);
+      expect(leader.position.x).to.equal(5);
+      expect(leader.position.y).to.equal(6);
 
       expect(members[1].direction).to.equal(Direction.East);
       expect(members[1].position.x).to.equal(9);

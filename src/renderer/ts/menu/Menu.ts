@@ -34,7 +34,7 @@ export abstract class Menu<T>
    */
   constructor(
     protected _menu: SubMenu<T>,
-    protected _position = new Vector(0, 0)
+    protected _position = Vector.empty()
   ) {
     super();
     this.selected = [this._menu.items[0]];
@@ -230,8 +230,8 @@ export abstract class Menu<T>
    * @returns if input has a menu
    */
   protected _hasMenu = (input: unknown): input is { menu: unknown } =>
-    input !== null &&
     typeof input === "object" &&
+    input !== null &&
     "menu" in input &&
     input["menu"];
 

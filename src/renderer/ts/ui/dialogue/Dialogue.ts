@@ -2,6 +2,7 @@ import Actor from "../../actor/Actor";
 import TextStream from "./TextStream";
 import Vector from "@common/Vector";
 import { Drawable } from "../../interfaces";
+import { Nullable } from "@/types";
 import { bus, EventType } from "@/EventBus";
 
 class Dialogue implements Drawable {
@@ -23,7 +24,7 @@ class Dialogue implements Drawable {
    */
   constructor(
     private stream: TextStream,
-    private _speaker: Actor | null,
+    private _speaker: Nullable<Actor>,
     private actors: Actor[]
   ) {
     this.waiting = false;
@@ -32,7 +33,7 @@ class Dialogue implements Drawable {
     this.timeStore = 0;
 
     if (this._speaker) {
-      this.actors = [...this.actors, _speaker];
+      this.actors = [...this.actors, this._speaker];
     }
 
     this.start();
@@ -74,7 +75,7 @@ class Dialogue implements Drawable {
    */
   public draw(
     ctx: CanvasRenderingContext2D,
-    offset: Vector = new Vector(0, 0),
+    offset: Vector = Vector.empty(),
     resolution: Vector
   ) {
     const margin = new Vector(20, 20);
