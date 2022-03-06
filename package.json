@@ -1,6 +1,6 @@
 {
   "name": "rpg",
-  "version": "0.51.6",
+  "version": "0.52.0",
   "description": "An RPG of some sort... we'll see.",
   "scripts": {
     "start": "npm run dev",
@@ -15,9 +15,11 @@
   "author": "Anthony Dalfonso <anthonyjdalfonso@gmail.com>",
   "license": "BSD",
   "dependencies": {
+    "ajv": "^7.0.0",
     "source-map-support": "^0.5.16"
   },
   "devDependencies": {
+    "@types/ajv": "^1.0.0",
     "@types/chai": "^4.2.11",
     "@types/mocha": "^5.2.7",
     "@types/node": "^12.20.42",

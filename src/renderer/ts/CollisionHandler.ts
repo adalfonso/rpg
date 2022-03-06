@@ -1,8 +1,8 @@
 import Clip from "./inanimate/Clip";
 import Enemy from "./actor/Enemy";
-import HeroTeam from "./combat/HeroTeam";
 import Portal from "./inanimate/Portal";
 import Vector from "@common/Vector";
+import { HeroTeam } from "./combat/HeroTeam";
 import { Item } from "./inanimate/Item";
 import { LevelFixture } from "./level/LevelFixture";
 import { bus } from "@/EventBus";

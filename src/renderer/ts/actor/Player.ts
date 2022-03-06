@@ -5,12 +5,13 @@ import Vector from "@common/Vector";
 import Weapon from "@/combat/strategy/Weapon";
 import config from "@/config";
 import { Direction } from "@/ui/types";
-import { Drawable, Lockable } from "@/interfaces";
 import { LevelFixtureTemplate } from "@/level/LevelFixture";
 import { bus, EventType } from "@/EventBus";
+import { PlayerState } from "./types";
+import { isPlayerState } from "@/state/schema/actor/PlayerSchema";
 
 /** The main entity of the game */
-class Player extends Actor implements Drawable, Lockable {
+class Player extends Actor {
   /** The speed the player will move in any one direction */
   private baseSpeed: number;
 
@@ -140,7 +141,7 @@ class Player extends Actor implements Drawable, Lockable {
 
     bus.emit("actor.gainExp", data);
 
-    StateManager.getInstance().mergeByRef("player", this.getState());
+    StateManager.getInstance().mergeByRef("player", this.state);
   }
 
   /** Kill off the player */
@@ -150,6 +151,18 @@ class Player extends Actor implements Drawable, Lockable {
     StateManager.getInstance().mergeByRef(`player.defeated`, true);
   }
 
+  /**
+   * Get current state of the player for export to a state manager
+   *
+   * @return current state of the player
+   */
+  public get state(): PlayerState {
+    return {
+      ...super.state,
+      exp: this.stats.exp,
+      equipped: this.weapon?.ref ?? null,
+    };
+  }
   /**
    * Equip a weapon
    *
@@ -162,7 +175,7 @@ class Player extends Actor implements Drawable, Lockable {
 
     super.equip(weapon);
 
-    StateManager.getInstance().mergeByRef("player", this.getState());
+    StateManager.getInstance().mergeByRef("player", this.state);
   }
 
   /**
@@ -242,16 +255,23 @@ class Player extends Actor implements Drawable, Lockable {
   }
 
   /**
-   * Get current state of the player for export to a state manager
+   * Resolve the current state of the player in comparison to the game state
    *
-   * @return current state of the player
+   * @param ref - reference to where in the state the player is stored
+   *
+   * @return player data as stored in the state
    */
-  protected getState(): Record<string, unknown> {
-    return {
-      ...super.getState(),
-      exp: this.stats.exp,
-      equipped: this.weapon?.ref ?? null,
-    };
+  protected resolveState(ref: string) {
+    const data = super.resolveState(ref);
+
+    if (!isPlayerState(data)) {
+      return StateManager.getInstance().mergeByRef(ref, this.state);
+    }
+
+    this.stats.exp = data.exp;
+    // equipped handled through Inventory state resolution
+
+    return data;
   }
 }
 

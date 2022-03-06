@@ -1,13 +1,13 @@
 import "./scss/app.scss";
 import Display from "@/ui/Display";
 import Game from "@/Game";
-import HeroTeam from "@/combat/HeroTeam";
 import Player from "@/actor/Player";
 import StateManager from "@/state/StateManager";
 import Vector from "@common/Vector";
 import config from "@/config";
 import { DEFAULT_SAVE_LOCATION } from "./constants";
 import { DialogueMediator } from "@/ui/dialogue/DialogueMediator";
+import { HeroTeam } from "@/combat/HeroTeam";
 import { resolution } from "@common/common";
 import { startAnimation } from "@/util";
 

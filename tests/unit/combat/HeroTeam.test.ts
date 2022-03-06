@@ -1,7 +1,7 @@
 import Player from "@/actor/Player";
-import Sut from "@/combat/HeroTeam";
 import Vector from "@common/Vector";
 import sinon from "sinon";
+import { HeroTeam } from "@/combat/HeroTeam";
 import { expect } from "chai";
 
 describe("HeroTeam", () => {
@@ -21,7 +21,7 @@ describe("HeroTeam", () => {
         actor2Exp = exp;
       });
 
-      const sut = new Sut([actor1, actor2]);
+      const sut = new HeroTeam([actor1, actor2]);
 
       sut.gainExp(20);
 
@@ -50,7 +50,7 @@ describe("HeroTeam", () => {
         actor3Exp = exp;
       });
 
-      const sut = new Sut([actor1, actor2, actor3]);
+      const sut = new HeroTeam([actor1, actor2, actor3]);
 
       sut.gainExp(20);
 
@@ -77,7 +77,7 @@ describe("HeroTeam", () => {
         };
       });
 
-      const sut = new Sut([actor1, actor2]);
+      const sut = new HeroTeam([actor1, actor2]);
 
       expect(sut.givesExp).to.equal(25);
     });

@@ -40,3 +40,8 @@ export interface Lockable {
 export interface Updatable {
   update(dt: number): void;
 }
+
+export interface Stateful<T> {
+  state_ref: string;
+  state: T;
+}

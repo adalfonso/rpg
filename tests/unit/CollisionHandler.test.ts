@@ -1,11 +1,11 @@
 import Enemy from "@/actor/Enemy";
-import HeroTeam from "@/combat/HeroTeam";
 import Player from "@/actor/Player";
 import StateManager from "@/state/StateManager";
 import Sut, { Collision } from "@/CollisionHandler";
 import Vector from "@common/Vector";
 import sinon from "sinon";
 import { AnimationFactory } from "@/ui/animation/AnimationFactory";
+import { HeroTeam } from "@/combat/HeroTeam";
 import { Item } from "@/inanimate/Item";
 import { expect } from "chai";
 

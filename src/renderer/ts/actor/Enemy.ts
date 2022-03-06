@@ -1,15 +1,14 @@
 import Actor from "./Actor";
-import HeroTeam from "@/combat/HeroTeam";
 import Renderable from "@/ui/Renderable";
 import StateManager from "@/state/StateManager";
 import Vector from "@common/Vector";
 import { Direction } from "@/ui/types";
-import { Drawable } from "@/interfaces";
+import { HeroTeam } from "@/combat/HeroTeam";
 import { LevelFixtureTemplate } from "@/level/LevelFixture";
 import { bus } from "@/EventBus";
 
 /** Main class for baddies */
-class Enemy extends Actor implements Drawable {
+class Enemy extends Actor {
   /** Each sprite of the enemy's movement animation */
   protected sprites: Renderable[];
 

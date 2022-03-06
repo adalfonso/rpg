@@ -12,8 +12,6 @@ import { InventoryState, isInventoryState } from "@/state/InventoryState";
 import { Menu } from "./Menu";
 import { MenuItem } from "./MenuItem";
 import { SubMenu } from "./SubMenu";
-import Actor from "@/actor/Actor";
-
 type InventoryItem = Item | Weapon;
 
 const isInventoryItem = (input: unknown): input is InventoryItem =>

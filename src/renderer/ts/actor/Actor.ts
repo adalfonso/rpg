@@ -12,15 +12,16 @@ import Weapon from "@/combat/strategy/Weapon";
 import actors from "./actors";
 import config from "@/config";
 import { AbilityList, LearnedAbility } from "@/combat/strategy/types";
-import { ActorConfig } from "./types";
+import { ActorConfig, ActorState } from "./types";
 import { Collision } from "@/CollisionHandler";
 import { Direction, RenderData } from "@/ui/types";
-import { Drawable, Lockable } from "@/interfaces";
+import { Drawable, Lockable, Stateful } from "@/interfaces";
 import { Empty } from "@/mixins";
 import { Movable, Resizable } from "@/Entity";
 import { MultiSprite } from "@/ui/MultiSprite";
 import { Nullable } from "@/types";
 import { getImagePath } from "@/util";
+import { isActorState } from "@/state/schema/actor/ActorSchema";
 import {
   LevelFixtureProperty,
   LevelFixtureTemplate,
@@ -32,7 +33,7 @@ type Entity = Actor | Inanimate;
 /** Base class for entities that affect change within the game */
 abstract class Actor
   extends MultiSprite(Resizable(Movable(Empty)))
-  implements Drawable, Lockable
+  implements Drawable, Lockable, Stateful<ActorState>
 {
   /**
    * The position the actor was previously at
@@ -134,6 +135,11 @@ abstract class Actor
   /** Get the actor's id */
   get id() {
     return this._id;
+  }
+
+  /** ID for actor within the state */
+  get state_ref() {
+    return this._template.type;
   }
 
   /** Get the actor's defeated status */
@@ -339,6 +345,20 @@ abstract class Actor
   }
 
   /**
+   * Get current state of the actor for export to a state manager
+   *
+   * @return current state of the actor
+   */
+  public get state(): ActorState {
+    return {
+      type: this._template.type,
+      defeated: this._defeated,
+      dmg: this.stats.dmg,
+      lvl: this.stats.lvl,
+    };
+  }
+
+  /**
    * Equip a weapon
    *
    * @param weapon - weapon to equip
@@ -368,19 +388,15 @@ abstract class Actor
     const state = StateManager.getInstance();
     const data = state.get(ref);
 
-    if (data === undefined || data === null) {
-      return state.mergeByRef(ref, this.getState());
+    if (!isActorState(data)) {
+      return state.mergeByRef(ref, this.state);
     }
 
-    ["lvl", "exp", "dmg"].forEach((stat) => {
-      if (data?.[stat]) {
-        this.stats[stat] = data[stat];
-      }
-    });
+    const { lvl, dmg, defeated } = data;
 
-    if (typeof data === "object" && "defeated" in data) {
-      this._defeated = !!data["defeated"];
-    }
+    this.stats.lvl = lvl;
+    this.stats.dmg = dmg;
+    this._defeated = defeated;
 
     return data;
   }
@@ -408,20 +424,6 @@ abstract class Actor
       ratio: new Vector(UI.frames.x, UI.frames.y),
       scale: UI.scale * config.scale,
       sprite: getImagePath(UI.sprite),
-    };
-  }
-
-  /**
-   * Get current state of the actor for export to a state manager
-   *
-   * @return current state of the actor
-   */
-  protected getState(): Record<string, unknown> {
-    return {
-      type: this._template.type,
-      defeated: this._defeated,
-      dmg: this.stats.dmg,
-      lvl: this.stats.lvl,
     };
   }
 

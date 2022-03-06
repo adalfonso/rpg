@@ -1,5 +1,6 @@
 import { ActorUiData } from "@/ui/types";
 import { LearnedAbility } from "@/combat/strategy/types";
+import { Nullable } from "@/types";
 import { StatTemplate } from "@/Stats";
 
 /**
@@ -31,3 +32,15 @@ export type Speech = {
 };
 
 export type SpeechList = Record<string, Record<string, Speech>>;
+
+export interface ActorState {
+  type: string;
+  defeated: boolean;
+  dmg: number;
+  lvl: number;
+}
+
+export interface PlayerState extends ActorState {
+  exp: number;
+  equipped: Nullable<string>;
+}
