@@ -168,10 +168,7 @@ export class BattleMenu extends Menu<BattleMenuItem> implements Drawable {
     ctx: CanvasRenderingContext2D,
     option: MenuItem<BattleMenuItem>
   ) {
-    if (
-      option !== this.currentOption &&
-      option.source !== this.currentOption.source
-    ) {
+    if (!this._isCurrentOption(option)) {
       return;
     }
     ctx.shadowOffsetX = 1;

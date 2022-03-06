@@ -12,8 +12,11 @@ import { InventoryState, isInventoryState } from "@/state/InventoryState";
 import { Menu } from "./Menu";
 import { MenuItem } from "./MenuItem";
 import { SubMenu } from "./SubMenu";
+import Actor from "@/actor/Actor";
 
-const isInventoryItem = (input: unknown): input is Item | Weapon =>
+type InventoryItem = Item | Weapon;
+
+const isInventoryItem = (input: unknown): input is InventoryItem =>
   input instanceof Item || input instanceof Weapon;
 
 export interface InventoryMenuItem extends Base {
@@ -97,14 +100,13 @@ export class Inventory extends Menu<InventoryMenuItem> implements Drawable {
     menu.items.forEach((option, index) => {
       // Offset all options after the first option
       const spacing = index ? TEXT_SIZE * 2 : 0;
+      const { source } = option;
 
       const is_sub_menu_item =
-        option === this.currentOption && this.selected.length === 2;
+        this._isCurrentOption(option) && this.selected.length === 2;
 
       ctx.translate(0, spacing);
       ctx.save();
-
-      const { source } = option;
 
       if (is_sub_menu_item && isInventoryItem(source)) {
         const offset = new Vector(-2, -TEXT_SIZE);
@@ -145,7 +147,7 @@ export class Inventory extends Menu<InventoryMenuItem> implements Drawable {
     ctx: CanvasRenderingContext2D,
     offset: Vector,
     resolution: Vector,
-    option: Item | Weapon
+    option: InventoryItem
   ) {
     // y-value is not known until the description renders
     const description_size = new Vector(400, Infinity);
@@ -250,7 +252,7 @@ export class Inventory extends Menu<InventoryMenuItem> implements Drawable {
     option: MenuItem<InventoryMenuItem>
   ) {
     const is_selected = this.selected.includes(option);
-    const is_main_selection = option === this.currentOption;
+    const is_main_selection = this._isCurrentOption(option);
     const text = this.getOptionDescription(option);
 
     if (is_selected) {

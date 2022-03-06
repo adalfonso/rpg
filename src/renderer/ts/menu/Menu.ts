@@ -200,10 +200,7 @@ export abstract class Menu<T>
     const menu = this.currentMenu;
 
     const current_index = menu.items.reduce((carry, value, index) => {
-      return value === this.currentOption ||
-        value.source === this.currentOption.source
-        ? index
-        : carry;
+      return this._isCurrentOption(value) ? index : carry;
     }, 0);
 
     const previous_index =
@@ -217,10 +214,7 @@ export abstract class Menu<T>
     const menu = this.currentMenu;
 
     const current_index = menu.items.reduce((carry, value, index) => {
-      return value === this.currentOption ||
-        value.source === this.currentOption.source
-        ? index
-        : carry;
+      return this._isCurrentOption(value) ? index : carry;
     }, 0);
 
     const next_index =
@@ -248,5 +242,19 @@ export abstract class Menu<T>
    */
   protected _hasSubMenu() {
     return (this.currentOption.menu?.items ?? []).length > 0;
+  }
+
+  /**
+   * Determine if an option is the currently selected option
+   *
+   * @param option - option to check
+   *
+   * @return if the option is currently selected
+   * */
+  protected _isCurrentOption(option: MenuItem<unknown>) {
+    return (
+      option === this.currentOption ||
+      option.source === this.currentOption.source
+    );
   }
 }

@@ -40,30 +40,14 @@ export const menus = {
       action: (menu: StartMenu) => menu.saveState(),
     },
   ],
+
   inventory: (): MenuItemTemplate<InventoryMenuItem>[] => [
-    {
-      ref: "item",
-      displayAs: "Items",
-      menu: [],
-    },
-    {
-      ref: "weapon",
-      displayAs: "Weapons",
-      equipable: true,
-      menu: [],
-    },
-    {
-      ref: "armor",
-      displayAs: "Armor",
-      equipable: true,
-      menu: [],
-    },
-    {
-      ref: "special",
-      displayAs: "Special",
-      menu: [],
-    },
+    { ref: "item", displayAs: "Items", menu: [] },
+    { ref: "weapon", displayAs: "Weapons", equipable: true, menu: [] },
+    { ref: "armor", displayAs: "Armor", equipable: true, menu: [] },
+    { ref: "special", displayAs: "Special", menu: [] },
   ],
+
   battle: (
     battle: Battle,
     getUser: () => Actor
@@ -76,7 +60,6 @@ export const menus = {
     {
       ref: "attack",
       displayAs: "Attack",
-      // TODO: need a menu refactor before this works for multiple players
       menu: () => {
         const weapon = getUser().weapon;
         return weapon ? [weapon] : [];

@@ -36,8 +36,8 @@ export class StartMenu extends Menu<StartMenuItem> implements Drawable {
     ctx.fillStyle = "#FFF";
     ctx.textAlign = "center";
 
-    this._menu.items.forEach((current, index) => {
-      const selected = current === this.currentOption;
+    this._menu.items.forEach((item, index) => {
+      const selected = this._isCurrentOption(item);
 
       if (selected) {
         ctx.shadowColor = "#FFF";
@@ -50,7 +50,7 @@ export class StartMenu extends Menu<StartMenuItem> implements Drawable {
       }
 
       ctx.fillText(
-        selected ? "▶ " + current.displayAs : current.displayAs,
+        selected ? "▶ " + item.displayAs : item.displayAs,
         resolution.x / 2,
         (resolution.y / (this._menu.items.length - index)) * 0.5
       );

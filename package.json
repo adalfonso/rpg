@@ -1,6 +1,6 @@
 {
   "name": "rpg",
-  "version": "0.51.5",
+  "version": "0.51.6",
   "description": "An RPG of some sort... we'll see.",
   "scripts": {
     "start": "npm run dev",
