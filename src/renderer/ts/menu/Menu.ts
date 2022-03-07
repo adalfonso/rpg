@@ -250,7 +250,7 @@ export abstract class Menu<T>
    * @param option - option to check
    *
    * @return if the option is currently selected
-   * */
+   */
   protected _isCurrentOption(option: MenuItem<unknown>) {
     return (
       option === this.currentOption ||

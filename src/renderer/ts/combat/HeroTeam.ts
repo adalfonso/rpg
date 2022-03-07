@@ -1,7 +1,7 @@
 import Actor from "@/actor/Actor";
 import MissingDataError from "@/error/MissingDataError";
 import Player from "@/actor/Player";
-import StateManager from "@/state/StateManager";
+import StateManager, { state } from "@/state/StateManager";
 import Team from "./Team";
 import Vector from "@common/Vector";
 import config from "@/config";
@@ -21,9 +21,19 @@ export class HeroTeam extends Team<Player> implements Stateful<TeamState> {
   constructor(protected _members: Player[]) {
     super(_members);
 
-    this._resolveState(this.state_ref);
+    this._resolveState();
 
     bus.register(this);
+  }
+
+  /** State lookup key */
+  get state_ref() {
+    return "team";
+  }
+
+  /** Current data state */
+  get state() {
+    return this._members.map((member) => member.state);
   }
 
   /**
@@ -73,14 +83,6 @@ export class HeroTeam extends Team<Player> implements Stateful<TeamState> {
     );
   }
 
-  public get state_ref() {
-    return "team";
-  }
-
-  public get state() {
-    return this._members.map((member) => member.state);
-  }
-
   /**
    * Resolve the current state of the team in comparison to the game state
    *
@@ -88,13 +90,8 @@ export class HeroTeam extends Team<Player> implements Stateful<TeamState> {
    *
    * @return actor data as stored in the state
    */
-  protected _resolveState(ref: string) {
-    const state = StateManager.getInstance();
-    const data = state.get(ref);
-
-    if (!isTeamState(data)) {
-      return state.mergeByRef(ref, this.state);
-    }
+  private _resolveState() {
+    const data = state().resolve(this, isTeamState);
 
     const refs = this.all().map((member) => member.state_ref);
 

@@ -1,6 +1,6 @@
 import Inanimate from "./Inanimate";
 import Renderable from "@/ui/Renderable";
-import StateManager from "@/state/StateManager";
+import StateManager, { state } from "@/state/StateManager";
 import Vector from "@common/Vector";
 import config from "@/config";
 import { Animation } from "@/ui/animation/Animation";
@@ -10,10 +10,12 @@ import { EntityConfigFactory } from "@/combat/strategy/types";
 import { ItemConfig } from "@/item/types";
 import { LevelFixtureTemplate } from "@/level/LevelFixture";
 import { Nullable } from "@/types";
+import { Stateful } from "@/interfaces";
+import { isItemState, ItemState } from "@/state/schema/inanimate/ItemSchema";
 import { ucFirst, getImagePath } from "@/util";
 
 /** An item in the context of a map/level */
-export class Item extends Inanimate {
+export class Item extends Inanimate implements Stateful<ItemState> {
   /** Visual animation */
   private _animation: Nullable<Animation> = null;
 
@@ -70,7 +72,7 @@ export class Item extends Inanimate {
 
     this._renderable = new Renderable(sprite, scale, 0, 1, ratio, fps);
 
-    this.resolveState(`items.${this._id}`);
+    this._resolveState();
   }
 
   /** The item reference */
@@ -89,6 +91,16 @@ export class Item extends Inanimate {
       .split("_")
       .map((s) => ucFirst(s))
       .join(" ");
+  }
+
+  /** State lookup key */
+  get state_ref() {
+    return `items.${this._id}`;
+  }
+
+  /** Current data state */
+  get state(): ItemState {
+    return { obtained: this._obtained };
   }
 
   /**
@@ -136,7 +148,7 @@ export class Item extends Inanimate {
 
     this._obtained = true;
 
-    StateManager.getInstance().mergeByRef(`items.${this._id}`, this.getState());
+    StateManager.getInstance().mergeByRef(`items.${this._id}`, this.state);
   }
 
   /**
@@ -146,27 +158,11 @@ export class Item extends Inanimate {
    *
    * @return item data as stored in the state
    */
-  protected resolveState(ref: string) {
-    const state = StateManager.getInstance();
-    const data = state.get(ref);
+  private _resolveState() {
+    const data = state().resolve(this, isItemState);
 
-    if (data === undefined) {
-      return state.mergeByRef(ref, this.getState());
-    }
-
-    if (data["obtained"]) {
-      this._obtained = true;
-    }
+    this._obtained = data.obtained;
 
     return data;
-  }
-
-  /**
-   * Get current state of the item for export to a state manager
-   *
-   * @return current state of the item
-   */
-  protected getState(): Record<string, unknown> {
-    return { obtained: this._obtained };
   }
 }

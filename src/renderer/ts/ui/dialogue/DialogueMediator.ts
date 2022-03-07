@@ -31,7 +31,7 @@ export class DialogueMediator implements Updatable {
    * Update the current dialogue
    *
    * @param dt - delta time
-   **/
+   */
   public update(dt: number) {
     if (!this._dialogue) {
       return;

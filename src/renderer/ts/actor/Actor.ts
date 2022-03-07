@@ -4,7 +4,6 @@ import Damage from "@/combat/Damage";
 import Dialogue from "@/ui/dialogue/Dialogue";
 import Inanimate from "@/inanimate/Inanimate";
 import MissingDataError from "@/error/MissingDataError";
-import StateManager from "@/state/StateManager";
 import Stats from "@/Stats";
 import UnimplementedMethodError from "@/error/UnimplementMethodError";
 import Vector from "@common/Vector";
@@ -12,7 +11,8 @@ import Weapon from "@/combat/strategy/Weapon";
 import actors from "./actors";
 import config from "@/config";
 import { AbilityList, LearnedAbility } from "@/combat/strategy/types";
-import { ActorConfig, ActorState } from "./types";
+import { ActorConfig } from "./types";
+import { ActorState, isActorState } from "@/state/schema/actor/ActorSchema";
 import { Collision } from "@/CollisionHandler";
 import { Direction, RenderData } from "@/ui/types";
 import { Drawable, Lockable, Stateful } from "@/interfaces";
@@ -21,7 +21,7 @@ import { Movable, Resizable } from "@/Entity";
 import { MultiSprite } from "@/ui/MultiSprite";
 import { Nullable } from "@/types";
 import { getImagePath } from "@/util";
-import { isActorState } from "@/state/schema/actor/ActorSchema";
+import { state } from "@/state/StateManager";
 import {
   LevelFixtureProperty,
   LevelFixtureTemplate,
@@ -137,11 +137,6 @@ abstract class Actor
     return this._id;
   }
 
-  /** ID for actor within the state */
-  get state_ref() {
-    return this._template.type;
-  }
-
   /** Get the actor's defeated status */
   get isDefeated() {
     return this._defeated || this.stats.hp <= 0;
@@ -152,11 +147,26 @@ abstract class Actor
     return this.config.displayAs;
   }
 
+  /** State lookup key */
+  get state_ref() {
+    return this._template.type;
+  }
+
+  /** Current data state */
+  get state(): ActorState {
+    return {
+      type: this._template.type,
+      defeated: this._defeated,
+      dmg: this.stats.dmg,
+      lvl: this.stats.lvl,
+    };
+  }
+
   /**
    * Get the actor's template
    *
    * Useful when creating different extensions of an actor, NPCs, players, etc.
-   * */
+   */
   get template() {
     return this._template;
   }
@@ -345,20 +355,6 @@ abstract class Actor
   }
 
   /**
-   * Get current state of the actor for export to a state manager
-   *
-   * @return current state of the actor
-   */
-  public get state(): ActorState {
-    return {
-      type: this._template.type,
-      defeated: this._defeated,
-      dmg: this.stats.dmg,
-      lvl: this.stats.lvl,
-    };
-  }
-
-  /**
    * Equip a weapon
    *
    * @param weapon - weapon to equip
@@ -384,14 +380,8 @@ abstract class Actor
    *
    * @return actor data as stored in the state
    */
-  protected resolveState(ref: string) {
-    const state = StateManager.getInstance();
-    const data = state.get(ref);
-
-    if (!isActorState(data)) {
-      return state.mergeByRef(ref, this.state);
-    }
-
+  protected _resolveState() {
+    const data = state().resolve(this, isActorState);
     const { lvl, dmg, defeated } = data;
 
     this.stats.lvl = lvl;

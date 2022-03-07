@@ -66,9 +66,14 @@ class NonPlayer extends Actor implements Drawable {
       }
     }
 
-    this.resolveState(`nonPlayers.${this.id}`);
+    this._resolveState();
 
     bus.register(this);
+  }
+
+  /** State lookup key */
+  get state_ref() {
+    return `nonPlayers.${this.id}`;
   }
 
   /** If the NPC is expired and should be torn down */

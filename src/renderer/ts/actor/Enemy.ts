@@ -41,7 +41,12 @@ class Enemy extends Actor {
       new Renderable(sprite, scale, 0, 8, ratio, fps),
     ];
 
-    this.resolveState(`enemies.${this.id}`);
+    this._resolveState();
+  }
+
+  /** State lookup key */
+  get state_ref() {
+    return `enemies.${this.id}`;
   }
 
   /** Get the string reference to the team type */

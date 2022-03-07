@@ -20,7 +20,7 @@ export interface AnimationStepTemplate {
  *
  * These references may not be necessary if the calculation is static, e.g.
  * move an entity 2 units left, or double the size of an entity.
- **/
+ */
 export interface EntityReference {
   // Subject's size, position, etc., that's needed to calculate the animation end
   subject?: Vector;
@@ -36,7 +36,7 @@ export interface EntityReference {
  * delta time between animation updates. The update method will report back on
  * with updates of the animation data to be consumed by other parts of the
  * program.
- **/
+ */
 export class AnimationStep {
   /**
    * If the animation is locked
@@ -66,7 +66,7 @@ export class AnimationStep {
   }
 
   /** Public view into if the animation has completed */
-  public get isDone(): boolean {
+  get isDone(): boolean {
     return this._hasCompleted() && this._locked;
   }
 
@@ -77,7 +77,7 @@ export class AnimationStep {
    * its final update. Once that has happened, this method is used in
    * conjunction with _locked to inform the outside world that the animation is
    * done.
-   **/
+   */
   private _hasCompleted(): boolean {
     const { duration_ms, delay_ms } = this._template;
     return this._current_time >= duration_ms + delay_ms;

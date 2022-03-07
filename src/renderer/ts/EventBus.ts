@@ -117,7 +117,7 @@ export class EventBus {
    * @param e - actual event
    *
    * @return a list of event handlers
-   **/
+   */
   private _getHandersByEvent(e: PermittedEvent) {
     if (e instanceof CustomEvent) {
       return this._handlers[EventType.Custom];

@@ -1,6 +1,6 @@
 import Item from "@/item/Item";
 import MissingDataError from "@/error/MissingDataError";
-import StateManager from "@/state/StateManager";
+import StateManager, { state } from "@/state/StateManager";
 import TextBuffer from "@/ui/dialogue/TextBuffer";
 import Vector from "@common/Vector";
 import Weapon from "@/combat/strategy/Weapon";
@@ -8,10 +8,13 @@ import WeaponFactory from "@/combat/strategy/WeaponFactory";
 import { BaseMenuItemTemplate as Base } from "./menus";
 import { Drawable } from "@/interfaces";
 import { EventType } from "@/EventBus";
-import { InventoryState, isInventoryState } from "@/state/InventoryState";
 import { Menu } from "./Menu";
 import { MenuItem } from "./MenuItem";
 import { SubMenu } from "./SubMenu";
+import {
+  InventoryState,
+  isInventoryState,
+} from "@/state/schema/menu/InventorySchema";
 type InventoryItem = Item | Weapon;
 
 const isInventoryItem = (input: unknown): input is InventoryItem =>
@@ -37,10 +40,15 @@ export class Inventory extends Menu<InventoryMenuItem> implements Drawable {
   constructor(protected menu: SubMenu<InventoryMenuItem>) {
     super(menu);
 
-    this.resolveState(`inventory`);
+    this._resolveState();
   }
 
-  /** Get current state of the inventory for export to a state manager */
+  /** State lookup key */
+  get state_ref() {
+    return "inventory";
+  }
+
+  /** Current data state */
   get state(): InventoryState {
     const def = { items: [] as Base[] };
     return {
@@ -417,31 +425,18 @@ export class Inventory extends Menu<InventoryMenuItem> implements Drawable {
    *
    * @return inventory data as stored in the state
    */
-  private resolveState(ref: string) {
-    const state = StateManager.getInstance();
-    const data = state.get(ref);
+  private _resolveState() {
+    const data = state().resolve(this, isInventoryState);
 
-    if (data === undefined) {
-      return state.mergeByRef(ref, this.getState());
-    } else if (!isInventoryState(data)) {
-      throw new Error("Invalid state resolution for Inventory Menu");
-    }
-
-    ["item", "weapon", "armor", "special"].forEach((menuType) => {
-      if (!this._hasMenu(data)) {
-        return;
-      }
-
-      const subMenu = data.menu[menuType as keyof InventoryState["menu"]];
-
-      subMenu.forEach((ref) => {
-        if (this._getSubMenu(menuType)) {
+    for (let key of Object.keys(data.menu)) {
+      data.menu[key].forEach((ref: string) => {
+        if (this._getSubMenu(key)) {
           this.store(new Item(ref));
         }
       });
-    });
+    }
 
-    const equipped_id = state.get("player.equipped");
+    const equipped_id = state().get("player.equipped");
     const weapons = this._getSubMenu("weapon");
 
     if (equipped_id && weapons !== undefined) {
@@ -454,15 +449,6 @@ export class Inventory extends Menu<InventoryMenuItem> implements Drawable {
     }
 
     return data;
-  }
-
-  /**
-   * Get current state of the inventory
-   *
-   * @return current state of the milestone
-   */
-  private getState() {
-    return this.state;
   }
 
   /** Update the inventory in the state */
@@ -489,5 +475,3 @@ export class Inventory extends Menu<InventoryMenuItem> implements Drawable {
     });
   }
 }
-
-export default Inventory;

@@ -1,15 +1,20 @@
 import MissingDataError from "@/error/MissingDataError";
-import StateManager from "../StateManager";
 import { MilestoneConfig, MilestoneResolution, MilestoneType } from "./types";
+import { Stateful } from "@/interfaces";
 import { bus } from "@/EventBus";
 import { milestone_list } from "./milestones";
+import { state } from "../StateManager";
+import {
+  isMilestoneState,
+  MilestoneState,
+} from "../schema/state/milestone/MilestoneSchema";
 
 /**
  * Represents key milestones in the game
  *
  * e.g. beating a boss, a new member joining your team
  */
-export class Milestone {
+export class Milestone implements Stateful<MilestoneState> {
   /** If the milestone has been attained */
   private _attained = false;
 
@@ -26,7 +31,13 @@ export class Milestone {
       throw new MissingDataError(`Cannot locate milestone for ref "${_id}"`);
     }
 
-    this.resolveState(`milestones.${this._id}`);
+    this._resolveState();
+  }
+
+  /** State lookup key */
+  // TODO: need to detect collisions with state
+  get state_ref() {
+    return `milestones.${this._id}`;
   }
 
   /** Attain the milestone */
@@ -45,10 +56,7 @@ export class Milestone {
 
     this._attained = true;
 
-    StateManager.getInstance().mergeByRef(
-      `milestones.${this._id}`,
-      this.getState()
-    );
+    state().mergeByRef(`milestones.${this._id}`, this.state);
   }
 
   /** If the milestone has been attained (completed) */
@@ -61,34 +69,21 @@ export class Milestone {
     return this._config.attain_on;
   }
 
-  /**
-   * Resolve the current state of the milestone in comparison to the game state
-   *
-   * @param ref - reference to where in the state the milestone is stored
-   *
-   * @return milesstone data as stored in the state
-   */
-  private resolveState(ref: string) {
-    const state = StateManager.getInstance();
-    const data = state.get(ref);
-
-    if (data === undefined) {
-      return state.mergeByRef(ref, this.getState());
-    }
-
-    if (data["attained"]) {
-      this._attained = true;
-    }
-
-    return data;
+  /** Current data state */
+  get state(): MilestoneState {
+    return { attained: this._attained };
   }
 
   /**
-   * Get current state of the milestone
+   * Resolve the current state of the milestone in comparison to the game state
    *
-   * @return current state of the milestone
+   * @return milesstone data as stored in the state
    */
-  private getState(): Record<string, unknown> {
-    return { attained: this._attained };
+  private _resolveState() {
+    const data = state().resolve(this, isMilestoneState);
+
+    this._attained = data.attained;
+
+    return data;
   }
 }

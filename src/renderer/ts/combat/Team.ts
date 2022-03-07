@@ -122,7 +122,7 @@ class Team<M extends Actor> {
    * Take a turn for a team member
    *
    * @param member - team member who is taking their turn
-   **/
+   */
   public takeTurn(member: M) {
     if (!this._members.includes(member)) {
       throw new Error("Tried to take turn for actor who is not on this team");

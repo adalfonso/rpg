@@ -1,7 +1,6 @@
 import Battle from "./combat/Battle";
 import BattleBuilder from "./combat/BattleBuilder";
 import CollisionHandler from "./CollisionHandler";
-import Inventory from "./menu/Inventory";
 import Level from "./level/Level";
 import MissingDataError from "./error/MissingDataError";
 import Vector from "@common/Vector";
@@ -9,6 +8,7 @@ import menus from "./menu/menus";
 import { DialogueMediator } from "./ui/dialogue/DialogueMediator";
 import { Drawable, Updatable } from "./interfaces";
 import { HeroTeam } from "./combat/HeroTeam";
+import { Inventory } from "./menu/Inventory";
 import { LevelFixtureFactory } from "./level/LevelFixtureFactory";
 import { LevelTemplate } from "./level/LevelTemplate";
 import { Nullable } from "./types";

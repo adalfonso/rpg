@@ -1,17 +1,17 @@
 import Actor from "./Actor";
 import MissingDataError from "@/error/MissingDataError";
-import StateManager from "@/state/StateManager";
+import StateManager, { state } from "@/state/StateManager";
 import Vector from "@common/Vector";
 import Weapon from "@/combat/strategy/Weapon";
 import config from "@/config";
 import { Direction } from "@/ui/types";
 import { LevelFixtureTemplate } from "@/level/LevelFixture";
+import { Stateful } from "@/interfaces";
 import { bus, EventType } from "@/EventBus";
-import { PlayerState } from "./types";
-import { isPlayerState } from "@/state/schema/actor/PlayerSchema";
+import { isPlayerState, PlayerState } from "@/state/schema/actor/PlayerSchema";
 
 /** The main entity of the game */
-class Player extends Actor {
+class Player extends Actor implements Stateful<PlayerState> {
   /** The speed the player will move in any one direction */
   private baseSpeed: number;
 
@@ -35,9 +35,18 @@ class Player extends Actor {
     this.speed = Vector.empty();
     this.baseSpeed = _size.x / 10;
 
-    this.resolveState(template.type);
+    this._resolveState();
 
     bus.register(this);
+  }
+
+  /** Current data state */
+  get state(): PlayerState {
+    return {
+      ...super.state,
+      exp: this.stats.exp,
+      equipped: this.weapon?.ref ?? null,
+    };
   }
 
   /**
@@ -152,18 +161,6 @@ class Player extends Actor {
   }
 
   /**
-   * Get current state of the player for export to a state manager
-   *
-   * @return current state of the player
-   */
-  public get state(): PlayerState {
-    return {
-      ...super.state,
-      exp: this.stats.exp,
-      equipped: this.weapon?.ref ?? null,
-    };
-  }
-  /**
    * Equip a weapon
    *
    * @param weapon - weapon to equip
@@ -257,15 +254,13 @@ class Player extends Actor {
   /**
    * Resolve the current state of the player in comparison to the game state
    *
-   * @param ref - reference to where in the state the player is stored
-   *
    * @return player data as stored in the state
    */
-  protected resolveState(ref: string) {
-    const data = super.resolveState(ref);
+  protected _resolveState() {
+    const data = super._resolveState();
 
     if (!isPlayerState(data)) {
-      return StateManager.getInstance().mergeByRef(ref, this.state);
+      return state().mergeByRef(this.state_ref, this.state);
     }
 
     this.stats.exp = data.exp;

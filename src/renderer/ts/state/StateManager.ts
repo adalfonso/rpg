@@ -2,6 +2,7 @@ import { DEFAULT_SAVE_LOCATION } from "src/renderer/constants";
 import { bus, EventType } from "@/EventBus";
 import { merge } from "@/util";
 import { promises as fs } from "fs";
+import { Stateful } from "@/interfaces";
 
 /** An intermediary between an on-disk JSON store and objects within the game */
 class StateManager {
@@ -64,6 +65,24 @@ class StateManager {
     } catch (e) {
       return undefined;
     }
+  }
+
+  /**
+   * Get or write class instance state data to the state
+   *
+   * @param source - source class instance
+   * @param gaurd - type gaurd to validate data return from state
+   *
+   * @return state data
+   */
+  public resolve<T>(
+    source: Stateful<T>,
+    guard: (data: unknown) => data is T
+  ): T {
+    const ref = source.state_ref;
+    const data = this.get(ref);
+
+    return guard(data) ? data : this.mergeByRef(ref, source.state);
   }
 
   /** Completely wipe out the state */
@@ -228,3 +247,6 @@ class StateManager {
 }
 
 export default StateManager;
+
+/** Helper for getting the state manager */
+export const state = () => StateManager.getInstance();

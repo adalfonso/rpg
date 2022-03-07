@@ -26,7 +26,7 @@ export interface AnimationUpdate {
  * game, be it a player, enemy, item, text string, etc. This class keeps track of
  * the state of the animation as a function of time. This class should be used
  * by some other struct that will coordinate the entity's affected properties.
- **/
+ */
 export class Animation {
   /**
    * If the animation is locked
