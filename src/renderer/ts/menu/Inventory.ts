@@ -11,10 +11,7 @@ import { EventType } from "@/EventBus";
 import { Menu } from "./Menu";
 import { MenuItem } from "./MenuItem";
 import { SubMenu } from "./SubMenu";
-import {
-  InventoryState,
-  isInventoryState,
-} from "@/state/schema/menu/InventorySchema";
+import { InventoryState, isInventoryState } from "@schema/menu/InventorySchema";
 type InventoryItem = Item | Weapon;
 
 const isInventoryItem = (input: unknown): input is InventoryItem =>

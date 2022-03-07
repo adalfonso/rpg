@@ -1,4 +1,4 @@
-import { isItemState } from "@/state/schema/inanimate/ItemSchema";
+import { isItemState } from "@schema/inanimate/ItemSchema";
 import { expect } from "chai";
 
 describe("ItemSchema", () => {

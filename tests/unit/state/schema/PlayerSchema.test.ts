@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { isPlayerState } from "@/state/schema/actor/PlayerSchema";
+import { isPlayerState } from "@schema/actor/PlayerSchema";
 
 describe("PlayerSchema", () => {
   describe("isPlayerState", () => {

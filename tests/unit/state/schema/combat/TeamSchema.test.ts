@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { isTeamState } from "@/state/schema/combat/TeamSchema";
+import { isTeamState } from "@schema/combat/TeamSchema";
 
 describe("TeamSchema", () => {
   describe("isTeamState", () => {

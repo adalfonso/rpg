@@ -9,7 +9,8 @@
     "paths": {
       "@common/*": ["./src/common/*"],
       "@/*": ["./src/renderer/ts/*"],
-      "@img/*": ["./src/renderer/img/*"]
+      "@img/*": ["./src/renderer/img/*"],
+      "@schema/*": ["./src/renderer/ts/state/schema/*"]
     }
   }
 }

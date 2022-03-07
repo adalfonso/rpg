@@ -1,4 +1,4 @@
-import { isActorState } from "@/state/schema/actor/ActorSchema";
+import { isActorState } from "@schema/actor/ActorSchema";
 import { expect } from "chai";
 
 describe("ActorSchema", () => {

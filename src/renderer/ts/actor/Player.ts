@@ -8,7 +8,7 @@ import { Direction } from "@/ui/types";
 import { LevelFixtureTemplate } from "@/level/LevelFixture";
 import { Stateful } from "@/interfaces";
 import { bus, EventType } from "@/EventBus";
-import { isPlayerState, PlayerState } from "@/state/schema/actor/PlayerSchema";
+import { isPlayerState, PlayerState } from "@schema/actor/PlayerSchema";
 
 /** The main entity of the game */
 class Player extends Actor implements Stateful<PlayerState> {

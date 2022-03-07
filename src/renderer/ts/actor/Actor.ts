@@ -12,7 +12,7 @@ import actors from "./actors";
 import config from "@/config";
 import { AbilityList, LearnedAbility } from "@/combat/strategy/types";
 import { ActorConfig } from "./types";
-import { ActorState, isActorState } from "@/state/schema/actor/ActorSchema";
+import { ActorState, isActorState } from "@schema/actor/ActorSchema";
 import { Collision } from "@/CollisionHandler";
 import { Direction, RenderData } from "@/ui/types";
 import { Drawable, Lockable, Stateful } from "@/interfaces";

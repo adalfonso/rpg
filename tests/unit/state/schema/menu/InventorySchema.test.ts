@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { isInventoryState } from "@/state/schema/menu/InventorySchema";
+import { isInventoryState } from "@schema/menu/InventorySchema";
 
 describe("InventorySchema", () => {
   describe("isInventoryState", () => {

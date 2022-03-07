@@ -11,7 +11,7 @@ import { ItemConfig } from "@/item/types";
 import { LevelFixtureTemplate } from "@/level/LevelFixture";
 import { Nullable } from "@/types";
 import { Stateful } from "@/interfaces";
-import { isItemState, ItemState } from "@/state/schema/inanimate/ItemSchema";
+import { isItemState, ItemState } from "@schema/inanimate/ItemSchema";
 import { ucFirst, getImagePath } from "@/util";
 
 /** An item in the context of a map/level */

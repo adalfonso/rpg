@@ -1,4 +1,4 @@
-import { isMilestoneState } from "@/state/schema/state/milestone/MilestoneSchema";
+import { isMilestoneState } from "@schema/state/milestone/MilestoneSchema";
 import { expect } from "chai";
 
 describe("MilestoneSchema", () => {

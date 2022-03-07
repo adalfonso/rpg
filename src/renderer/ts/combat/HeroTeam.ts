@@ -9,7 +9,7 @@ import { LevelFixtureTemplate } from "@/level/LevelFixture";
 import { Stateful } from "@/interfaces";
 import { TeamState } from "./types";
 import { bus, EventType } from "@/EventBus";
-import { isTeamState } from "@/state/schema/combat/TeamSchema";
+import { isTeamState } from "@schema/combat/TeamSchema";
 
 /** Similar to a Team but specific to playable characters */
 export class HeroTeam extends Team<Player> implements Stateful<TeamState> {
