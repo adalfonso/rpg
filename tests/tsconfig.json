@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./../src/renderer/*"],
+      "@common/*": ["./../src/common/*"],
+      "@main/*": ["./../src/main/*"],
+      "@schema/*": ["./../src/renderer/state/schema/*"]
+    }
+  }
+}

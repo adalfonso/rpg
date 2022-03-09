@@ -1,4 +1,3 @@
-import { expect } from "chai";
 import { isTeamState } from "@schema/combat/TeamSchema";
 
 describe("TeamSchema", () => {
@@ -56,7 +55,7 @@ describe("TeamSchema", () => {
       },
     ].forEach(({ label, data, expected }) => {
       it(label, () => {
-        expect(isTeamState(data)).to.equal(expected);
+        expect(isTeamState(data)).toBe(expected);
       });
     });
   });

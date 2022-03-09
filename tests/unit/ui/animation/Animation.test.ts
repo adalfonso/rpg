@@ -4,7 +4,6 @@ import {
   AnimationStep,
   AnimationStepTemplate,
 } from "@/ui/animation/AnimationStep";
-import { expect } from "chai";
 
 describe("Animation", () => {
   describe("update", () => {
@@ -30,9 +29,9 @@ describe("Animation", () => {
         delta: Vector.empty(),
       };
 
-      expect(sut.update(0)).to.deep.equal(expected);
+      expect(sut.update(0)).toEqual(expected);
       sut.update(1000);
-      expect(sut.update(500)).to.deep.equal(expected);
+      expect(sut.update(500)).toEqual(expected);
     });
 
     it("updates a single step", () => {
@@ -54,7 +53,7 @@ describe("Animation", () => {
         delta: new Vector(1, 1),
       };
 
-      expect(sut.update(100)).to.deep.equal(expected);
+      expect(sut.update(100)).toEqual(expected);
     });
 
     it("updates a multi step", () => {
@@ -76,7 +75,7 @@ describe("Animation", () => {
         delta: new Vector(2, 2),
       };
 
-      expect(sut.update(100)).to.deep.equal(expected);
+      expect(sut.update(100)).toEqual(expected);
     });
   });
 
@@ -93,10 +92,10 @@ describe("Animation", () => {
 
       const sut = new Sut(template, createBasicStep);
 
-      expect(sut.update(100).delta.toArray()).to.deep.equal([1, 1]);
-      expect(sut.isDone).to.be.true;
-      expect(sut.update(100).delta.toArray()).to.deep.equal([0, 0]);
-      expect(sut.isDone).to.be.true;
+      expect(sut.update(100).delta.toArray()).toEqual([1, 1]);
+      expect(sut.isDone).toBe(true);
+      expect(sut.update(100).delta.toArray()).toEqual([0, 0]);
+      expect(sut.isDone).toBe(true);
     });
   });
 });

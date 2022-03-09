@@ -1,18 +1,14 @@
 import Enemy from "@/actor/Enemy";
 import Player from "@/actor/Player";
-import StateManager from "@/state/StateManager";
+import { state } from "@/state/StateManager";
 import Sut, { Collision } from "@/CollisionHandler";
 import Vector from "@common/Vector";
-import sinon from "sinon";
 import { AnimationFactory } from "@/ui/animation/AnimationFactory";
 import { HeroTeam } from "@/combat/HeroTeam";
 import { Item } from "@/inanimate/Item";
-import { expect } from "chai";
-
-const state = StateManager.getInstance();
 
 afterEach(() => {
-  state.empty();
+  state().empty();
 });
 
 describe("CollisionHandler", () => {
@@ -32,11 +28,11 @@ describe("CollisionHandler", () => {
 
       sut.loadFixtures([enemy]);
 
-      expect(sut.update(0).length).to.equal(0);
+      expect(sut.update(0).length).toBe(0);
 
       enemy.kill();
 
-      expect(sut.update(0).length).to.equal(1);
+      expect(sut.update(0).length).toBe(1);
     });
 
     it("detects collision with an item", () => {
@@ -62,13 +58,11 @@ describe("CollisionHandler", () => {
 
       sut.loadFixtures([item]);
 
-      sinon.stub(player, "collidesWith").returns(false);
-      expect(sut.update(0).length).to.equal(0);
+      jest.spyOn(player, "collidesWith").mockReturnValue(false);
+      expect(sut.update(0).length).toBe(0);
 
-      sinon.restore();
-
-      sinon.stub(player, "collidesWith").returns(getCollision());
-      expect(sut.update(0).length).to.equal(1);
+      jest.spyOn(player, "collidesWith").mockReturnValue(getCollision());
+      expect(sut.update(0).length).toBe(1);
     });
   });
 });

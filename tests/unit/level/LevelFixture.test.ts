@@ -1,4 +1,3 @@
-import { expect } from "chai";
 import * as Sut from "@/level/LevelFixture";
 
 describe("isBasicLevelFixtureTemplate", () => {
@@ -46,7 +45,7 @@ describe("isBasicLevelFixtureTemplate", () => {
     },
   ].forEach(({ label, template, expected }) => {
     it(`detects ${label}`, () => {
-      expect(Sut.isBasicLevelFixtureTemplate(template)).to.eq(expected);
+      expect(Sut.isBasicLevelFixtureTemplate(template)).toBe(expected);
     });
   });
 });
@@ -83,7 +82,7 @@ describe("isLevelFixtureTemplate", () => {
     },
   ].forEach(({ label, template, expected }) => {
     it(`detects ${label}`, () => {
-      expect(Sut.isLevelFixtureTemplate(template)).to.eq(expected);
+      expect(Sut.isLevelFixtureTemplate(template)).toBe(expected);
     });
   });
 });
@@ -91,12 +90,12 @@ describe("isLevelFixtureTemplate", () => {
 describe("levelPropertyLookup", () => {
   describe("it looks up a non-existent value", () => {
     const lookup = [] as any;
-    expect(Sut.levelPropertyLookup(lookup)("foo")).to.be.undefined;
+    expect(Sut.levelPropertyLookup(lookup)("foo")).toBeUndefined();
   });
 
   describe("it looks up a value", () => {
     const lookup = [{ name: "foo", value: "bar" }] as any;
-    expect(Sut.levelPropertyLookup(lookup)("foo")).to.equal("bar");
+    expect(Sut.levelPropertyLookup(lookup)("foo")).toBe("bar");
   });
 });
 

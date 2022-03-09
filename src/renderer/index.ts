@@ -1,20 +1,19 @@
-import "./scss/app.scss";
+import "./_resource/css/app.less";
 import Display from "@/ui/Display";
 import Game from "@/Game";
 import Player from "@/actor/Player";
-import StateManager from "@/state/StateManager";
 import Vector from "@common/Vector";
 import config from "@/config";
 import { DEFAULT_SAVE_LOCATION } from "./constants";
 import { DialogueMediator } from "@/ui/dialogue/DialogueMediator";
 import { HeroTeam } from "@/combat/HeroTeam";
+import { inDev } from "@common/helpers";
 import { resolution } from "@common/common";
 import { startAnimation } from "@/util";
+import { state } from "@/state/StateManager";
 
 document.addEventListener("DOMContentLoaded", async (_event) => {
-  const state: StateManager = StateManager.getInstance();
-
-  await state.load(DEFAULT_SAVE_LOCATION);
+  await state().load(DEFAULT_SAVE_LOCATION);
 
   const canvas = <HTMLCanvasElement>document.getElementById("game");
   const player_template = {
@@ -42,3 +41,6 @@ document.addEventListener("DOMContentLoaded", async (_event) => {
     display.draw();
   });
 });
+
+// Hot module replacement
+if (inDev() && module.hot) module.hot.accept();

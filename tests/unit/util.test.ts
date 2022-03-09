@@ -1,4 +1,3 @@
-import { expect } from "chai";
 import { lcFirst, ucFirst, merge, cloneByStringify } from "@/util";
 
 describe("util", () => {
@@ -11,7 +10,7 @@ describe("util", () => {
       ].forEach((data) => {
         let [input, expected] = data;
 
-        expect(lcFirst(input)).to.equal(expected);
+        expect(lcFirst(input)).toBe(expected);
       });
     });
   });
@@ -25,7 +24,7 @@ describe("util", () => {
       ].forEach((data) => {
         let [input, expected] = data;
 
-        expect(ucFirst(input)).to.equal(expected);
+        expect(ucFirst(input)).toBe(expected);
       });
     });
   });
@@ -54,7 +53,7 @@ describe("util", () => {
         },
       };
 
-      expect(merge(obj1, obj2)).to.deep.equal(expected);
+      expect(merge(obj1, obj2)).toEqual(expected);
     });
 
     it("merges two complex objects together", () => {
@@ -111,7 +110,7 @@ describe("util", () => {
         },
       };
 
-      expect(merge(obj1, obj2)).to.deep.equal(expected);
+      expect(merge(obj1, obj2)).toEqual(expected);
     });
 
     it("doesn't retain references to the inputs by default", () => {
@@ -141,7 +140,7 @@ describe("util", () => {
       obj1.foo.far = 10;
       obj2.bar.baz.push(4);
 
-      expect(merged).to.deep.equal(expected);
+      expect(merged).toEqual(expected);
     });
 
     it("retains references to the inputs when requested", () => {
@@ -171,7 +170,7 @@ describe("util", () => {
         },
       };
 
-      expect(merged).to.deep.equal(expected);
+      expect(merged).toEqual(expected);
     });
   });
 
@@ -189,8 +188,8 @@ describe("util", () => {
 
       let clone = cloneByStringify(input);
 
-      expect(input).to.deep.equal(clone);
-      expect(input).to.not.equal(clone);
+      expect(input).toEqual(clone);
+      expect(input).not.toBe(clone);
     });
   });
 });

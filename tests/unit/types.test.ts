@@ -1,5 +1,4 @@
 import { isStringArray } from "@/types";
-import { expect } from "chai";
 
 describe("types", () => {
   describe("isStringArray", () => {
@@ -10,7 +9,7 @@ describe("types", () => {
       ["is false forstring", "foo", false],
     ].forEach(([label, input, expected]) => {
       it(label as string, () => {
-        expect(isStringArray(input)).to.equal(expected);
+        expect(isStringArray(input)).toBe(expected);
       });
     });
   });

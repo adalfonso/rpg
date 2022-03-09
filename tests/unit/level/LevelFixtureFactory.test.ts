@@ -1,24 +1,27 @@
 import NonPlayer from "@/actor/NonPlayer";
-import actors from "@/actor/actors";
-import sinon from "sinon";
 import { LevelFixtureFactory } from "@/level/LevelFixtureFactory";
 import { LevelFixtureType } from "@/level/LevelFixture";
 import { Milestone } from "@/state/milestone/Milestone";
 import { MilestoneConfig } from "@/state/milestone/types";
-import { expect } from "chai";
-import { getActorTemplate, getFixtureTemplate } from "./fixtures";
-import { milestone_list } from "@/state/milestone/milestones";
-import { speech_list } from "@/actor/speech";
+import {
+  getAbilityTemplate,
+  getActorTemplate,
+  getFixtureTemplate,
+} from "./fixtures";
 
-beforeEach(() => {
-  actors.foo_fixture = getActorTemplate();
-  speech_list.foo_fixture = { foo_fixture: { dialogue: [] } };
-  milestone_list.foo = {} as MilestoneConfig;
-});
+jest.mock("@/actor/actors", () => ({
+  actors: () => ({ foo_fixture: getActorTemplate() }),
+}));
 
-afterEach(() => {
-  sinon.restore();
-});
+jest.mock("@/combat/strategy/abilities", () => ({
+  abilities: () => ({ damage: { _default_ability: getAbilityTemplate() } }),
+}));
+
+jest.mock("@/actor/speech", () => ({ getSpeech: () => [] }));
+
+jest.mock("@/state/milestone/milestones", () => ({
+  milestones: () => ({ foo: {} as MilestoneConfig }),
+}));
 
 describe("LevelFixtureFactory", () => {
   describe("create", () => {
@@ -31,11 +34,13 @@ describe("LevelFixtureFactory", () => {
 
       const result = factory.create(LevelFixtureType.NonPlayer, template);
 
-      expect(result instanceof NonPlayer).to.be.true;
+      expect(result instanceof NonPlayer).toBe(true);
     });
 
     it("doesnt create a NonPlayer when attained", () => {
-      sinon.stub(Milestone.prototype, "attained").value(true);
+      jest
+        .spyOn(Milestone.prototype, "attained", "get")
+        .mockReturnValueOnce(true);
 
       const factory = new LevelFixtureFactory();
       const template = {
@@ -48,7 +53,7 @@ describe("LevelFixtureFactory", () => {
 
       const result = factory.create(LevelFixtureType.NonPlayer, template);
 
-      expect(result).to.be.null;
+      expect(result).toBeNull();
     });
   });
 });

@@ -1,11 +1,10 @@
 import { EventBus as Sut, EventType } from "@/EventBus";
-import { expect } from "chai";
 
 describe("EventBus", () => {
   describe("getInstance", () => {
     it("shares the same instance", () => {
-      expect(Sut.getInstance()).to.equal(Sut.getInstance());
-      expect(Sut.getInstance()).to.not.equal(new Sut());
+      expect(Sut.getInstance()).toBe(Sut.getInstance());
+      expect(Sut.getInstance()).not.toBe(new Sut());
     });
   });
 
@@ -29,11 +28,11 @@ describe("EventBus", () => {
 
       sut.register(foo);
 
-      expect(fooValue).to.equal(0);
+      expect(fooValue).toBe(0);
 
       sut.emit("foo");
 
-      expect(fooValue).to.equal(1);
+      expect(fooValue).toBe(1);
     });
   });
 
@@ -57,13 +56,13 @@ describe("EventBus", () => {
 
       sut.register(foo);
 
-      expect(fooValue).to.equal(0);
+      expect(fooValue).toBe(0);
 
       sut.emit("foo");
       sut.unregister(foo);
       sut.emit("foo");
 
-      expect(fooValue).to.equal(1);
+      expect(fooValue).toBe(1);
     });
   });
 
@@ -121,15 +120,15 @@ describe("EventBus", () => {
       sut.register(foo);
       sut.register(bar);
 
-      expect(fooValue).to.equal(0);
-      expect(barValue).to.equal(0);
+      expect(fooValue).toBe(0);
+      expect(barValue).toBe(0);
 
       sut.emit("bar");
       sut.emit("bar");
 
-      expect(fooValue).to.equal(115);
-      expect(barValue).to.equal(100);
-      expect(emittedDetails).to.be.true;
+      expect(fooValue).toBe(115);
+      expect(barValue).toBe(100);
+      expect(emittedDetails).toBe(true);
     });
   });
 });

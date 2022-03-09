@@ -1,16 +1,13 @@
 import Actor from "@/actor/Actor";
 import Enemy from "@/actor/Enemy";
-import StateManager from "@/state/StateManager";
+import Stats from "@/Stats";
 import Sut from "@/combat/Team";
 import Vector from "@common/Vector";
-import sinon from "sinon";
-import { expect } from "chai";
 import { Direction } from "@/ui/types";
-
-const state = StateManager.getInstance();
+import { state } from "@/state/StateManager";
 
 afterEach(() => {
-  state.empty();
+  state().empty();
 });
 
 describe("Team", () => {
@@ -19,27 +16,18 @@ describe("Team", () => {
       const actor1 = getActor();
       const actor2 = getActor();
 
-      sinon.stub(actor1, "stats").get(() => {
-        return {
-          hp: 0,
-        };
-      });
-
-      sinon.stub(actor2, "stats").get(() => {
-        return {
-          hp: 0,
-        };
-      });
+      jest.spyOn(actor1, "stats", "get").mockReturnValue({ hp: 0 } as Stats);
+      jest.spyOn(actor2, "stats", "get").mockReturnValue({ hp: 0 } as Stats);
 
       const sut = new Sut([actor1, actor2]);
 
-      expect(sut.areDefeated).to.be.true;
+      expect(sut.areDefeated).toBe(true);
     });
 
     it("detects when the team is not yet defeated", () => {
       const sut = new Sut([getActor(), getActor()]);
 
-      expect(sut.areDefeated).to.be.false;
+      expect(sut.areDefeated).toBe(false);
     });
   });
 
@@ -50,7 +38,7 @@ describe("Team", () => {
 
       const sut = new Sut([actor1, actor2]);
 
-      expect(sut.leader).to.equal(actor1);
+      expect(sut.leader).toBe(actor1);
     });
   });
 
@@ -58,7 +46,7 @@ describe("Team", () => {
     it("gets the team length", () => {
       const sut = new Sut([getActor(), getActor()]);
 
-      expect(sut.length).to.equal(2);
+      expect(sut.length).toBe(2);
     });
   });
 
@@ -71,7 +59,7 @@ describe("Team", () => {
         timesCalled++;
       });
 
-      expect(timesCalled).to.equal(2);
+      expect(timesCalled).toBe(2);
     });
   });
 
@@ -85,19 +73,19 @@ describe("Team", () => {
       const members = sut.all() as any;
       const leader = sut.leader as any;
 
-      expect(leader.direction).to.not.equal(Direction.East);
-      expect(leader.position.x).to.not.equal(5);
-      expect(leader.position.y).to.not.equal(6);
+      expect(leader.direction).not.toBe(Direction.East);
+      expect(leader.position.x).not.toBe(5);
+      expect(leader.position.y).not.toBe(6);
 
       sut.prepare(direction, position);
 
-      expect(leader.direction).to.equal(Direction.East);
-      expect(leader.position.x).to.equal(5);
-      expect(leader.position.y).to.equal(6);
+      expect(leader.direction).toBe(Direction.East);
+      expect(leader.position.x).toBe(5);
+      expect(leader.position.y).toBe(6);
 
-      expect(members[1].direction).to.equal(Direction.East);
-      expect(members[1].position.x).to.equal(9);
-      expect(members[1].position.y).to.equal(6);
+      expect(members[1].direction).toBe(Direction.East);
+      expect(members[1].position.x).toBe(9);
+      expect(members[1].position.y).toBe(6);
     });
   });
 
@@ -106,7 +94,7 @@ describe("Team", () => {
       const actors = [getActor(), getActor()];
       const sut = new Sut(actors);
 
-      expect(sut.all()).to.equal(actors);
+      expect(sut.all()).toBe(actors);
     });
   });
 
@@ -115,21 +103,16 @@ describe("Team", () => {
       const actor1 = getActor();
       const actor2 = getActor();
 
-      sinon.stub(actor1, "stats").get(() => {
-        return {
-          givesExp: 10,
-        };
-      });
-
-      sinon.stub(actor2, "stats").get(() => {
-        return {
-          givesExp: 15,
-        };
-      });
+      jest
+        .spyOn(actor1, "stats", "get")
+        .mockReturnValue({ givesExp: 10 } as unknown as Stats);
+      jest
+        .spyOn(actor2, "stats", "get")
+        .mockReturnValue({ givesExp: 15 } as unknown as Stats);
 
       const sut = new Sut([actor1, actor2]);
 
-      expect(sut.givesExp).to.equal(25);
+      expect(sut.givesExp).toBe(25);
     });
   });
 
@@ -139,18 +122,18 @@ describe("Team", () => {
       const actor2 = getActor();
       const sut = new Sut([actor1, actor2]);
 
-      expect(sut.hasLastManStanding()).to.be.false;
+      expect(sut.hasLastManStanding()).toBe(false);
 
       actor2.kill();
-      expect(sut.hasLastManStanding()).to.be.true;
+      expect(sut.hasLastManStanding()).toBe(true);
 
       actor1.kill();
-      expect(sut.hasLastManStanding()).to.be.false;
+      expect(sut.hasLastManStanding()).toBe(false);
     });
   });
 });
 
-const getActor = () => {
+const getActor = (): Actor => {
   return new Enemy(new Vector(1, 1), new Vector(1, 1), {
     name: "test",
     type: "knight",

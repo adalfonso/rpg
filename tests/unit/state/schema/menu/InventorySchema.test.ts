@@ -1,4 +1,3 @@
-import { expect } from "chai";
 import { isInventoryState } from "@schema/menu/InventorySchema";
 
 describe("InventorySchema", () => {
@@ -44,7 +43,7 @@ describe("InventorySchema", () => {
       },
     ].forEach(({ label, data, expected }) => {
       it(label, () => {
-        expect(isInventoryState(data)).to.equal(expected);
+        expect(isInventoryState(data)).toBe(expected);
       });
     });
   });

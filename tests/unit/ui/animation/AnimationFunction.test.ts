@@ -1,6 +1,5 @@
 import Vector from "@common/Vector";
 import * as Sut from "@/ui/animation/AnimationFunction";
-import { expect } from "chai";
 
 describe("AnimationFunction", () => {
   describe("animation_functions", () => {
@@ -30,7 +29,7 @@ describe("AnimationFunction", () => {
             result: [4.5, 4.5],
           },
         ].forEach(({ end, percent, result }) => {
-          expect(fn(percent, end).toArray()).to.deep.eq(result);
+          expect(fn(percent, end).toArray()).toEqual(result);
         });
       });
     });

@@ -1,7 +1,1 @@
-{
-  "player": {
-    "stats": {
-      "lvl": 100
-    }
-  }
-}
+{ "player": { "stats": { "lvl": 100 } } }

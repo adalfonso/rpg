@@ -1,5 +1,4 @@
 import { isItemState } from "@schema/inanimate/ItemSchema";
-import { expect } from "chai";
 
 describe("ItemSchema", () => {
   describe("isItemState", () => {
@@ -26,7 +25,7 @@ describe("ItemSchema", () => {
       },
     ].forEach(({ label, data, expected }) => {
       it(label, () => {
-        expect(isItemState(data)).to.equal(expected);
+        expect(isItemState(data)).toBe(expected);
       });
     });
   });

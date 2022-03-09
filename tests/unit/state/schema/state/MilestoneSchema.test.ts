@@ -1,5 +1,4 @@
 import { isMilestoneState } from "@schema/state/milestone/MilestoneSchema";
-import { expect } from "chai";
 
 describe("MilestoneSchema", () => {
   describe("isMilestoneState", () => {
@@ -26,7 +25,7 @@ describe("MilestoneSchema", () => {
       },
     ].forEach(({ label, data, expected }) => {
       it(label, () => {
-        expect(isMilestoneState(data)).to.equal(expected);
+        expect(isMilestoneState(data)).toBe(expected);
       });
     });
   });

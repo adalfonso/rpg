@@ -1,8 +1,7 @@
 import Player from "@/actor/Player";
+import Stats from "@/Stats";
 import Vector from "@common/Vector";
-import sinon from "sinon";
 import { HeroTeam } from "@/combat/HeroTeam";
-import { expect } from "chai";
 
 describe("HeroTeam", () => {
   describe("gainExp", () => {
@@ -13,20 +12,20 @@ describe("HeroTeam", () => {
       let actor1Exp = 0;
       let actor2Exp = 0;
 
-      sinon.stub(actor1, "gainExp").callsFake((exp) => {
-        actor1Exp = exp;
-      });
+      jest
+        .spyOn(actor1, "gainExp")
+        .mockImplementationOnce((exp) => (actor1Exp = exp));
 
-      sinon.stub(actor2, "gainExp").callsFake((exp) => {
-        actor2Exp = exp;
-      });
+      jest
+        .spyOn(actor2, "gainExp")
+        .mockImplementationOnce((exp) => (actor2Exp = exp));
 
       const sut = new HeroTeam([actor1, actor2]);
 
       sut.gainExp(20);
 
-      expect(actor1Exp).to.equal(10);
-      expect(actor2Exp).to.equal(10);
+      expect(actor1Exp).toBe(10);
+      expect(actor2Exp).toBe(10);
     });
 
     it("distributes exp to team members when number is not perfectly divisible ", () => {
@@ -38,25 +37,25 @@ describe("HeroTeam", () => {
       let actor2Exp = 0;
       let actor3Exp = 0;
 
-      sinon.stub(actor1, "gainExp").callsFake((exp) => {
-        actor1Exp = exp;
-      });
+      jest
+        .spyOn(actor1, "gainExp")
+        .mockImplementationOnce((exp) => (actor1Exp = exp));
 
-      sinon.stub(actor2, "gainExp").callsFake((exp) => {
-        actor2Exp = exp;
-      });
+      jest
+        .spyOn(actor2, "gainExp")
+        .mockImplementationOnce((exp) => (actor2Exp = exp));
 
-      sinon.stub(actor3, "gainExp").callsFake((exp) => {
-        actor3Exp = exp;
-      });
+      jest
+        .spyOn(actor3, "gainExp")
+        .mockImplementationOnce((exp) => (actor3Exp = exp));
 
       const sut = new HeroTeam([actor1, actor2, actor3]);
 
       sut.gainExp(20);
 
-      expect(actor1Exp).to.equal(7);
-      expect(actor2Exp).to.equal(7);
-      expect(actor3Exp).to.equal(7);
+      expect(actor1Exp).toBe(7);
+      expect(actor2Exp).toBe(7);
+      expect(actor3Exp).toBe(7);
     });
   });
 
@@ -65,21 +64,17 @@ describe("HeroTeam", () => {
       const actor1 = getActor();
       const actor2 = getActor();
 
-      sinon.stub(actor1, "stats").get(() => {
-        return {
-          givesExp: 10,
-        };
-      });
+      jest.spyOn(actor1, "stats", "get").mockReturnValue({
+        givesExp: 10,
+      } as Stats);
 
-      sinon.stub(actor2, "stats").get(() => {
-        return {
-          givesExp: 15,
-        };
-      });
+      jest.spyOn(actor2, "stats", "get").mockReturnValue({
+        givesExp: 15,
+      } as Stats);
 
       const sut = new HeroTeam([actor1, actor2]);
 
-      expect(sut.givesExp).to.equal(25);
+      expect(sut.givesExp).toBe(25);
     });
   });
 });

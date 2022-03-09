@@ -3,7 +3,6 @@ import { AnimationFactory } from "@/ui/animation/AnimationFactory";
 import { Item as Sut } from "@/inanimate/Item";
 import { ItemConfig } from "@/item/types";
 import { LevelFixtureTemplate } from "@/level/LevelFixture";
-import { expect } from "chai";
 import { AnimationType } from "@/ui/animation/Animation";
 
 describe("inanimate/Item", () => {
@@ -12,7 +11,7 @@ describe("inanimate/Item", () => {
       const sut = getSut();
       sut.update(100);
 
-      expect(sut.position.toArray()).to.deep.equal([1, 1]);
+      expect(sut.position.toArray()).toEqual([1, 1]);
     });
 
     it("updates position during animation", () => {
@@ -38,7 +37,7 @@ describe("inanimate/Item", () => {
       const sut = getSut({ animation_factory, config_ctor });
       sut.update(100);
 
-      expect(sut.position.toArray()).to.deep.equal([2, 2]);
+      expect(sut.position.toArray()).toEqual([2, 2]);
     });
   });
 });

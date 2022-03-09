@@ -1,16 +1,23 @@
 {
-  "extends": "./node_modules/electron-webpack/tsconfig-base.json",
-
   "compilerOptions": {
+    "target": "ES6",
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "strictNullChecks": true,
     "suppressImplicitAnyIndexErrors": true,
-    "resolveJsonModule": true,
-    "lib": ["es2019", "dom"],
+    "sourceMap": true,
     "baseUrl": ".",
+    "outDir": "dist",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
     "paths": {
+      "@/*": ["./src/renderer/*"],
       "@common/*": ["./src/common/*"],
-      "@/*": ["./src/renderer/ts/*"],
-      "@img/*": ["./src/renderer/img/*"],
-      "@schema/*": ["./src/renderer/ts/state/schema/*"]
+      "@img/*": ["./src/renderer/resource/img/*"],
+      "@main/*": ["./src/main/*"],
+      "@schema/*": ["./src/renderer/state/schema/*"]
     }
-  }
+  },
+  "include": ["src/**/*", "tools/**/*"]
 }

@@ -1,17 +1,12 @@
 import Item from "@/item/Item";
-import StateManager from "@/state/StateManager";
+import { state } from "@/state/StateManager";
 import menus from "@/menu/menus";
-import sinon from "sinon";
 import { Inventory } from "@/menu/Inventory";
 import { SubMenu } from "@/menu/SubMenu";
 import { cloneByStringify } from "@/util";
-import { expect } from "chai";
-
-const state = StateManager.getInstance();
 
 afterEach(() => {
-  sinon.restore();
-  state.empty();
+  state().empty();
 });
 
 describe("Inventory", () => {
@@ -20,7 +15,7 @@ describe("Inventory", () => {
       let sut = getSut();
       let expected = getEmptyState();
 
-      expect(sut.state).to.deep.equal(expected);
+      expect(sut.state).toEqual(expected);
     });
   });
 
@@ -35,12 +30,12 @@ describe("Inventory", () => {
 
       expected.menu.weapon.push(itemType);
 
-      sinon.stub(sword, "ref").value(itemType);
-      sinon.stub(sword, "category").value(itemCategory);
+      jest.spyOn(sword, "ref", "get").mockReturnValue(itemType);
+      jest.spyOn(sword, "category", "get").mockReturnValue(itemCategory);
 
       sut.store(sword);
 
-      expect(sut.state).to.deep.equal(expected);
+      expect(sut.state).toEqual(expected);
     });
   });
 
@@ -49,13 +44,13 @@ describe("Inventory", () => {
       let inventoryState = getEmptyState();
       inventoryState.menu.item.push("water");
 
-      state.mergeByRef("inventory", inventoryState);
+      state().mergeByRef("inventory", inventoryState);
 
       let sut = getSut();
 
       let expected = cloneByStringify(inventoryState);
 
-      expect(sut.state).to.deep.equal(expected);
+      expect(sut.state).toEqual(expected);
     });
   });
 });

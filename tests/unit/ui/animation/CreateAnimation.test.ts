@@ -1,6 +1,5 @@
 import Vector from "@common/Vector";
 import { AnimationType, AnimationUpdate } from "@/ui/animation/Animation";
-import { expect } from "chai";
 import {
   createAnimation,
   TranslationAnimationOptions,
@@ -62,12 +61,12 @@ describe("CreateAnimation", () => {
         const animation = createAnimation.translation(input);
         const halfway = (input.delay_ms || 0) + (input.duration_ms || 500) / 2;
 
-        expect(animation.update(0)).to.deep.equal(expected[0]);
-        expect(animation.isDone).to.be.false;
-        expect(animation.update(halfway)).to.deep.equal(expected[1]);
-        expect(animation.isDone).to.be.false;
-        expect(animation.update(halfway)).to.deep.equal(expected[2]);
-        expect(animation.isDone).to.be.true;
+        expect(animation.update(0)).toEqual(expected[0]);
+        expect(animation.isDone).toBe(false);
+        expect(animation.update(halfway)).toEqual(expected[1]);
+        expect(animation.isDone).toBe(false);
+        expect(animation.update(halfway)).toEqual(expected[2]);
+        expect(animation.isDone).toBe(true);
       });
     });
   });

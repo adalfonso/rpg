@@ -1,20 +1,19 @@
 import { SpeechList } from "@/actor/types";
-import { expect } from "chai";
 import { getSpeech } from "@/actor/speech";
 
 describe("getSpeech", () => {
   it("gets speech", () => {
-    expect(getSpeech("foo.foo", getSpeechList())).to.deep.equal({
+    expect(getSpeech("foo.foo", getSpeechList())).toEqual({
       dialogue: ["foo speech"],
     });
   });
 
   it("gets undefined when type is invalid", () => {
-    expect(getSpeech("invalid.foo", getSpeechList())).to.equal(undefined);
+    expect(getSpeech("invalid.foo", getSpeechList())).toBeUndefined();
   });
 
   it("gets undefined when name is invalid", () => {
-    expect(getSpeech("foo.invalid", getSpeechList())).to.equal(undefined);
+    expect(getSpeech("foo.invalid", getSpeechList())).toBeUndefined();
   });
 });
 

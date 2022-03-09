@@ -1,7 +1,6 @@
 import Vector from "@common/Vector";
 import { AnimatedText as Sut } from "@/ui/animation/text/AnimatedText";
 import { Animation, AnimationType } from "@/ui/animation/Animation";
-import { expect } from "chai";
 
 describe("AnimatedText", () => {
   describe("update", () => {
@@ -25,7 +24,7 @@ describe("AnimatedText", () => {
 
       sut.draw(ctx, Vector.empty(), Vector.empty());
 
-      expect(results).to.deep.equal(expected);
+      expect(results).toEqual(expected);
     });
   });
 
@@ -34,9 +33,9 @@ describe("AnimatedText", () => {
       let animation = getAnimation();
 
       let sut = new Sut("", animation, Vector.empty(), {});
-      expect(sut.isDone).to.be.false;
+      expect(sut.isDone).toBe(false);
       (<any>animation).isDone = true;
-      expect(sut.isDone).to.be.true;
+      expect(sut.isDone).toBe(true);
     });
   });
 });

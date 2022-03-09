@@ -1,4 +1,3 @@
-import { expect } from "chai";
 import { isPlayerState } from "@schema/actor/PlayerSchema";
 
 describe("PlayerSchema", () => {
@@ -42,7 +41,7 @@ describe("PlayerSchema", () => {
       },
     ].forEach(({ label, data, expected }) => {
       it(label, () => {
-        expect(isPlayerState(data)).to.equal(expected);
+        expect(isPlayerState(data)).toBe(expected);
       });
     });
   });

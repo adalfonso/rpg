@@ -1,4 +1,3 @@
-import { expect } from "chai";
 import Sut from "@common/Vector";
 
 describe("Vector", () => {
@@ -11,8 +10,8 @@ describe("Vector", () => {
       let [x, y] = data;
       let sut = new Sut(x, y);
 
-      expect(sut.x).to.equal(x);
-      expect(sut.y).to.equal(y);
+      expect(sut.x).toBe(x);
+      expect(sut.y).toBe(y);
     });
   });
 
@@ -21,8 +20,8 @@ describe("Vector", () => {
       [new Sut(0, 0), new Sut(2, 4), new Sut(-5, -100)].forEach((sut) => {
         let copy = sut.copy();
 
-        expect(copy).to.not.equal(sut);
-        expect(copy).to.deep.equal(sut);
+        expect(copy).not.toBe(sut);
+        expect(copy).toEqual(sut);
       });
     });
   });
@@ -36,7 +35,7 @@ describe("Vector", () => {
       ].forEach((data: Sut[]) => {
         let [sut, input, expected] = data;
 
-        expect(sut.plus(input)).to.deep.equal(expected);
+        expect(sut.plus(input)).toEqual(expected);
       });
     });
   });
@@ -50,7 +49,7 @@ describe("Vector", () => {
       ].forEach((data: Sut[]) => {
         let [sut, input, expected] = data;
 
-        expect(sut.minus(input)).to.deep.equal(expected);
+        expect(sut.minus(input)).toEqual(expected);
       });
     });
   });
@@ -66,7 +65,7 @@ describe("Vector", () => {
       test.forEach((data) => {
         let [sut, input, expected] = data;
 
-        expect(sut.times(input)).to.deep.equal(expected);
+        expect(sut.times(input)).toEqual(expected);
       });
     });
 
@@ -77,7 +76,7 @@ describe("Vector", () => {
       ].forEach((data: Sut[]) => {
         let [sut, input, expected] = data;
 
-        expect(sut.times(input)).to.deep.equal(expected);
+        expect(sut.times(input)).toEqual(expected);
       });
     });
   });
@@ -92,7 +91,7 @@ describe("Vector", () => {
       tests.forEach((data) => {
         let [sut, expected] = data;
 
-        expect(sut.toArray()).to.deep.equal(expected);
+        expect(sut.toArray()).toEqual(expected);
       });
     });
   });
@@ -105,7 +104,7 @@ describe("Vector", () => {
       ].forEach((data: Sut[]) => {
         let [sut, expected] = data;
 
-        expect(sut.apply(Math.round)).to.deep.equal(expected);
+        expect(sut.apply(Math.round)).toEqual(expected);
       });
     });
   });

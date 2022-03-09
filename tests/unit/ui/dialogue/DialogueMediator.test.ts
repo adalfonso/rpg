@@ -2,21 +2,21 @@ import Dialogue from "@/ui/dialogue/Dialogue";
 import Player from "@/actor/Player";
 import Team from "@/combat/Team";
 import Vector from "@common/Vector";
-import abilities from "@/combat/strategy/abilities";
-import actors from "@/actor/actors";
-import sinon from "sinon";
 import { DialogueMediator } from "@/ui/dialogue/DialogueMediator";
 import { EventType } from "@/EventBus";
-import { expect } from "chai";
 import {
   getAbilityTemplate,
   getActorTemplate,
-} from "tests/unit/level/fixtures";
+} from "../../../unit/level/fixtures";
 
-before(() => {
-  actors._foo_dialogue_mediator = getActorTemplate();
-  abilities.damage._default_ability = getAbilityTemplate();
-});
+jest.mock("@/actor/actors", () => ({
+  __esModule: true,
+  actors: () => ({ _foo_dialogue_mediator: getActorTemplate() }),
+}));
+
+jest.mock("@/combat/strategy/abilities", () => ({
+  abilities: () => ({ damage: { _default_ability: getAbilityTemplate() } }),
+}));
 
 describe("DialogueMediator", () => {
   describe("_createDialogue", () => {
@@ -29,7 +29,7 @@ describe("DialogueMediator", () => {
         events[EventType.Custom]["dialogue.create"]({
           detail: {},
         } as CustomEvent)
-      ).to.throw(
+      ).toThrowError(
         "Unable to find speech or speaker when creating dialogue from DialogueMediator"
       );
     });
@@ -43,7 +43,7 @@ describe("DialogueMediator", () => {
         events[EventType.Custom]["dialogue.create"]({
           detail: { speech: "foo" },
         } as CustomEvent)
-      ).to.throw(
+      ).toThrowError(
         'Invalid data type for "speech" @ DialogueMediator/dialogue.create'
       );
     });
@@ -57,7 +57,7 @@ describe("DialogueMediator", () => {
         events[EventType.Custom]["dialogue.create"]({
           detail: { speech: ["foo"], speaker: {} },
         } as CustomEvent)
-      ).to.throw(
+      ).toThrowError(
         'Invalid data type for "speaker" @ DialogueMediator/dialogue.create'
       );
     });
@@ -67,8 +67,10 @@ describe("DialogueMediator", () => {
         type: "_foo_dialogue_mediator",
       } as any);
 
-      const spy = sinon.spy(player);
-      sinon.stub(Dialogue.prototype, "isDone").value(true);
+      const lock_spy = jest.spyOn(player, "lock");
+      const unlock_spy = jest.spyOn(player, "unlock");
+
+      jest.spyOn(Dialogue.prototype, "isDone", "get").mockReturnValue(true);
 
       const team = new Team([player]);
       const mediator = new DialogueMediator(team);
@@ -78,12 +80,13 @@ describe("DialogueMediator", () => {
         detail: { speech: ["foo"] },
       } as CustomEvent);
 
-      sinon.assert.calledOnce(spy.lock);
-      sinon.assert.notCalled(spy.unlock);
+      expect(lock_spy).toHaveBeenCalled();
+      expect(unlock_spy).toHaveBeenCalledTimes(0);
 
       mediator.update(1000);
       mediator.update(1);
-      sinon.assert.calledOnce(spy.unlock);
+
+      expect(unlock_spy).toHaveBeenCalledTimes(1);
     });
   });
 });

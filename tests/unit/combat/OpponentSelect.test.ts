@@ -1,15 +1,12 @@
 import Enemy from "@/actor/Enemy";
-import StateManager from "@/state/StateManager";
 import Sut from "@/combat/OpponentSelect";
 import Team from "@/combat/Team";
 import Vector from "@common/Vector";
-import { expect } from "chai";
 import { EventType } from "@/EventBus";
-
-const state = StateManager.getInstance();
+import { state } from "@/state/StateManager";
 
 afterEach(() => {
-  state.empty();
+  state().empty();
 });
 
 describe("OpponentSelect", () => {
@@ -17,7 +14,7 @@ describe("OpponentSelect", () => {
     it("automatically locks the selection", () => {
       const sut = new Sut(new Team([getEnemy(), getEnemy(), getEnemy()]));
 
-      expect(sut.isLocked).to.be.true;
+      expect(sut.isLocked).toBe(true);
     });
 
     it("manually locks the selection", () => {
@@ -25,35 +22,43 @@ describe("OpponentSelect", () => {
 
       sut.unlock();
 
-      expect(sut.isLocked).to.be.false;
+      expect(sut.isLocked).toBe(false);
 
       sut.lock();
 
-      expect(sut.isLocked).to.be.true;
+      expect(sut.isLocked).toBe(true);
     });
 
     it("manually unlocks the selection", () => {
       const sut = new Sut(new Team([getEnemy(), getEnemy(), getEnemy()]));
 
-      expect(sut.isLocked).to.be.true;
+      expect(sut.isLocked).toBe(true);
 
       sut.unlock();
 
-      expect(sut.isLocked).to.be.false;
+      expect(sut.isLocked).toBe(false);
     });
   });
 
   describe("selectedOpponent", () => {
     it("automatically selects the first opponent by default", () => {
-      const enemies = [getEnemy(), getEnemy(), getEnemy()];
+      const enemies = [
+        getEnemy({ name: "e1" }),
+        getEnemy({ name: "e2" }),
+        getEnemy({ name: "e3" }),
+      ];
 
       const sut = new Sut(new Team(enemies));
 
-      expect(sut.selected).to.equal(enemies[0]);
+      expect(sut.selected.id).toBe("e1");
     });
 
     it("selects the previous opponent", () => {
-      const enemies = [getEnemy(), getEnemy(), getEnemy()];
+      const enemies = [
+        getEnemy({ name: "e1" }),
+        getEnemy({ name: "e2" }),
+        getEnemy({ name: "e3" }),
+      ];
 
       const sut = new Sut(new Team(enemies));
 
@@ -65,19 +70,23 @@ describe("OpponentSelect", () => {
         key: "ArrowLeft",
       } as KeyboardEvent);
 
-      expect(sut.selected).to.equal(enemies[2]);
+      expect(sut.selected.id).toBe("e3");
 
       listeners[EventType.Keyboard].keyup({
         key: "ArrowLeft",
       } as KeyboardEvent);
 
-      expect(sut.selected).to.equal(enemies[1]);
+      expect(sut.selected.id).toBe("e2");
     });
 
     it("selects the previous opponent but not ones that are defeated", () => {
-      let defeatedEnemy = getEnemy();
+      let defeatedEnemy = getEnemy({ name: "defeated" });
 
-      const enemies = [getEnemy(), getEnemy(), defeatedEnemy];
+      const enemies = [
+        getEnemy({ name: "e1" }),
+        getEnemy({ name: "e2" }),
+        defeatedEnemy,
+      ];
 
       defeatedEnemy.kill();
 
@@ -91,11 +100,15 @@ describe("OpponentSelect", () => {
         key: "ArrowLeft",
       } as KeyboardEvent);
 
-      expect(sut.selected).to.equal(enemies[1]);
+      expect(sut.selected.id).toBe("e2");
     });
 
     it("selects the next opponent", () => {
-      const enemies = [getEnemy(), getEnemy(), getEnemy()];
+      const enemies = [
+        getEnemy({ name: "e1" }),
+        getEnemy({ name: "e2" }),
+        getEnemy({ name: "e3" }),
+      ];
 
       const sut = new Sut(new Team(enemies));
 
@@ -107,18 +120,22 @@ describe("OpponentSelect", () => {
         key: "ArrowRight",
       } as KeyboardEvent);
 
-      expect(sut.selected).to.equal(enemies[1]);
+      expect(sut.selected.id).toBe("e2");
       listeners[EventType.Keyboard].keyup({
         key: "ArrowRight",
       } as KeyboardEvent);
 
-      expect(sut.selected).to.equal(enemies[2]);
+      expect(sut.selected.id).toBe("e3");
     });
 
     it("selects the next opponent but not ones that are defeated", () => {
-      let defeatedEnemy = getEnemy();
+      let defeatedEnemy = getEnemy({ name: "defeated" });
 
-      const enemies = [getEnemy(), defeatedEnemy, getEnemy()];
+      const enemies = [
+        getEnemy({ name: "e1" }),
+        defeatedEnemy,
+        getEnemy({ name: "e3" }),
+      ];
 
       defeatedEnemy.kill();
 
@@ -132,16 +149,16 @@ describe("OpponentSelect", () => {
         key: "ArrowRight",
       } as KeyboardEvent);
 
-      expect(sut.selected).to.equal(enemies[2]);
+      expect(sut.selected.id).toBe("e3");
     });
   });
 
   describe("resolveSelected", () => {
     it("automatically resolves selection to the first non-defeated opponent", () => {
-      const enemy1 = getEnemy();
-      const enemy2 = getEnemy();
-      const enemy3 = getEnemy();
-      const enemy4 = getEnemy();
+      const enemy1 = getEnemy({ name: "e1" });
+      const enemy2 = getEnemy({ name: "e2" });
+      const enemy3 = getEnemy({ name: "e3" });
+      const enemy4 = getEnemy({ name: "e4" });
 
       const enemies = [enemy1, enemy2, enemy3, enemy4];
 
@@ -150,18 +167,19 @@ describe("OpponentSelect", () => {
 
       const sut = new Sut(new Team(enemies));
 
-      expect(sut.selected).to.equal(enemies[0]);
+      expect(sut.selected.id).toBe("e1");
 
       sut.resolveSelected();
 
-      expect(sut.selected).to.equal(enemies[2]);
+      expect(sut.selected.id).toBe("e3");
     });
   });
 });
 
-const getEnemy = () => {
+const getEnemy = (input: Record<string, string> = {}) => {
+  const { name } = input;
   return new Enemy(getVector(), getVector(), {
-    name: "test",
+    name: name ?? "test",
     type: "knight",
     x: 1,
     y: 1,

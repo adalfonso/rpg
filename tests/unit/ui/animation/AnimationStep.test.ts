@@ -1,7 +1,6 @@
 import Vector from "@common/Vector";
 import { AnimationFunctionApplication } from "@/ui/animation/AnimationFunction";
 import { AnimationStep as Sut } from "@/ui/animation/AnimationStep";
-import { expect } from "chai";
 
 describe("AnimationStep", () => {
   describe("update", () => {
@@ -16,10 +15,10 @@ describe("AnimationStep", () => {
         getReferences()
       );
 
-      expect(sut.update(500).toArray()).to.deep.eq([0.5, 0.5]);
-      expect(sut.update(250).toArray()).to.deep.eq([0.25, 0.25]);
-      expect(sut.update(500).toArray()).to.deep.eq([0.25, 0.25]);
-      expect(sut.update(500).toArray()).to.deep.eq([0.0, 0.0]);
+      expect(sut.update(500).toArray()).toEqual([0.5, 0.5]);
+      expect(sut.update(250).toArray()).toEqual([0.25, 0.25]);
+      expect(sut.update(500).toArray()).toEqual([0.25, 0.25]);
+      expect(sut.update(500).toArray()).toEqual([0.0, 0.0]);
     });
 
     it("handles 0-time animation", () => {
@@ -33,7 +32,7 @@ describe("AnimationStep", () => {
         getReferences()
       );
 
-      expect(sut.update(1).toArray()).to.deep.eq([1, 1]);
+      expect(sut.update(1).toArray()).toEqual([1, 1]);
     });
 
     it("defers after a delay", () => {
@@ -47,14 +46,14 @@ describe("AnimationStep", () => {
         getReferences()
       );
 
-      expect(sut.update(100).toArray()).to.deep.eq([0, 0]);
-      expect(sut.update(500).toArray()).to.deep.eq([0, 0]);
-      expect(sut.update(400).toArray()).to.deep.eq([0, 0]);
-      expect(sut.update(1000).toArray()).to.deep.eq([0.25, 0.25]);
-      expect(sut.update(2000).toArray()).to.deep.eq([0.5, 0.5]);
-      expect(sut.isDone).to.be.false;
-      expect(sut.update(1000).toArray()).to.deep.eq([0.25, 0.25]);
-      expect(sut.isDone).to.be.true;
+      expect(sut.update(100).toArray()).toEqual([0, 0]);
+      expect(sut.update(500).toArray()).toEqual([0, 0]);
+      expect(sut.update(400).toArray()).toEqual([0, 0]);
+      expect(sut.update(1000).toArray()).toEqual([0.25, 0.25]);
+      expect(sut.update(2000).toArray()).toEqual([0.5, 0.5]);
+      expect(sut.isDone).toBe(false);
+      expect(sut.update(1000).toArray()).toEqual([0.25, 0.25]);
+      expect(sut.isDone).toBe(true);
     });
   });
 
@@ -71,11 +70,11 @@ describe("AnimationStep", () => {
       );
 
       sut.update(100);
-      expect(sut.isDone).to.be.false;
+      expect(sut.isDone).toBe(false);
       sut.update(3899);
-      expect(sut.isDone).to.be.false;
+      expect(sut.isDone).toBe(false);
       sut.update(1);
-      expect(sut.isDone).to.be.true;
+      expect(sut.isDone).toBe(true);
     });
   });
 });

@@ -1,4 +1,3 @@
-import { expect } from "chai";
 import Sut from "@/state/StateManager";
 import { promises as fs } from "fs";
 
@@ -8,8 +7,8 @@ const getAssetPath = (file: string) => "./tests/assets/" + file;
 describe("StateManager", () => {
   describe("getInstance", () => {
     it("shares the same instance", () => {
-      expect(Sut.getInstance()).to.equal(Sut.getInstance());
-      expect(Sut.getInstance()).to.not.equal(new Sut());
+      expect(Sut.getInstance()).toBe(Sut.getInstance());
+      expect(Sut.getInstance()).not.toBe(new Sut());
     });
   });
 
@@ -24,13 +23,13 @@ describe("StateManager", () => {
 
       sut.merge(getBasicActorData());
 
-      expect(sut.get("actors.knight0")).to.deep.equal(expected);
+      expect(sut.get("actors.knight0")).toEqual(expected);
     });
 
     it("doesn't find data in the state by invalid reference", () => {
       let sut = new Sut();
 
-      expect(sut.get("actors.knight0")).to.equal(undefined);
+      expect(sut.get("actors.knight0")).toBeUndefined();
     });
 
     it("gets the entire state when the reference key is undefined", () => {
@@ -39,8 +38,8 @@ describe("StateManager", () => {
 
       sut.merge(getBasicActorData());
 
-      expect(sut.get()).to.deep.equal(expected);
-      expect(sut.get()).to.not.equal(expected);
+      expect(sut.get()).toEqual(expected);
+      expect(sut.get()).not.toBe(expected);
     });
   });
 
@@ -58,7 +57,7 @@ describe("StateManager", () => {
       };
 
       sut.merge(getBasicActorData());
-      expect(sut.toJson()).to.equal(JSON.stringify(expected));
+      expect(sut.toJson()).toBe(JSON.stringify(expected));
     });
 
     it("adds a property to a preexisting state", () => {
@@ -85,7 +84,7 @@ describe("StateManager", () => {
         },
       });
 
-      expect(sut.toJson()).to.equal(JSON.stringify(expected));
+      expect(sut.toJson()).toBe(JSON.stringify(expected));
     });
   });
 
@@ -95,18 +94,18 @@ describe("StateManager", () => {
 
       sut.merge(getBasicActorData());
 
-      expect(sut.get("actors.knight0.stats.hp")).to.equal(5);
+      expect(sut.get("actors.knight0.stats.hp")).toBe(5);
 
       sut.mergeByRef("actors.knight0.stats.hp", 10);
 
-      expect(sut.get("actors.knight0.stats.hp")).to.equal(10);
+      expect(sut.get("actors.knight0.stats.hp")).toBe(10);
 
       const result = sut.mergeByRef(
         "actors.knight0.stats",
         JSON.stringify({ hp: 4, atk: 13 })
       );
 
-      expect(result).to.equal(JSON.stringify({ hp: 4, atk: 13 }));
+      expect(result).toBe(JSON.stringify({ hp: 4, atk: 13 }));
     });
 
     it("loads by ref for a non-existing ref", () => {
@@ -121,15 +120,15 @@ describe("StateManager", () => {
         },
       };
 
-      sut.empty();
+      sut.empty;
 
-      expect(sut.get("actors.knight0")).to.equal(undefined);
-      expect(sut.get("actors.knight0.stats.hp")).to.equal(undefined);
+      expect(sut.get("actors.knight0")).toBeUndefined();
+      expect(sut.get("actors.knight0.stats.hp")).toBeUndefined();
 
       const result = sut.mergeByRef("actors.knight0.stats.hp", 5);
 
-      expect(result).to.deep.equal(5);
-      expect(sut.toJson()).to.equal(JSON.stringify(expected));
+      expect(result).toEqual(5);
+      expect(sut.toJson()).toBe(JSON.stringify(expected));
     });
   });
 
@@ -152,7 +151,7 @@ describe("StateManager", () => {
 
       sut.remove("actors.knight0.weapon");
 
-      expect(sut.toJson()).to.equal(JSON.stringify(expected));
+      expect(sut.toJson()).toBe(JSON.stringify(expected));
     });
 
     it("doesn't error when trying to remove a non-existent key", () => {
@@ -165,7 +164,7 @@ describe("StateManager", () => {
 
       sut.remove("actors.knight0.weapon");
 
-      expect(sut.toJson()).to.equal(JSON.stringify(input));
+      expect(sut.toJson()).toBe(JSON.stringify(input));
     });
   });
 
@@ -175,11 +174,11 @@ describe("StateManager", () => {
 
       sut.merge(getBasicActorData());
 
-      expect(sut.get()).to.not.deep.equal({});
+      expect(sut.get()).not.toEqual({});
 
       sut.empty();
 
-      expect(sut.get()).to.deep.equal({});
+      expect(sut.get()).toEqual({});
     });
   });
 
@@ -201,9 +200,9 @@ describe("StateManager", () => {
 
       await sut.save(file);
 
-      let contents = await fs.readFile(file, "UTF-8");
+      let contents = await fs.readFile(file, { encoding: "utf8" });
 
-      expect(contents).to.equal(JSON.stringify(state));
+      expect(contents).toBe(JSON.stringify(state));
     });
   });
 
@@ -223,7 +222,7 @@ describe("StateManager", () => {
 
       await sut.load(file);
 
-      expect(sut.toJson()).to.equal(JSON.stringify(expected));
+      expect(sut.toJson()).toBe(JSON.stringify(expected));
     });
   });
 });

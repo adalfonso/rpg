@@ -1,18 +1,17 @@
 import Damage from "@/combat/Damage";
 import Renderable from "@/ui/Renderable";
 import Sut from "@/combat/strategy/Weapon";
-import { expect } from "chai";
 
 describe("Weapon", () => {
   describe("equip", () => {
     it("equips a weapon", () => {
       const sut = getSut();
 
-      expect(sut.isEquipped).to.be.false;
+      expect(sut.isEquipped).toBe(false);
 
       sut.equip();
 
-      expect(sut.isEquipped).to.be.true;
+      expect(sut.isEquipped).toBe(true);
     });
   });
 
@@ -21,10 +20,10 @@ describe("Weapon", () => {
       const sut = getSut();
 
       sut.equip();
-      expect(sut.isEquipped).to.be.true;
+      expect(sut.isEquipped).toBe(true);
 
       sut.unequip();
-      expect(sut.isEquipped).to.be.false;
+      expect(sut.isEquipped).toBe(false);
     });
   });
 });

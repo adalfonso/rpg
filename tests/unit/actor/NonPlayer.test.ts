@@ -1,12 +1,19 @@
 import NonPlayer from "@/actor/NonPlayer";
 import Vector from "@common/Vector";
-import actors from "@/actor/actors";
-import { expect } from "chai";
-import { getActorTemplate, getFixtureTemplate } from "../level/fixtures";
+import {
+  getAbilityTemplate,
+  getActorTemplate,
+  getFixtureTemplate,
+} from "../level/fixtures";
 
-beforeEach(() => {
-  actors.foo_non_player = getActorTemplate();
-});
+jest.mock("@/actor/actors", () => ({
+  __esModule: true,
+  actors: () => ({ foo_non_player: getActorTemplate() }),
+}));
+
+jest.mock("@/combat/strategy/abilities", () => ({
+  abilities: () => ({ damage: { _default_ability: getAbilityTemplate() } }),
+}));
 
 describe("NonPlayer", () => {
   describe("constructor", () => {
@@ -21,7 +28,7 @@ describe("NonPlayer", () => {
               name: "foo_non_player",
             })
           )
-      ).to.throw(
+      ).toThrowError(
         'Speech data for "foo_non_player.foo_non_player" as NonPlayer is not defined in speech.ts'
       );
     });

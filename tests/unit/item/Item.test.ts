@@ -1,5 +1,4 @@
 import Sut from "@/item/Item";
-import { expect } from "chai";
 
 describe("item/Item", () => {
   describe("get displayAs", () => {
@@ -7,7 +6,7 @@ describe("item/Item", () => {
       let sut = getSut();
       let expected = "Big Sword";
 
-      expect(sut.displayAs).to.equal(expected);
+      expect(sut.displayAs).toBe(expected);
     });
   });
 });
