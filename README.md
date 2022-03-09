@@ -11,11 +11,17 @@ $ npm i
 Running the game (in dev mode):
 
 ```bash
-$ npm run dev
+$ npm start
 ```
 
 Running unit tests:
 
 ```bash
 $ npm test
+```
+
+Run linting:
+
+```bash
+$ npm run lint
 ```
