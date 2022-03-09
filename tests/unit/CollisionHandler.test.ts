@@ -1,11 +1,11 @@
-import Enemy from "@/actor/Enemy";
 import Player from "@/actor/Player";
-import { state } from "@/state/StateManager";
 import Sut, { Collision } from "@/CollisionHandler";
 import Vector from "@common/Vector";
 import { AnimationFactory } from "@/ui/animation/AnimationFactory";
 import { HeroTeam } from "@/combat/HeroTeam";
 import { Item } from "@/inanimate/Item";
+import { getEnemy } from "./actor/_fixtures";
+import { state } from "@/state/StateManager";
 
 afterEach(() => {
   state().empty();
@@ -17,14 +17,7 @@ describe("CollisionHandler", () => {
       // TODO: stub hero team
       let sut = new Sut(new HeroTeam([getPlayer()]));
 
-      let enemy = new Enemy(getVector(), getVector(), {
-        x: 0,
-        y: 0,
-        width: 0,
-        height: 0,
-        name: "knight",
-        type: "knight",
-      });
+      let enemy = getEnemy();
 
       sut.loadFixtures([enemy]);
 
@@ -73,8 +66,8 @@ const getPlayer = () => {
     y: 1,
     height: 1,
     width: 1,
-    name: "Me",
-    type: "player",
+    name: "_default_actor",
+    type: "_default_actor",
   });
 };
 

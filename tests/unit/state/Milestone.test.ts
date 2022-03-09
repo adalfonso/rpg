@@ -2,13 +2,6 @@ import StateManager from "@/state/StateManager";
 import { Milestone } from "@/state/milestone/Milestone";
 import { MilestoneConfig } from "@/state/milestone/types";
 
-jest.mock("@/state/milestone/milestones", () => ({
-  milestones: () => ({
-    _attained_milestone: () => ({ foo: {} as MilestoneConfig }),
-    _unattained_milestone: () => ({ foo: {} as MilestoneConfig }),
-  }),
-}));
-
 describe("Milestone", () => {
   describe("attained", () => {
     it("detects an attained milestone", () => {

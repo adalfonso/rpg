@@ -4,7 +4,7 @@ const { compilerOptions } = require("./tests/tsconfig");
 module.exports = {
   preset: "ts-jest",
   testEnvironment: "jsdom",
-  setupFiles: ["<rootDir>/tests/__mocks__/setup.js"],
+  setupFiles: ["<rootDir>/tests/__mocks__/setup.ts"],
   moduleNameMapper: {
     ...pathsToModuleNameMapper(compilerOptions.paths, {
       prefix: "<rootDir>/tests/",

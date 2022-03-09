@@ -4,6 +4,7 @@ import Team from "@/combat/Team";
 import Vector from "@common/Vector";
 import { EventType } from "@/EventBus";
 import { state } from "@/state/StateManager";
+import { getEnemy } from "../actor/_fixtures";
 
 afterEach(() => {
   state().empty();
@@ -175,26 +176,3 @@ describe("OpponentSelect", () => {
     });
   });
 });
-
-const getEnemy = (input: Record<string, string> = {}) => {
-  const { name } = input;
-  return new Enemy(getVector(), getVector(), {
-    name: name ?? "test",
-    type: "knight",
-    x: 1,
-    y: 1,
-    height: 1,
-    width: 1,
-  });
-};
-
-const getVector = () => {
-  return <Vector>(<unknown>{
-    copy() {
-      return getVector();
-    },
-    times() {
-      return getVector();
-    },
-  });
-};

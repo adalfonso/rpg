@@ -3,8 +3,8 @@ import { getSpeech } from "@/actor/speech";
 
 describe("getSpeech", () => {
   it("gets speech", () => {
-    expect(getSpeech("foo.foo", getSpeechList())).toEqual({
-      dialogue: ["foo speech"],
+    expect(getSpeech("_default_actor.greet", getSpeechList())).toEqual({
+      dialogue: ["hello"],
     });
   });
 

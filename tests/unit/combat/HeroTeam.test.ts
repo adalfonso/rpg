@@ -1,7 +1,6 @@
-import Player from "@/actor/Player";
 import Stats from "@/Stats";
-import Vector from "@common/Vector";
 import { HeroTeam } from "@/combat/HeroTeam";
+import { getActor } from "../actor/_fixtures";
 
 describe("HeroTeam", () => {
   describe("gainExp", () => {
@@ -78,14 +77,3 @@ describe("HeroTeam", () => {
     });
   });
 });
-
-const getActor = () => {
-  return new Player(Vector.empty(), Vector.empty(), {
-    x: 1,
-    y: 1,
-    height: 1,
-    width: 1,
-    name: "Me",
-    type: "player",
-  });
-};

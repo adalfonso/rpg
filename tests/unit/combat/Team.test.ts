@@ -1,9 +1,9 @@
 import Actor from "@/actor/Actor";
-import Enemy from "@/actor/Enemy";
 import Stats from "@/Stats";
 import Sut from "@/combat/Team";
 import Vector from "@common/Vector";
 import { Direction } from "@/ui/types";
+import { getActor } from "../actor/_fixtures";
 import { state } from "@/state/StateManager";
 
 afterEach(() => {
@@ -65,13 +65,13 @@ describe("Team", () => {
 
   describe("prepare", () => {
     it("set direction and position of team members", () => {
-      const sut = new Sut([getActor(), getActor()]);
+      const sut = new Sut([getActor(), getActor({ size: new Vector(1, 1) })]);
 
       const position = new Vector(5, 6);
       const direction = Direction.East;
 
-      const members = sut.all() as any;
-      const leader = sut.leader as any;
+      const members = sut.all();
+      const leader = sut.leader;
 
       expect(leader.direction).not.toBe(Direction.East);
       expect(leader.position.x).not.toBe(5);
@@ -132,17 +132,6 @@ describe("Team", () => {
     });
   });
 });
-
-const getActor = (): Actor => {
-  return new Enemy(new Vector(1, 1), new Vector(1, 1), {
-    name: "test",
-    type: "knight",
-    width: 1,
-    height: 1,
-    x: 1,
-    y: 1,
-  });
-};
 
 const getVector = () => {
   return <Vector>(<unknown>{

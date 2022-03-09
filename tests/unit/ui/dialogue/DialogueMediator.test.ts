@@ -4,19 +4,6 @@ import Team from "@/combat/Team";
 import Vector from "@common/Vector";
 import { DialogueMediator } from "@/ui/dialogue/DialogueMediator";
 import { EventType } from "@/EventBus";
-import {
-  getAbilityTemplate,
-  getActorTemplate,
-} from "../../../unit/level/fixtures";
-
-jest.mock("@/actor/actors", () => ({
-  __esModule: true,
-  actors: () => ({ _foo_dialogue_mediator: getActorTemplate() }),
-}));
-
-jest.mock("@/combat/strategy/abilities", () => ({
-  abilities: () => ({ damage: { _default_ability: getAbilityTemplate() } }),
-}));
 
 describe("DialogueMediator", () => {
   describe("_createDialogue", () => {
@@ -64,7 +51,7 @@ describe("DialogueMediator", () => {
 
     it("locks targets while dialogue is active", () => {
       const player = new Player(Vector.empty(), Vector.empty(), {
-        type: "_foo_dialogue_mediator",
+        type: "_default_actor",
       } as any);
 
       const lock_spy = jest.spyOn(player, "lock");
