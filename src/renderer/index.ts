@@ -7,6 +7,7 @@ import config from "@/config";
 import { DEFAULT_SAVE_LOCATION } from "./constants";
 import { DialogueMediator } from "@/ui/dialogue/DialogueMediator";
 import { HeroTeam } from "@/combat/HeroTeam";
+import { Pet } from "./actor/Pet";
 import { inDev } from "@common/helpers";
 import { resolution } from "@common/common";
 import { startAnimation } from "@/util";
@@ -26,11 +27,21 @@ document.addEventListener("DOMContentLoaded", async (_event) => {
   };
   const player_position = new Vector(player_template.x, player_template.y);
   const player_size = new Vector(player_template.width, player_template.height);
-  const player: Player = new Player(
+  const player = new Player(
     player_position.times(config.scale),
     player_size.times(config.scale),
     player_template
   );
+  const doggo = new Pet(player.position.copy(), player.size.copy(), {
+    name: "Lea",
+    type: "lea",
+    x: 0,
+    y: 0,
+    width: 16,
+    height: 32,
+  });
+  player.adoptPet(doggo);
+
   const team = new HeroTeam([player]);
   const dialogue = new DialogueMediator(team);
   const game = new Game(team, dialogue);

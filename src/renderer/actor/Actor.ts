@@ -31,7 +31,7 @@ import {
 type Entity = Actor | Inanimate;
 
 /** Base class for entities that affect change within the game */
-abstract class Actor
+export abstract class Actor
   extends MultiSprite(Resizable(Movable(Empty)))
   implements Drawable, Lockable, Stateful<ActorState>
 {

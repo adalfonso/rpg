@@ -1,6 +1,6 @@
 import { MilestoneConfig } from "@/state/milestone/types";
 import { getAbilityTemplate } from "../unit/level/_fixtures";
-import { getActorTemplate } from "../unit/actor/_fixtures";
+import { getActorConfig } from "../unit/actor/_fixtures";
 
 jest.mock("@/util", () => {
   const original = jest.requireActual("@/util");
@@ -10,8 +10,8 @@ jest.mock("@/util", () => {
 
 jest.mock("@/actor/actors", () => ({
   actors: () => ({
-    _default_actor: getActorTemplate(),
-    _default_enemy: getActorTemplate(),
+    _default_actor: getActorConfig(),
+    _default_enemy: getActorConfig(),
   }),
 }));
 

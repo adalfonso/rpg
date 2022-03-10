@@ -5,6 +5,8 @@ import Weapon from "@/combat/strategy/Weapon";
 import config from "@/config";
 import { Direction } from "@/ui/types";
 import { LevelFixtureTemplate } from "@/level/LevelFixture";
+import { Nullable } from "@/types";
+import { Pet } from "./Pet";
 import { Stateful } from "@/interfaces";
 import { bus, EventType } from "@/EventBus";
 import { isPlayerState, PlayerState } from "@schema/actor/PlayerSchema";
@@ -17,6 +19,9 @@ class Player extends Actor implements Stateful<PlayerState> {
 
   /** The current speed of the player in x/y directions */
   private speed: Vector;
+
+  /** Pet owned by the player */
+  private _pet: Nullable<Pet>;
 
   /**
    * Create a new Player instance
@@ -77,6 +82,16 @@ class Player extends Actor implements Stateful<PlayerState> {
     if (Math.abs(this.speed.x) + Math.abs(this.speed.y)) {
       bus.emit("player.move", { player: this });
     }
+
+    if (this._pet) {
+      this._pet.follow({
+        position: this._position,
+        direction: this.direction,
+        dt,
+      });
+
+      this._pet.update(dt);
+    }
   }
 
   /**
@@ -92,6 +107,10 @@ class Player extends Actor implements Stateful<PlayerState> {
     resolution: Vector
   ) {
     super.draw(ctx, offset, resolution);
+
+    if (this._pet) {
+      this._pet.draw(ctx, offset, resolution);
+    }
   }
 
   /**
@@ -130,6 +149,22 @@ class Player extends Actor implements Stateful<PlayerState> {
         },
       },
     };
+  }
+
+  /**
+   * Allow the player to own a pet
+   *
+   * @param pet - the pet being adopted
+   * @throws when the player already owns a pet
+   */
+  public adoptPet(pet: Pet) {
+    if (this._pet) {
+      throw new Error(
+        `Player ${this._template.name} can only have one pet at a time`
+      );
+    }
+
+    this._pet = pet;
   }
 
   /**
