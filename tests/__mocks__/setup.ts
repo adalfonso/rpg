@@ -4,10 +4,16 @@ import { getActorConfig } from "../unit/actor/_fixtures";
 
 jest.mock("@tauri-apps/api", () => {
   return {
+    path: {
+      join: () => Promise.resolve(""),
+      dataDir: () => Promise.resolve(""),
+    },
     fs: {
+      Dir: { Data: 0 },
+      createDir: () => {},
+      readDir: () => Promise.resolve([]),
       writeFile: () => Promise.resolve(""),
-      readTextFile: () =>
-        Promise.resolve(JSON.stringify({ player: { stats: { lvl: 100 } } })),
+      readTextFile: () => Promise.resolve(""),
     },
   };
 });

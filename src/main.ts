@@ -4,15 +4,18 @@ import Game from "@/game/Game";
 import Player from "./actor/Player";
 import Vector from "./physics/math/Vector";
 import config from "@/config";
-import { DEFAULT_SAVE_LOCATION, RESOLUTION } from "./constants";
+import { APP_NAME, SAVE_FILE, RESOLUTION, SAVE_DIR } from "./constants";
 import { DialogueMediator } from "@/ui/dialogue/DialogueMediator";
 import { HeroTeam } from "./combat/HeroTeam";
 import { Pet } from "./actor/Pet";
-import { startAnimation } from "@/util";
+import { path } from "@tauri-apps/api";
+import { resolveSaveData, startAnimation } from "@/util";
 import { state } from "@/state/StateManager";
 
 document.addEventListener("DOMContentLoaded", async (_event) => {
-  await state().load(DEFAULT_SAVE_LOCATION);
+  const save_dir = await resolveSaveData(APP_NAME)(SAVE_DIR);
+  const save_path = await path.join(save_dir, SAVE_FILE);
+  await state().load(save_path);
 
   const canvas = <HTMLCanvasElement>document.getElementById("game");
   const player_template = {

@@ -1,6 +1,7 @@
 import InvalidDataError from "./error/InvalidDataError";
 import MissingDataError from "./error/MissingDataError";
 import manifest from "@img/manifest";
+import { fs, path } from "@tauri-apps/api";
 import { isRecord } from "./types";
 
 /**
@@ -131,3 +132,27 @@ export const getImagePath = (resource: string) => {
     `Expected string returned from getImagePath but got ${typeof path} instead`
   );
 };
+
+/**
+ * Ensure the save dir is created for the app
+ *
+ * TODO: add error handling
+ *
+ * @param app_name - name of the application dir
+ * @param save_dir - name of th save dir
+ */
+export const resolveSaveData =
+  (app_name: string) => async (save_dir: string) => {
+    const data_dir = await fs.readDir("", { dir: fs.Dir.Data });
+    const has_app_data =
+      data_dir.filter((dir) => dir.name === app_name).length > 0;
+
+    if (!has_app_data) {
+      await fs.createDir(await app_name, { dir: fs.Dir.Data });
+      await fs.createDir(await path.join(app_name, save_dir), {
+        dir: fs.Dir.Data,
+      });
+    }
+
+    return path.join(await path.dataDir(), app_name, save_dir);
+  };

@@ -1,17 +1,15 @@
-import { DEFAULT_SAVE_LOCATION } from "@/constants";
+import { Stateful } from "@/interfaces";
 import { bus, EventType } from "@/event/EventBus";
+import { fs } from "@tauri-apps/api";
 import { merge } from "@/util";
 
-import { Stateful } from "@/interfaces";
-import { fs } from "@tauri-apps/api";
-
 /** An intermediary between an on-disk JSON store and objects within the game */
-class StateManager {
+export class StateManager {
   /** The game state */
   private data: Record<string, unknown> = {};
 
   /** Location the state was last loaded from */
-  private lastLoadedFrom: string = DEFAULT_SAVE_LOCATION;
+  private lastLoadedFrom = "";
 
   /** Singleton instance */
   private static instance: StateManager;
@@ -192,17 +190,14 @@ class StateManager {
    *
    * @emits state.saved
    */
-  public save(destination: string = this.lastLoadedFrom): Promise<void> {
-    destination = this.parseFileDestination(destination);
-
-    return fs
-      .writeFile({ path: destination, contents: this.toJson() })
-      .then(() => {
-        bus.emit("state.saved");
-      })
-      .catch((_err) => {
-        console.error(`Could not save state to "${destination}".`);
-      });
+  public async save(destination: string = this.lastLoadedFrom) {
+    // TODO: Sanitize the destination
+    try {
+      await fs.writeFile({ path: destination, contents: this.toJson() });
+      bus.emit("state.saved");
+    } catch (e) {
+      console.error(`Could not save state to "${destination}".`);
+    }
   }
 
   /**
@@ -214,41 +209,21 @@ class StateManager {
    *
    * @emits file.load
    */
-  public load(destination: string): Promise<string | void> {
-    destination = this.parseFileDestination(destination);
+  public async load(destination: string) {
+    // TODO: Sanitize the destination
+    try {
+      const contents = await fs.readTextFile(destination);
 
-    return fs
-      .readTextFile(this.parseFileDestination(destination))
-      .then((contents) => {
-        if (typeof contents !== "string") {
-          throw new Error("Got unexpected Buffer when reading file.");
-        }
+      this.data = JSON.parse(contents);
+      bus.emit("file.load");
+    } catch (e) {
+      console.error(`Could not load state from "${destination}".`);
+      this.save(destination);
+    }
 
-        this.data = JSON.parse(contents);
-        bus.emit("file.load");
-      })
-      .catch((_err) => {
-        console.error(`Could not load state from "${destination}".`);
-        this.save(destination);
-      })
-      .finally(() => {
-        this.lastLoadedFrom = destination;
-      });
-  }
-
-  /**
-   * Make sure the destination is a json file
-   *
-   * @param destination - destination path
-   *
-   * @return formatted destination path
-   */
-  private parseFileDestination(destination: string): string {
-    return /\.json$/.test(destination) ? destination : destination + ".json";
+    this.lastLoadedFrom = destination;
   }
 }
-
-export default StateManager;
 
 /** Helper for getting the state manager */
 export const state = () => StateManager.getInstance();
