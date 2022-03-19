@@ -1,5 +1,5 @@
 import Sut from "@/ui/dialogue/TextStream";
-//import Vector from "@common/Vector";
+//import Vector from "@/physics/math/Vector";
 
 // TODO: Uncomment tests when able to mock canvas
 describe("TextStream", () => {

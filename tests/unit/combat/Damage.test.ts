@@ -1,4 +1,4 @@
-import Stats from "@/Stats";
+import Stats from "@/actor/Stats";
 import Sut from "@/combat/Damage";
 
 describe("Damage", () => {

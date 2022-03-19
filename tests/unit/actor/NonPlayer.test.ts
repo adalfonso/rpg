@@ -1,5 +1,5 @@
 import NonPlayer from "@/actor/NonPlayer";
-import Vector from "@common/Vector";
+import Vector from "@/physics/math/Vector";
 import { getFixtureTemplate } from "../level/_fixtures";
 
 describe("NonPlayer", () => {

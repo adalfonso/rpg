@@ -1,4 +1,4 @@
-import Vector from "@common/Vector";
+import Vector from "@/physics/math/Vector";
 import { AnimatedText as Sut } from "@/ui/animation/text/AnimatedText";
 import { Animation, AnimationType } from "@/ui/animation/Animation";
 

@@ -1,6 +1,5 @@
 import StateManager from "@/state/StateManager";
 import { Milestone } from "@/state/milestone/Milestone";
-import { MilestoneConfig } from "@/state/milestone/types";
 
 describe("Milestone", () => {
   describe("attained", () => {

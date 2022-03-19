@@ -1,23 +1,26 @@
 {
   "compilerOptions": {
-    "target": "ES6",
+    "target": "ESNext",
+    "useDefineForClassFields": true,
     "module": "ESNext",
+    "lib": ["ESNext", "DOM"],
+    "moduleResolution": "Node",
     "skipLibCheck": true,
-    "esModuleInterop": true,
-    "strictNullChecks": true,
-    "suppressImplicitAnyIndexErrors": true,
+    "strict": true,
     "sourceMap": true,
-    "baseUrl": ".",
-    "outDir": "dist",
-    "moduleResolution": "node",
     "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "noEmit": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noImplicitAny": false,
+    "baseUrl": "./",
     "paths": {
-      "@/*": ["./src/renderer/*"],
-      "@common/*": ["./src/common/*"],
-      "@img/*": ["./src/renderer/resource/img/*"],
-      "@main/*": ["./src/main/*"],
-      "@schema/*": ["./src/renderer/state/schema/*"]
+      "@/*": ["./src/*"],
+      "@img/*": ["./src/_resource/img/*"],
+      "@schema/*": ["./src/state/schema/*"]
     }
   },
-  "include": ["src/**/*", "tools/**/*"]
+  "include": ["src"]
 }

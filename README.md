@@ -1,27 +1,39 @@
-# rpg
+# RPG
 
-This is currently in development.
+"Currently in development"
 
-After cloning the project:
+### Project Setup
+
+This project uses [Tauri](https://github.com/tauri-apps/tauri). First must install required prerequisites as specified per your operating system [here](https://tauri.studio/docs/getting-started/prerequisites).
+
+Then install project dependencies:
 
 ```bash
 $ npm i
 ```
 
-Running the game (in dev mode):
+### Running the game
 
 ```bash
-$ npm start
+$ npm run tauri dev
 ```
 
-Running unit tests:
+### Unit tests
 
 ```bash
 $ npm test
 ```
 
-Run linting:
+### Linting
 
 ```bash
 $ npm run lint
+```
+
+### General check
+
+The general check runs type-checking, linting, and unit tests. It is recommended to run this command as a final check before committing changes.
+
+```bash
+$ npm run check
 ```

@@ -1,4 +1,4 @@
-import Vector from "@common/Vector";
+import Vector from "@/physics/math/Vector";
 import * as Sut from "@/ui/animation/AnimationFunction";
 
 describe("AnimationFunction", () => {

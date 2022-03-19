@@ -1,4 +1,4 @@
-import Vector from "@common/Vector";
+import Vector from "@/physics/math/Vector";
 import { Direction } from "@/ui/types";
 import { Pet } from "@/actor/Pet";
 import { getPet, getPlayer } from "./_fixtures";

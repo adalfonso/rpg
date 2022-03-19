@@ -1,7 +1,7 @@
 import Actor from "@/actor/Actor";
-import Stats from "@/Stats";
+import Stats from "@/actor/Stats";
 import Sut from "@/combat/Team";
-import Vector from "@common/Vector";
+import Vector from "@/physics/math/Vector";
 import { Direction } from "@/ui/types";
 import { getPlayer } from "../actor/_fixtures";
 import { state } from "@/state/StateManager";
@@ -55,7 +55,7 @@ describe("Team", () => {
       const sut = new Sut([getPlayer(), getPlayer()]);
       let timesCalled = 0;
 
-      sut.each((actor: Actor) => {
+      sut.each((_actor: Actor) => {
         timesCalled++;
       });
 

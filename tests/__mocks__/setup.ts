@@ -2,6 +2,16 @@ import { MilestoneConfig } from "@/state/milestone/types";
 import { getAbilityTemplate } from "../unit/level/_fixtures";
 import { getActorConfig } from "../unit/actor/_fixtures";
 
+jest.mock("@tauri-apps/api", () => {
+  return {
+    fs: {
+      writeFile: () => Promise.resolve(""),
+      readTextFile: () =>
+        Promise.resolve(JSON.stringify({ player: { stats: { lvl: 100 } } })),
+    },
+  };
+});
+
 jest.mock("@/util", () => {
   const original = jest.requireActual("@/util");
 

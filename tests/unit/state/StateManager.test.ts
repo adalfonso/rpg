@@ -208,8 +208,6 @@ describe("StateManager", () => {
 
   describe("load", () => {
     it("loads a file from disk", async () => {
-      let sut = new Sut();
-
       let expected = {
         player: {
           stats: {
@@ -217,6 +215,8 @@ describe("StateManager", () => {
           },
         },
       };
+
+      let sut = new Sut();
 
       let file = getAssetPath("save_state.json");
 

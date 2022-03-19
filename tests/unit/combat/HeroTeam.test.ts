@@ -1,4 +1,4 @@
-import Stats from "@/Stats";
+import Stats from "@/actor/Stats";
 import { HeroTeam } from "@/combat/HeroTeam";
 import { getPlayer } from "../actor/_fixtures";
 

@@ -1,10 +1,8 @@
-import Enemy from "@/actor/Enemy";
 import Sut from "@/combat/OpponentSelect";
 import Team from "@/combat/Team";
-import Vector from "@common/Vector";
-import { EventType } from "@/EventBus";
-import { state } from "@/state/StateManager";
+import { EventType } from "@/event/EventBus";
 import { getEnemy } from "../actor/_fixtures";
+import { state } from "@/state/StateManager";
 
 afterEach(() => {
   state().empty();

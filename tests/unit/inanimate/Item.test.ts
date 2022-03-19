@@ -1,4 +1,4 @@
-import Vector from "@common/Vector";
+import Vector from "@/physics/math/Vector";
 import { AnimationFactory } from "@/ui/animation/AnimationFactory";
 import { Item as Sut } from "@/inanimate/Item";
 import { ItemConfig } from "@/item/types";

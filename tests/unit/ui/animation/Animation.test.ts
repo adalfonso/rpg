@@ -1,4 +1,4 @@
-import Vector from "@common/Vector";
+import Vector from "@/physics/math/Vector";
 import { Animation as Sut, AnimationType } from "@/ui/animation/Animation";
 import {
   AnimationStep,

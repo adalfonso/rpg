@@ -1,4 +1,4 @@
-import Vector from "@common/Vector";
+import Vector from "@/physics/math/Vector";
 import { AnimationType, AnimationUpdate } from "@/ui/animation/Animation";
 import {
   createAnimation,
