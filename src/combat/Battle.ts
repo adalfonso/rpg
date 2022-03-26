@@ -236,7 +236,7 @@ class Battle implements Drawable, Lockable {
   /** Move the battle menu to where it should be */
   private _moveBattleMenu() {
     const hero = this._heroes.nextToTakeTurn;
-
+    this._menu.reset();
     this._menu.moveTo(hero.position.plus(hero.size));
   }
 
@@ -300,7 +300,9 @@ class Battle implements Drawable, Lockable {
     this._heroes.takeTurn(hero);
 
     this._event_queue.push(
+      // Handle post turn ops if turn is over or game has ended
       () => (this._heroes.turnIsOver || this.isDone) && this._handlePostTurn(),
+      // Adjust menu unless turn is over
       () => this._heroes.turnIsOver || this.isDone || this._moveBattleMenu(),
       () => this._opponentSelect.resolveSelected()
     );

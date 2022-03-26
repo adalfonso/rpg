@@ -98,6 +98,11 @@ export class BattleMenu extends Menu<BattleMenuItem> implements Drawable {
     ctx.restore();
   }
 
+  /** Reset this menu back to its original option */
+  public reset() {
+    this.selected = [this._menu.items[0]];
+  }
+
   /**
    * Register events with the event bus
    *
@@ -106,59 +111,66 @@ export class BattleMenu extends Menu<BattleMenuItem> implements Drawable {
   public register() {
     return {
       [EventType.Keyboard]: {
-        keyup: (e: KeyboardEvent) => {
-          if (this.locked) {
-            return;
-          }
-
-          const menu = this.currentMenu;
-          const option = this.currentOption;
-
-          switch (e.key) {
-            case "ArrowDown":
-              if (this._hasSubMenu()) {
-                this.select();
-              } else if (this.selected.length > 1) {
-                this.next();
-              }
-              break;
-
-            case "ArrowUp": {
-              const [first_item] = menu.items;
-              const is_first_option =
-                option === first_item || option.source === first_item?.source;
-
-              if (is_first_option) {
-                this.back();
-              } else if (this.selected.length > 1) {
-                this.previous();
-              }
-              break;
-            }
-
-            case "ArrowLeft":
-              if (this.selected.length === 1) {
-                this.previous();
-              }
-              break;
-
-            case "ArrowRight":
-              if (this.selected.length === 1) {
-                this.next();
-              }
-              break;
-
-            case "Enter": {
-              const use = option.get("use");
-
-              use instanceof Function && use.bind(option.source)();
-
-              break;
-            }
-          }
-        },
+        keyup: this._handleKeypress.bind(this),
       },
     };
+  }
+
+  /**
+   * React to a key press
+   *
+   * @param e - keyboard event
+   */
+  private _handleKeypress(e: KeyboardEvent) {
+    if (this.locked) {
+      return;
+    }
+
+    const menu = this.currentMenu;
+    const option = this.currentOption;
+
+    switch (e.key) {
+      case "ArrowDown":
+        if (this._hasSubMenu()) {
+          this.select();
+        } else if (this.selected.length > 1) {
+          this.next();
+        }
+        break;
+
+      case "ArrowUp": {
+        const [first_item] = menu.items;
+        const is_first_option =
+          option === first_item || option.source === first_item?.source;
+
+        if (is_first_option) {
+          this.back();
+        } else if (this.selected.length > 1) {
+          this.previous();
+        }
+        break;
+      }
+
+      case "ArrowLeft":
+        if (this.selected.length === 1) {
+          this.previous();
+        }
+        break;
+
+      case "ArrowRight":
+        if (this.selected.length === 1) {
+          this.next();
+        }
+        break;
+
+      case "Enter": {
+        const use = option.get("use");
+
+        use instanceof Function && use.bind(option.source)();
+
+        break;
+      }
+    }
   }
 
   /**
