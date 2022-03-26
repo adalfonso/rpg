@@ -80,8 +80,15 @@ export class StateManager {
   ): T {
     const ref = source.state_ref;
     const data = this.get(ref);
+    const data_is_valid = guard(data);
 
-    return guard(data) ? data : this.mergeByRef(ref, source.state);
+    if (data && !data_is_valid) {
+      console.info(
+        `Unexpected data in state for "${source.state_ref}". Merging in fresh data instead.`
+      );
+    }
+
+    return data_is_valid ? data : this.mergeByRef(ref, source.state);
   }
 
   /** Completely wipe out the state */
@@ -215,6 +222,7 @@ export class StateManager {
       const contents = await fs.readTextFile(destination);
 
       this.data = JSON.parse(contents);
+
       bus.emit("file.load");
     } catch (e) {
       console.error(`Could not load state from "${destination}".`);

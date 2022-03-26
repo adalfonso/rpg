@@ -442,9 +442,10 @@ export class Inventory extends Menu<InventoryMenuItem> implements Drawable {
       weapons.items
         .map(({ source }) => source)
         .filter(
-          (source) => source instanceof Weapon && source.ref === equipped_id
+          (source): source is Weapon =>
+            source instanceof Weapon && source.ref === equipped_id
         )
-        .forEach((weapon) => (weapon as Weapon).equip());
+        .forEach((weapon) => weapon.equip());
     }
 
     return data;

@@ -375,8 +375,10 @@ export abstract class Actor
    *
    * @return actor data as stored in the state
    */
-  protected _resolveState() {
-    const data = state().resolve(this, isActorState);
+  protected _resolveState<T extends ActorState>(
+    guard?: (data: unknown) => data is T
+  ) {
+    const data = state().resolve(this, guard ?? isActorState);
     const { lvl, dmg, defeated } = data;
 
     this.stats.lvl = lvl;

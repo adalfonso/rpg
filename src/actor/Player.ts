@@ -292,14 +292,15 @@ class Player extends Actor implements Stateful<PlayerState> {
    * @return player data as stored in the state
    */
   protected _resolveState() {
-    const data = super._resolveState();
+    const data = super._resolveState<PlayerState>(isPlayerState);
 
     if (!isPlayerState(data)) {
       return state().mergeByRef(this.state_ref, this.state);
     }
 
     this.stats.exp = data.exp;
-    // equipped handled through Inventory state resolution
+
+    // equipment handled through Inventory state resolution
 
     return data;
   }
