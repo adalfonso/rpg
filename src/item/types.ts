@@ -1,4 +1,4 @@
-import { EntityConfig } from "@/Combat/strategy/types";
+import { EntityConfig } from "@/combat/strategy/types";
 import { UiData } from "@/ui/types";
 
 /**

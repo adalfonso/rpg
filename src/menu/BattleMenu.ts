@@ -1,4 +1,4 @@
-import CombatStrategy from "@/Combat/strategy/CombatStrategy";
+import CombatStrategy from "@/combat/strategy/CombatStrategy";
 import Vector from "@/physics/math/Vector";
 import { Drawable } from "@/interfaces";
 import { EventType } from "@/event/EventBus";

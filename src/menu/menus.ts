@@ -1,6 +1,6 @@
 import Actor from "@/actor/Actor";
-import Battle from "@/Combat/Battle";
-import StatModifierFactory from "@/Combat/strategy/StatModifierFactory";
+import Battle from "@/combat/Battle";
+import StatModifierFactory from "@/combat/strategy/StatModifierFactory";
 import { BattleMenuItem } from "./BattleMenu";
 import { InventoryMenuItem } from "./Inventory";
 import { StartMenu, StartMenuItem } from "./StartMenu";
