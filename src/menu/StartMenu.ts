@@ -14,6 +14,9 @@ export interface StartMenuItem {
  * settings, and loading levels.
  */
 export class StartMenu extends Menu<StartMenuItem> implements Drawable {
+  /** Name reference of the menu */
+  protected _name = "startMenu";
+
   /**
    * Draw StartMenu and all underlying entities
    *

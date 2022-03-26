@@ -37,3 +37,11 @@ The general check runs type-checking, linting, and unit tests. It is recommended
 ```bash
 $ npm run check
 ```
+
+### Building the game
+
+```bash
+$ npm run tauri build
+```
+
+This will produce an .exe, .msi, and other resources inside of the tauri-rpg folder.

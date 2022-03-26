@@ -16,6 +16,11 @@ export class Pet extends Actor {
   /** Record of all positions the pet will mimin */
   private _position_queue: FollowUpdate[] = [];
 
+  /** Kill off a pet */
+  public kill() {
+    // TODO: pets cannot be killed yet
+  }
+
   /**
    * Queue a follow update for the pet
    *

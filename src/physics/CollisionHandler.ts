@@ -57,18 +57,17 @@ class CollisionHandler {
     return this._fixtures.filter((fixture) => {
       fixture.update(dt);
 
-      switch (fixture.constructor.name) {
-        case "Enemy":
-          return this.handleEnemy(<Enemy>fixture);
-        case "Clip":
-          return this.handleClip(<Clip>fixture);
-        case "Portal":
-          return this.handlePortal(<Portal>fixture);
-        case "Item":
-          return this.handleItem(<Item>fixture);
-        default:
-          return false;
+      if (fixture instanceof Enemy) {
+        return this.handleEnemy(fixture);
+      } else if (fixture instanceof Clip) {
+        return this.handleClip(fixture);
+      } else if (fixture instanceof Portal) {
+        return this.handlePortal(fixture);
+      } else if (fixture instanceof Item) {
+        return this.handleItem(fixture);
       }
+
+      return false;
     });
   }
 

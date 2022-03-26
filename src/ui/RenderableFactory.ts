@@ -24,7 +24,7 @@ class RenderableFactory {
       return new Renderable(image, scale, 0, 0, ratio, fps);
     } catch (e) {
       throw new MissingDataError(
-        `Unable to find ui.sprite "${path}" in template when loading ${this.constructor.name}.`
+        `Unable to find ui.sprite "${path}" in template when creating Renderable.`
       );
     }
   }

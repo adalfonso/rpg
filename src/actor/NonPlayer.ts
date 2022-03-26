@@ -62,7 +62,7 @@ class NonPlayer extends Actor implements Drawable {
 
       // Assuming if there is a milestone related to the NPC they're not needed
       if (this._milestone.attained) {
-        this.expire();
+        this.kill();
       }
     }
 
@@ -81,8 +81,8 @@ class NonPlayer extends Actor implements Drawable {
     return this._is_expired;
   }
 
-  /** Manually tear down the npc */
-  public expire() {
+  /** Kill off a non-player */
+  public kill() {
     bus.unregister(this);
     this._is_expired = true;
   }
@@ -142,7 +142,7 @@ class NonPlayer extends Actor implements Drawable {
           this._milestone?.attain_on === MilestoneAttainOn.DialogueComplete &&
             this._milestone.attain({ actor: this });
 
-          this.expire();
+          this.kill();
         },
 
         "player.move": (e: CustomEvent) => {

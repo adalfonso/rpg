@@ -5,7 +5,6 @@ import Dialogue from "@/ui/dialogue/Dialogue";
 import Inanimate from "@/inanimate/Inanimate";
 import MissingDataError from "@/error/MissingDataError";
 import Stats from "@/actor/Stats";
-import UnimplementedMethodError from "@/error/UnimplementMethodError";
 import Vector from "@/physics/math/Vector";
 import Weapon from "@/combat/strategy/Weapon";
 import config from "@/config";
@@ -100,13 +99,12 @@ export abstract class Actor
     protected _template: LevelFixtureTemplate
   ) {
     super();
-    const actor_type = this.constructor.name;
 
     this.config = actors()[_template.type];
 
     if (!this.config) {
       throw new MissingDataError(
-        `Config data for ${actor_type} "${_template.type}" is not defined in actors.ts`
+        `Config data for Actor "${_template.type}" is not defined in actors.ts`
       );
     }
 
@@ -348,16 +346,8 @@ export abstract class Actor
     this.stats.endure(damage);
   }
 
-  /**
-   * Kill off the actor
-   *
-   * @throws {UnimplementedMethodError} this should never be called directly
-   */
-  public kill() {
-    throw new UnimplementedMethodError(
-      `Actor "${this.constructor.name}" must implement kill method.`
-    );
-  }
+  /** Kill off the actor */
+  public abstract kill(): void;
 
   /**
    * Equip a weapon

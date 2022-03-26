@@ -16,6 +16,9 @@ export interface BattleMenuItem {
 
 /** In-battle menu of a player's items, attack, and abilities */
 export class BattleMenu extends Menu<BattleMenuItem> implements Drawable {
+  /** Name reference of the menu */
+  protected _name = "battleMenu";
+
   /** If the currently selection option is combat-oriented */
   get wantsCombat() {
     return this.currentOption.source instanceof CombatStrategy;

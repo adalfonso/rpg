@@ -18,7 +18,7 @@ export type MenuItemTemplate<T> = T &
 export const isMenuItemTemplate = <T extends Record<string, unknown>>(
   input: T
 ): input is MenuItemTemplate<T> =>
-  input.constructor.name === "Object" &&
+  typeof input === "object" &&
   typeof input.ref === "string" &&
   typeof input.displayAs === "string";
 

@@ -1,4 +1,3 @@
-import UnimplementedMethodError from "@/error/UnimplementMethodError";
 import Vector from "@/physics/math/Vector";
 import { Drawable, Lockable } from "@/interfaces";
 import { Empty } from "@/mixins";
@@ -6,7 +5,6 @@ import { MenuItem } from "./MenuItem";
 import { Movable } from "@/physics/Entity";
 import { SubMenu } from "./SubMenu";
 import { bus, EventType } from "@/event/EventBus";
-import { lcFirst } from "@/util";
 
 /** A visual UI that can be opened, closed, and traversed */
 export abstract class Menu<T>
@@ -26,6 +24,9 @@ export abstract class Menu<T>
   /** If the menu is currently active */
   public active = false;
 
+  /** Name ref of the menu */
+  protected abstract _name: string;
+
   /**
    * Create a Menu-based instance
    *
@@ -37,6 +38,7 @@ export abstract class Menu<T>
     protected _position = Vector.empty()
   ) {
     super();
+
     this.selected = [this._menu.items[0]];
 
     bus.register(this);
@@ -68,18 +70,12 @@ export abstract class Menu<T>
    * @param _ctx        - render context
    * @param _offset     - render position offset
    * @param _resolution - render resolution
-   *
-   * @throws {UnimplementedMethodError} when child class doesn't implement draw
    */
-  public draw(
+  public abstract draw(
     _ctx: CanvasRenderingContext2D,
     _offset: Vector,
     _resolution: Vector
-  ) {
-    throw new UnimplementedMethodError(
-      `Submenu "${this.constructor.name}" must implement draw method.`
-    );
-  }
+  ): void;
 
   /**
    * Register events with the event bus
@@ -128,14 +124,14 @@ export abstract class Menu<T>
   /** Open the menu */
   public open() {
     this.active = true;
-    bus.emit(`menu.${lcFirst(this.constructor.name)}.open`);
+    bus.emit(`menu.${this._name}.open`);
   }
 
   /** Close the menu */
   public close() {
     this.selected = [this._menu.items[0]];
     this.active = false;
-    bus.emit(`menu.${lcFirst(this.constructor.name)}.close`);
+    bus.emit(`menu.${this._name}.close`);
   }
 
   /**

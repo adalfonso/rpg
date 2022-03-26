@@ -12,6 +12,7 @@ import { Menu } from "./Menu";
 import { MenuItem } from "./MenuItem";
 import { SubMenu } from "./SubMenu";
 import { InventoryState, isInventoryState } from "@schema/menu/InventorySchema";
+
 type InventoryItem = Item | Weapon;
 
 const isInventoryItem = (input: unknown): input is InventoryItem =>
@@ -29,9 +30,10 @@ const SUBTEXT_SIZE = 16;
 
 /** A menu for managing things such as items and equipment */
 export class Inventory extends Menu<InventoryMenuItem> implements Drawable {
+  /** Name reference of the menu */
+  protected _name = "inventory";
+
   /**
-   * Create an Inventory instance
-   *
    * @param menu - menu options
    */
   constructor(protected menu: SubMenu<InventoryMenuItem>) {
@@ -42,7 +44,7 @@ export class Inventory extends Menu<InventoryMenuItem> implements Drawable {
 
   /** State lookup key */
   get state_ref() {
-    return "inventory";
+    return this._name;
   }
 
   /** Current data state */
