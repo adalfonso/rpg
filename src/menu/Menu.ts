@@ -243,14 +243,41 @@ export abstract class Menu<T>
   /**
    * Determine if an option is the currently selected option
    *
-   * @param option - option to check
+   * @param item - option to check
    *
    * @return if the option is currently selected
    */
-  protected _isCurrentOption(option: MenuItem<unknown>) {
+  protected _isCurrentOption(item: MenuItem<T>) {
     return (
-      option === this.currentOption ||
-      option.source === this.currentOption.source
+      item === this.currentOption || item.source === this.currentOption.source
     );
+  }
+
+  /**
+   * Determine if an option is selected
+   *
+   * Similar to _isCurrentOption but this will apply to broader menus as well
+   * and be true it one of the menu's item is selected
+   *
+   * @param item - option to check
+   *
+   * @return if the option is currently selected
+   */
+  protected _isSelected(item: MenuItem<T>) {
+    return (
+      this.selected.includes(item) ||
+      this.selected.map((option) => option.source).includes(item.source)
+    );
+  }
+
+  /**
+   * Determine if an option an item in a sub-menu
+   *
+   * @param item - option to check
+   *
+   * @return if the option is currently selected
+   */
+  protected _isSubMenuItem(item: MenuItem<T>) {
+    return this._isCurrentOption(item) && this.selected.length === 2;
   }
 }

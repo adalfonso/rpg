@@ -7,6 +7,10 @@ import { EntityConfig } from "./types";
 import { Nullable } from "@/types";
 import { bus } from "@/event/EventBus";
 
+export interface Descriptive {
+  displayAs: string;
+  description: string;
+}
 /**
  * Generate a Descriptive mixin
  *
@@ -14,7 +18,7 @@ import { bus } from "@/event/EventBus";
  */
 export const Descriptive = <T extends Constructor>(Base: T) =>
   /** Descriptive classes store UI description information about itself */
-  class Descriptive extends Base {
+  class Descriptive extends Base implements Descriptive {
     /** Stores the descriptors */
     protected _template: Nullable<EntityConfig> = null;
 

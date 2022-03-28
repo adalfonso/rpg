@@ -1,6 +1,8 @@
 import InvalidDataError from "@/error/InvalidDataError";
 import { MenuGenerator, MenuTemplate } from "./menus";
 import { MenuItem } from "./MenuItem";
+import Vector from "@/physics/math/Vector";
+import { MenuRenderConfig } from "./ui/types";
 
 /**
  * Type T represents a generic type for MenuItem. i.e. an extension of the
@@ -46,5 +48,70 @@ export class SubMenu<T> {
     }
 
     return this;
+  }
+
+  /**
+   * Draw the sub menu
+   *
+   * @param ctx canvas context
+   * @param offset render position offset
+   * @param resolution render resolution
+   * @param options settings and functions used to render
+   */
+  public draw(
+    ctx: CanvasRenderingContext2D,
+    offset: Vector,
+    resolution: Vector,
+    options: MenuRenderConfig<T>
+  ) {
+    const { font } = options;
+    const is_main_menu = options.isMainMenu(this);
+    const margin = new Vector(60, is_main_menu ? 90 : 0);
+
+    ctx.save();
+    ctx.translate(offset.x, offset.y);
+
+    // Draw background under main menu only
+    if (is_main_menu) {
+      ctx.fillStyle = options.background_color;
+      ctx.fillRect(offset.x, offset.y, resolution.x, resolution.y);
+      ctx.fillStyle = font.color;
+      ctx.textAlign = "left";
+    }
+
+    ctx.translate(margin.x, margin.y);
+
+    // Calculate max width of menu
+    ctx.save();
+    ctx.font = `${font.size}px ${font.family}`;
+    const widest_text = this._getWidestMenuDescription(this);
+    const sub_menu_width = ctx.measureText(widest_text).width;
+    ctx.restore();
+
+    this.items.forEach((item, index) => {
+      item.draw(ctx, offset, resolution, {
+        ...options,
+        sub_menu_width,
+        // Offset all options after the first option
+        row_offset_y: index ? font.size * 2 : 0,
+      });
+    });
+
+    ctx.restore();
+  }
+
+  /**
+   * Get the widest option description in the menu
+   *
+   * @param menu - target menu
+   *
+   * @return widest description in the menu
+   */
+  private _getWidestMenuDescription(menu: SubMenu<T>) {
+    return menu.items.reduce((widest, item) => {
+      const description = item.menu_description;
+
+      return widest.length > description.length ? widest : description;
+    }, "");
   }
 }
