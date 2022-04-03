@@ -18,19 +18,16 @@ export function render<T>(
   config: MenuRenderConfig<T>,
   menu: SubMenu<T>
 ) {
+  const { font } = config;
   ctx.save();
-  ctx.fillStyle = "rgba(0, 0, 0, .85)";
+  ctx.fillStyle = config.menu.background_color;
   ctx.fillRect(offset.x, offset.y, resolution.x, resolution.y);
-  ctx.fillStyle = "#FFF";
-  ctx.textAlign = "center";
+  ctx.fillStyle = font.color;
+  ctx.textAlign = font.align;
 
   menu.items.forEach((item, i) => {
-    item.draw(
-      ctx,
-      offset.plus(new Vector(0, 200 + 150 * i)),
-      resolution,
-      config
-    );
+    const font_offset = new Vector(0, font.size * 4 * (i + 1));
+    item.draw(ctx, offset.plus(font_offset), resolution, config);
   });
 
   ctx.restore();

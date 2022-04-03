@@ -2,6 +2,7 @@ import TextBuffer from "@/ui/dialogue/TextBuffer";
 import Vector from "@/physics/math/Vector";
 import { MenuItem } from "../MenuItem";
 import { MenuRenderConfig } from "./types";
+import { isInventoryItem } from "../Inventory";
 
 /**
  * Draw the inventory item
@@ -19,14 +20,14 @@ export function render<T>(
   config: MenuRenderConfig<T>,
   item: MenuItem<T>
 ) {
-  const { font } = config;
-  const is_sub_menu_item = config.isSubMenuItem(item);
+  const { font, logic } = config;
+  const is_sub_menu_item = logic.isSubMenuItem(item);
 
-  ctx.translate(0, config.row_offset_y ?? 0);
+  ctx.translate(0, config.menu.row_offset_y);
 
   ctx.save();
 
-  if (is_sub_menu_item && config.shouldDrawDetails(item.source)) {
+  if (is_sub_menu_item && isInventoryItem(item.source)) {
     const offset = new Vector(-2, -font.size);
     const detail_size = _drawDetails(ctx, offset, resolution, config, item);
 
@@ -48,8 +49,8 @@ export function render<T>(
   }
 
   // Render sub-menu
-  if (config.isSelected(item) && item.menu) {
-    const offset = new Vector(config.sub_menu_width ?? 0, 0);
+  if (logic.isSelected(item) && item.menu) {
+    const offset = new Vector(config.menu.sub_menu_width, 0);
 
     item.menu.draw(ctx, offset, resolution, config);
   }
@@ -72,20 +73,20 @@ function _drawDetails<T>(
   item: MenuItem<T>
 ) {
   const { source } = item;
+  const { font, logic } = config;
 
-  if (!config.shouldDrawDetails(source)) {
+  if (!isInventoryItem(source)) {
     return;
   }
 
   // y-value is not known until the description renders
   const description_size = new Vector(400, Infinity);
   // const is_equipped = "isEquipped" in source ? source.isEquipped : false;
-  const badge_title = config.getBadgeTitle(item);
-  const padding = new Vector(16, 16);
-  const sprite_size = new Vector(64, 64);
-  const sprite_padding = new Vector(16, 8);
-  const description_padding = new Vector(0, 8);
-  const { font } = config;
+  const badge_title = logic.getBadgeTitle(item);
+  const padding = new Vector(font.size / 2, font.size / 2);
+  const sprite_size = new Vector(font.size * 3, font.size * 3);
+  const sprite_padding = new Vector(font.size / 2, font.size / 4);
+  const description_padding = new Vector(0, font.size / 2);
   const badge_height = badge_title ? font.subtext_size + sprite_padding.y : 0;
 
   description_size.y = _drawSubtext(
@@ -179,10 +180,10 @@ function _drawOptionText<T>(
   config: MenuRenderConfig<T>,
   item: MenuItem<T>
 ) {
-  const is_selected = config.isSelected(item);
-  const is_main_selection = config.isCurrentOption(item);
+  const { font, logic } = config;
+  const is_selected = logic.isSelected(item);
+  const is_main_selection = logic.isCurrentOption(item);
   const text = item.menu_description;
-  const { font } = config;
 
   ctx.font = `${font.size}px ${font.family}`;
 

@@ -1,9 +1,9 @@
 import Vector from "@/physics/math/Vector";
 import { Drawable } from "@/interfaces";
 import { Menu } from "./Menu";
-import { MenuItem } from "./MenuItem";
 import { SubMenu } from "./SubMenu";
 import { bus, EventType } from "@/event/EventBus";
+import { createConfig } from "./ui/MenuRenderConfigFactory";
 
 export interface StartMenuItem {
   action: (menu: StartMenu) => void;
@@ -42,26 +42,21 @@ export class StartMenu extends Menu<StartMenuItem> implements Drawable {
       return;
     }
 
-    const config = {
-      font: {
-        color: "#EEE",
-        shadow_color: "#FFF",
-        highlight_color: "#0AA",
-        size: 42,
-        subtext_size: 16,
-        family: "Minecraftia",
+    const config = createConfig(
+      {
+        font: {
+          color: "#FFF",
+          shadow_color: "#FFF",
+          shadow_blur: 4,
+          size: 42,
+          align: "center",
+        },
+        menu: { background_color: "rgba(0, 0, 0, .85)" },
       },
-      background_color: "#555",
-      default_menu: this.menu,
-      isMainMenu: (_menu: SubMenu<StartMenuItem>) => false,
-      isCurrentOption: this._isCurrentOption.bind(this),
-      isSelected: (item: MenuItem<StartMenuItem>) => this._isSelected(item),
-      isSubMenuItem: (_item: MenuItem<StartMenuItem>) => false,
-      getBadgeTitle: (_menu: MenuItem<StartMenuItem>) => "",
-      shouldDrawDetails: () => false,
-    };
+      this
+    );
 
-    this._menu.draw(ctx, offset, resolution, config as any);
+    this._menu.draw(ctx, offset, resolution, config);
   }
 
   /**

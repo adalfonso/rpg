@@ -18,17 +18,19 @@ export function render<T>(
   config: MenuRenderConfig<T>,
   item: MenuItem<T>
 ) {
-  const selected = config.isCurrentOption(item);
-  const { font } = config;
+  const { font, logic } = config;
+  const selected = logic.isCurrentOption(item);
+  const font_style = `${font.size}px ${font.family}`;
 
   if (selected) {
     ctx.shadowColor = font.shadow_color;
-    ctx.shadowOffsetX = 2;
-    ctx.shadowOffsetY = 2;
-    ctx.shadowBlur = 4;
-    ctx.font = `bold ${font.size}px ${font.family}`;
+    ctx.shadowOffsetX = font.shadow_offset.x;
+    ctx.shadowOffsetY = font.shadow_offset.y;
+    ctx.shadowBlur = font.shadow_blur;
+    ctx.font = `bold ${font_style}`;
   } else {
-    ctx.font = `${font.size}px ${font.family}`;
+    ctx.shadowColor = "transparent";
+    ctx.font = font_style;
   }
 
   ctx.fillText(

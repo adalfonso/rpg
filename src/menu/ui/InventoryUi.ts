@@ -1,6 +1,7 @@
 import Vector from "@/physics/math/Vector";
-import { SubMenu } from "../SubMenu";
 import { MenuRenderConfig } from "./types";
+import { SubMenu } from "../SubMenu";
+import { createConfig } from "./MenuRenderConfigFactory";
 
 /**
  * Draw the inventory
@@ -18,8 +19,8 @@ export function render<T>(
   config: MenuRenderConfig<T>,
   menu: SubMenu<T>
 ) {
-  const { font } = config;
-  const is_main_menu = config.isMainMenu(menu);
+  const { font, logic } = config;
+  const is_main_menu = logic.isMainMenu(menu);
   const margin = new Vector(60, is_main_menu ? 90 : 0);
 
   ctx.save();
@@ -27,10 +28,10 @@ export function render<T>(
 
   // Draw background under main menu only
   if (is_main_menu) {
-    ctx.fillStyle = config.background_color;
+    ctx.fillStyle = config.menu.background_color;
     ctx.fillRect(offset.x, offset.y, resolution.x, resolution.y);
     ctx.fillStyle = font.color;
-    ctx.textAlign = "left";
+    ctx.textAlign = font.align;
   }
 
   ctx.translate(margin.x, margin.y);
@@ -43,12 +44,15 @@ export function render<T>(
   ctx.restore();
 
   menu.items.forEach((item, index) => {
-    item.draw(ctx, offset, resolution, {
-      ...config,
+    const item_menu_config = {
       sub_menu_width,
       // Offset all options after the first option
       row_offset_y: index ? font.size * 2 : 0,
-    });
+    };
+
+    const item_config = createConfig({ menu: item_menu_config }, config);
+
+    item.draw(ctx, offset, resolution, item_config);
   });
 
   ctx.restore();

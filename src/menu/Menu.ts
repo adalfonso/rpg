@@ -64,6 +64,11 @@ export abstract class Menu<T>
     return menu;
   }
 
+  /** The menu's submenu */
+  get submenu() {
+    return this._menu;
+  }
+
   /**
    * Draw Menu and all underlying entities
    *

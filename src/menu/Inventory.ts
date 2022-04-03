@@ -8,15 +8,15 @@ import { Drawable } from "@/interfaces";
 import { EventType } from "@/event/EventBus";
 import { InventoryState, isInventoryState } from "@schema/menu/InventorySchema";
 import { Menu } from "./Menu";
-import { MenuItem } from "./MenuItem";
 import { MenuType } from "./types";
 import { SubMenu } from "./SubMenu";
+import { createConfig } from "./ui/MenuRenderConfigFactory";
 import { createMenuItem } from "./MenuFactory";
 import { state } from "@/state/StateManager";
 
 type InventoryItem = Item | Weapon;
 
-const isInventoryItem = (input: unknown): input is InventoryItem =>
+export const isInventoryItem = (input: unknown): input is InventoryItem =>
   input instanceof Item || input instanceof Weapon;
 
 export interface InventoryMenuItem extends Base {
@@ -71,34 +71,21 @@ export class Inventory extends Menu<InventoryMenuItem> implements Drawable {
       return;
     }
 
-    const config = {
-      font: {
-        color: "#EEE",
-        shadow_color: "#000",
-        highlight_color: "#0AA",
-        size: 24,
-        subtext_size: 16,
-        family: "Minecraftia",
+    const config = createConfig(
+      {
+        font: { color: "#EEE", highlight_color: "#0AA" },
+        menu: { background_color: "#555" },
+        logic: {
+          isSelected: this._isSelected.bind(this),
+          isSubMenuItem: this._isSubMenuItem.bind(this),
+          getBadgeTitle: (menu) =>
+            menu.source instanceof Weapon && menu.source.isEquipped
+              ? "Equipped"
+              : "",
+        },
       },
-      background_color: "#555",
-      default_menu: this._menu,
-      isMainMenu: (menu: SubMenu<InventoryMenuItem>) => menu === this._menu,
-
-      isCurrentOption: (item: MenuItem<InventoryMenuItem>) =>
-        this._isCurrentOption(item),
-
-      isSelected: (item: MenuItem<InventoryMenuItem>) => this._isSelected(item),
-
-      isSubMenuItem: (item: MenuItem<InventoryMenuItem>) =>
-        this._isCurrentOption(item) && this.selected.length === 2,
-
-      getBadgeTitle: (menu: MenuItem<InventoryMenuItem>) =>
-        menu.source instanceof Weapon && menu.source.isEquipped
-          ? "Equipped"
-          : "",
-
-      shouldDrawDetails: isInventoryItem,
-    };
+      this
+    );
 
     this._menu.draw(ctx, offset, resolution, config);
   }
