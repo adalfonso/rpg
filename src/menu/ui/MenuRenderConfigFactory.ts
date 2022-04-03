@@ -11,6 +11,8 @@ import {
 } from "./types";
 
 const default_font: MenuRenderFontConfig = {
+  background_color: "transparent",
+  border_color: "transparent",
   color: "#333",
   shadow_color: "#000",
   shadow_offset: new Vector(2, 2),

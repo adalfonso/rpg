@@ -5,6 +5,8 @@ import { SubMenu } from "../SubMenu";
 /** Menu font render config */
 export interface MenuRenderFontConfig {
   color: string;
+  background_color: string;
+  border_color: string;
   shadow_color: string;
   shadow_offset: Vector;
   shadow_blur: number;

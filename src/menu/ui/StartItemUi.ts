@@ -8,7 +8,7 @@ import { MenuRenderConfig } from "./types";
  * @param ctx canvas context
  * @param offset render position offset
  * @param resolution render resolution
- * @param options settings and functions used to render
+ * @param config settings and functions used to render
  * @param item the menu item to draw
  */
 export function render<T>(

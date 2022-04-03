@@ -3,7 +3,7 @@ import Vector from "@/physics/math/Vector";
 import { Drawable } from "@/interfaces";
 import { EventType } from "@/event/EventBus";
 import { Menu } from "./Menu";
-import { MenuItem } from "./MenuItem";
+import { createConfig } from "./ui/MenuRenderConfigFactory";
 
 export interface BattleMenuItem {
   /**
@@ -34,68 +34,24 @@ export class BattleMenu extends Menu<BattleMenuItem> implements Drawable {
   public draw(
     ctx: CanvasRenderingContext2D,
     offset: Vector,
-    _resolution: Vector
+    resolution: Vector
   ) {
-    ctx.save();
-    ctx.font = "12px Minecraftia";
+    const config = createConfig(
+      {
+        font: {
+          size: 12,
+          color: "#333",
+          background_color: "#FFF",
+          border_color: "#DDD",
+          shadow_offset: new Vector(1, 1),
+          highlight_color: "#0DD",
+        },
+        logic: { isSelected: this._isSelected.bind(this) },
+      },
+      this
+    );
 
-    const tile_size = new Vector(72, 24);
-    const tile_padding = new Vector(8, 0);
-
-    const base_position = new Vector(
-      offset.x - (tile_size.x + tile_padding.x) * this._menu.items.length,
-      offset.y + tile_size.y
-    ).plus(this._position);
-
-    this._menu.items.forEach((option, index) => {
-      const is_selected = option === this.selected[0];
-      const position = new Vector(tile_size.x + tile_padding.x, 0)
-        .times(index + 1)
-        .plus(base_position);
-
-      ctx.fillStyle = "#FFF";
-
-      if (option === this.selected[0]) {
-        ctx.fillStyle = "#DDD";
-        ctx.strokeRect(position.x, position.y, tile_size.x, tile_size.y);
-      }
-
-      ctx.fillRect(position.x, position.y, tile_size.x, tile_size.y);
-      ctx.fillStyle = "#333";
-
-      ctx.save();
-
-      this.applyHighlight(ctx, option);
-
-      const textOffset = new Vector(4, 4 + 20);
-
-      ctx.fillText(
-        option.displayAs,
-        position.x + textOffset.x,
-        position.y + textOffset.y
-      );
-
-      ctx.restore();
-
-      if (is_selected && option.menu) {
-        option.menu.items.forEach((subOption, index) => {
-          ctx.save();
-
-          this.applyHighlight(ctx, subOption);
-
-          const subOffset = new Vector(0, 18 * (index + 1) + 32);
-
-          ctx.fillText(
-            subOption.displayAs,
-            position.x + subOffset.x,
-            position.y + subOffset.y
-          );
-          ctx.restore();
-        });
-      }
-    });
-
-    ctx.restore();
+    this._menu.draw(ctx, offset.plus(this.position), resolution, config);
   }
 
   /** Reset this menu back to its original option */
@@ -171,24 +127,5 @@ export class BattleMenu extends Menu<BattleMenuItem> implements Drawable {
         break;
       }
     }
-  }
-
-  /**
-   * Apply text highlighting to the menu option when necessary
-   *
-   * @param ctx    - render context
-   * @param option - menu option
-   */
-  private applyHighlight(
-    ctx: CanvasRenderingContext2D,
-    option: MenuItem<BattleMenuItem>
-  ) {
-    if (!this._isCurrentOption(option)) {
-      return;
-    }
-    ctx.shadowOffsetX = 1;
-    ctx.shadowOffsetY = 1;
-    ctx.shadowBlur = 0;
-    ctx.shadowColor = "#0DD";
   }
 }

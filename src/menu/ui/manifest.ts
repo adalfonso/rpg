@@ -1,5 +1,7 @@
 import { MenuItemRenderer, SubMenuRenderer } from "./types";
 import { MenuType } from "../types";
+import { render as battle_item } from "./BattleItemUi";
+import { render as battle_menu } from "./BattleUi";
 import { render as inventory_item } from "./InventoryItemUi";
 import { render as inventory_menu } from "./InventoryUi";
 import { render as start_item } from "./StartItemUi";
@@ -18,6 +20,6 @@ interface MenuRenderComponents<T> {
  */
 export const manifest: Record<MenuType, MenuRenderComponents<any>> = {
   [MenuType.Inventory]: { menu: inventory_menu, item: inventory_item },
-  [MenuType.Battle]: {} as any,
+  [MenuType.Battle]: { menu: battle_menu, item: battle_item },
   [MenuType.Start]: { menu: start_menu, item: start_item },
 };
