@@ -67,14 +67,14 @@ export abstract class Menu<T>
   /**
    * Draw Menu and all underlying entities
    *
-   * @param _ctx        - render context
-   * @param _offset     - render position offset
-   * @param _resolution - render resolution
+   * @param ctx        - render context
+   * @param offset     - render position offset
+   * @param resolution - render resolution
    */
   public abstract draw(
-    _ctx: CanvasRenderingContext2D,
-    _offset: Vector,
-    _resolution: Vector
+    ctx: CanvasRenderingContext2D,
+    offset: Vector,
+    resolution: Vector
   ): void;
 
   /**

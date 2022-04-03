@@ -29,10 +29,10 @@ export class Inventory extends Menu<InventoryMenuItem> implements Drawable {
   protected _name = "inventory";
 
   /**
-   * @param menu - menu options
+   * @param _menu - menu options
    */
-  constructor(protected menu: SubMenu<InventoryMenuItem>) {
-    super(menu);
+  constructor(protected _menu: SubMenu<InventoryMenuItem>) {
+    super(_menu);
 
     this._resolveState();
   }
@@ -71,7 +71,7 @@ export class Inventory extends Menu<InventoryMenuItem> implements Drawable {
       return;
     }
 
-    const render_options = {
+    const config = {
       font: {
         color: "#EEE",
         shadow_color: "#000",
@@ -81,7 +81,7 @@ export class Inventory extends Menu<InventoryMenuItem> implements Drawable {
         family: "Minecraftia",
       },
       background_color: "#555",
-      default_menu: this.menu,
+      default_menu: this._menu,
       isMainMenu: (menu: SubMenu<InventoryMenuItem>) => menu === this._menu,
 
       isCurrentOption: (item: MenuItem<InventoryMenuItem>) =>
@@ -100,7 +100,7 @@ export class Inventory extends Menu<InventoryMenuItem> implements Drawable {
       shouldDrawDetails: isInventoryItem,
     };
 
-    this.menu.draw(ctx, offset, resolution, render_options);
+    this._menu.draw(ctx, offset, resolution, config);
   }
 
   /**

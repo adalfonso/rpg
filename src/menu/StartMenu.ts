@@ -1,6 +1,8 @@
 import Vector from "@/physics/math/Vector";
 import { Drawable } from "@/interfaces";
 import { Menu } from "./Menu";
+import { MenuItem } from "./MenuItem";
+import { SubMenu } from "./SubMenu";
 import { bus, EventType } from "@/event/EventBus";
 
 export interface StartMenuItem {
@@ -18,6 +20,13 @@ export class StartMenu extends Menu<StartMenuItem> implements Drawable {
   protected _name = "startMenu";
 
   /**
+   * @param _menu - menu options
+   */
+  constructor(protected _menu: SubMenu<StartMenuItem>) {
+    super(_menu);
+  }
+
+  /**
    * Draw StartMenu and all underlying entities
    *
    * @param ctx        - render context
@@ -33,33 +42,26 @@ export class StartMenu extends Menu<StartMenuItem> implements Drawable {
       return;
     }
 
-    ctx.save();
-    ctx.fillStyle = "rgba(0, 0, 0, .85)";
-    ctx.fillRect(offset.x, offset.y, resolution.x, resolution.y);
-    ctx.fillStyle = "#FFF";
-    ctx.textAlign = "center";
+    const config = {
+      font: {
+        color: "#EEE",
+        shadow_color: "#FFF",
+        highlight_color: "#0AA",
+        size: 42,
+        subtext_size: 16,
+        family: "Minecraftia",
+      },
+      background_color: "#555",
+      default_menu: this.menu,
+      isMainMenu: (_menu: SubMenu<StartMenuItem>) => false,
+      isCurrentOption: this._isCurrentOption.bind(this),
+      isSelected: (item: MenuItem<StartMenuItem>) => this._isSelected(item),
+      isSubMenuItem: (_item: MenuItem<StartMenuItem>) => false,
+      getBadgeTitle: (_menu: MenuItem<StartMenuItem>) => "",
+      shouldDrawDetails: () => false,
+    };
 
-    this._menu.items.forEach((item, index) => {
-      const selected = this._isCurrentOption(item);
-
-      if (selected) {
-        ctx.shadowColor = "#FFF";
-        ctx.shadowOffsetX = 2;
-        ctx.shadowOffsetY = 2;
-        ctx.shadowBlur = 4;
-        ctx.font = "bold 42px Arial";
-      } else {
-        ctx.font = "42px Arial";
-      }
-
-      ctx.fillText(
-        selected ? "▶ " + item.displayAs : item.displayAs,
-        resolution.x / 2,
-        (resolution.y / (this._menu.items.length - index)) * 0.5
-      );
-    });
-
-    ctx.restore();
+    this._menu.draw(ctx, offset, resolution, config as any);
   }
 
   /**

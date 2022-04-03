@@ -66,14 +66,14 @@ export class SubMenu<T> {
    * @param ctx canvas context
    * @param offset render position offset
    * @param resolution render resolution
-   * @param options settings and functions used to render
+   * @param config settings and functions used to render
    */
   public draw(
     ctx: CanvasRenderingContext2D,
     offset: Vector,
     resolution: Vector,
-    options: MenuRenderConfig<T>
+    config: MenuRenderConfig<T>
   ) {
-    this._renderer(ctx, offset, resolution, options, this);
+    this._renderer(ctx, offset, resolution, config, this);
   }
 }

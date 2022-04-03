@@ -8,18 +8,18 @@ import { MenuRenderConfig } from "./types";
  * @param ctx canvas context
  * @param offset render position offset
  * @param resolution render resolution
- * @param options settings and functions used to render
+ * @param config settings and functions used to render
  * @param menu inventory sub menu
  */
 export function render<T>(
   ctx: CanvasRenderingContext2D,
   offset: Vector,
   resolution: Vector,
-  options: MenuRenderConfig<T>,
+  config: MenuRenderConfig<T>,
   menu: SubMenu<T>
 ) {
-  const { font } = options;
-  const is_main_menu = options.isMainMenu(menu);
+  const { font } = config;
+  const is_main_menu = config.isMainMenu(menu);
   const margin = new Vector(60, is_main_menu ? 90 : 0);
 
   ctx.save();
@@ -27,7 +27,7 @@ export function render<T>(
 
   // Draw background under main menu only
   if (is_main_menu) {
-    ctx.fillStyle = options.background_color;
+    ctx.fillStyle = config.background_color;
     ctx.fillRect(offset.x, offset.y, resolution.x, resolution.y);
     ctx.fillStyle = font.color;
     ctx.textAlign = "left";
@@ -44,7 +44,7 @@ export function render<T>(
 
   menu.items.forEach((item, index) => {
     item.draw(ctx, offset, resolution, {
-      ...options,
+      ...config,
       sub_menu_width,
       // Offset all options after the first option
       row_offset_y: index ? font.size * 2 : 0,

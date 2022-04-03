@@ -9,26 +9,26 @@ import { MenuRenderConfig } from "./types";
  * @param ctx canvas context
  * @param offset render position offset
  * @param resolution render resolution
- * @param options settings and functions used to render
+ * @param config settings and functions used to render
  * @param item the menu item to draw
  */
 export function render<T>(
   ctx: CanvasRenderingContext2D,
   _offset: Vector,
   resolution: Vector,
-  options: MenuRenderConfig<T>,
+  config: MenuRenderConfig<T>,
   item: MenuItem<T>
 ) {
-  const { font } = options;
-  const is_sub_menu_item = options.isSubMenuItem(item);
+  const { font } = config;
+  const is_sub_menu_item = config.isSubMenuItem(item);
 
-  ctx.translate(0, options.row_offset_y ?? 0);
+  ctx.translate(0, config.row_offset_y ?? 0);
 
   ctx.save();
 
-  if (is_sub_menu_item && options.shouldDrawDetails(item.source)) {
+  if (is_sub_menu_item && config.shouldDrawDetails(item.source)) {
     const offset = new Vector(-2, -font.size);
-    const detail_size = _drawDetails(ctx, offset, resolution, options, item);
+    const detail_size = _drawDetails(ctx, offset, resolution, config, item);
 
     if (!detail_size) {
       // TODO: This should never happen; remove this check
@@ -39,19 +39,19 @@ export function render<T>(
     ctx.translate(10, 0);
 
     // Render the menu option text
-    _drawOptionText(ctx, Vector.empty(), options, item);
+    _drawOptionText(ctx, Vector.empty(), config, item);
 
     // Account for height of equipable menu on next menu item
     ctx.translate(0, detail_size.y - font.size);
   } else {
-    _drawOptionText(ctx, Vector.empty(), options, item);
+    _drawOptionText(ctx, Vector.empty(), config, item);
   }
 
   // Render sub-menu
-  if (options.isSelected(item) && item.menu) {
-    const offset = new Vector(options.sub_menu_width ?? 0, 0);
+  if (config.isSelected(item) && item.menu) {
+    const offset = new Vector(config.sub_menu_width ?? 0, 0);
 
-    item.menu.draw(ctx, offset, resolution, options);
+    item.menu.draw(ctx, offset, resolution, config);
   }
 }
 
@@ -61,38 +61,38 @@ export function render<T>(
  * @param ctx canvas context
  * @param offset render position offset
  * @param resolution render resolution
- * @param options settings and functions used to render
+ * @param config settings and functions used to render
  * @param item the menu item to draw
  */
 function _drawDetails<T>(
   ctx: CanvasRenderingContext2D,
   offset: Vector,
   resolution: Vector,
-  options: MenuRenderConfig<T>,
+  config: MenuRenderConfig<T>,
   item: MenuItem<T>
 ) {
   const { source } = item;
 
-  if (!options.shouldDrawDetails(source)) {
+  if (!config.shouldDrawDetails(source)) {
     return;
   }
 
   // y-value is not known until the description renders
   const description_size = new Vector(400, Infinity);
   // const is_equipped = "isEquipped" in source ? source.isEquipped : false;
-  const badge_title = options.getBadgeTitle(item);
+  const badge_title = config.getBadgeTitle(item);
   const padding = new Vector(16, 16);
   const sprite_size = new Vector(64, 64);
   const sprite_padding = new Vector(16, 8);
   const description_padding = new Vector(0, 8);
-  const { font } = options;
+  const { font } = config;
   const badge_height = badge_title ? font.subtext_size + sprite_padding.y : 0;
 
   description_size.y = _drawSubtext(
     ctx,
     offset.plus(padding).plus(description_padding),
     description_size,
-    options,
+    config,
     source.description ?? "Description not found."
   );
 
@@ -136,7 +136,7 @@ function _drawDetails<T>(
       ctx,
       equipped_indicator_offset,
       resolution,
-      options,
+      config,
       badge_title
     );
   }
@@ -170,19 +170,19 @@ function _drawBox(
  *
  * @param ctx canvas context
  * @param offset render position offset
- * @param options settings and functions used to render
+ * @param config settings and functions used to render
  * @param item the menu item to draw
  */
 function _drawOptionText<T>(
   ctx: CanvasRenderingContext2D,
   offset: Vector,
-  options: MenuRenderConfig<T>,
+  config: MenuRenderConfig<T>,
   item: MenuItem<T>
 ) {
-  const is_selected = options.isSelected(item);
-  const is_main_selection = options.isCurrentOption(item);
+  const is_selected = config.isSelected(item);
+  const is_main_selection = config.isCurrentOption(item);
   const text = item.menu_description;
-  const { font } = options;
+  const { font } = config;
 
   ctx.font = `${font.size}px ${font.family}`;
 
@@ -214,12 +214,12 @@ function _drawSubtext<T>(
   ctx: CanvasRenderingContext2D,
   offset: Vector,
   resolution: Vector,
-  render_options: MenuRenderConfig<T>,
+  config: MenuRenderConfig<T>,
   text: string
 ) {
   ctx.save();
 
-  const { font } = render_options;
+  const { font } = config;
 
   ctx.font = `${font.subtext_size}px Minecraftia`;
   ctx.shadowColor = font.shadow_color;
