@@ -1,3 +1,4 @@
+import Vector from "@/physics/math/Vector";
 import { Descriptive } from "@/combat/strategy/CombatStrategy";
 import { Drawable } from "@/interfaces";
 import { MenuItem } from "../MenuItem";
@@ -30,3 +31,19 @@ interface MenuRenderLogic<T> {
 }
 
 export type MenuRenderConfig<T> = MenuRenderSettings & MenuRenderLogic<T>;
+
+export type SubMenuRenderer<T> = (
+  ctx: CanvasRenderingContext2D,
+  offset: Vector,
+  resolution: Vector,
+  options: MenuRenderConfig<T>,
+  menu: SubMenu<T>
+) => void;
+
+export type MenuItemRenderer<T> = (
+  ctx: CanvasRenderingContext2D,
+  offset: Vector,
+  resolution: Vector,
+  options: MenuRenderConfig<T>,
+  item: MenuItem<T>
+) => void;

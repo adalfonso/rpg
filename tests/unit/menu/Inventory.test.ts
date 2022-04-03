@@ -1,9 +1,10 @@
 import Item from "@/item/Item";
-import { state } from "@/state/StateManager";
-import menus from "@/menu/menus";
-import { Inventory } from "@/menu/Inventory";
-import { SubMenu } from "@/menu/SubMenu";
+import menus, { MenuTemplate } from "@/menu/menus";
+import { Inventory, InventoryMenuItem } from "@/menu/Inventory";
+import { MenuType } from "@/menu/types";
 import { cloneByStringify } from "@/util";
+import { createSubMenu } from "@/menu/MenuFactory";
+import { state } from "@/state/StateManager";
 
 afterEach(() => {
   state().empty();
@@ -57,7 +58,9 @@ describe("Inventory", () => {
 
 const getSut = () => {
   let menu = cloneByStringify(menus.inventory());
-  return new Inventory(new SubMenu(menu as any));
+  return new Inventory(
+    createSubMenu(MenuType.Inventory)(menu as MenuTemplate<InventoryMenuItem>)
+  );
 };
 
 const getItem = (type: string) => {

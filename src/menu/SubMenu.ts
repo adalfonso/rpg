@@ -1,8 +1,10 @@
 import InvalidDataError from "@/error/InvalidDataError";
+import Vector from "@/physics/math/Vector";
 import { MenuGenerator, MenuTemplate } from "./menus";
 import { MenuItem } from "./MenuItem";
-import Vector from "@/physics/math/Vector";
-import { MenuRenderConfig } from "./ui/types";
+import { MenuRenderConfig, SubMenuRenderer } from "./ui/types";
+import { MenuType } from "./types";
+import { createMenuItem } from "./MenuFactory";
 
 /**
  * Type T represents a generic type for MenuItem. i.e. an extension of the
@@ -19,16 +21,24 @@ export class SubMenu<T> {
   private _menu: MenuItem<T>[] | MenuGenerator<T>;
 
   /**
-   * @param menu - menu template
+   * @param template - menu template
+   * @param _menu_type - type of the overall (parent) menu
+   * @param _renderer - used to draw the menu
    */
-  constructor(menu: MenuTemplate<T>) {
+  constructor(
+    template: MenuTemplate<T>,
+    private _menu_type: MenuType,
+    private _renderer: SubMenuRenderer<T>
+  ) {
     this._menu =
-      menu instanceof Function ? menu : menu.map((item) => new MenuItem(item));
+      template instanceof Function
+        ? template
+        : template.map(createMenuItem(this._menu_type));
   }
 
-  get items() {
+  get items(): MenuItem<T>[] {
     if (this._menu instanceof Function) {
-      return this._menu().map((item) => new MenuItem(item));
+      return this._menu().map(createMenuItem(this._menu_type));
     }
 
     return this._menu;
@@ -64,54 +74,6 @@ export class SubMenu<T> {
     resolution: Vector,
     options: MenuRenderConfig<T>
   ) {
-    const { font } = options;
-    const is_main_menu = options.isMainMenu(this);
-    const margin = new Vector(60, is_main_menu ? 90 : 0);
-
-    ctx.save();
-    ctx.translate(offset.x, offset.y);
-
-    // Draw background under main menu only
-    if (is_main_menu) {
-      ctx.fillStyle = options.background_color;
-      ctx.fillRect(offset.x, offset.y, resolution.x, resolution.y);
-      ctx.fillStyle = font.color;
-      ctx.textAlign = "left";
-    }
-
-    ctx.translate(margin.x, margin.y);
-
-    // Calculate max width of menu
-    ctx.save();
-    ctx.font = `${font.size}px ${font.family}`;
-    const widest_text = this._getWidestMenuDescription(this);
-    const sub_menu_width = ctx.measureText(widest_text).width;
-    ctx.restore();
-
-    this.items.forEach((item, index) => {
-      item.draw(ctx, offset, resolution, {
-        ...options,
-        sub_menu_width,
-        // Offset all options after the first option
-        row_offset_y: index ? font.size * 2 : 0,
-      });
-    });
-
-    ctx.restore();
-  }
-
-  /**
-   * Get the widest option description in the menu
-   *
-   * @param menu - target menu
-   *
-   * @return widest description in the menu
-   */
-  private _getWidestMenuDescription(menu: SubMenu<T>) {
-    return menu.items.reduce((widest, item) => {
-      const description = item.menu_description;
-
-      return widest.length > description.length ? widest : description;
-    }, "");
+    this._renderer(ctx, offset, resolution, options, this);
   }
 }

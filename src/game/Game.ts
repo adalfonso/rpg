@@ -4,19 +4,19 @@ import CollisionHandler from "../physics/CollisionHandler";
 import Level from "../level/Level";
 import MissingDataError from "../error/MissingDataError";
 import Vector from "@/physics/math/Vector";
-import menus from "../menu/menus";
+import menus from "@/menu/menus";
 import { DialogueMediator } from "../ui/dialogue/DialogueMediator";
 import { Drawable, Updatable } from "../interfaces";
 import { HeroTeam } from "@/combat/HeroTeam";
 import { Inventory } from "../menu/Inventory";
 import { LevelFixtureFactory } from "../level/LevelFixtureFactory";
 import { LevelTemplate } from "../level/LevelTemplate";
+import { MenuType } from "@/menu/types";
 import { Nullable } from "../types";
 import { StartMenu } from "../menu/StartMenu";
-import { SubMenu } from "../menu/SubMenu";
 import { bus, EventType } from "@/event/EventBus";
+import { createSubMenu } from "@/menu/MenuFactory";
 import { getLevels } from "../level/levels";
-
 /** Different states a game can be in */
 enum GameState {
   StartMenu,
@@ -59,8 +59,12 @@ class Game implements Drawable, Updatable {
   ) {
     this._state = GameState.Play;
 
-    this._menu = new StartMenu(new SubMenu(menus.start()));
-    this._inventory = new Inventory(new SubMenu(menus.inventory()));
+    const { start, inventory } = menus;
+
+    this._menu = new StartMenu(createSubMenu(MenuType.Start)(start()));
+    this._inventory = new Inventory(
+      createSubMenu(MenuType.Inventory)(inventory())
+    );
 
     bus.register(this);
 

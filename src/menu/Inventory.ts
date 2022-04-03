@@ -9,7 +9,9 @@ import { EventType } from "@/event/EventBus";
 import { InventoryState, isInventoryState } from "@schema/menu/InventorySchema";
 import { Menu } from "./Menu";
 import { MenuItem } from "./MenuItem";
+import { MenuType } from "./types";
 import { SubMenu } from "./SubMenu";
+import { createMenuItem } from "./MenuFactory";
 import { state } from "@/state/StateManager";
 
 type InventoryItem = Item | Weapon;
@@ -157,9 +159,9 @@ export class Inventory extends Menu<InventoryMenuItem> implements Drawable {
     if (category === "weapon") {
       const weapon = new WeaponFactory().createStrategy(item.ref);
 
-      menu.push(new MenuItem<InventoryMenuItem>(weapon));
+      menu.push(createMenuItem<InventoryMenuItem>(MenuType.Inventory)(weapon));
     } else {
-      menu.push(new MenuItem<InventoryMenuItem>(item));
+      menu.push(createMenuItem<InventoryMenuItem>(MenuType.Inventory)(item));
     }
 
     this.updateState();

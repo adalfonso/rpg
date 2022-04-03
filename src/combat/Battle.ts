@@ -17,9 +17,10 @@ import { Direction } from "@/ui/types";
 import { Drawable, Lockable } from "@/interfaces";
 import { HeroTeam } from "./HeroTeam";
 import { LearnedAbility } from "./strategy/types";
-import { SubMenu } from "@/menu/SubMenu";
+import { MenuType } from "@/menu/types";
 import { bus, EventType } from "@/event/EventBus";
 import { createAnimation } from "@/ui/animation/CreateAnimation";
+import { createSubMenu } from "@/menu/MenuFactory";
 
 interface BattleEvent {
   isDone: boolean;
@@ -449,7 +450,9 @@ class Battle implements Drawable, Lockable {
    */
   private _getBattleMenu() {
     return new BattleMenu(
-      new SubMenu(menus.battle(this, () => this._heroes.nextToTakeTurn))
+      createSubMenu(MenuType.Battle)(
+        menus.battle(this, () => this._heroes.nextToTakeTurn)
+      )
     );
   }
 }
