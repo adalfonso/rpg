@@ -1,3 +1,4 @@
+import Actor from "@/actor/Actor";
 import Damage from "@/combat/Damage";
 import Renderable from "@/ui/Renderable";
 import Sut from "@/combat/strategy/Weapon";
@@ -9,7 +10,7 @@ describe("Weapon", () => {
 
       expect(sut.isEquipped).toBe(false);
 
-      sut.equip();
+      sut.equip({} as Actor);
 
       expect(sut.isEquipped).toBe(true);
     });
@@ -19,7 +20,7 @@ describe("Weapon", () => {
     it("unequips a weapon", () => {
       const sut = getSut();
 
-      sut.equip();
+      sut.equip({} as Actor);
       expect(sut.isEquipped).toBe(true);
 
       sut.unequip();

@@ -5,13 +5,15 @@ import Weapon from "@/combat/strategy/Weapon";
 import WeaponFactory from "@/combat/strategy/WeaponFactory";
 import { BaseMenuItemTemplate as Base } from "./menus";
 import { Drawable } from "@/interfaces";
+import { Equipper } from "@/combat/Equipper";
+import { EquipperFactory } from "@/combat/EquipperFactory";
 import { EventType } from "@/event/EventBus";
 import { InventoryState, isInventoryState } from "@schema/menu/InventorySchema";
 import { Menu } from "./Menu";
 import { MenuType } from "./types";
 import { SubMenu } from "./SubMenu";
 import { createConfig } from "./ui/MenuRenderConfigFactory";
-import { createMenuItem } from "./MenuFactory";
+import { createMenuItem, createSubMenu } from "./MenuFactory";
 import { state } from "@/state/StateManager";
 
 type InventoryItem = Item | Weapon;
@@ -30,8 +32,12 @@ export class Inventory extends Menu<InventoryMenuItem> implements Drawable {
 
   /**
    * @param _menu - menu options
+   * @param _equipper - equipment manager ctor
    */
-  constructor(protected _menu: SubMenu<InventoryMenuItem>) {
+  constructor(
+    protected _menu: SubMenu<InventoryMenuItem>,
+    private _equipper: EquipperFactory
+  ) {
     super(_menu);
 
     this._resolveState();
@@ -77,7 +83,6 @@ export class Inventory extends Menu<InventoryMenuItem> implements Drawable {
         menu: { background_color: "#555" },
         logic: {
           isSelected: this._isSelected.bind(this),
-          isSubMenuItem: this._isSubMenuItem.bind(this),
           getBadgeTitle: (menu) =>
             menu.source instanceof Weapon && menu.source.isEquipped
               ? "Equipped"
@@ -121,7 +126,7 @@ export class Inventory extends Menu<InventoryMenuItem> implements Drawable {
           } else if (e.key === "i") {
             this.active ? this.close() : this.open();
           } else if (e.key === "Enter") {
-            this.equipCurrentOption();
+            this._useCurrentItem();
           }
         },
       },
@@ -145,8 +150,15 @@ export class Inventory extends Menu<InventoryMenuItem> implements Drawable {
 
     if (category === "weapon") {
       const weapon = new WeaponFactory().createStrategy(item.ref);
+      const menu_item = createMenuItem<InventoryMenuItem>(MenuType.Inventory)(
+        weapon
+      );
+      const equipper = this._equipper(weapon);
+      const sub_menu = createSubMenu<Equipper>(MenuType.Equip)(equipper.menu);
 
-      menu.push(createMenuItem<InventoryMenuItem>(MenuType.Inventory)(weapon));
+      menu_item.overrideMenu(sub_menu);
+
+      menu.push(menu_item);
     } else {
       menu.push(createMenuItem<InventoryMenuItem>(MenuType.Inventory)(item));
     }
@@ -183,18 +195,44 @@ export class Inventory extends Menu<InventoryMenuItem> implements Drawable {
       });
     }
 
-    const equipped_id = state().get("player.equipped");
     const weapons = this._getSubMenu("weapon");
 
-    if (equipped_id && weapons !== undefined) {
-      weapons.items
-        .map(({ source }) => source)
-        .filter(
-          (source): source is Weapon =>
-            source instanceof Weapon && source.ref === equipped_id
-        )
-        .forEach((weapon) => weapon.equip());
+    if (weapons === undefined) {
+      return data;
     }
+
+    state()
+      .get("team")
+      .forEach((member) => {
+        const { type, equipped } = member;
+
+        if (!equipped) {
+          return;
+        }
+
+        const weapon_item = weapons.items.filter(
+          (weapon) =>
+            weapon.source instanceof Weapon && weapon.source.ref === equipped
+        )[0];
+
+        if (!weapon_item) {
+          throw new MissingDataError(
+            `Could not find weapon "${equipped}" in inventory for actor "${type}"`
+          );
+        }
+
+        const equipper_item = weapon_item.menu?.items.filter(
+          (equipper) => equipper.ref === type
+        )[0];
+
+        if (!equipper_item) {
+          throw new MissingDataError(
+            `Could not find equipper for weapon "${equipped}" and actor "${type}"`
+          );
+        }
+
+        (equipper_item.source as unknown as Equipper).equip();
+      });
 
     return data;
   }
@@ -205,11 +243,19 @@ export class Inventory extends Menu<InventoryMenuItem> implements Drawable {
     state().mergeByRef("inventory", this.state);
   }
 
-  /** Equip the currently selected option */
-  private equipCurrentOption() {
+  /** Try to activate the currently selected item */
+  private _useCurrentItem() {
     const { source } = this.currentOption;
 
-    if (!(source instanceof Weapon)) {
+    if (source instanceof Equipper) {
+      return this._equipCurrentItem();
+    }
+  }
+
+  private _equipCurrentItem() {
+    const { source } = this.currentOption;
+
+    if (!(source instanceof Equipper)) {
       return;
     }
 

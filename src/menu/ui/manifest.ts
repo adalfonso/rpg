@@ -2,6 +2,8 @@ import { MenuItemRenderer, SubMenuRenderer } from "./types";
 import { MenuType } from "../types";
 import { render as battle_item } from "./BattleItemUi";
 import { render as battle_menu } from "./BattleUi";
+import { render as equip_item } from "./EquipItemUi";
+import { render as equip_menu } from "./EquipUi";
 import { render as inventory_item } from "./InventoryItemUi";
 import { render as inventory_menu } from "./InventoryUi";
 import { render as start_item } from "./StartItemUi";
@@ -22,4 +24,5 @@ export const manifest: Record<MenuType, MenuRenderComponents<any>> = {
   [MenuType.Inventory]: { menu: inventory_menu, item: inventory_item },
   [MenuType.Battle]: { menu: battle_menu, item: battle_item },
   [MenuType.Start]: { menu: start_menu, item: start_item },
+  [MenuType.Equip]: { menu: equip_menu, item: equip_item },
 };

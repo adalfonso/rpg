@@ -1,13 +1,15 @@
 import Item from "@/item/Item";
 import menus, { MenuTemplate } from "@/menu/menus";
+import { EquipperFactory } from "@/combat/EquipperFactory";
 import { Inventory, InventoryMenuItem } from "@/menu/Inventory";
 import { MenuType } from "@/menu/types";
 import { cloneByStringify } from "@/util";
 import { createSubMenu } from "@/menu/MenuFactory";
 import { state } from "@/state/StateManager";
 
-afterEach(() => {
+beforeEach(() => {
   state().empty();
+  state().mergeByRef("team", []);
 });
 
 describe("Inventory", () => {
@@ -59,7 +61,8 @@ describe("Inventory", () => {
 const getSut = () => {
   let menu = cloneByStringify(menus.inventory());
   return new Inventory(
-    createSubMenu(MenuType.Inventory)(menu as MenuTemplate<InventoryMenuItem>)
+    createSubMenu(MenuType.Inventory)(menu as MenuTemplate<InventoryMenuItem>),
+    (() => ({ menu: () => [] })) as unknown as EquipperFactory
   );
 };
 

@@ -130,6 +130,7 @@ export abstract class Actor
     }));
   }
 
+  // TODO: wtf this. We need better consistency for ref, displayAs, etc
   /** Get the actor's id */
   get id() {
     return this._id;

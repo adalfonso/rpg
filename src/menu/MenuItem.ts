@@ -75,4 +75,17 @@ export class MenuItem<T> {
   ) {
     this._renderer(ctx, offset, resolution, options, this);
   }
+
+  /**
+   * Set a menu manually when one does not exist
+   *
+   * @param menu menu to use
+   */
+  public overrideMenu(menu: SubMenu<T>) {
+    if (this._menu) {
+      throw new Error(`Cannot override menu on MenuItem for ${this.displayAs}`);
+    }
+
+    this._menu = menu;
+  }
 }

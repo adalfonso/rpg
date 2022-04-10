@@ -31,7 +31,6 @@ export interface MenuRenderLogic<T> {
   isMainMenu: (menu: SubMenu<T>) => boolean;
   isCurrentOption: (item: MenuItem<T>) => boolean;
   isSelected: (item: MenuItem<T>) => boolean;
-  isSubMenuItem: (item: MenuItem<T>) => boolean;
   getBadgeTitle: (item: MenuItem<T>) => string;
 }
 

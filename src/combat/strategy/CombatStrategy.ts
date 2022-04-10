@@ -1,3 +1,4 @@
+import Actor from "@/actor/Actor";
 import Damage from "../Damage";
 import MissingDataError from "@/error/MissingDataError";
 import Renderable from "@/ui/Renderable";
@@ -117,12 +118,18 @@ export const Equipable = <T extends Constructor>(Base: T) =>
     /**
      * Equip the equipment
      *
+     * @param actor the actor who to equip the item to
+     *
      * @emits equipment.equip
      */
-    public equip() {
+    public equip(actor: Actor) {
+      if (this._isEquipped) {
+        return;
+      }
+
       this._isEquipped = true;
 
-      bus.emit("equipment.equip", { equipment: this });
+      bus.emit("equipment.equip", { equipment: this, actor });
     }
 
     /** Unequip the equipment */

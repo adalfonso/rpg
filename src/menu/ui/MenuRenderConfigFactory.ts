@@ -37,7 +37,6 @@ const getDefaultLogic = <T>(menu: Menu<T>): MenuRenderLogic<T> => {
     isCurrentOption: (item: MenuItem<T>) =>
       item === menu.currentOption || item.source === menu.currentOption.source,
     isSelected: (_item: MenuItem<T>) => false,
-    isSubMenuItem: (_item: MenuItem<T>) => false,
     getBadgeTitle: (_menu: MenuItem<T>) => "",
   };
 };

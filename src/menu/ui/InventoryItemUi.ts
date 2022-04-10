@@ -21,13 +21,15 @@ export function render<T>(
   item: MenuItem<T>
 ) {
   const { font, logic } = config;
-  const is_sub_menu_item = logic.isSubMenuItem(item);
+  const is_selected = logic.isSelected(item);
 
   ctx.translate(0, config.menu.row_offset_y);
 
   ctx.save();
 
-  if (is_sub_menu_item && isInventoryItem(item.source)) {
+  let menu_offset = new Vector(config.menu.sub_menu_width, 0);
+
+  if (is_selected && isInventoryItem(item.source)) {
     const offset = new Vector(-2, -font.size);
     const detail_size = _drawDetails(ctx, offset, resolution, config, item);
 
@@ -36,23 +38,23 @@ export function render<T>(
       throw new Error("missing detail_size. this should not happen");
     }
 
+    menu_offset = new Vector(detail_size.x, 0);
+
     // Move menu option a little bit away from the border
     ctx.translate(10, 0);
 
     // Render the menu option text
-    _drawOptionText(ctx, Vector.empty(), config, item);
+    _drawItemText(ctx, Vector.empty(), config, item);
 
     // Account for height of equipable menu on next menu item
     ctx.translate(0, detail_size.y - font.size);
   } else {
-    _drawOptionText(ctx, Vector.empty(), config, item);
+    _drawItemText(ctx, Vector.empty(), config, item);
   }
 
   // Render sub-menu
   if (logic.isSelected(item) && item.menu) {
-    const offset = new Vector(config.menu.sub_menu_width, 0);
-
-    item.menu.draw(ctx, offset, resolution, config);
+    item.menu.draw(ctx, menu_offset, resolution, config);
   }
 }
 
@@ -174,7 +176,7 @@ function _drawBox(
  * @param config settings and functions used to render
  * @param item the menu item to draw
  */
-function _drawOptionText<T>(
+function _drawItemText<T>(
   ctx: CanvasRenderingContext2D,
   offset: Vector,
   config: MenuRenderConfig<T>,

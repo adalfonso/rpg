@@ -274,15 +274,4 @@ export abstract class Menu<T>
       this.selected.map((option) => option.source).includes(item.source)
     );
   }
-
-  /**
-   * Determine if an option an item in a sub-menu
-   *
-   * @param item - option to check
-   *
-   * @return if the option is currently selected
-   */
-  protected _isSubMenuItem(item: MenuItem<T>) {
-    return this._isCurrentOption(item) && this.selected.length === 2;
-  }
 }

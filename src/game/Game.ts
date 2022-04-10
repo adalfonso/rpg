@@ -15,6 +15,7 @@ import { MenuType } from "@/menu/types";
 import { Nullable } from "../types";
 import { StartMenu } from "../menu/StartMenu";
 import { bus, EventType } from "@/event/EventBus";
+import { createEquipper } from "@/combat/EquipperFactory";
 import { createSubMenu } from "@/menu/MenuFactory";
 import { getLevels } from "../level/levels";
 /** Different states a game can be in */
@@ -60,10 +61,12 @@ class Game implements Drawable, Updatable {
     this._state = GameState.Play;
 
     const { start, inventory } = menus;
+    const equipper = createEquipper(_heroes);
 
     this._menu = new StartMenu(createSubMenu(MenuType.Start)(start()));
     this._inventory = new Inventory(
-      createSubMenu(MenuType.Inventory)(inventory())
+      createSubMenu(MenuType.Inventory)(inventory()),
+      equipper
     );
 
     bus.register(this);

@@ -66,6 +66,9 @@ export class HeroTeam extends Team<Player> implements Stateful<TeamState> {
 
           this.add(this._createPlayerFromActor(actor));
         },
+        "team.save": (_e: CustomEvent) => {
+          state().mergeByRef(this.state_ref, this.state);
+        },
       },
     };
   }

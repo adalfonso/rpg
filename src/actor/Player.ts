@@ -108,7 +108,7 @@ class Player extends Actor implements Stateful<PlayerState> {
   ) {
     super.draw(ctx, offset, resolution);
 
-    if (this._pet) {
+    if (this._pet && !this.locked) {
       this._pet.draw(ctx, offset, resolution);
     }
   }
@@ -135,7 +135,11 @@ class Player extends Actor implements Stateful<PlayerState> {
       },
       [EventType.Custom]: {
         "equipment.equip": (e: CustomEvent) => {
-          const equipment = e.detail.equipment;
+          const { equipment, actor } = e.detail;
+
+          if (actor !== this) {
+            return;
+          }
 
           if (!equipment) {
             throw new MissingDataError(
@@ -207,7 +211,7 @@ class Player extends Actor implements Stateful<PlayerState> {
 
     super.equip(weapon);
 
-    state().mergeByRef("player", this.state);
+    bus.emit("team.save");
   }
 
   /**
