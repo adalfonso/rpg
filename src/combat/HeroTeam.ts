@@ -44,7 +44,19 @@ export class HeroTeam extends Team<Player> implements Stateful<TeamState> {
   public add(member: Player) {
     super.add(member);
 
-    state().mergeByRef(this.state_ref, this.state);
+    const data = state().resolve(this, isTeamState);
+    const state_member = data
+      .map((state_member, index) => ({ state_member, index }))
+      .filter(({ state_member }) => state_member.type === member.state_ref)[0];
+
+    if (state_member) {
+      data[state_member.index] = member.state;
+    } else {
+      data.push(member.state);
+    }
+
+    // Let's only merge this particular member into the state
+    state().mergeByRef(this.state_ref, data);
   }
 
   /**
