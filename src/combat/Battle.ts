@@ -202,6 +202,8 @@ class Battle implements Drawable, Lockable {
               });
           });
 
+          bus.emit("team.save");
+
           const stream = new TextStream(dialogue);
 
           this._event_queue.push(

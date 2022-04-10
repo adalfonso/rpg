@@ -7,10 +7,9 @@ import { Direction } from "@/ui/types";
 import { LevelFixtureTemplate } from "@/level/LevelFixture";
 import { Nullable } from "@/types";
 import { Pet } from "./Pet";
+import { PlayerState } from "@schema/actor/PlayerSchema";
 import { Stateful } from "@/interfaces";
 import { bus, EventType } from "@/event/EventBus";
-import { isPlayerState, PlayerState } from "@schema/actor/PlayerSchema";
-import { state } from "@/state/StateManager";
 
 /** The main entity of the game */
 class Player extends Actor implements Stateful<PlayerState> {
@@ -39,8 +38,6 @@ class Player extends Actor implements Stateful<PlayerState> {
 
     this.speed = Vector.empty();
     this.baseSpeed = _size.x / 10;
-
-    this._resolveState();
 
     bus.register(this);
   }
@@ -188,15 +185,13 @@ class Player extends Actor implements Stateful<PlayerState> {
     };
 
     bus.emit("actor.gainExp", data);
-
-    state().mergeByRef("player", this.state);
   }
 
   /** Kill off the player */
   public kill() {
     this._defeated = true;
 
-    state().mergeByRef(`player.defeated`, true);
+    bus.emit("team.save");
   }
 
   /**
@@ -288,25 +283,6 @@ class Player extends Actor implements Stateful<PlayerState> {
     } else if (this.speed.y < 0) {
       this.direction = Direction.North;
     }
-  }
-
-  /**
-   * Resolve the current state of the player in comparison to the game state
-   *
-   * @return player data as stored in the state
-   */
-  protected _resolveState() {
-    const data = super._resolveState<PlayerState>(isPlayerState);
-
-    if (!isPlayerState(data)) {
-      return state().mergeByRef(this.state_ref, this.state);
-    }
-
-    this.stats.exp = data.exp;
-
-    // equipment handled through Inventory state resolution
-
-    return data;
   }
 }
 
