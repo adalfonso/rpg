@@ -25,6 +25,14 @@ export function render<T>(
     .times(0.5)
     .apply(Math.round);
 
+  const title_offset = offset
+    .plus(menu_padding)
+    .plus(new Vector(0, -2 * font.size));
+
+  ctx.font = `${font.size}px ${font.family}`;
+
+  ctx.fillText("Equip to player:", title_offset.x, title_offset.y);
+
   menu.items.forEach((item, index) => {
     item.draw(
       ctx,
