@@ -100,6 +100,11 @@ export class HeroTeam extends Team<Player> implements Stateful<TeamState> {
 
     for (const member of data) {
       if (refs.includes(member.type)) {
+        if (member.defeated) {
+          this.all()
+            .filter((m) => m.state_ref === member.type)
+            .forEach((member) => member.kill());
+        }
         continue;
       }
 
@@ -109,6 +114,10 @@ export class HeroTeam extends Team<Player> implements Stateful<TeamState> {
         new Vector(16, 32).times(config.scale),
         member as unknown as LevelFixtureTemplate
       );
+
+      if (member.defeated) {
+        placeholder.kill();
+      }
 
       this.add(placeholder);
     }

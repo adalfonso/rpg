@@ -315,16 +315,16 @@ class Battle implements Drawable, Lockable {
   private _handleFoeAction() {
     const unarmed = new WeaponFactory().createStrategy("unarmed");
     const foe = this._foes.nextToTakeTurn;
-    const hero =
+    const target_hero =
       this._heroes.all().filter((hero) => !hero.isDefeated)[0] ??
       this._heroes.leader;
 
     const animation = createAnimation.translation({
-      translation: hero.position.minus(foe.position),
+      translation: target_hero.position.minus(foe.position),
       duration_ms: 500,
     });
     const inverse_animation = createAnimation.translation({
-      translation: hero.position.minus(foe.position).times(-1),
+      translation: target_hero.position.minus(foe.position).times(-1),
       duration_ms: 500,
     });
 
@@ -336,8 +336,9 @@ class Battle implements Drawable, Lockable {
 
     this._event_queue.push(
       new AnimatedEntity(animation, foe),
-      () => foe.attack(hero, unarmed),
+      () => foe.attack(target_hero, unarmed),
       new AnimatedEntity(inverse_animation, foe),
+      () => target_hero.isDefeated && target_hero.kill(),
       onAttackEnd
     );
   }
