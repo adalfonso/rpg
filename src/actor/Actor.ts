@@ -360,11 +360,28 @@ export abstract class Actor
       return;
     }
 
-    if (this.weapon) {
+    this.unequip();
+    this.weapon = weapon;
+  }
+
+  /** Unequip a weapon */
+  protected unequip() {
+    if (!this.weapon) {
+      return;
+    }
+
+    /**
+     * The weapon should already be unequipped because that invocation is what
+     * should have caused this unequip to bubble up. If for some reason it
+     * hasn't been unequiped on the weapon (unknown reason), then we want to
+     * ensure it has been. We also want to only unequip from the weapon when
+     * needed to, to avoid an infinite loop.
+     */
+    if (this.weapon.isEquipped) {
       this.weapon.unequip();
     }
 
-    this.weapon = weapon;
+    this.weapon = null;
   }
 
   /**

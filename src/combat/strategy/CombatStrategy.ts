@@ -135,6 +135,8 @@ export const Equipable = <T extends Constructor>(Base: T) =>
     /** Unequip the equipment */
     public unequip() {
       this._isEquipped = false;
+
+      bus.emit("equipment.unequip", { equipment: this });
     }
   };
 

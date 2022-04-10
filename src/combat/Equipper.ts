@@ -50,11 +50,17 @@ export class Equipper {
 
   /** Equip the weapon to the actor */
   public equip() {
-    if (this._actor.weapon) {
+    const { _weapon: equipment, _actor: actor } = this;
+    const is_owner = actor.weapon === equipment;
+
+    equipment.unequip();
+
+    // Already equipped to this actor
+    if (is_owner) {
       return;
     }
 
-    this._weapon.equip(this._actor);
+    equipment.equip(actor);
   }
 
   get actor() {

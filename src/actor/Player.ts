@@ -148,6 +148,22 @@ class Player extends Actor implements Stateful<PlayerState> {
             this.equip(equipment);
           }
         },
+
+        "equipment.unequip": (e: CustomEvent) => {
+          const { equipment } = e.detail;
+
+          if (this.weapon !== equipment) {
+            return;
+          }
+
+          if (!equipment) {
+            throw new MissingDataError(
+              `Player unable to unequip equipment because it is missing.`
+            );
+          }
+
+          this.unequip();
+        },
       },
     };
   }
