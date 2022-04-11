@@ -13,7 +13,7 @@ export const actors = (): ActorList => ({
       spd: 999,
     },
     ui: {
-      sprite: "actor.player",
+      sprite: "actor.doggo",
       frames: { x: 1, y: 4, idle: 1, north: 1, east: 1, south: 1, west: 1 },
       scale: 1,
       fps: 8,

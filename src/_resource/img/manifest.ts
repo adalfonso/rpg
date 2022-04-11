@@ -1,4 +1,5 @@
 import big_sword from "./weapon/big_sword.png";
+import doggo from "./doggo.png";
 import dungeon from "./dungeon.png";
 import dungeon_blue from "./dungeon_sheet.png";
 import empanada from "./item/empanada.png";
@@ -15,6 +16,7 @@ const manifest: Record<string, unknown> = {
     player,
     pisti,
     knight,
+    doggo,
   },
   item: {
     empanada,
