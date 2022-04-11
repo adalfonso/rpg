@@ -72,8 +72,8 @@ export class MenuItem<T> {
     offset: Vector,
     resolution: Vector,
     options: MenuRenderConfig<T>
-  ) {
-    this._renderer(ctx, offset, resolution, options, this);
+  ): Vector | undefined {
+    return this._renderer(ctx, offset, resolution, options, this);
   }
 
   /**

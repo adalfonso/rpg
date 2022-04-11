@@ -15,7 +15,7 @@ import { isInventoryItem } from "../Inventory";
  */
 export function render<T>(
   ctx: CanvasRenderingContext2D,
-  _offset: Vector,
+  offset: Vector,
   resolution: Vector,
   config: MenuRenderConfig<T>,
   item: MenuItem<T>
@@ -23,39 +23,44 @@ export function render<T>(
   const { font, logic } = config;
   const is_selected = logic.isSelected(item);
 
-  ctx.translate(0, config.menu.row_offset_y);
-
-  ctx.save();
-
+  // returned and used to offset the next sibling item
+  let detail_offset = Vector.empty();
   let menu_offset = new Vector(config.menu.sub_menu_width, 0);
 
   if (is_selected && isInventoryItem(item.source)) {
-    const offset = new Vector(-2, -font.size);
-    const detail_size = _drawDetails(ctx, offset, resolution, config, item);
+    const font_offset = new Vector(-2, -font.size);
+
+    const detail_size = _drawDetails(
+      ctx,
+      offset.plus(font_offset),
+      resolution,
+      config,
+      item
+    );
 
     if (!detail_size) {
       // TODO: This should never happen; remove this check
       throw new Error("missing detail_size. this should not happen");
     }
 
+    detail_offset = new Vector(0, detail_size.y - font.size / 2);
     menu_offset = new Vector(detail_size.x, 0);
 
-    // Move menu option a little bit away from the border
-    ctx.translate(10, 0);
+    // Move item title a little bit away from the border
+    const title_offset = new Vector(10, 0);
 
     // Render the menu option text
-    _drawItemText(ctx, Vector.empty(), config, item);
-
-    // Account for height of equipable menu on next menu item
-    ctx.translate(0, detail_size.y - font.size);
+    _drawItemText(ctx, offset.plus(title_offset), config, item);
   } else {
-    _drawItemText(ctx, Vector.empty(), config, item);
+    _drawItemText(ctx, offset, config, item);
   }
 
   // Render sub-menu
   if (logic.isSelected(item) && item.menu) {
-    item.menu.draw(ctx, menu_offset, resolution, config);
+    item.menu.draw(ctx, offset.plus(menu_offset), resolution, config);
   }
+
+  return detail_offset;
 }
 
 /**
@@ -99,10 +104,8 @@ function _drawDetails<T>(
     source.description ?? "Description not found."
   );
 
-  ctx.save();
   ctx.font = `${font.subtext_size}px ${font.family}`;
   const badge_width = ctx.measureText(badge_title).width;
-  ctx.restore();
 
   const width =
     description_size.x +
@@ -159,13 +162,9 @@ function _drawBox(
   offset: Vector,
   resolution: Vector
 ) {
-  ctx.save();
   ctx.beginPath();
   ctx.rect(offset.x, offset.y, resolution.x, resolution.y);
-  ctx.shadowOffsetX = 2;
-  ctx.shadowOffsetY = 2;
   ctx.stroke();
-  ctx.restore();
 }
 
 /**
@@ -200,7 +199,9 @@ function _drawItemText<T>(
   }
 
   ctx.fillText(text, offset.x, offset.y);
-  ctx.restore();
+
+  ctx.shadowColor = "transparent";
+  ctx.shadowOffsetY = 0;
 }
 
 /**
@@ -220,8 +221,6 @@ function _drawSubtext<T>(
   config: MenuRenderConfig<T>,
   text: string
 ) {
-  ctx.save();
-
   const { font } = config;
 
   ctx.font = `${font.subtext_size}px Minecraftia`;
@@ -235,8 +234,6 @@ function _drawSubtext<T>(
     // Offset by an extra line due to text being drawn from bottom left corner
     ctx.fillText(text, offset.x, offset.y + LINE_HEIGHT * (index + 1));
   });
-
-  ctx.restore();
 
   return LINE_HEIGHT * buffer.read().length;
 }

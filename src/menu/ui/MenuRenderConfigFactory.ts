@@ -27,7 +27,6 @@ const default_font: MenuRenderFontConfig = {
 const default_menu: MenuStyleRenderConfig = {
   background_color: "transparent",
   sub_menu_width: 0,
-  row_offset_y: 24,
 };
 
 const getDefaultLogic = <T>(menu: Menu<T>): MenuRenderLogic<T> => {

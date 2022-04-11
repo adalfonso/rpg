@@ -21,7 +21,6 @@ export interface MenuRenderFontConfig {
 export interface MenuStyleRenderConfig {
   background_color: string;
   sub_menu_width: number;
-  row_offset_y: number;
 }
 
 /** Rendering logic used to inform render decisions */
@@ -64,4 +63,4 @@ export type MenuItemRenderer<T> = (
   resolution: Vector,
   options: MenuRenderConfig<T>,
   item: MenuItem<T>
-) => void;
+) => Vector | undefined;

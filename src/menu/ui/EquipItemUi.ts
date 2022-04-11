@@ -38,4 +38,7 @@ export function render<T>(
     offset.x,
     offset.y
   );
+
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = 0;
 }

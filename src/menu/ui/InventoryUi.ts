@@ -23,9 +23,6 @@ export function render<T>(
   const is_main_menu = logic.isMainMenu(menu);
   const margin = new Vector(60, is_main_menu ? 90 : 0);
 
-  ctx.save();
-  ctx.translate(offset.x, offset.y);
-
   // Draw background under main menu only
   if (is_main_menu) {
     ctx.fillStyle = config.menu.background_color;
@@ -34,28 +31,23 @@ export function render<T>(
     ctx.textAlign = font.align;
   }
 
-  ctx.translate(margin.x, margin.y);
-
   // Calculate max width of menu
-  ctx.save();
+
   ctx.font = `${font.size}px ${font.family}`;
   const widest_text = getWidestMenuDescription(menu);
   const sub_menu_width = ctx.measureText(widest_text).width;
-  ctx.restore();
 
   menu.items.forEach((item, index) => {
-    const item_menu_config = {
-      sub_menu_width,
-      // Offset all options after the first option
-      row_offset_y: index ? font.size * 2 : 0,
-    };
-
+    const item_menu_config = { sub_menu_width };
     const item_config = createConfig({ menu: item_menu_config }, config);
+    const row_offset = new Vector(0, font.size * 2 * index);
+    const new_offset = offset.plus(margin).plus(row_offset);
 
-    item.draw(ctx, offset, resolution, item_config);
+    const detail_offset =
+      item.draw(ctx, new_offset, resolution, item_config) ?? Vector.empty();
+
+    offset = offset.plus(detail_offset);
   });
-
-  ctx.restore();
 }
 
 /**
