@@ -149,7 +149,7 @@ class Battle implements Drawable, Lockable {
     this._drawUiBar(ctx, resolution);
     this._drawEnemyUiBar(ctx, resolution);
 
-    if (this._herosTurn) {
+    if (this._herosTurn && !this.isDone) {
       this._menu.draw(ctx, offset, resolution);
 
       if (!this._opponentSelect.isLocked) {
@@ -300,13 +300,13 @@ class Battle implements Drawable, Lockable {
 
       target.stats.modify(e.detail.modifier);
     }
-    this._heroes.takeTurn(hero);
 
     this._event_queue.push(
+      () => this._heroes.takeTurn(hero),
       // Handle post turn ops if turn is over or game has ended
       () => (this._heroes.turnIsOver || this.isDone) && this._handlePostTurn(),
       // Adjust menu unless turn is over
-      () => this._heroes.turnIsOver || this.isDone || this._moveBattleMenu(),
+      () => this._moveBattleMenu(),
       () => this._opponentSelect.resolveSelected()
     );
   }

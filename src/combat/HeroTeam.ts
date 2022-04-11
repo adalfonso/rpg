@@ -70,7 +70,7 @@ export class HeroTeam extends Team<Player> implements Stateful<TeamState> {
           this.add(this._createPlayerFromActor(actor));
         },
         "team.save": (e: CustomEvent) => {
-          const { actor } = e.detail;
+          const { actor } = e.detail ?? {};
 
           if (actor instanceof Player) {
             return this._resolveMember(actor);
