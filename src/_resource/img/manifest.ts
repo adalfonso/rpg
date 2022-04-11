@@ -6,6 +6,7 @@ import knight from "./enemy/knight.png";
 import missing from "./missing_image.png";
 import pisti from "./pisti.png";
 import player from "./player_new.png";
+import ruby_sword from "./weapon/ruby_sword.png";
 import water_bottle from "./item/water_bottle.png";
 
 const manifest: Record<string, unknown> = {
@@ -25,6 +26,7 @@ const manifest: Record<string, unknown> = {
   },
   weapon: {
     big_sword,
+    ruby_sword,
   },
 };
 

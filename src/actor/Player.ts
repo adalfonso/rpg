@@ -203,26 +203,35 @@ class Player extends Actor implements Stateful<PlayerState> {
     bus.emit("actor.gainExp", data);
   }
 
-  /** Kill off the player */
-  public kill() {
+  /**
+   * Kill off the player
+   *
+   * @param record - if this should be recorded to the state
+   */
+  public kill(record = true) {
     this._defeated = true;
 
-    bus.emit("team.save");
+    if (record) {
+      bus.emit("team.save", { actor: this });
+    }
   }
 
   /**
    * Equip a weapon
    *
    * @param weapon - weapon to equip
+   * @param record - if this should be recorded to the state
    */
-  protected equip(weapon: Weapon) {
+  protected equip(weapon: Weapon, record = true) {
     if (weapon === this.weapon) {
       return;
     }
 
     super.equip(weapon);
 
-    bus.emit("team.save");
+    if (record) {
+      bus.emit("team.save", { actor: this });
+    }
   }
 
   /**

@@ -40,23 +40,14 @@ export class HeroTeam extends Team<Player> implements Stateful<TeamState> {
    * Add a new member to the team
    *
    * @param member - member instance
+   * @param record - if this should be recorded to the state
    */
-  public add(member: Player) {
+  public add(member: Player, record = true) {
     super.add(member);
 
-    const data = state().resolve(this, isTeamState);
-    const state_member = data
-      .map((state_member, index) => ({ state_member, index }))
-      .filter(({ state_member }) => state_member.type === member.state_ref)[0];
-
-    if (state_member) {
-      data[state_member.index] = member.state;
-    } else {
-      data.push(member.state);
+    if (record) {
+      this._resolveMember(member);
     }
-
-    // Let's only merge this particular member into the state
-    state().mergeByRef(this.state_ref, data);
   }
 
   /**
@@ -78,7 +69,13 @@ export class HeroTeam extends Team<Player> implements Stateful<TeamState> {
 
           this.add(this._createPlayerFromActor(actor));
         },
-        "team.save": (_e: CustomEvent) => {
+        "team.save": (e: CustomEvent) => {
+          const { actor } = e.detail;
+
+          if (actor instanceof Player) {
+            return this._resolveMember(actor);
+          }
+
           state().mergeByRef(this.state_ref, this.state);
         },
       },
@@ -115,7 +112,7 @@ export class HeroTeam extends Team<Player> implements Stateful<TeamState> {
         if (member.defeated) {
           this.all()
             .filter((m) => m.state_ref === member.type)
-            .forEach((member) => member.kill());
+            .forEach((member) => member.kill(false));
         }
         continue;
       }
@@ -128,13 +125,38 @@ export class HeroTeam extends Team<Player> implements Stateful<TeamState> {
       );
 
       if (member.defeated) {
-        placeholder.kill();
+        placeholder.kill(false);
       }
 
-      this.add(placeholder);
+      this.add(placeholder, false);
     }
 
     return data;
+  }
+
+  /**
+   * Resolve the state but just for a single member
+   *
+   * This is used when we performing initial operations when the game loads. We
+   * don't want to save the entire state because it might overwrite other team
+   * members that have not yet been processed.
+   *
+   * @param member team member to resolve
+   */
+  private _resolveMember(member: Player) {
+    const data = state().resolve(this, isTeamState);
+    const state_member = data
+      .map((state_member, index) => ({ state_member, index }))
+      .filter(({ state_member }) => state_member.type === member.state_ref)[0];
+
+    if (state_member) {
+      data[state_member.index] = member.state;
+    } else {
+      data.push(member.state);
+    }
+
+    // Let's only merge this particular member into the state
+    state().mergeByRef(this.state_ref, data);
   }
 
   /**

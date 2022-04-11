@@ -32,7 +32,7 @@ const animation_factory = getAnimationFromName(animations);
 const create_item_config = (template: LevelFixtureTemplate) => {
   if (!items[template.type]) {
     throw new MissingDataError(
-      `Config data for ${template.type} is not defined in items.ts`
+      `Config data for "${template.type}" is not defined in items.ts`
     );
   }
 

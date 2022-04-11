@@ -118,7 +118,7 @@ export const getImagePath = (resource: string) => {
     }
 
     if (!carry[key]) {
-      throw new MissingDataError(`Cannot find resource: ${key}`);
+      throw new MissingDataError(`Cannot find image resource "${key}"`);
     }
 
     return carry[key];
