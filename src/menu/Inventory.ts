@@ -79,7 +79,11 @@ export class Inventory extends Menu<InventoryMenuItem> implements Drawable {
 
     const config = createConfig(
       {
-        font: { color: "#EEE", highlight_color: "#0AA" },
+        font: {
+          color: "#EEE",
+          highlight_color: "#0AA",
+          shadow_offset: new Vector(0, 4),
+        },
         menu: { background_color: "#555" },
         logic: {
           isSelected: this._isSelected.bind(this),

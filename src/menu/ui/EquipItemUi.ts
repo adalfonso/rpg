@@ -23,7 +23,7 @@ export function render<T>(
   const font_style = `${font.size}px ${font.family}`;
 
   if (selected) {
-    ctx.shadowColor = font.shadow_color;
+    ctx.shadowColor = font.highlight_color;
     ctx.shadowOffsetX = font.shadow_offset.x;
     ctx.shadowOffsetY = font.shadow_offset.y;
     ctx.shadowBlur = font.shadow_blur;

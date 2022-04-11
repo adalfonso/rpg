@@ -191,7 +191,7 @@ function _drawItemText<T>(
   if (is_selected) {
     ctx.font = `bold ${ctx.font}`;
     ctx.shadowColor = font.shadow_color;
-    ctx.shadowOffsetY = 4;
+    ctx.shadowOffsetY = font.shadow_offset.y;
   }
 
   if (is_main_selection) {
