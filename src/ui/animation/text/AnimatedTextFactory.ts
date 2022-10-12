@@ -1,5 +1,5 @@
 import MissingDataError from "@/error/MissingDataError";
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import { AnimatedText } from "./AnimatedText";
 import { animations } from "./animations";
 import { config, RenderOptions } from "./text";
@@ -29,7 +29,7 @@ export class AnimatedTextFactory {
     const animation =
       getAnimationFromName(animations)(animation_name)(text_size);
 
-    return new AnimatedText(text, animation, Vector.empty(), options);
+    return new AnimatedText(text, animation, Vector.Zero, options);
   }
 
   /**

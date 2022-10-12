@@ -1,4 +1,4 @@
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import { SubMenu } from "../SubMenu";
 import { MenuRenderConfig } from "./types";
 
@@ -27,7 +27,7 @@ export function render<T>(
 
   menu.items.forEach((item, i) => {
     const font_offset = new Vector(0, font.size * 4 * (i + 1));
-    item.draw(ctx, offset.plus(font_offset), resolution, config);
+    item.draw(ctx, offset.add(font_offset), resolution, config);
   });
 
   ctx.restore();

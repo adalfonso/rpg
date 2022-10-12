@@ -1,4 +1,4 @@
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import { AnimationStep, AnimationStepTemplate } from "./AnimationStep";
 
 /** Legal Animation types */
@@ -83,13 +83,13 @@ export class Animation {
 
     // Animation is officially done
     if (this.isDone) {
-      return { type, delta: Vector.empty() };
+      return { type, delta: Vector.Zero };
     }
 
-    const sum = (carry: Vector, update: Vector) => carry.plus(update);
+    const sum = (carry: Vector, update: Vector) => carry.add(update);
     const delta = this._steps
       .map((step) => step.update(dt))
-      .reduce(sum, Vector.empty());
+      .reduce(sum, Vector.Zero);
 
     /**
      * Animation has run (iterated) at least once but is not fully completed.

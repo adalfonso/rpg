@@ -5,7 +5,7 @@ import InvalidDataError from "@/error/InvalidDataError";
 import MissingDataError from "@/error/MissingDataError";
 import NonPlayer from "@/actor/NonPlayer";
 import Portal from "@/inanimate/Portal";
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import global_config from "@/config";
 import items from "@/item/items";
 import { Item } from "@/inanimate/Item";
@@ -63,8 +63,8 @@ export class LevelFixtureFactory {
 
     const { scale } = global_config;
 
-    const position = new Vector(template.x, template.y).times(scale);
-    const size = new Vector(template.width, template.height).times(scale);
+    const position = new Vector(template.x, template.y).scale(scale);
+    const size = new Vector(template.width, template.height).scale(scale);
 
     switch (type) {
       case "clip":

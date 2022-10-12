@@ -1,5 +1,5 @@
 import Renderable from "@/ui/Renderable";
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import config from "@/config";
 import { Drawable } from "@/interfaces";
 import { TiledLayerTilelayer } from "tiled-types/types";
@@ -51,7 +51,7 @@ class Map implements Drawable {
     }
 
     const r = this.renderable;
-    const size = r.spriteSize.times(r.scale);
+    const size = r.spriteSize.scale(r.scale);
 
     this.layers.forEach((layer) => {
       if (typeof layer.data === "string") {
@@ -67,7 +67,7 @@ class Map implements Drawable {
         const position = new Vector(
           index % layer.width,
           Math.floor(index / layer.width)
-        ).times(size);
+        ).scale(size);
 
         const visible =
           position.x + offset.x + size.x >= 0 &&
@@ -80,7 +80,7 @@ class Map implements Drawable {
           return;
         }
 
-        r.draw(ctx, position.plus(offset));
+        r.draw(ctx, position.add(offset));
       });
     });
   }

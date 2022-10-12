@@ -1,4 +1,4 @@
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import { MenuRenderConfig } from "./types";
 import { SubMenu } from "../SubMenu";
 
@@ -31,8 +31,8 @@ export function render<T>(
 
   menu.items.forEach((item, index) => {
     const position = new Vector(tile_size.x + tile_padding.x, 0)
-      .times(index + 1)
-      .plus(base_position);
+      .scale(index + 1)
+      .add(base_position);
 
     item.draw(ctx, position, _resolution, config);
   });

@@ -1,5 +1,5 @@
 import TextBuffer from "@/ui/dialogue/TextBuffer";
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import { MenuItem } from "../MenuItem";
 import { MenuRenderConfig } from "./types";
 import { isInventoryItem } from "../Inventory";
@@ -24,7 +24,7 @@ export function render<T>(
   const is_selected = logic.isSelected(item);
 
   // returned and used to offset the next sibling item
-  let detail_offset = Vector.empty();
+  let detail_offset = Vector.Zero;
   let menu_offset = new Vector(config.menu.sub_menu_width, 0);
 
   if (is_selected && isInventoryItem(item.source)) {
@@ -32,7 +32,7 @@ export function render<T>(
 
     const detail_size = _drawDetails(
       ctx,
-      offset.plus(font_offset),
+      offset.add(font_offset),
       resolution,
       config,
       item
@@ -50,14 +50,14 @@ export function render<T>(
     const title_offset = new Vector(10, 0);
 
     // Render the menu option text
-    _drawItemText(ctx, offset.plus(title_offset), config, item);
+    _drawItemText(ctx, offset.add(title_offset), config, item);
   } else {
     _drawItemText(ctx, offset, config, item);
   }
 
   // Render sub-menu
   if (logic.isSelected(item) && item.menu) {
-    item.menu.draw(ctx, offset.plus(menu_offset), resolution, config);
+    item.menu.draw(ctx, offset.add(menu_offset), resolution, config);
   }
 
   return detail_offset;
@@ -98,7 +98,7 @@ function _drawDetails<T>(
 
   description_size.y = _drawSubtext(
     ctx,
-    offset.plus(padding).plus(description_padding),
+    offset.add(padding).add(description_padding),
     description_size,
     config,
     source.description ?? "Description not found."
@@ -127,16 +127,16 @@ function _drawDetails<T>(
   const sprite_offset = new Vector(
     size.x - sprite_size.x - padding.x,
     padding.y + sprite_padding.y
-  ).plus(offset);
+  ).add(offset);
 
   source.draw(ctx, sprite_offset, sprite_size);
 
   if (badge_title) {
     const text_size = new Vector(badge_width, font.subtext_size);
     const equipped_indicator_offset = offset
-      .plus(size)
-      .minus(text_size)
-      .minus(padding);
+      .add(size)
+      .sub(text_size)
+      .sub(padding);
 
     _drawSubtext(
       ctx,

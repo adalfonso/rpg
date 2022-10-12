@@ -7,7 +7,7 @@ import OpponentSelect from "./OpponentSelect";
 import StatModifier from "./strategy/StatModifier";
 import Team from "./Team";
 import TextStream from "@/ui/dialogue/TextStream";
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import WeaponFactory from "./strategy/WeaponFactory";
 import menus from "@/menu/menus";
 import { AnimatedEntity } from "@/ui/animation/text/AnimatedEntity";
@@ -160,7 +160,7 @@ class Battle implements Drawable, Lockable {
     const [event] = this._event_queue;
 
     if (isBattleEvent(event) && event?.draw) {
-      event.draw(ctx, Vector.empty(), resolution);
+      event.draw(ctx, Vector.Zero, resolution);
     }
   }
 
@@ -240,7 +240,7 @@ class Battle implements Drawable, Lockable {
   private _moveBattleMenu() {
     const hero = this._heroes.nextToTakeTurn;
     this._menu.reset();
-    this._menu.moveTo(hero.position.plus(hero.size));
+    this._menu.moveTo(hero.position.add(hero.size));
   }
 
   /** Cause game over */
@@ -282,11 +282,11 @@ class Battle implements Drawable, Lockable {
 
     if (e.detail?.strategy instanceof CombatStrategy) {
       const animation = createAnimation.translation({
-        translation: opponent.position.minus(hero.position),
+        translation: opponent.position.sub(hero.position),
         duration_ms: 500,
       });
       const inverse_animation = createAnimation.translation({
-        translation: opponent.position.minus(hero.position).times(-1),
+        translation: opponent.position.sub(hero.position).scale(-1),
         duration_ms: 500,
       });
 
@@ -320,11 +320,11 @@ class Battle implements Drawable, Lockable {
       this._heroes.leader;
 
     const animation = createAnimation.translation({
-      translation: target_hero.position.minus(foe.position),
+      translation: target_hero.position.sub(foe.position),
       duration_ms: 500,
     });
     const inverse_animation = createAnimation.translation({
-      translation: target_hero.position.minus(foe.position).times(-1),
+      translation: target_hero.position.sub(foe.position).scale(-1),
       duration_ms: 500,
     });
 

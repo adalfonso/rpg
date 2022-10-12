@@ -1,4 +1,4 @@
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 
 /** Splits a string of text into multiple lines */
 class TextBuffer {

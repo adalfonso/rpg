@@ -1,4 +1,4 @@
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import config from "@/config";
 
 /**
@@ -15,8 +15,8 @@ abstract class Inanimate {
    * @param size     - size of the inanimate
    */
   constructor(
-    public position: Vector = Vector.empty(),
-    public size: Vector = Vector.empty()
+    public position: Vector = Vector.Zero,
+    public size: Vector = Vector.Zero
   ) {}
 
   /**
@@ -57,7 +57,7 @@ abstract class Inanimate {
     offset: Vector,
     _resolution: Vector
   ) {
-    const position = this.position.plus(offset);
+    const position = this.position.add(offset);
 
     ctx.save();
     ctx.strokeStyle = "#FF0";

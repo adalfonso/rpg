@@ -1,5 +1,5 @@
 import MissingDataError from "@/error/MissingDataError";
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import { AnimationTemplate, AnimationType } from "../Animation";
 import {
   AnimationFunction,
@@ -40,7 +40,7 @@ export const animations: Record<string, AnimationTemplate> = {
       {
         delay_ms: 1000,
         duration_ms: 750,
-        end: () => Vector.empty(),
+        end: () => Vector.Zero,
         fn: fn[AnimationFunction.Linear],
       },
     ],

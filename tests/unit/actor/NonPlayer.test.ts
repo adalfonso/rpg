@@ -1,5 +1,5 @@
 import NonPlayer from "@/actor/NonPlayer";
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import { getFixtureTemplate } from "../level/_fixtures";
 
 describe("NonPlayer", () => {
@@ -8,8 +8,8 @@ describe("NonPlayer", () => {
       expect(
         () =>
           new NonPlayer(
-            Vector.empty(),
-            Vector.empty(),
+            Vector.Zero,
+            Vector.Zero,
             getFixtureTemplate({
               type: "_default_actor",
               name: "_default_actor",

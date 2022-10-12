@@ -2,7 +2,7 @@ import Actor from "@/actor/Actor";
 import Damage from "../Damage";
 import MissingDataError from "@/error/MissingDataError";
 import Renderable from "@/ui/Renderable";
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import { Constructor } from "@/mixins";
 import { EntityConfig } from "./types";
 import { Nullable } from "@/types";

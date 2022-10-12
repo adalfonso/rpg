@@ -1,4 +1,4 @@
-import Vector from "@/physics/math/Vector";
+import { vec, Vector } from "excalibur";
 
 import { SubMenu } from "../SubMenu";
 import { MenuRenderConfig } from "./types";
@@ -21,11 +21,14 @@ export function render<T>(
 ) {
   const { font } = config;
 
-  const menu_padding = new Vector(font.size, font.size)
-    .times(0.5)
-    .apply(Math.round);
+  const menu_padding_unrounded = new Vector(font.size, font.size).scale(0.5);
 
-  const title_offset = offset.plus(menu_padding);
+  const menu_padding = vec(
+    Math.round(menu_padding_unrounded.x),
+    Math.round(menu_padding_unrounded.y)
+  );
+
+  const title_offset = offset.add(menu_padding);
 
   ctx.font = `${font.size}px ${font.family}`;
   ctx.fillText("Equip to player:", title_offset.x, title_offset.y);
@@ -34,7 +37,7 @@ export function render<T>(
     const row_offset = new Vector(0, (index + 1) * 2 * font.size);
     item.draw(
       ctx,
-      offset.plus(menu_padding).plus(row_offset),
+      offset.add(menu_padding).add(row_offset),
       resolution,
       config
     );

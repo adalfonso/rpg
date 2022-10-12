@@ -3,7 +3,7 @@ import BattleBuilder from "@/combat/BattleBuilder";
 import CollisionHandler from "../physics/CollisionHandler";
 import Level from "../level/Level";
 import MissingDataError from "../error/MissingDataError";
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import menus from "@/menu/menus";
 import { DialogueMediator } from "../ui/dialogue/DialogueMediator";
 import { Drawable, Updatable } from "../interfaces";
@@ -87,7 +87,7 @@ class Game implements Drawable, Updatable {
 
   /** Get the focal point that the game revolves around, the player */
   get renderPoint() {
-    return this.player.position.copy();
+    return this.player.position.clone();
   }
 
   /**
@@ -121,7 +121,7 @@ class Game implements Drawable, Updatable {
     offset: Vector,
     resolution: Vector
   ) {
-    const noOffset = Vector.empty();
+    const noOffset = Vector.Zero;
 
     if (this._battle !== null && this._battle.active) {
       const battleOffset = new Vector(

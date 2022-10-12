@@ -1,4 +1,4 @@
-import Vector from "./physics/math/Vector";
+import { Vector } from "excalibur";
 
 export const APP_NAME = "TauriRPG";
 export const SAVE_DIR = "SaveData";

@@ -1,6 +1,6 @@
 import Actor from "./Actor";
 import Renderable from "@/ui/Renderable";
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import { Direction } from "@/ui/types";
 import { HeroTeam } from "@/combat/HeroTeam";
 import { LevelFixtureTemplate } from "@/level/LevelFixture";
@@ -72,7 +72,7 @@ class Enemy extends Actor {
 
     super.draw(ctx, offset, resolution);
 
-    this.sprites[this.direction].draw(ctx, this._position.plus(offset));
+    this.sprites[this.direction].draw(ctx, this._position.add(offset));
   }
 
   /**
@@ -81,7 +81,7 @@ class Enemy extends Actor {
    * @return the clone
    */
   public clone(): Enemy {
-    return new Enemy(this._position.copy(), this.size.copy(), this.template);
+    return new Enemy(this._position.clone(), this.size.clone(), this.template);
   }
 
   /**

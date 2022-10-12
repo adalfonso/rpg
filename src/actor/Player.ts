@@ -1,6 +1,5 @@
 import Actor from "./Actor";
 import MissingDataError from "@/error/MissingDataError";
-import Vector from "@/physics/math/Vector";
 import Weapon from "@/combat/strategy/Weapon";
 import config from "@/config";
 import { Direction } from "@/ui/types";
@@ -10,6 +9,7 @@ import { Pet } from "./Pet";
 import { PlayerState } from "@schema/actor/PlayerSchema";
 import { Stateful } from "@/interfaces";
 import { bus, EventType } from "@/event/EventBus";
+import { Vector } from "excalibur";
 
 /** The main entity of the game */
 class Player extends Actor implements Stateful<PlayerState> {
@@ -36,7 +36,7 @@ class Player extends Actor implements Stateful<PlayerState> {
   ) {
     super(_position, _size, template);
 
-    this.speed = Vector.empty();
+    this.speed = Vector.Zero;
     this.baseSpeed = _size.x / 10;
 
     bus.register(this);
@@ -72,9 +72,9 @@ class Player extends Actor implements Stateful<PlayerState> {
       speedModifier *= 0.75;
     }
 
-    const distance = this.speed.times(config.scale).times(speedModifier);
+    const distance = this.speed.scale(config.scale).scale(speedModifier);
 
-    this.moveTo(this._position.plus(distance));
+    this.moveTo(this._position.add(distance));
 
     if (Math.abs(this.speed.x) + Math.abs(this.speed.y)) {
       bus.emit("player.move", { player: this });

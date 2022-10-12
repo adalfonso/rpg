@@ -1,7 +1,7 @@
 import Clip from "../inanimate/Clip";
 import Enemy from "@/actor/Enemy";
 import Portal from "../inanimate/Portal";
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import { HeroTeam } from "@/combat/HeroTeam";
 import { Item } from "../inanimate/Item";
 import { LevelFixture } from "../level/LevelFixture";

@@ -1,4 +1,4 @@
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import { Direction } from "@/ui/types";
 import { getPet } from "./_fixtures";
 

@@ -1,4 +1,4 @@
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import { Direction } from "@/ui/types";
 import { Pet } from "@/actor/Pet";
 import { getPet, getPlayer } from "./_fixtures";
@@ -17,7 +17,7 @@ describe("Player", () => {
 
       expect(update_spy).toBeCalledTimes(1);
       expect(spy).toBeCalledWith({
-        position: Vector.empty(),
+        position: Vector.Zero,
         direction: Direction.None,
         dt,
       });

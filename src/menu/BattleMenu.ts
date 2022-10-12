@@ -1,5 +1,5 @@
 import CombatStrategy from "@/combat/strategy/CombatStrategy";
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import { Drawable } from "@/interfaces";
 import { EventType } from "@/event/EventBus";
 import { Menu } from "./Menu";
@@ -51,7 +51,7 @@ export class BattleMenu extends Menu<BattleMenuItem> implements Drawable {
       this
     );
 
-    this._menu.draw(ctx, offset.plus(this.position), resolution, config);
+    this._menu.draw(ctx, offset.add(this.position), resolution, config);
   }
 
   /** Reset this menu back to its original option */

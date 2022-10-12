@@ -1,6 +1,6 @@
 import Enemy from "@/actor/Enemy";
 import Player from "@/actor/Player";
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import { Pet } from "@/actor/Pet";
 
 export const getActorTemplate = () => ({
@@ -25,21 +25,21 @@ export const getActorConfig = () => ({
 });
 
 export const getPet = () => {
-  return new Pet(Vector.empty(), Vector.empty(), getActorTemplate());
+  return new Pet(Vector.Zero, Vector.Zero, getActorTemplate());
 };
 
 export const getPlayer = (input: Record<string, unknown> = {}) => {
   const { size } = input;
   return new Player(
-    Vector.empty(),
-    (size as Vector) ?? Vector.empty(),
+    Vector.Zero,
+    (size as Vector) ?? Vector.Zero,
     getActorTemplate()
   );
 };
 
 export const getEnemy = (input: Record<string, string> = {}) => {
   const { name } = input;
-  return new Enemy(Vector.empty(), Vector.empty(), {
+  return new Enemy(Vector.Zero, Vector.Zero, {
     name: name ?? "_default_enemy",
     type: "_default_enemy",
     x: 1,

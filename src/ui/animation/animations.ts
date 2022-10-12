@@ -1,4 +1,4 @@
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import { AnimationTemplate, AnimationType } from "./Animation";
 import {
   AnimationFunction,

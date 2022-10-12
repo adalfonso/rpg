@@ -1,6 +1,6 @@
 import Game from "@/game/Game";
 import MissingDataError from "@/error/MissingDataError";
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import { bus, EventType } from "@/event/EventBus";
 /**
  * Different modes for rendering the display
@@ -57,7 +57,7 @@ class Display {
   /** The drawing offset relative to the current render mode */
   get offset(): Vector {
     if (this.renderMode === RenderMode.Static) {
-      return Vector.empty();
+      return Vector.Zero;
     }
 
     const center = this.game.renderPoint;

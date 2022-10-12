@@ -1,5 +1,5 @@
 import Inanimate from "./Inanimate";
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 
 /** An area on the map that an entity can be loaded on */
 class Entry extends Inanimate {

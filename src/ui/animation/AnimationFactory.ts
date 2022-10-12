@@ -1,6 +1,6 @@
 import { RESOLUTION as resolution } from "@/constants";
 import MissingDataError from "@/error/MissingDataError";
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import { Animation, AnimationTemplate } from "@/ui/animation/Animation";
 import { AnimationStep, AnimationStepTemplate } from "./AnimationStep";
 

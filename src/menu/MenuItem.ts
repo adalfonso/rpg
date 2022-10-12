@@ -1,4 +1,4 @@
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import { MenuItemRenderer, MenuRenderConfig } from "./ui/types";
 import { MenuItemTemplate } from "./menus";
 import { MenuType } from "./types";
@@ -72,7 +72,7 @@ export class MenuItem<T> {
     offset: Vector,
     resolution: Vector,
     options: MenuRenderConfig<T>
-  ): Vector | undefined {
+  ): Vector | void {
     return this._renderer(ctx, offset, resolution, options, this);
   }
 

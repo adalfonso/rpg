@@ -1,4 +1,4 @@
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import { AnimationFactory } from "@/ui/animation/AnimationFactory";
 import { Item as Sut } from "@/inanimate/Item";
 import { ItemConfig } from "@/item/types";
@@ -11,7 +11,9 @@ describe("inanimate/Item", () => {
       const sut = getSut();
       sut.update(100);
 
-      expect(sut.position.toArray()).toEqual([1, 1]);
+      const { x, y } = sut.position;
+
+      expect([x, y]).toEqual([1, 1]);
     });
 
     it("updates position during animation", () => {
@@ -37,7 +39,9 @@ describe("inanimate/Item", () => {
       const sut = getSut({ animation_factory, config_ctor });
       sut.update(100);
 
-      expect(sut.position.toArray()).toEqual([2, 2]);
+      const { x, y } = sut.position;
+
+      expect([x, y]).toEqual([2, 2]);
     });
   });
 });

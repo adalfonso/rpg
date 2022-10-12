@@ -1,6 +1,6 @@
 import { Actor } from "./Actor";
 import { Direction } from "@/ui/types";
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 
 interface FollowUpdate {
   position: Vector;

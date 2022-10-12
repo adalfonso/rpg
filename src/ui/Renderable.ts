@@ -1,4 +1,4 @@
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import config from "@/config";
 import { Drawable } from "@/interfaces";
 
@@ -17,7 +17,7 @@ export default class Renderable implements Drawable {
    *
    * (The effective dimensions of sprite)
    */
-  public spriteSize: Vector = Vector.empty();
+  public spriteSize: Vector = Vector.Zero;
 
   /**
    * If the image has loaded

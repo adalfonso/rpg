@@ -5,7 +5,6 @@ import Dialogue from "@/ui/dialogue/Dialogue";
 import Inanimate from "@/inanimate/Inanimate";
 import MissingDataError from "@/error/MissingDataError";
 import Stats from "@/actor/Stats";
-import Vector from "@/physics/math/Vector";
 import Weapon from "@/combat/strategy/Weapon";
 import config from "@/config";
 import { AbilityList, LearnedAbility } from "@/combat/strategy/types";
@@ -25,6 +24,7 @@ import {
   LevelFixtureProperty,
   LevelFixtureTemplate,
 } from "@/level/LevelFixture";
+import { vec, Vector } from "excalibur";
 
 /** General purpose entity that interacts with fixtures in the game */
 type Entity = Actor | Inanimate;
@@ -118,8 +118,8 @@ export abstract class Actor
     this.direction = Direction.None;
     this.inDialogue = false;
     this.locked = false;
-    this.lastPosition = this._position.copy();
-    this.savedPosition = this._position.copy();
+    this.lastPosition = this._position.clone();
+    this.savedPosition = this._position.clone();
     this.savedDirection = this.direction;
 
     this._setSprites(this.getUiInfo());
@@ -192,7 +192,7 @@ export abstract class Actor
       return;
     }
 
-    this.lastPosition = this._position.copy();
+    this.lastPosition = this._position.clone();
   }
 
   /**
@@ -211,7 +211,7 @@ export abstract class Actor
       this.debugDraw(ctx, offset, resolution);
     }
 
-    this.sprites[this.direction].draw(ctx, this._position.plus(offset));
+    this.sprites[this.direction].draw(ctx, this._position.add(offset));
   }
 
   /**
@@ -286,8 +286,8 @@ export abstract class Actor
 
     if (collision) {
       return {
-        position: entity.position.copy(),
-        size: entity.size.copy(),
+        position: entity.position.clone(),
+        size: entity.size.clone(),
       };
     }
 
@@ -301,8 +301,8 @@ export abstract class Actor
    */
   public savePosition(useLast = false) {
     this.savedPosition = useLast
-      ? this.lastPosition.copy()
-      : this._position.copy();
+      ? this.lastPosition.clone()
+      : this._position.clone();
 
     this.savedDirection = this.direction;
   }
@@ -426,7 +426,7 @@ export abstract class Actor
     return {
       fps: UI.fps,
       frames: UI.frames,
-      ratio: new Vector(UI.frames.x, UI.frames.y),
+      ratio: vec(UI.frames.x, UI.frames.y),
       scale: UI.scale * config.scale,
       sprite: getImagePath(UI.sprite),
     };
@@ -440,7 +440,7 @@ export abstract class Actor
    * @param prev - use previous position instead of current position
    */
   private collisionPoint(prev = false): Vector {
-    return new Vector(
+    return vec(
       (prev ? this.lastPosition.x : this._position.x) + this.size.x * 0.5,
       (prev ? this.lastPosition.y : this._position.y) + this.size.y * 0.8
     );
@@ -471,7 +471,7 @@ export abstract class Actor
     offset: Vector,
     _resolution: Vector
   ) {
-    const position = this._position.plus(offset);
+    const position = this._position.add(offset);
 
     ctx.save();
     ctx.strokeStyle = "#F00";

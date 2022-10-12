@@ -1,4 +1,4 @@
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import { Animation, AnimationType } from "../Animation";
 
 /** Required options for rendering an animation */
@@ -87,6 +87,6 @@ export class AnimatedText {
    * @param delta - text's new position change
    */
   private move(delta: Vector) {
-    this._position = this._position.plus(delta);
+    this._position = this._position.add(delta);
   }
 }

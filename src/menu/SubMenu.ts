@@ -1,5 +1,5 @@
 import InvalidDataError from "@/error/InvalidDataError";
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import { MenuGenerator, MenuTemplate } from "./menus";
 import { MenuItem } from "./MenuItem";
 import { MenuRenderConfig, SubMenuRenderer } from "./ui/types";

@@ -1,4 +1,4 @@
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import { MenuItem } from "../MenuItem";
 import { SubMenu } from "../SubMenu";
 
@@ -63,4 +63,4 @@ export type MenuItemRenderer<T> = (
   resolution: Vector,
   options: MenuRenderConfig<T>,
   item: MenuItem<T>
-) => Vector | undefined;
+) => Vector | void;

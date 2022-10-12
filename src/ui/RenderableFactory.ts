@@ -1,6 +1,6 @@
 import MissingDataError from "@/error/MissingDataError";
 import Renderable from "./Renderable";
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import { getImagePath } from "@/util";
 
 /** Generate a new renderable */

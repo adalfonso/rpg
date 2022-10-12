@@ -1,6 +1,6 @@
 import Player from "@/actor/Player";
 import Sut, { Collision } from "@/physics/CollisionHandler";
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import { AnimationFactory } from "@/ui/animation/AnimationFactory";
 import { HeroTeam } from "@/combat/HeroTeam";
 import { Item } from "@/inanimate/Item";
@@ -36,7 +36,7 @@ describe("CollisionHandler", () => {
 
       let item = new Item(
         new Vector(1, 1),
-        Vector.empty(),
+        Vector.Zero,
         {
           name: "empanada",
           type: "empanada",
@@ -61,7 +61,7 @@ describe("CollisionHandler", () => {
 });
 
 const getPlayer = () => {
-  return new Player(Vector.empty(), Vector.empty(), {
+  return new Player(Vector.Zero, Vector.Zero, {
     x: 1,
     y: 1,
     height: 1,
@@ -73,8 +73,8 @@ const getPlayer = () => {
 
 const getCollision = (): Collision => {
   return {
-    position: Vector.empty(),
-    size: Vector.empty(),
+    position: Vector.Zero,
+    size: Vector.Zero,
   };
 };
 

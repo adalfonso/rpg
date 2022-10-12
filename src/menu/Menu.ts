@@ -1,4 +1,4 @@
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import { Drawable, Lockable } from "@/interfaces";
 import { Empty } from "@/mixins";
 import { MenuItem } from "./MenuItem";
@@ -33,10 +33,7 @@ export abstract class Menu<T>
    * @param _menu - menu options
    * @param _position - menu position
    */
-  constructor(
-    protected _menu: SubMenu<T>,
-    protected _position = Vector.empty()
-  ) {
+  constructor(protected _menu: SubMenu<T>, protected _position = Vector.Zero) {
     super();
 
     this.selected = [this._menu.items[0]];

@@ -1,5 +1,5 @@
 import TextBuffer from "./TextBuffer";
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import { Nullable } from "@/types";
 
 /** Handles to usage of several TextBuffers */

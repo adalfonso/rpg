@@ -1,6 +1,6 @@
 import Inanimate from "./Inanimate";
 import Renderable from "@/ui/Renderable";
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import config from "@/config";
 import { Animation } from "@/ui/animation/Animation";
 import { AnimationFactory } from "@/ui/animation/AnimationFactory";
@@ -120,7 +120,7 @@ export class Item extends Inanimate implements Stateful<ItemState> {
       return;
     }
 
-    this.position = this.position.plus(delta);
+    this.position = this.position.add(delta);
   }
 
   /**
@@ -137,7 +137,7 @@ export class Item extends Inanimate implements Stateful<ItemState> {
   ) {
     super.draw(ctx, offset, resolution);
 
-    this._renderable.draw(ctx, this.position.plus(offset), resolution);
+    this._renderable.draw(ctx, this.position.add(offset), resolution);
   }
 
   /** Pick up the item */

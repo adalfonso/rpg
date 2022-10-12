@@ -1,4 +1,4 @@
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import * as Sut from "@/ui/animation/AnimationFunction";
 
 describe("AnimationFunction", () => {
@@ -29,7 +29,8 @@ describe("AnimationFunction", () => {
             result: [4.5, 4.5],
           },
         ].forEach(({ end, percent, result }) => {
-          expect(fn(percent, end).toArray()).toEqual(result);
+          const { x, y } = fn(percent, end);
+          expect([x, y]).toEqual(result);
         });
       });
     });

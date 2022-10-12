@@ -1,4 +1,4 @@
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import { Empty } from "@/mixins";
 import { Movable } from "@/physics/Entity";
 

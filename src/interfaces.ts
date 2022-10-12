@@ -1,4 +1,4 @@
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import { EventType } from "./event/EventBus";
 
 /** Any class that renders itself on a canvas */

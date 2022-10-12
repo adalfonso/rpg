@@ -1,6 +1,6 @@
 import Inanimate from "./Inanimate";
 import MissingDataError from "@/error/MissingDataError";
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import { LevelFixtureTemplate } from "@/level/LevelFixture";
 /**
  * An invisible area on the map

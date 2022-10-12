@@ -4,7 +4,7 @@ import InvalidDataError from "@/error/InvalidDataError";
 import MissingDataError from "@/error/MissingDataError";
 import Team from "@/combat/Team";
 import TextStream from "./TextStream";
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import { Updatable } from "@/interfaces";
 import { bus, EventType } from "@/event/EventBus";
 import { isStringArray, Nullable } from "@/types";
@@ -56,7 +56,7 @@ export class DialogueMediator implements Updatable {
    */
   public draw(
     ctx: CanvasRenderingContext2D,
-    offset: Vector = Vector.empty(),
+    offset: Vector = Vector.Zero,
     resolution: Vector
   ) {
     this._dialogue?.draw(ctx, offset, resolution);

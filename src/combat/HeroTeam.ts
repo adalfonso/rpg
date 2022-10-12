@@ -2,7 +2,7 @@ import Actor from "@/actor/Actor";
 import MissingDataError from "@/error/MissingDataError";
 import Player from "@/actor/Player";
 import Team from "./Team";
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import config from "@/config";
 import { LevelFixtureTemplate } from "@/level/LevelFixture";
 import { Stateful } from "@/interfaces";
@@ -119,8 +119,8 @@ export class HeroTeam extends Team<Player> implements Stateful<TeamState> {
 
       // TODO: Remove this hack
       const placeholder = new Player(
-        Vector.empty(),
-        new Vector(16, 32).times(config.scale),
+        Vector.Zero,
+        new Vector(16, 32).scale(config.scale),
         member as unknown as LevelFixtureTemplate
       );
 
@@ -169,13 +169,13 @@ export class HeroTeam extends Team<Player> implements Stateful<TeamState> {
    * @returns new player
    */
   private _createPlayerFromActor(actor: Actor) {
-    const position = Vector.empty();
+    const position = Vector.Zero;
     const size = new Vector(actor.template.width, actor.template.height);
 
     return new Player(
-      position.times(config.scale),
+      position.scale(config.scale),
       // TODO: why do we have to provide a size if it is listed in the template?
-      size.times(config.scale),
+      size.scale(config.scale),
       actor.template
     );
   }

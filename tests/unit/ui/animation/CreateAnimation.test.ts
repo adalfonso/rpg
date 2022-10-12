@@ -1,4 +1,4 @@
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import { AnimationType, AnimationUpdate } from "@/ui/animation/Animation";
 import {
   createAnimation,
@@ -21,7 +21,7 @@ describe("CreateAnimation", () => {
           expected: [
             {
               type: AnimationType.Position,
-              delta: Vector.empty(),
+              delta: Vector.Zero,
             },
             {
               type: AnimationType.Position,
@@ -43,7 +43,7 @@ describe("CreateAnimation", () => {
           expected: [
             {
               type: AnimationType.Position,
-              delta: Vector.empty(),
+              delta: Vector.Zero,
             },
             {
               type: AnimationType.Position,

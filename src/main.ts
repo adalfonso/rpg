@@ -2,7 +2,7 @@ import "./_resource/css/app.css";
 import Display from "@/ui/Display";
 import Game from "@/game/Game";
 import Player from "./actor/Player";
-import Vector from "./physics/math/Vector";
+import { Vector } from "excalibur";
 import config from "@/config";
 import { APP_NAME, SAVE_FILE, RESOLUTION, SAVE_DIR } from "./constants";
 import { DialogueMediator } from "@/ui/dialogue/DialogueMediator";
@@ -29,11 +29,11 @@ document.addEventListener("DOMContentLoaded", async (_event) => {
   const player_position = new Vector(player_template.x, player_template.y);
   const player_size = new Vector(player_template.width, player_template.height);
   const player = new Player(
-    player_position.times(config.scale),
-    player_size.times(config.scale),
+    player_position.scale(config.scale),
+    player_size.scale(config.scale),
     player_template
   );
-  const doggo = new Pet(player.position.copy(), player.size.copy(), {
+  const doggo = new Pet(player.position.clone(), player.size.clone(), {
     name: "Lea",
     type: "lea",
     x: 0,

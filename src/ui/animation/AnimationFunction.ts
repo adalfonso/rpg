@@ -1,4 +1,4 @@
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 
 /** Animation functions */
 export enum AnimationFunction {
@@ -26,5 +26,5 @@ export const animations_functions: Record<
   AnimationFunctionApplication
 > = {
   [AnimationFunction.Linear]: (percent: number, end: Vector) =>
-    end.times(percent),
+    end.scale(percent),
 };

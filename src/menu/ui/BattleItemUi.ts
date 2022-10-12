@@ -1,4 +1,4 @@
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import { MenuItem } from "../MenuItem";
 import { MenuRenderConfig } from "./types";
 

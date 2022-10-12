@@ -1,4 +1,4 @@
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import { AnimationFunctionApplication } from "./AnimationFunction";
 
 /** Describes one step of an animation */
@@ -97,7 +97,7 @@ export class AnimationStep {
     this._current_time += dt;
 
     if (this._current_time < delay_ms || this.isDone) {
-      return Vector.empty();
+      return Vector.Zero;
     }
 
     if (this._hasCompleted()) {
@@ -113,6 +113,6 @@ export class AnimationStep {
     const previous = fn(prev_percent, end(subject, resolution));
     const current = fn(current_percent, end(subject, resolution));
 
-    return current.minus(previous);
+    return current.sub(previous);
   }
 }

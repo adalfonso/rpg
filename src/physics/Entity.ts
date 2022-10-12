@@ -1,7 +1,7 @@
 import MissingDataError from "../error/MissingDataError";
-import Vector from "@/physics/math/Vector";
 import { Constructor } from "../mixins";
 import { Nullable } from "../types";
+import { Vector } from "excalibur";
 
 export const Movable = <T extends Constructor>(Base: T) =>
   /** A class that has a position and can be moved */
@@ -25,7 +25,7 @@ export const Movable = <T extends Constructor>(Base: T) =>
      * @param position - position to move to
      */
     public moveTo(position: Vector) {
-      this._position = position.copy();
+      this._position = position.clone();
     }
   };
 

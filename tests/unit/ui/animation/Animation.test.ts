@@ -1,4 +1,4 @@
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import { Animation as Sut, AnimationType } from "@/ui/animation/Animation";
 import {
   AnimationStep,
@@ -14,7 +14,7 @@ describe("Animation", () => {
 
       (<AnimationStep>(<any>steps[0])).update = () => {
         count++;
-        return count === 2 ? new Vector(1, 1) : Vector.empty();
+        return count === 2 ? new Vector(1, 1) : Vector.Zero;
       };
 
       const template = {
@@ -26,7 +26,7 @@ describe("Animation", () => {
 
       const expected = {
         type: AnimationType.Position,
-        delta: Vector.empty(),
+        delta: Vector.Zero,
       };
 
       expect(sut.update(0)).toEqual(expected);
@@ -91,10 +91,13 @@ describe("Animation", () => {
       };
 
       const sut = new Sut(template, createBasicStep);
+      const delta_1 = sut.update(100).delta;
 
-      expect(sut.update(100).delta.toArray()).toEqual([1, 1]);
+      expect([delta_1.x, delta_1.y]).toEqual([1, 1]);
       expect(sut.isDone).toBe(true);
-      expect(sut.update(100).delta.toArray()).toEqual([0, 0]);
+
+      const delta_2 = sut.update(100).delta;
+      expect([delta_2.x, delta_2.y]).toEqual([0, 0]);
       expect(sut.isDone).toBe(true);
     });
   });

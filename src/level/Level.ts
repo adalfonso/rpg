@@ -5,7 +5,7 @@ import MissingDataError from "@/error/MissingDataError";
 import NonPlayer from "@/actor/NonPlayer";
 import Player from "@/actor/Player";
 import Portal from "@/inanimate/Portal";
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import { Drawable, Eventful } from "@/interfaces";
 import { LevelFixture } from "./LevelFixture";
 import { LevelFixtureFactory } from "./LevelFixtureFactory";

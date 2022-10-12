@@ -1,6 +1,6 @@
 import Actor from "@/actor/Actor";
 import Team from "./Team";
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import { Drawable, Lockable } from "@/interfaces";
 import { bus, EventType } from "@/event/EventBus";
 
@@ -78,7 +78,7 @@ class OpponentSelect implements Drawable, Lockable {
     }
 
     const fontOffset = new Vector(17, -36);
-    const position = this.selected.position.plus(offset).plus(fontOffset);
+    const position = this.selected.position.add(offset).add(fontOffset);
 
     ctx.save();
 

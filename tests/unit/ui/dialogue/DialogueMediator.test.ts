@@ -1,7 +1,7 @@
 import Dialogue from "@/ui/dialogue/Dialogue";
 import Player from "@/actor/Player";
 import Team from "@/combat/Team";
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import { DialogueMediator } from "@/ui/dialogue/DialogueMediator";
 import { EventType } from "@/event/EventBus";
 
@@ -50,7 +50,7 @@ describe("DialogueMediator", () => {
     });
 
     it("locks targets while dialogue is active", () => {
-      const player = new Player(Vector.empty(), Vector.empty(), {
+      const player = new Player(Vector.Zero, Vector.Zero, {
         type: "_default_actor",
       } as any);
 

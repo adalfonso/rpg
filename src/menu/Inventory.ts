@@ -1,6 +1,6 @@
 import Item from "@/item/Item";
 import MissingDataError from "@/error/MissingDataError";
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import Weapon from "@/combat/strategy/Weapon";
 import WeaponFactory from "@/combat/strategy/WeaponFactory";
 import { BaseMenuItemTemplate as Base } from "./menus";

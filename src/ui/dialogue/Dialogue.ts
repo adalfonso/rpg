@@ -1,6 +1,6 @@
 import Actor from "@/actor/Actor";
 import TextStream from "./TextStream";
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import { Drawable } from "@/interfaces";
 import { Nullable } from "@/types";
 import { bus, EventType } from "@/event/EventBus";
@@ -75,22 +75,21 @@ class Dialogue implements Drawable {
    */
   public draw(
     ctx: CanvasRenderingContext2D,
-    offset: Vector = Vector.empty(),
+    offset: Vector = Vector.Zero,
     resolution: Vector
   ) {
     const margin = new Vector(20, 20);
     const size = new Vector(resolution.x - 2 * margin.x, 130);
 
-    const position = new Vector(
-      margin.x,
-      resolution.y - size.y - margin.y
-    ).plus(offset);
+    const position = new Vector(margin.x, resolution.y - size.y - margin.y).add(
+      offset
+    );
 
     ctx.save();
     ctx.fillStyle = "#EEE";
     ctx.fillRect(position.x, position.y, size.x, size.y);
 
-    this.drawText(ctx, position, resolution.minus(margin.times(2)));
+    this.drawText(ctx, position, resolution.sub(margin.scale(2)));
 
     ctx.restore();
   }
@@ -183,7 +182,7 @@ class Dialogue implements Drawable {
     if (this.stream.isEmpty) {
       const prefix = this._speaker ? this._speaker.displayAs + ": " : "";
 
-      this.stream.fillBuffer(ctx, resolution.minus(padding.times(2)), prefix);
+      this.stream.fillBuffer(ctx, resolution.sub(padding.scale(2)), prefix);
     }
 
     ctx.fillStyle = "#333";
@@ -196,8 +195,8 @@ class Dialogue implements Drawable {
     // Print each line in the buffer
     for (let i = 0; i < lines.length; i++) {
       const text = fragment.length < lines[i].length ? fragment : lines[i];
-      const lineOffset = new Vector(0, lineHeight).times(i + 1);
-      const position = offset.plus(padding).plus(lineOffset);
+      const lineOffset = new Vector(0, lineHeight).scale(i + 1);
+      const position = offset.add(padding).add(lineOffset);
 
       ctx.fillText(text.trim(), position.x, position.y);
 

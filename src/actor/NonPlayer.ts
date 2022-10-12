@@ -1,6 +1,6 @@
 import Actor from "./Actor";
 import MissingDataError from "@/error/MissingDataError";
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import { Drawable } from "@/interfaces";
 import { Milestone } from "@/state/milestone/Milestone";
 import { MilestoneAttainOn } from "@/state/milestone/types";

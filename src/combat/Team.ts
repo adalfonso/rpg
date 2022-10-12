@@ -1,6 +1,6 @@
 import Actor from "@/actor/Actor";
 import MissingDataError from "@/error/MissingDataError";
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import { Direction } from "@/ui/types";
 
 /** A battle-centric collection of actors that are related in some way */
@@ -77,7 +77,7 @@ class Team<M extends Actor> {
     this._members.forEach((member, index) => {
       member.savePosition(true);
       member.direction = direction;
-      member.moveTo(position.plus(new Vector(member.size.x * index * 4, 0)));
+      member.moveTo(position.add(new Vector(member.size.x * index * 4, 0)));
       member.lock();
     });
     this.cycle();

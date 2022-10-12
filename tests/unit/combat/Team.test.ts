@@ -1,7 +1,7 @@
 import Actor from "@/actor/Actor";
 import Stats from "@/actor/Stats";
 import Sut from "@/combat/Team";
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import { Direction } from "@/ui/types";
 import { getPlayer } from "../actor/_fixtures";
 import { state } from "@/state/StateManager";

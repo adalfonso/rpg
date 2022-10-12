@@ -1,4 +1,4 @@
-import Vector from "@/physics/math/Vector";
+import { Vector } from "excalibur";
 import { MenuRenderConfig } from "./types";
 import { SubMenu } from "../SubMenu";
 import { createConfig } from "./MenuRenderConfigFactory";
@@ -41,12 +41,12 @@ export function render<T>(
     const item_menu_config = { sub_menu_width };
     const item_config = createConfig({ menu: item_menu_config }, config);
     const row_offset = new Vector(0, font.size * 2 * index);
-    const new_offset = offset.plus(margin).plus(row_offset);
+    const new_offset = offset.add(margin).add(row_offset);
 
     const detail_offset =
-      item.draw(ctx, new_offset, resolution, item_config) ?? Vector.empty();
+      item.draw(ctx, new_offset, resolution, item_config) ?? Vector.Zero;
 
-    offset = offset.plus(detail_offset);
+    offset = offset.add(detail_offset);
   });
 }
 
