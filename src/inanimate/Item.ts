@@ -54,7 +54,7 @@ export class Item extends Inanimate implements Stateful<ItemState> {
   ) {
     super(position, size);
 
-    this._ref = template.type;
+    this._ref = template.class;
     this._id = template.name;
 
     this._config = config_ctor(template);

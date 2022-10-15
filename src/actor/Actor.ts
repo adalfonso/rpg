@@ -100,11 +100,11 @@ export abstract class Actor
   ) {
     super();
 
-    this.config = actors()[_template.type];
+    this.config = actors()[_template.class];
 
     if (!this.config) {
       throw new MissingDataError(
-        `Config data for Actor "${_template.type}" is not defined in actors.ts`
+        `Config data for Actor "${_template.class}" is not defined in actors.ts`
       );
     }
 
@@ -153,13 +153,13 @@ export abstract class Actor
 
   /** State lookup key */
   get state_ref() {
-    return this._template.type;
+    return this._template.class;
   }
 
   /** Current data state */
   get state(): ActorState {
     return {
-      type: this._template.type,
+      class: this._template.class,
       defeated: this._defeated,
       dmg: this.stats.dmg,
       lvl: this.stats.lvl,

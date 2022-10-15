@@ -37,7 +37,7 @@ export interface LevelFixtureProperty {
 /** More advanced level fixture template */
 export interface LevelFixtureTemplate extends BasicLevelFixtureTemplate {
   name: string;
-  type: string;
+  class: string;
   properties?: LevelFixtureProperty[];
 }
 
@@ -94,7 +94,7 @@ export const isLevelFixtureTemplate = (
     hasValidProperties &&
     isBasicLevelFixtureTemplate(template) &&
     typeof template["name"] === "string" &&
-    typeof template["type"] === "string"
+    typeof template["class"] === "string"
   );
 };
 

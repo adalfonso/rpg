@@ -108,10 +108,10 @@ export class HeroTeam extends Team<Player> implements Stateful<TeamState> {
     const refs = this.all().map((member) => member.state_ref);
 
     for (const member of data) {
-      if (refs.includes(member.type)) {
+      if (refs.includes(member.class)) {
         if (member.defeated) {
           this.all()
-            .filter((m) => m.state_ref === member.type)
+            .filter((m) => m.state_ref === member.class)
             .forEach((member) => member.kill(false));
         }
         continue;
@@ -147,7 +147,7 @@ export class HeroTeam extends Team<Player> implements Stateful<TeamState> {
     const data = state().resolve(this, isTeamState);
     const state_member = data
       .map((state_member, index) => ({ state_member, index }))
-      .filter(({ state_member }) => state_member.type === member.state_ref)[0];
+      .filter(({ state_member }) => state_member.class === member.state_ref)[0];
 
     if (state_member) {
       data[state_member.index] = member.state;

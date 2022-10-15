@@ -41,7 +41,7 @@ export const getEnemy = (input: Record<string, string> = {}) => {
   const { name } = input;
   return new Enemy(Vector.Zero, Vector.Zero, {
     name: name ?? "_default_enemy",
-    type: "_default_enemy",
+    class: "_default_enemy",
     x: 1,
     y: 1,
     height: 5,

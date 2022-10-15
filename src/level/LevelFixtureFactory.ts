@@ -30,13 +30,13 @@ const animation_factory = getAnimationFromName(animations);
  * @throws missing data error when it can't locate the config
  */
 const create_item_config = (template: LevelFixtureTemplate) => {
-  if (!items[template.type]) {
+  if (!items[template.class]) {
     throw new MissingDataError(
-      `Config data for "${template.type}" is not defined in items.ts`
+      `Config data for "${template.class}" is not defined in items.ts`
     );
   }
 
-  return items[template.type];
+  return items[template.class];
 };
 
 /** Create a level fixture based on a type and a template */

@@ -39,7 +39,7 @@ describe("CollisionHandler", () => {
         Vector.Zero,
         {
           name: "empanada",
-          type: "empanada",
+          class: "empanada",
           x: 1,
           y: 1,
           height: 1,
@@ -67,7 +67,7 @@ const getPlayer = () => {
     height: 1,
     width: 1,
     name: "_default_actor",
-    type: "_default_actor",
+    class: "_default_actor",
   });
 };
 

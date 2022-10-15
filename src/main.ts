@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", async (_event) => {
     width: 18,
     height: 32,
     name: "Me",
-    type: "player",
+    class: "player",
   };
   const player_position = new Vector(player_template.x, player_template.y);
   const player_size = new Vector(player_template.width, player_template.height);
@@ -33,9 +33,10 @@ document.addEventListener("DOMContentLoaded", async (_event) => {
     player_size.scale(config.scale),
     player_template
   );
+
   const doggo = new Pet(player.position.clone(), player.size.clone(), {
     name: "Lea",
-    type: "lea",
+    class: "lea",
     x: 0,
     y: 0,
     width: 16,

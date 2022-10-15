@@ -1,7 +1,6 @@
 import big_sword from "./weapon/big_sword.png";
 import doggo from "./doggo.png";
-import dungeon from "./dungeon.png";
-import dungeon_blue from "./dungeon_sheet.png";
+import dungeon_tileset from "@/_resource/img/spritesheet/dungeon_spritesheet.png";
 import empanada from "./item/empanada.png";
 import knight from "./enemy/knight.png";
 import missing from "./missing_image.png";
@@ -23,8 +22,7 @@ const manifest: Record<string, unknown> = {
     water_bottle,
   },
   tileset: {
-    dungeon,
-    dungeon_blue,
+    dungeon_tileset,
   },
   weapon: {
     big_sword,

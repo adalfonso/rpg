@@ -42,8 +42,8 @@ class NonPlayer extends Actor implements Drawable {
     template: LevelFixtureTemplate
   ) {
     super(_position, _size, template);
-    const { type, name, properties } = template;
-    const speech_key = `${type}.${name}`;
+    const { class: className, name, properties } = template;
+    const speech_key = `${className}.${name}`;
 
     const speech = getSpeech(speech_key);
 

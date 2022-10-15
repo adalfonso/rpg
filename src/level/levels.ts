@@ -1,19 +1,9 @@
-import _0_0 from "./0.0.json";
-import _0_1 from "./0.1.json";
-import _0_2 from "./0.2.json";
-import sandbox_0 from "./sandbox_0.json";
-import sandbox_1 from "./sandbox_1.json";
-import sandbox_2 from "./sandbox_2.json";
+import sandbox_0 from "../_resource/map/sandbox_0.json";
+import sandbox_1 from "../_resource/map/sandbox_1.json";
+import sandbox_2 from "../_resource/map/sandbox_2.json";
 import { TiledMapOrthogonal } from "tiled-types/types";
 
-const levels = {
-  "0.0": _0_0,
-  "0.1": _0_1,
-  "0.2": _0_2,
-  sandbox_0: sandbox_0,
-  sandbox_1: sandbox_1,
-  sandbox_2: sandbox_2,
-};
+const levels = { sandbox_0, sandbox_1, sandbox_2 };
 
 export const getLevels = (): Record<string, TiledMapOrthogonal> =>
   levels as unknown as Record<string, TiledMapOrthogonal>;

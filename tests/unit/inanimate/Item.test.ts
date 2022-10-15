@@ -59,7 +59,7 @@ const getSut = ({ animation_factory, config_ctor }: any = {}) => {
 const getTemplate = () =>
   <LevelFixtureTemplate>{
     name: "foo",
-    type: "item",
+    class: "item",
     x: 0,
     y: 0,
     height: 0,

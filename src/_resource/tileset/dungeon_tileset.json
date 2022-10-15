@@ -1,0 +1,15 @@
+{
+  "columns": 16,
+  "image": "../img/spritesheet/dungeon_spritesheet.png",
+  "imageheight": 256,
+  "imagewidth": 256,
+  "margin": 0,
+  "name": "dungeon_tileset",
+  "spacing": 0,
+  "tilecount": 256,
+  "tiledversion": "1.9.2",
+  "tileheight": 16,
+  "tilewidth": 16,
+  "type": "tileset",
+  "version": "1.9"
+}
