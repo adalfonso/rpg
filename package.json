@@ -33,6 +33,7 @@
     "vite": "^2.8.0"
   },
   "dependencies": {
+    "@excaliburjs/plugin-tiled": "^0.27.0",
     "@tauri-apps/api": "^1.0.0-rc.2",
     "ajv": "^8.10.0",
     "excalibur": "^0.27.0"
