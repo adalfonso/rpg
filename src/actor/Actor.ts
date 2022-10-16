@@ -93,8 +93,11 @@ export abstract class Actor
 
     game.add(this);
 
-    this._setSprites(this.getUiInfo(), this._template).then(() => {
+    this._setSprites(this.getUiInfo(), this._template).then((scale) => {
       this.graphics.use(this.sprites[Direction.South]);
+      if (scale !== 1) {
+        this.actions.scaleTo(ex.vec(scale, scale), ex.vec(Infinity, Infinity));
+      }
     });
 
     this._abilities = this._getAllAbilities().map(({ ref, level }) => ({

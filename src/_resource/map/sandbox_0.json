@@ -260,40 +260,40 @@
          "objects":[
                 {
                  "class":"knight",
-                 "height":32.75,
+                 "height":22,
                  "id":22,
                  "name":"knight_2",
                  "rotation":0,
                  "visible":true,
-                 "width":14.25,
-                 "x":302.375,
+                 "width":16,
+                 "x":302,
                  "y":178.375
                 }, 
                 {
                  "class":"knight",
-                 "height":32.75,
+                 "height":22,
                  "id":24,
                  "name":"knight_1",
                  "rotation":0,
                  "visible":true,
-                 "width":14.25,
-                 "x":180.875,
-                 "y":182.375
+                 "width":16,
+                 "x":180,
+                 "y":182
                 }, 
                 {
                  "class":"knight",
-                 "height":32.75,
+                 "height":22,
                  "id":25,
                  "name":"knight_0",
                  "rotation":0,
                  "visible":true,
-                 "width":14.25,
-                 "x":59.125,
-                 "y":181.875
+                 "width":16,
+                 "x":60,
+                 "y":182
                 }, 
                 {
                  "class":"knight",
-                 "height":32.75,
+                 "height":22,
                  "id":28,
                  "name":"knight_3",
                  "properties":[
@@ -304,13 +304,13 @@
                         }],
                  "rotation":0,
                  "visible":true,
-                 "width":14.25,
+                 "width":16,
                  "x":60,
                  "y":332
                 }, 
                 {
                  "class":"knight",
-                 "height":32.75,
+                 "height":22,
                  "id":29,
                  "name":"knight_4",
                  "properties":[
@@ -321,13 +321,13 @@
                         }],
                  "rotation":0,
                  "visible":true,
-                 "width":14.25,
+                 "width":16,
                  "x":176.875,
-                 "y":331.625
+                 "y":332
                 }, 
                 {
                  "class":"knight",
-                 "height":32.75,
+                 "height":22,
                  "id":30,
                  "name":"knight_5",
                  "properties":[
@@ -338,9 +338,9 @@
                         }],
                  "rotation":0,
                  "visible":true,
-                 "width":14.25,
-                 "x":296.208333333333,
-                 "y":326.958333333333
+                 "width":16,
+                 "x":296,
+                 "y":326
                 }],
          "opacity":1,
          "properties":[

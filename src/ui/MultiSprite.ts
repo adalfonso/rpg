@@ -28,6 +28,7 @@ export const MultiSprite = <T extends Constructor>(Base: T) =>
      *
      * @param ui - UI date
      * @param getStartFrames - fn that determines starting frame per direction
+     * @returns scale used to resize actor
      */
     protected async _setSprites(ui: RenderData, template: Tiled.TiledObject) {
       const { fps, frames, rows, columns, scale, sprite, sprite_orientation } =
@@ -37,10 +38,12 @@ export const MultiSprite = <T extends Constructor>(Base: T) =>
       await image.load();
 
       this.sprites = getSprites(image, {
-        size: ex.vec(this._template.width, this._template.height),
+        size: ex.vec(template.width, template.height),
         columns,
         orientation: sprite_orientation,
       });
+
+      return scale;
     }
 
     get direction() {

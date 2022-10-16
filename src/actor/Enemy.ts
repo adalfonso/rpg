@@ -1,38 +1,23 @@
 import * as Tiled from "@excaliburjs/plugin-tiled";
-import Renderable from "@/ui/Renderable";
 import { Actor } from "./Actor";
 import { Direction } from "@/ui/types";
 import { HeroTeam } from "@/combat/HeroTeam";
 import { bus } from "@/event/EventBus";
 import { state } from "@/state/StateManager";
+import * as ex from "excalibur";
 
 /** Main class for baddies */
 export class Enemy extends Actor {
-  /** Each sprite of the enemy's movement animation */
-  protected sprites: Renderable[];
-
   /**
    * Create a new Enemy instance
    *
    * @param template - info about the enemy
    */
   constructor(template: Tiled.TiledObject, game: ex.Engine) {
-    super(template, {}, game);
+    super(template, { collisionType: ex.CollisionType.Fixed }, game);
 
     // TODO: make configurable when needed
     this.direction = Direction.West;
-
-    const { fps, ratio, scale, sprite } = this.getUiInfo();
-
-    // TODO: hardcode these for now
-    this.sprites = [
-      // img, scale, startFrame, frameCount, framesX, framesY, speed
-      new Renderable(sprite, scale, 0, 8, ratio, fps),
-      new Renderable(sprite, scale, 0, 8, ratio, fps),
-      new Renderable(sprite, scale, 0, 8, ratio, fps),
-      new Renderable(sprite, scale, 0, 8, ratio, fps),
-      new Renderable(sprite, scale, 0, 8, ratio, fps),
-    ];
 
     this._resolveState();
   }
@@ -53,7 +38,7 @@ export class Enemy extends Actor {
    * @return the clone
    */
   public clone(): Enemy {
-    return new Enemy(this.template);
+    return new Enemy(this.template, {});
   }
 
   /**
