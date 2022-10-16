@@ -1,10 +1,11 @@
+import * as Tiled from "@excaliburjs/plugin-tiled";
 import MissingDataError from "@/error/MissingDataError";
 import { Actor } from "./Actor";
-import { ActorInitArgs, Speech } from "./types";
 import { Drawable } from "@/interfaces";
 import { Milestone } from "@/state/milestone/Milestone";
 import { MilestoneAttainOn } from "@/state/milestone/types";
 import { Nullable } from "@/types";
+import { Speech } from "./types";
 import { Vector } from "excalibur";
 import { bus, EventType } from "@/event/EventBus";
 import { getSpeech } from "./speech";
@@ -31,7 +32,7 @@ export class NonPlayer extends Actor implements Drawable {
    *
    * @param template - info about the non-player
    */
-  constructor(template: ActorInitArgs) {
+  constructor(template: Tiled.TiledObject) {
     super(template);
     const { class: className, name, properties } = template;
     const speech_key = `${className}.${name}`;

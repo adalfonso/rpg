@@ -1,6 +1,6 @@
+import * as Tiled from "@excaliburjs/plugin-tiled";
 import Renderable from "@/ui/Renderable";
 import { Actor } from "./Actor";
-import { ActorInitArgs } from "./types";
 import { Direction } from "@/ui/types";
 import { HeroTeam } from "@/combat/HeroTeam";
 import { bus } from "@/event/EventBus";
@@ -16,7 +16,7 @@ export class Enemy extends Actor {
    *
    * @param template - info about the enemy
    */
-  constructor(template: ActorInitArgs) {
+  constructor(template: Tiled.TiledObject) {
     super(template);
 
     // TODO: make configurable when needed

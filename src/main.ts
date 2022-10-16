@@ -1,4 +1,5 @@
 import "./_resource/css/app.css";
+import * as Tiled from "@excaliburjs/plugin-tiled";
 import * as ex from "excalibur";
 import Display from "@/ui/Display";
 import Game from "@/game/Game";
@@ -111,15 +112,16 @@ const new_main = async () => {
 
   const player = new Player(
     {
-      main: {
+      // TODO: Don't type assert
+      template: {
         x: 75,
         y: 75,
         width: 18,
         height: 32,
-        collisionType: ex.CollisionType.Active,
         name: "Me",
         class: "player",
-      },
+      } as Tiled.TiledObject,
+      args: { collisionType: ex.CollisionType.Active },
       speed: 100,
       sprites: getSprites(images.player, {
         size: ex.vec(18, 32),

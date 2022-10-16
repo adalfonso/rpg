@@ -9,7 +9,7 @@ import Stats from "@/actor/Stats";
 import Weapon from "@/combat/strategy/Weapon";
 import config from "@/config";
 import { AbilityList, LearnedAbility } from "@/combat/strategy/types";
-import { ActorConfig, ActorInitArgs } from "./types";
+import { ActorConfig } from "./types";
 import { ActorState, isActorState } from "@schema/actor/ActorSchema";
 import { Lockable, Stateful } from "@/interfaces";
 import { Movable, Resizable } from "@/physics/Entity";
@@ -56,11 +56,12 @@ export abstract class Actor
    * Create a new Actor-based instance
    *
    * @param _template - info about the actor
+   * @param args - standard excalibur Actor args
    *
    * @throws {MissingDataError} when name, type, or config are missing
    */
-  constructor(protected _template: ActorInitArgs) {
-    super(_template);
+  constructor(protected _template: Tiled.TiledObject, args: ex.ActorArgs = {}) {
+    super({ ..._template, ...args });
 
     if (_template.class === undefined) {
       throw new MissingDataError(
