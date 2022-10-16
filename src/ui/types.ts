@@ -13,6 +13,8 @@ export type ActorUiData = {
   frames: FrameRenderTemplate;
   scale: number;
   sprite: string;
+  rows: number;
+  columns: number;
   sprite_orientation?: SpriteOrientation;
 };
 

@@ -9,7 +9,8 @@ export enum SpriteOrientation {
 }
 
 export interface SpriteConfig {
-  size: ex.Vector;
+  width: number;
+  height: number;
   columns: number;
   orientation: SpriteOrientation;
 }
@@ -33,15 +34,48 @@ export const MultiSprite = <T extends Constructor>(Base: T) =>
     protected async _setSprites(ui: RenderData, template: Tiled.TiledObject) {
       const { fps, frames, rows, columns, scale, sprite, sprite_orientation } =
         ui;
+      const frame_duration = 1000 / fps;
       const image = new ex.ImageSource(sprite);
 
       await image.load();
 
-      this.sprites = getSprites(image, {
-        size: ex.vec(template.width, template.height),
-        columns,
-        orientation: sprite_orientation,
-      });
+      const directions = [
+        Direction.North,
+        Direction.East,
+        Direction.South,
+        Direction.West,
+        Direction.None,
+      ];
+
+      this.sprites = directions.reduce(
+        (carry, direction, i) => ({
+          ...carry,
+          [direction]: ex.Animation.fromSpriteSheet(
+            ex.SpriteSheet.fromImageSource({
+              image,
+              grid: {
+                rows,
+                columns,
+                spriteWidth: template.width,
+                spriteHeight: template.height,
+              },
+              spacing: {
+                originOffset: {
+                  x: 0,
+                  y:
+                    sprite_orientation === SpriteOrientation.Clockwise
+                      ? template.height * i
+                      : 0,
+                },
+              },
+            }),
+            // range of frames to render, e.g. [0,1,2,3,4,5]
+            [...Array(columns).keys()],
+            frame_duration
+          ),
+        }),
+        {} as Record<Direction, ex.Sprite>
+      );
 
       return scale;
     }
@@ -54,40 +88,3 @@ export const MultiSprite = <T extends Constructor>(Base: T) =>
       this._direction = direction;
     }
   };
-
-/**
- * Get sprites for an image and configuration
- *
- * @param image - image source
- * @param config - rendering config
- * @param orientation - orientation for various sprite directions
- *
- * @returns map of cardinal directions to sprites
- */
-const getSprites = (image: ex.ImageSource, config: SpriteConfig) => {
-  const { x: width, y: height } = config.size;
-  const directions = [
-    Direction.North,
-    Direction.East,
-    Direction.South,
-    Direction.West,
-    Direction.None,
-  ];
-
-  return directions.reduce(
-    (carry, direction, i) => ({
-      ...carry,
-      [direction]: new ex.Sprite({
-        image,
-        sourceView: {
-          x: 0,
-          y:
-            config.orientation === SpriteOrientation.Clockwise ? height * i : 0,
-          width,
-          height,
-        },
-      }),
-    }),
-    {} as Record<Direction, ex.Sprite>
-  );
-};

@@ -290,8 +290,8 @@ export abstract class Actor
     return {
       fps: UI.fps,
       frames: UI.frames,
-      columns: UI.frames.x,
-      rows: UI.frames.y,
+      columns: UI.columns,
+      rows: UI.rows,
       scale: UI.scale * config.scale,
       sprite: getImagePath(UI.sprite),
       sprite_orientation: UI.sprite_orientation ?? SpriteOrientation.Clockwise,

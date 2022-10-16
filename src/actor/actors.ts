@@ -16,6 +16,8 @@ export const actors = (): ActorList => ({
     ui: {
       sprite: "actor.doggo",
       frames: { x: 1, y: 4, idle: 1, north: 1, east: 1, south: 1, west: 1 },
+      rows: 4,
+      columns: 1,
       scale: 1,
       fps: 8,
     },
@@ -34,6 +36,8 @@ export const actors = (): ActorList => ({
     ui: {
       sprite: "actor.player",
       frames: { x: 1, y: 4, idle: 1, north: 1, east: 1, south: 1, west: 1 },
+      rows: 4,
+      columns: 1,
       scale: 1,
       fps: 8,
     },
@@ -55,6 +59,8 @@ export const actors = (): ActorList => ({
     ui: {
       sprite: "actor.pisti",
       frames: { x: 1, y: 4, idle: 1, north: 1, east: 1, south: 1, west: 1 },
+      rows: 4,
+      columns: 1,
       scale: 1,
       fps: 8,
     },
@@ -70,6 +76,8 @@ export const actors = (): ActorList => ({
     ui: {
       sprite: "actor.knight",
       frames: { x: 8, y: 1, idle: 0, north: 0, east: 1, south: 0, west: 0 },
+      rows: 1,
+      columns: 8,
       scale: 2,
       fps: 8,
       sprite_orientation: SpriteOrientation.Singular,

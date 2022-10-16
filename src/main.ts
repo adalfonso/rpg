@@ -81,6 +81,7 @@ const new_main = async () => {
     },
     canvasElement,
   });
+
   // game.toggleDebug();
 
   const images = loadImages();
