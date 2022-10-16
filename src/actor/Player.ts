@@ -1,23 +1,26 @@
-import Actor from "./Actor";
+import * as ex from "excalibur";
 import MissingDataError from "@/error/MissingDataError";
 import Weapon from "@/combat/strategy/Weapon";
 import config from "@/config";
+import { Actor } from "./Actor";
+import { ActorInitArgs } from "./types";
 import { Direction } from "@/ui/types";
-import { LevelFixtureTemplate } from "@/level/LevelFixture";
 import { Nullable } from "@/types";
 import { Pet } from "./Pet";
 import { PlayerState } from "@schema/actor/PlayerSchema";
 import { Stateful } from "@/interfaces";
 import { bus, EventType } from "@/event/EventBus";
-import { Vector } from "excalibur";
+
+interface PlayerArgs {
+  main: ActorInitArgs;
+  speed: number;
+  sprites: Record<Direction, ex.Graphic>;
+}
 
 /** The main entity of the game */
-class Player extends Actor implements Stateful<PlayerState> {
+export class Player extends Actor implements Stateful<PlayerState> {
   /** The speed the player will move in any one direction */
-  private baseSpeed: number;
-
-  /** The current speed of the player in x/y directions */
-  private speed: Vector;
+  private _speed: number;
 
   /** Pet owned by the player */
   private _pet: Nullable<Pet> = null;
@@ -25,20 +28,17 @@ class Player extends Actor implements Stateful<PlayerState> {
   /**
    * Create a new Player instance
    *
-   * @param _position - the player's position
-   * @param _size - the player's size
-   * @param template - the player's data template
+   * @param args - the player's config
+   * @param game - game engine instance
    */
-  constructor(
-    _position: Vector,
-    _size: Vector,
-    template: LevelFixtureTemplate
-  ) {
-    super(_position, _size, template);
+  constructor(args: PlayerArgs, game: ex.Engine) {
+    super(args.main);
+    this._speed = args.speed;
+    this._sprites = args.sprites;
 
-    this.speed = Vector.Zero;
-    this.baseSpeed = _size.x / 10;
-
+    this.graphics.use(this._sprites[Direction.South]);
+    game.add(this);
+    this._registerControls(game);
     bus.register(this);
   }
 
@@ -59,6 +59,7 @@ class Player extends Actor implements Stateful<PlayerState> {
    * @emits player.move
    */
   public update(dt: number) {
+    return;
     if (this.locked) {
       return;
     }
@@ -92,44 +93,12 @@ class Player extends Actor implements Stateful<PlayerState> {
   }
 
   /**
-   * Draw Player and all underlying entities
-   *
-   * @param ctx        - render context
-   * @param offset     - render position offset
-   * @param resolution - render resolution
-   */
-  public draw(
-    ctx: CanvasRenderingContext2D,
-    offset: Vector,
-    resolution: Vector
-  ) {
-    super.draw(ctx, offset, resolution);
-
-    if (this._pet && !this.locked) {
-      this._pet.draw(ctx, offset, resolution);
-    }
-  }
-
-  /**
    * Register events with the event bus
    *
    * @return events to register
    */
   public register() {
     return {
-      [EventType.Keyboard]: {
-        keydown: (e: KeyboardEvent) => {
-          if (e.key.match(/Arrow/)) {
-            this.changeSpeed(e.key);
-          }
-        },
-
-        keyup: (e: KeyboardEvent) => {
-          if (e.key.match(/Arrow/)) {
-            this.stop(e.key);
-          }
-        },
-      },
       [EventType.Custom]: {
         "equipment.equip": (e: CustomEvent) => {
           const { equipment, actor } = e.detail;
@@ -234,81 +203,59 @@ class Player extends Actor implements Stateful<PlayerState> {
     }
   }
 
-  /**
-   * Change the player's speed
-   *
-   * @param key - the key that has been pressed
-   */
-  private changeSpeed(key: string) {
-    switch (key) {
-      case "ArrowLeft":
-        this.speed.x = -this.baseSpeed;
-        break;
-
-      case "ArrowDown":
-        this.speed.y = this.baseSpeed;
-        break;
-
-      case "ArrowRight":
-        this.speed.x = this.baseSpeed;
-        break;
-
-      case "ArrowUp":
-        this.speed.y = -this.baseSpeed;
-        break;
-    }
-
-    this.changeDirection();
+  /** Register main keyboard controls */
+  private _registerControls(game: ex.Engine) {
+    game.input.keyboard.on("press", this._move.bind(this));
+    game.input.keyboard.on("release", this._stopMove.bind(this));
   }
 
   /**
-   * Stop the player from moving
+   * Change the graphic to match the direction the player is facing
    *
-   * @param key - the key that has been released
+   * @param direction - cardinal direction to face
    */
-  private stop(key: string) {
-    if (key === "ArrowLeft" && this.speed.x < 0) {
-      this.speed.x = 0;
-    }
+  private _changeDirection = (direction: Direction) => {
+    this.graphics.use(this._sprites[direction]);
+  };
 
-    if (key === "ArrowRight" && this.speed.x > 0) {
-      this.speed.x = 0;
-    }
+  /**
+   * Move the player in a direction based on the key pressed
+   *
+   * @param event - keypress event
+   */
+  private _move(event: ex.Input.KeyEvent) {
+    const { key } = event;
 
-    if (key === "ArrowUp" && this.speed.y < 0) {
-      this.speed.y = 0;
+    if (key === "ArrowUp") {
+      this.vel.y = -this._speed;
+      this._changeDirection(Direction.North);
+    } else if (key === "ArrowRight") {
+      this.vel.x = this._speed;
+      this._changeDirection(Direction.East);
+    } else if (key === "ArrowDown") {
+      this.vel.y = this._speed;
+      this._changeDirection(Direction.South);
+    } else if (key === "ArrowLeft") {
+      this.vel.x = -this._speed;
+      this._changeDirection(Direction.West);
     }
-
-    if (key === "ArrowDown" && this.speed.y > 0) {
-      this.speed.y = 0;
-    }
-
-    this.changeDirection();
   }
 
   /**
-   * Change the direction the player is facing based on their speed
+   * Stop moving the player in a direction based on the key released
    *
-   * Since the canvas renders in quadrant IV, moving away from the origin in the
-   * y-direction is an increase in the negative y, but an increase in
-   * position-y. Because of this inversion, north is speed < 0 and south is
-   * speed > 0.
+   * @param event - keyrelease event
    */
-  private changeDirection() {
-    if (this.locked) {
-      return;
-    }
-
-    if (this.speed.x > 0) {
-      this.direction = Direction.East;
-    } else if (this.speed.x < 0) {
-      this.direction = Direction.West;
-    } else if (this.speed.y > 0) {
-      this.direction = Direction.South;
-    } else if (this.speed.y < 0) {
-      this.direction = Direction.North;
+  private _stopMove(evt: ex.Input.KeyEvent) {
+    const { key } = evt;
+    if (key === "ArrowUp" && this.vel.y < 0) {
+      this.vel.y = 0;
+    } else if (key === "ArrowRight" && this.vel.x > 0) {
+      this.vel.x = 0;
+    } else if (key === "ArrowDown" && this.vel.y > 0) {
+      this.vel.y = 0;
+    } else if (key === "ArrowLeft" && this.vel.x < 0) {
+      this.vel.x = 0;
     }
   }
 }
-
-export default Player;

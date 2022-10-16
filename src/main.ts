@@ -2,14 +2,13 @@ import "./_resource/css/app.css";
 import * as ex from "excalibur";
 import Display from "@/ui/Display";
 import Game from "@/game/Game";
-import Player from "./actor/Player";
 import config from "@/config";
 import { APP_NAME, SAVE_FILE, RESOLUTION, SAVE_DIR } from "./constants";
 import { DialogueMediator } from "@/ui/dialogue/DialogueMediator";
 import { HeroTeam } from "./combat/HeroTeam";
 import { LevelFixtureFactory } from "./level/LevelFixtureFactory";
 import { Pet } from "./actor/Pet";
-import { Playa } from "./actor/Playa";
+import { Player } from "./actor/Player";
 import { TiledMap } from "./TiledMap";
 import { getSprites } from "./ui/DirectionalSprite";
 import { isLevelFixtureType, LevelFixtureType } from "./level/LevelFixture";
@@ -90,8 +89,6 @@ const new_main = async () => {
 
   map.addTiledMapToScene(game.currentScene);
 
-  console.log(map, map.data.getExcaliburObjects());
-
   const fixture_factory = new LevelFixtureFactory();
 
   const fixtures = map.data
@@ -100,20 +97,28 @@ const new_main = async () => {
       return isLevelFixtureType(name);
     })
     .map(({ name, objects }) => {
-      return objects.map((object) =>
-        fixture_factory.create(name as LevelFixtureType, object)
-      );
+      return objects.map((object) => {
+        if (object.class === undefined) {
+          object.class === name;
+        }
+
+        return fixture_factory.create(name as LevelFixtureType, object);
+      });
+    })
+    .forEach((fixture) => {
+      game.currentScene.add(fixture);
     });
 
-  new Playa(
+  const player = new Player(
     {
-      common: {
+      main: {
         x: 75,
         y: 75,
         width: 18,
         height: 32,
-        color: ex.Color.Azure,
         collisionType: ex.CollisionType.Active,
+        name: "Me",
+        class: "player",
       },
       speed: 100,
       sprites: getSprites(images.player, {

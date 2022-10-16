@@ -1,12 +1,12 @@
-import Actor from "@/actor/Actor";
 import MissingDataError from "@/error/MissingDataError";
-import Player from "@/actor/Player";
 import Team from "./Team";
-import { Vector } from "excalibur";
 import config from "@/config";
+import { Actor } from "@/actor/Actor";
 import { LevelFixtureTemplate } from "@/level/LevelFixture";
+import { Player } from "@/actor/Player";
 import { Stateful } from "@/interfaces";
 import { TeamState } from "./types";
+import { Vector } from "excalibur";
 import { bus, EventType } from "@/event/EventBus";
 import { isTeamState } from "@schema/combat/TeamSchema";
 import { state } from "@/state/StateManager";

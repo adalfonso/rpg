@@ -1,4 +1,4 @@
-import Actor from "@/actor/Actor";
+import { Actor } from "@/actor/Actor";
 
 export interface BaseMilestoneConfig {
   attain_on: MilestoneAttainOn;

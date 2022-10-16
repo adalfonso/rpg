@@ -1,11 +1,11 @@
-import Actor from "@/actor/Actor";
 import Damage from "../Damage";
 import MissingDataError from "@/error/MissingDataError";
 import Renderable from "@/ui/Renderable";
-import { Vector } from "excalibur";
+import { Actor } from "@/actor/Actor";
 import { Constructor } from "@/mixins";
 import { EntityConfig } from "./types";
 import { Nullable } from "@/types";
+import { Vector } from "excalibur";
 import { bus } from "@/event/EventBus";
 
 export interface Descriptive {

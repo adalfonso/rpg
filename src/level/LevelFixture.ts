@@ -1,15 +1,12 @@
-import Clip from "@/inanimate/Clip";
-import Enemy from "@/actor/Enemy";
 import Entry from "@/inanimate/Entry";
-import NonPlayer from "@/actor/NonPlayer";
 import Portal from "@/inanimate/Portal";
+import { Enemy } from "@/actor/Enemy";
 import { Item } from "@/inanimate/Item";
+import { NonPlayer } from "@/actor/NonPlayer";
 import { isRecord } from "@/types";
 
 /** Available types of level fixtures */
 export enum LevelFixtureType {
-  // TODO: remove clip. it won't be needed once we switch to excalibur
-  Clip = "clip",
   Enemy = "enemy",
   Portal = "portal",
   NonPlayer = "npc",
@@ -21,7 +18,7 @@ export const isLevelFixtureType = (name: string): name is LevelFixtureType =>
   Object.values(LevelFixtureType).includes(name as LevelFixtureType);
 
 /** Type classes of fixtures to expect in a level */
-export type LevelFixture = Clip | Enemy | Portal | NonPlayer | Entry | Item;
+export type LevelFixture = Enemy | Portal | NonPlayer | Entry | Item;
 
 /** Most basic template for a level fixture */
 export interface BasicLevelFixtureTemplate {

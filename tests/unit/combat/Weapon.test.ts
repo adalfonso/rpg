@@ -1,7 +1,7 @@
-import Actor from "@/actor/Actor";
 import Damage from "@/combat/Damage";
 import Renderable from "@/ui/Renderable";
 import Sut from "@/combat/strategy/Weapon";
+import { Actor } from "@/actor/Actor";
 
 describe("Weapon", () => {
   describe("equip", () => {

@@ -1,21 +1,19 @@
-import Clip from "@/inanimate/Clip";
-import Enemy from "@/actor/Enemy";
+import * as Tiled from "@excaliburjs/plugin-tiled";
 import Entry from "@/inanimate/Entry";
 import InvalidDataError from "@/error/InvalidDataError";
 import MissingDataError from "@/error/MissingDataError";
-import NonPlayer from "@/actor/NonPlayer";
 import Portal from "@/inanimate/Portal";
-import { Vector } from "excalibur";
 import global_config from "@/config";
 import items from "@/item/items";
+import { Enemy } from "@/actor/Enemy";
 import { Item } from "@/inanimate/Item";
+import { NonPlayer } from "@/actor/NonPlayer";
 import { animations } from "@/ui/animation/animations";
 import { getAnimationFromName } from "@/ui/animation/AnimationFactory";
 import {
   isBasicLevelFixtureTemplate,
   isLevelFixtureTemplate,
   LevelFixtureType,
-  LevelFixtureTemplate,
 } from "./LevelFixture";
 
 const animation_factory = getAnimationFromName(animations);
@@ -29,7 +27,9 @@ const animation_factory = getAnimationFromName(animations);
  *
  * @throws missing data error when it can't locate the config
  */
-const create_item_config = (template: LevelFixtureTemplate) => {
+const create_item_config = (
+  template: Tiled.TiledObject & { class: string }
+) => {
   if (!items[template.class]) {
     throw new MissingDataError(
       `Config data for "${template.class}" is not defined in items.ts`
@@ -52,7 +52,7 @@ export class LevelFixtureFactory {
    * @throws {MissingDataError} when x, y, width, or height are missing
    * @throws {InvalidDataError} when the type is invalid
    */
-  public create(type: LevelFixtureType, template: unknown) {
+  public create(type: LevelFixtureType, template: Tiled.TiledObject) {
     if (!isBasicLevelFixtureTemplate(template)) {
       throw new MissingDataError(
         `Invalid template used to create a basic level fixture: ${JSON.stringify(
@@ -63,14 +63,9 @@ export class LevelFixtureFactory {
 
     const { scale } = global_config;
 
-    const position = new Vector(template.x, template.y).scale(scale);
-    const size = new Vector(template.width, template.height).scale(scale);
-
     switch (type) {
-      case "clip":
-        return new Clip(position, size);
       case "entry":
-        return new Entry(position, size);
+        return new Entry(template);
     }
 
     if (!isLevelFixtureTemplate(template)) {
@@ -83,26 +78,20 @@ export class LevelFixtureFactory {
 
     switch (type) {
       case "portal":
-        return new Portal(position, size, template);
+        return new Portal(template);
       case "npc": {
-        const npc = new NonPlayer(position, size, template);
+        const npc = new NonPlayer(template);
 
         // If the npc is expired, set to null to be cleared
         return npc.isExpired ? null : npc;
       }
       case "enemy": {
-        const enemy = new Enemy(position, size, template);
+        const enemy = new Enemy(template);
         // If the enemy is previously defeated, set to null to be cleared
         return enemy.isDefeated ? null : enemy;
       }
       case "item": {
-        const item = new Item(
-          position,
-          size,
-          template,
-          create_item_config,
-          animation_factory
-        );
+        const item = new Item(template, create_item_config, animation_factory);
         // If the item is previously obtained, set to null to be cleared
         return item.obtained ? null : item;
       }

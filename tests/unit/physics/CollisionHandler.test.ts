@@ -1,9 +1,9 @@
-import Player from "@/actor/Player";
 import Sut, { Collision } from "@/physics/CollisionHandler";
-import { Vector } from "excalibur";
 import { AnimationFactory } from "@/ui/animation/AnimationFactory";
 import { HeroTeam } from "@/combat/HeroTeam";
 import { Item } from "@/inanimate/Item";
+import { Player } from "@/actor/Player";
+import { Vector } from "excalibur";
 import { getEnemy } from "../actor/_fixtures";
 import { state } from "@/state/StateManager";
 

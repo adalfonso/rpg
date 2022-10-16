@@ -1,6 +1,6 @@
-import Actor from "@/actor/Actor";
-import { Equipper } from "@/combat/Equipper";
 import Weapon from "@/combat/strategy/Weapon";
+import { Actor } from "@/actor/Actor";
+import { Equipper } from "@/combat/Equipper";
 
 describe("Equipper", () => {
   describe("getters", () => {

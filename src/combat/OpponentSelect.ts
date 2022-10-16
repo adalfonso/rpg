@@ -1,7 +1,7 @@
-import Actor from "@/actor/Actor";
 import Team from "./Team";
-import { Vector } from "excalibur";
+import { Actor } from "@/actor/Actor";
 import { Drawable, Lockable } from "@/interfaces";
+import { Vector } from "excalibur";
 import { bus, EventType } from "@/event/EventBus";
 
 /**

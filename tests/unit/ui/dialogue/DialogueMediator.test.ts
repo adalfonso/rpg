@@ -1,9 +1,9 @@
 import Dialogue from "@/ui/dialogue/Dialogue";
-import Player from "@/actor/Player";
 import Team from "@/combat/Team";
-import { Vector } from "excalibur";
 import { DialogueMediator } from "@/ui/dialogue/DialogueMediator";
 import { EventType } from "@/event/EventBus";
+import { Player } from "@/actor/Player";
+import { Vector } from "excalibur";
 
 describe("DialogueMediator", () => {
   describe("_createDialogue", () => {

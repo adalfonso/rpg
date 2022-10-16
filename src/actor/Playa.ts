@@ -7,6 +7,7 @@ interface PlayaArgs {
   speed: number;
   sprites: Record<Direction, ex.Graphic>;
 }
+
 export class Playa extends ex.Actor {
   private _speed: number;
   private _sprites: Record<Direction, ex.Graphic>;

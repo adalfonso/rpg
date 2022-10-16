@@ -1,11 +1,11 @@
-import Actor from "@/actor/Actor";
 import Dialogue from "./Dialogue";
 import InvalidDataError from "@/error/InvalidDataError";
 import MissingDataError from "@/error/MissingDataError";
 import Team from "@/combat/Team";
 import TextStream from "./TextStream";
-import { Vector } from "excalibur";
+import { Actor } from "@/actor/Actor";
 import { Updatable } from "@/interfaces";
+import { Vector } from "excalibur";
 import { bus, EventType } from "@/event/EventBus";
 import { isStringArray, Nullable } from "@/types";
 

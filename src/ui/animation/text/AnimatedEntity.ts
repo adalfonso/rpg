@@ -1,6 +1,6 @@
-import Actor from "@/actor/Actor";
-import { Vector } from "excalibur";
+import { Actor } from "@/actor/Actor";
 import { Animation, AnimationType } from "../Animation";
+import { Vector } from "excalibur";
 
 /** Animation implementation for a common entity */
 export class AnimatedEntity {

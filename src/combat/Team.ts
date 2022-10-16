@@ -1,7 +1,7 @@
-import Actor from "@/actor/Actor";
 import MissingDataError from "@/error/MissingDataError";
-import { Vector } from "excalibur";
+import { Actor } from "@/actor/Actor";
 import { Direction } from "@/ui/types";
+import { Vector } from "excalibur";
 
 /** A battle-centric collection of actors that are related in some way */
 class Team<M extends Actor> {

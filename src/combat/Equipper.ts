@@ -1,5 +1,5 @@
-import Actor from "@/actor/Actor";
 import Weapon from "./strategy/Weapon";
+import { Actor } from "@/actor/Actor";
 import { HeroTeam } from "./HeroTeam";
 
 /**

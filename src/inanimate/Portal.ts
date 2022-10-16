@@ -1,7 +1,8 @@
 import Inanimate from "./Inanimate";
 import MissingDataError from "@/error/MissingDataError";
-import { Vector } from "excalibur";
-import { LevelFixtureTemplate } from "@/level/LevelFixture";
+import { ActorInitArgs } from "@/actor/types";
+import { vec } from "excalibur";
+
 /**
  * An invisible area on the map
  *
@@ -17,14 +18,13 @@ class Portal extends Inanimate {
   /**
    * Create a new Portal instance
    *
-   * @param position - position of the portal
-   * @param size     - size of the portal
    * @param template - info about the portal
    *
    * @throws {MissingDataError} when properties or to/from are missing
    */
-  constructor(position: Vector, size: Vector, template: LevelFixtureTemplate) {
-    super(position, size);
+  constructor(template: ActorInitArgs) {
+    const { x, y, width, height } = template;
+    super(vec(x ?? 0, y ?? 0), vec(width ?? 0, height ?? 0));
 
     /**
      * Sets to/from properties

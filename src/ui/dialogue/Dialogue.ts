@@ -1,8 +1,8 @@
-import Actor from "@/actor/Actor";
 import TextStream from "./TextStream";
-import { Vector } from "excalibur";
+import { Actor } from "@/actor/Actor";
 import { Drawable } from "@/interfaces";
 import { Nullable } from "@/types";
+import { Vector } from "excalibur";
 import { bus, EventType } from "@/event/EventBus";
 
 class Dialogue implements Drawable {

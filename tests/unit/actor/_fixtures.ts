@@ -1,7 +1,7 @@
-import Enemy from "@/actor/Enemy";
-import Player from "@/actor/Player";
-import { Vector } from "excalibur";
+import { Enemy } from "@/actor/Enemy";
 import { Pet } from "@/actor/Pet";
+import { Player } from "@/actor/Player";
+import { Vector } from "excalibur";
 
 export const getActorTemplate = () => ({
   x: 1,

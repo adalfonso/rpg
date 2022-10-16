@@ -1,30 +1,23 @@
-import Actor from "./Actor";
 import Renderable from "@/ui/Renderable";
-import { Vector } from "excalibur";
+import { Actor } from "./Actor";
+import { ActorInitArgs } from "./types";
 import { Direction } from "@/ui/types";
 import { HeroTeam } from "@/combat/HeroTeam";
-import { LevelFixtureTemplate } from "@/level/LevelFixture";
 import { bus } from "@/event/EventBus";
 import { state } from "@/state/StateManager";
 
 /** Main class for baddies */
-class Enemy extends Actor {
+export class Enemy extends Actor {
   /** Each sprite of the enemy's movement animation */
   protected sprites: Renderable[];
 
   /**
    * Create a new Enemy instance
    *
-   * @param _position - the enemy's position
-   * @param _size     - the enemy's size
    * @param template - info about the enemy
    */
-  constructor(
-    _position: Vector,
-    _size: Vector,
-    template: LevelFixtureTemplate
-  ) {
-    super(_position, _size, template);
+  constructor(template: ActorInitArgs) {
+    super(template);
 
     // TODO: make configurable when needed
     this.direction = Direction.West;
@@ -46,7 +39,7 @@ class Enemy extends Actor {
 
   /** State lookup key */
   get state_ref() {
-    return `enemies.${this.id}`;
+    return `enemies.${this.ref_id}`;
   }
 
   /** Get the string reference to the team type */
@@ -55,33 +48,12 @@ class Enemy extends Actor {
   }
 
   /**
-   * Draw Enemy and all underlying entities
-   *
-   * @param ctx        - render context
-   * @param offset     - render position offset
-   * @param resolution - render resolution
-   */
-  public draw(
-    ctx: CanvasRenderingContext2D,
-    offset: Vector,
-    resolution: Vector
-  ) {
-    if (this._defeated) {
-      return;
-    }
-
-    super.draw(ctx, offset, resolution);
-
-    this.sprites[this.direction].draw(ctx, this._position.add(offset));
-  }
-
-  /**
    * Make a clone of the enemy
    *
    * @return the clone
    */
   public clone(): Enemy {
-    return new Enemy(this._position.clone(), this.size.clone(), this.template);
+    return new Enemy(this.template);
   }
 
   /**
@@ -106,8 +78,6 @@ class Enemy extends Actor {
   public kill() {
     this._defeated = true;
 
-    state().mergeByRef(`enemies.${this.id}.defeated`, true);
+    state().mergeByRef(`enemies.${this.ref_id}.defeated`, true);
   }
 }
-
-export default Enemy;

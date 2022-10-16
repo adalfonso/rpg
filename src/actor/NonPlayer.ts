@@ -1,20 +1,17 @@
-import Actor from "./Actor";
 import MissingDataError from "@/error/MissingDataError";
-import { Vector } from "excalibur";
+import { Actor } from "./Actor";
+import { ActorInitArgs, Speech } from "./types";
 import { Drawable } from "@/interfaces";
 import { Milestone } from "@/state/milestone/Milestone";
 import { MilestoneAttainOn } from "@/state/milestone/types";
 import { Nullable } from "@/types";
-import { Speech } from "./types";
+import { Vector } from "excalibur";
 import { bus, EventType } from "@/event/EventBus";
 import { getSpeech } from "./speech";
-import {
-  LevelFixtureTemplate,
-  levelPropertyLookup,
-} from "@/level/LevelFixture";
+import { levelPropertyLookup } from "@/level/LevelFixture";
 
 /** A non-playable character */
-class NonPlayer extends Actor implements Drawable {
+export class NonPlayer extends Actor implements Drawable {
   /** Entities that were recently collided with */
   private collisions: Actor[] = [];
 
@@ -32,16 +29,10 @@ class NonPlayer extends Actor implements Drawable {
    *
    * TODO: handle sprites when they are available
    *
-   * @param _position - the non-player's position
-   * @param _size - the non-player's size
    * @param template - info about the non-player
    */
-  constructor(
-    _position: Vector,
-    _size: Vector,
-    template: LevelFixtureTemplate
-  ) {
-    super(_position, _size, template);
+  constructor(template: ActorInitArgs) {
+    super(template);
     const { class: className, name, properties } = template;
     const speech_key = `${className}.${name}`;
 
@@ -73,7 +64,7 @@ class NonPlayer extends Actor implements Drawable {
 
   /** State lookup key */
   get state_ref() {
-    return `nonPlayers.${this.id}`;
+    return `nonPlayers.${this.ref_id}`;
   }
 
   /** If the NPC is expired and should be torn down */
@@ -187,5 +178,3 @@ class NonPlayer extends Actor implements Drawable {
     });
   }
 }
-
-export default NonPlayer;

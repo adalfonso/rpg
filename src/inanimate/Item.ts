@@ -1,18 +1,18 @@
 import Inanimate from "./Inanimate";
 import Renderable from "@/ui/Renderable";
-import { Vector } from "excalibur";
 import config from "@/config";
+import { ActorInitArgs } from "@/actor/types";
 import { Animation } from "@/ui/animation/Animation";
 import { AnimationFactory } from "@/ui/animation/AnimationFactory";
 import { AnimationType } from "@/ui/animation/Animation";
 import { EntityConfigFactory } from "@/combat/strategy/types";
 import { ItemConfig } from "@/item/types";
-import { LevelFixtureTemplate } from "@/level/LevelFixture";
 import { Nullable } from "@/types";
 import { Stateful } from "@/interfaces";
 import { isItemState, ItemState } from "@schema/inanimate/ItemSchema";
 import { state } from "@/state/StateManager";
 import { ucFirst, getImagePath } from "@/util";
+import { vec, Vector } from "excalibur";
 
 /** An item in the context of a map/level */
 export class Item extends Inanimate implements Stateful<ItemState> {
@@ -37,22 +37,19 @@ export class Item extends Inanimate implements Stateful<ItemState> {
   /**
    * Create a new Item instance
    *
-   * @param position - the item's position
-   * @param size     - the item's size
-   * @param template    - additional info about the item
+   * @param template - info about the item
    * @param config_ctor - used to access a config from a template
    * @param animation_factory - create an animation from an animation template
    *
    * @throws {MissingDataError} when name or type are missing
    */
   constructor(
-    position: Vector,
-    size: Vector,
-    template: LevelFixtureTemplate,
+    template: ActorInitArgs,
     config_ctor: EntityConfigFactory<ItemConfig>,
     animation_factory: AnimationFactory
   ) {
-    super(position, size);
+    const { x, y, width, height } = template;
+    super(vec(x ?? 0, y ?? 0), vec(width ?? 0, height ?? 0));
 
     this._ref = template.class;
     this._id = template.name;

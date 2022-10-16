@@ -1,6 +1,10 @@
+import * as Tiled from "@excaliburjs/plugin-tiled";
+import * as ex from "excalibur";
 import { ActorUiData } from "@/ui/types";
 import { LearnedAbility } from "@/combat/strategy/types";
 import { StatTemplate } from "@/actor/Stats";
+
+export type ActorInitArgs = Tiled.TiledObject | ex.ActorArgs;
 
 /**
  * Template data for an actor

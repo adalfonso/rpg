@@ -1,10 +1,10 @@
 import Battle from "./Battle";
-import Enemy from "@/actor/Enemy";
 import MissingDataError from "@/error/MissingDataError";
 import OpponentSelect from "./OpponentSelect";
 import Team from "./Team";
 import config from "./battle.json";
 import { AnimatedTextFactory } from "@/ui/animation/text/AnimatedTextFactory";
+import { Enemy } from "@/actor/Enemy";
 
 /** Blueprint for an enemy team */
 type TeamBlueprint = {
@@ -94,7 +94,7 @@ class BattleBuilder {
 
     if (!teamType) {
       throw new MissingDataError(
-        `Could not find team type for enemy "${enemy.id}".`
+        `Could not find team type for enemy "${enemy.ref_id}".`
       );
     }
 

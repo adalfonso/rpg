@@ -49,7 +49,7 @@ describe("OpponentSelect", () => {
 
       const sut = new Sut(new Team(enemies));
 
-      expect(sut.selected.id).toBe("e1");
+      expect(sut.selected.ref_id).toBe("e1");
     });
 
     it("selects the previous opponent", () => {
@@ -69,13 +69,13 @@ describe("OpponentSelect", () => {
         key: "ArrowLeft",
       } as KeyboardEvent);
 
-      expect(sut.selected.id).toBe("e3");
+      expect(sut.selected.ref_id).toBe("e3");
 
       listeners[EventType.Keyboard].keyup({
         key: "ArrowLeft",
       } as KeyboardEvent);
 
-      expect(sut.selected.id).toBe("e2");
+      expect(sut.selected.ref_id).toBe("e2");
     });
 
     it("selects the previous opponent but not ones that are defeated", () => {
@@ -99,7 +99,7 @@ describe("OpponentSelect", () => {
         key: "ArrowLeft",
       } as KeyboardEvent);
 
-      expect(sut.selected.id).toBe("e2");
+      expect(sut.selected.ref_id).toBe("e2");
     });
 
     it("selects the next opponent", () => {
@@ -119,12 +119,12 @@ describe("OpponentSelect", () => {
         key: "ArrowRight",
       } as KeyboardEvent);
 
-      expect(sut.selected.id).toBe("e2");
+      expect(sut.selected.ref_id).toBe("e2");
       listeners[EventType.Keyboard].keyup({
         key: "ArrowRight",
       } as KeyboardEvent);
 
-      expect(sut.selected.id).toBe("e3");
+      expect(sut.selected.ref_id).toBe("e3");
     });
 
     it("selects the next opponent but not ones that are defeated", () => {
@@ -148,7 +148,7 @@ describe("OpponentSelect", () => {
         key: "ArrowRight",
       } as KeyboardEvent);
 
-      expect(sut.selected.id).toBe("e3");
+      expect(sut.selected.ref_id).toBe("e3");
     });
   });
 
@@ -166,11 +166,11 @@ describe("OpponentSelect", () => {
 
       const sut = new Sut(new Team(enemies));
 
-      expect(sut.selected.id).toBe("e1");
+      expect(sut.selected.ref_id).toBe("e1");
 
       sut.resolveSelected();
 
-      expect(sut.selected.id).toBe("e3");
+      expect(sut.selected.ref_id).toBe("e3");
     });
   });
 });

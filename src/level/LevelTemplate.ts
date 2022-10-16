@@ -62,7 +62,6 @@ export class LevelTemplate {
     }, {});
 
     [
-      LevelFixtureType.Clip,
       LevelFixtureType.Enemy,
       LevelFixtureType.Portal,
       LevelFixtureType.NonPlayer,

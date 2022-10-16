@@ -1,10 +1,9 @@
-import Clip from "../inanimate/Clip";
-import Enemy from "@/actor/Enemy";
 import Portal from "../inanimate/Portal";
-import { Vector } from "excalibur";
+import { Enemy } from "@/actor/Enemy";
 import { HeroTeam } from "@/combat/HeroTeam";
 import { Item } from "../inanimate/Item";
 import { LevelFixture } from "../level/LevelFixture";
+import { Vector } from "excalibur";
 import { bus } from "@/event/EventBus";
 
 /**
@@ -59,8 +58,6 @@ class CollisionHandler {
 
       if (fixture instanceof Enemy) {
         return this.handleEnemy(fixture);
-      } else if (fixture instanceof Clip) {
-        return this.handleClip(fixture);
       } else if (fixture instanceof Portal) {
         return this.handlePortal(fixture);
       } else if (fixture instanceof Item) {
@@ -85,23 +82,6 @@ class CollisionHandler {
 
     if (enemy.collidesWith(this._player)) {
       enemy.fight(this._heroes);
-    }
-
-    return false;
-  }
-
-  /**
-   * Handle clip collisions
-   *
-   * @param clip - a clip
-   *
-   * @return if the clip is stale
-   */
-  private handleClip(clip: Clip): boolean {
-    const collision = this._player.collidesWith(clip);
-
-    if (collision) {
-      this._player.backstep(collision);
     }
 
     return false;

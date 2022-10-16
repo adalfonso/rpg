@@ -1,4 +1,4 @@
-import NonPlayer from "@/actor/NonPlayer";
+import { NonPlayer } from "@/actor/NonPlayer";
 import { Vector } from "excalibur";
 import { getFixtureTemplate } from "../level/_fixtures";
 

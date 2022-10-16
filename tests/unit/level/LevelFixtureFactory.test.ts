@@ -1,4 +1,4 @@
-import NonPlayer from "@/actor/NonPlayer";
+import { NonPlayer } from "@/actor/NonPlayer";
 import { LevelFixtureFactory } from "@/level/LevelFixtureFactory";
 import { LevelFixtureType } from "@/level/LevelFixture";
 import { Milestone } from "@/state/milestone/Milestone";
