@@ -51,18 +51,18 @@
          "objects":[
                 {
                  "class":"",
-                 "height":20,
+                 "height":16,
                  "id":1,
                  "name":"",
                  "rotation":0,
                  "visible":true,
-                 "width":224,
-                 "x":16,
-                 "y":28
+                 "width":192,
+                 "x":32,
+                 "y":12
                 }, 
                 {
                  "class":"",
-                 "height":132,
+                 "height":112,
                  "id":2,
                  "name":"",
                  "rotation":0,
@@ -73,18 +73,18 @@
                 }, 
                 {
                  "class":"",
-                 "height":20,
+                 "height":16,
                  "id":4,
                  "name":"",
                  "rotation":0,
                  "visible":true,
-                 "width":96,
-                 "x":16,
+                 "width":80,
+                 "x":32,
                  "y":140
                 }, 
                 {
                  "class":"",
-                 "height":132,
+                 "height":112,
                  "id":6,
                  "name":"",
                  "rotation":0,
@@ -95,12 +95,12 @@
                 }, 
                 {
                  "class":"",
-                 "height":20,
+                 "height":16,
                  "id":7,
                  "name":"",
                  "rotation":0,
                  "visible":true,
-                 "width":96,
+                 "width":80,
                  "x":144,
                  "y":140
                 }],
