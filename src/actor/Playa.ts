@@ -50,13 +50,13 @@ export class Playa extends ex.Actor {
 
   private _stopMove(evt: KeyEvent) {
     const { key } = evt;
-    if (key === "ArrowUp") {
+    if (key === "ArrowUp" && this.vel.y < 0) {
       this.vel.y = 0;
-    } else if (key === "ArrowRight") {
+    } else if (key === "ArrowRight" && this.vel.x > 0) {
       this.vel.x = 0;
-    } else if (key === "ArrowDown") {
+    } else if (key === "ArrowDown" && this.vel.y < 0) {
       this.vel.y = 0;
-    } else if (key === "ArrowLeft") {
+    } else if (key === "ArrowLeft" && this.vel.x < 0) {
       this.vel.x = 0;
     }
   }
