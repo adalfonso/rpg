@@ -8,6 +8,7 @@ import { isRecord } from "@/types";
 
 /** Available types of level fixtures */
 export enum LevelFixtureType {
+  // TODO: remove clip. it won't be needed once we switch to excalibur
   Clip = "clip",
   Enemy = "enemy",
   Portal = "portal",
@@ -15,6 +16,9 @@ export enum LevelFixtureType {
   Entry = "entry",
   Item = "item",
 }
+
+export const isLevelFixtureType = (name: string): name is LevelFixtureType =>
+  Object.values(LevelFixtureType).includes(name as LevelFixtureType);
 
 /** Type classes of fixtures to expect in a level */
 export type LevelFixture = Clip | Enemy | Portal | NonPlayer | Entry | Item;

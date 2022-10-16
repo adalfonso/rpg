@@ -7,10 +7,12 @@ import config from "@/config";
 import { APP_NAME, SAVE_FILE, RESOLUTION, SAVE_DIR } from "./constants";
 import { DialogueMediator } from "@/ui/dialogue/DialogueMediator";
 import { HeroTeam } from "./combat/HeroTeam";
+import { LevelFixtureFactory } from "./level/LevelFixtureFactory";
 import { Pet } from "./actor/Pet";
 import { Playa } from "./actor/Playa";
 import { TiledMap } from "./TiledMap";
 import { getSprites } from "./ui/DirectionalSprite";
+import { isLevelFixtureType, LevelFixtureType } from "./level/LevelFixture";
 import { loadImages } from "./loader";
 import { path } from "@tauri-apps/api";
 import { resolveSaveData, startAnimation } from "@/util";
@@ -65,7 +67,7 @@ const _main = async (_event) => {
 
 const new_main = async () => {
   const canvasElement = <HTMLCanvasElement>document.getElementById("game");
-  const tiledMap = new TiledMap("src/_resource/map/sandbox_0.json");
+  const map = new TiledMap("src/_resource/map/sandbox_0.json");
 
   const game = new ex.Engine({
     // width: RESOLUTION.x * config.scale,
@@ -82,11 +84,26 @@ const new_main = async () => {
   });
 
   const images = loadImages();
-  const loader = new ex.Loader([tiledMap, ...Object.values(images)]);
+  const loader = new ex.Loader([map, ...Object.values(images)]);
 
   await game.start(loader);
 
-  tiledMap.addTiledMapToScene(game.currentScene);
+  map.addTiledMapToScene(game.currentScene);
+
+  console.log(map, map.data.getExcaliburObjects());
+
+  const fixture_factory = new LevelFixtureFactory();
+
+  const fixtures = map.data
+    .getExcaliburObjects()
+    .filter(({ name = "" }) => {
+      return isLevelFixtureType(name);
+    })
+    .map(({ name, objects }) => {
+      return objects.map((object) =>
+        fixture_factory.create(name as LevelFixtureType, object)
+      );
+    });
 
   new Playa(
     {

@@ -225,7 +225,7 @@ export class StateManager {
 
       bus.emit("file.load");
     } catch (e) {
-      console.error(`Could not load state from "${destination}".`);
+      console.warn(`Could not load state from "${destination}".`);
       this.save(destination);
     }
 
