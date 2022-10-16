@@ -15,7 +15,6 @@ interface PlayerArgs {
   template: Tiled.TiledObject;
   args: ex.ActorArgs;
   speed: number;
-  sprites: Record<Direction, ex.Graphic>;
 }
 
 /** The main entity of the game */
@@ -33,12 +32,9 @@ export class Player extends Actor implements Stateful<PlayerState> {
    * @param game - game engine instance
    */
   constructor(args: PlayerArgs, game: ex.Engine) {
-    super(args.template, args.args);
+    super(args.template, args.args, game);
     this._speed = args.speed;
-    this._sprites = args.sprites;
 
-    this.graphics.use(this._sprites[Direction.South]);
-    game.add(this);
     this._registerControls(game);
     bus.register(this);
   }
@@ -216,7 +212,7 @@ export class Player extends Actor implements Stateful<PlayerState> {
    * @param direction - cardinal direction to face
    */
   private _changeDirection = (direction: Direction) => {
-    this.graphics.use(this._sprites[direction]);
+    this.graphics.use(this.sprites[direction]);
   };
 
   /**

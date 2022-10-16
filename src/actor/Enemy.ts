@@ -16,8 +16,8 @@ export class Enemy extends Actor {
    *
    * @param template - info about the enemy
    */
-  constructor(template: Tiled.TiledObject) {
-    super(template);
+  constructor(template: Tiled.TiledObject, game: ex.Engine) {
+    super(template, {}, game);
 
     // TODO: make configurable when needed
     this.direction = Direction.West;

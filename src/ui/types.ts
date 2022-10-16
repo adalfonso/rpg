@@ -1,4 +1,4 @@
-import { Vector } from "excalibur";
+import { SpriteOrientation } from "./MultiSprite";
 
 /**
  * Render info for an actor
@@ -13,6 +13,7 @@ export type ActorUiData = {
   frames: FrameRenderTemplate;
   scale: number;
   sprite: string;
+  sprite_orientation?: SpriteOrientation;
 };
 
 /**
@@ -30,9 +31,11 @@ export type ActorUiData = {
 export type RenderData = {
   fps: number;
   frames: FrameRenderTemplate;
-  ratio: Vector;
+  columns: number;
+  rows: number;
   scale: number;
   sprite: string;
+  sprite_orientation: SpriteOrientation;
 };
 
 /**
@@ -75,12 +78,4 @@ export enum Direction {
   East,
   South,
   West,
-}
-
-export interface CardinalInitFrame {
-  none: number;
-  north: number;
-  east: number;
-  south: number;
-  west: number;
 }

@@ -32,8 +32,8 @@ export class NonPlayer extends Actor implements Drawable {
    *
    * @param template - info about the non-player
    */
-  constructor(template: Tiled.TiledObject) {
-    super(template);
+  constructor(template: Tiled.TiledObject, game: ex.Engine) {
+    super(template, {}, game);
     const { class: className, name, properties } = template;
     const speech_key = `${className}.${name}`;
 

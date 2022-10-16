@@ -1,3 +1,4 @@
+import { SpriteOrientation } from "@/ui/MultiSprite";
 import { ActorList } from "./types";
 
 /** All actors contained in the game */
@@ -71,6 +72,7 @@ export const actors = (): ActorList => ({
       frames: { x: 8, y: 1, idle: 0, north: 0, east: 1, south: 0, west: 0 },
       scale: 2,
       fps: 8,
+      sprite_orientation: SpriteOrientation.Singular,
     },
     abilities: [],
   },

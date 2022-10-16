@@ -11,7 +11,6 @@ import { LevelFixtureFactory } from "./level/LevelFixtureFactory";
 import { Pet } from "./actor/Pet";
 import { Player } from "./actor/Player";
 import { TiledMap } from "./TiledMap";
-import { getSprites } from "./ui/DirectionalSprite";
 import { isLevelFixtureType, LevelFixtureType } from "./level/LevelFixture";
 import { loadImages } from "./loader";
 import { path } from "@tauri-apps/api";
@@ -82,6 +81,7 @@ const new_main = async () => {
     },
     canvasElement,
   });
+  // game.toggleDebug();
 
   const images = loadImages();
   const loader = new ex.Loader([map, ...Object.values(images)]);
@@ -103,7 +103,7 @@ const new_main = async () => {
           object.class === name;
         }
 
-        return fixture_factory.create(name as LevelFixtureType, object);
+        return fixture_factory.create(name as LevelFixtureType, object, game);
       });
     })
     .forEach((fixture) => {
@@ -123,10 +123,6 @@ const new_main = async () => {
       } as Tiled.TiledObject,
       args: { collisionType: ex.CollisionType.Active },
       speed: 100,
-      sprites: getSprites(images.player, {
-        size: ex.vec(18, 32),
-        columns: 1,
-      }),
     },
     game
   );

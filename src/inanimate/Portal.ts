@@ -1,7 +1,7 @@
 import Inanimate from "./Inanimate";
 import MissingDataError from "@/error/MissingDataError";
-import { ActorInitArgs } from "@/actor/types";
 import { vec } from "excalibur";
+import * as Tiled from "@excaliburjs/plugin-tiled";
 
 /**
  * An invisible area on the map
@@ -22,7 +22,7 @@ class Portal extends Inanimate {
    *
    * @throws {MissingDataError} when properties or to/from are missing
    */
-  constructor(template: ActorInitArgs) {
+  constructor(template: Tiled.TiledObject) {
     const { x, y, width, height } = template;
     super(vec(x ?? 0, y ?? 0), vec(width ?? 0, height ?? 0));
 

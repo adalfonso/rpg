@@ -52,7 +52,11 @@ export class LevelFixtureFactory {
    * @throws {MissingDataError} when x, y, width, or height are missing
    * @throws {InvalidDataError} when the type is invalid
    */
-  public create(type: LevelFixtureType, template: Tiled.TiledObject) {
+  public create(
+    type: LevelFixtureType,
+    template: Tiled.TiledObject,
+    game: ex.Engine
+  ) {
     if (!isBasicLevelFixtureTemplate(template)) {
       throw new MissingDataError(
         `Invalid template used to create a basic level fixture: ${JSON.stringify(
@@ -80,13 +84,13 @@ export class LevelFixtureFactory {
       case "portal":
         return new Portal(template);
       case "npc": {
-        const npc = new NonPlayer(template);
+        const npc = new NonPlayer(template, game);
 
         // If the npc is expired, set to null to be cleared
         return npc.isExpired ? null : npc;
       }
       case "enemy": {
-        const enemy = new Enemy(template);
+        const enemy = new Enemy(template, game);
         // If the enemy is previously defeated, set to null to be cleared
         return enemy.isDefeated ? null : enemy;
       }

@@ -11,11 +11,11 @@ import config from "@/config";
 import { AbilityList, LearnedAbility } from "@/combat/strategy/types";
 import { ActorConfig } from "./types";
 import { ActorState, isActorState } from "@schema/actor/ActorSchema";
+import { Direction, RenderData } from "@/ui/types";
 import { Lockable, Stateful } from "@/interfaces";
 import { Movable, Resizable } from "@/physics/Entity";
-import { MultiSprite } from "@/ui/MultiSprite";
+import { MultiSprite, SpriteOrientation } from "@/ui/MultiSprite";
 import { Nullable } from "@/types";
-import { RenderData } from "@/ui/types";
 import { actors } from "./actors";
 import { getImagePath } from "@/util";
 import { state } from "@/state/StateManager";
@@ -60,7 +60,11 @@ export abstract class Actor
    *
    * @throws {MissingDataError} when name, type, or config are missing
    */
-  constructor(protected _template: Tiled.TiledObject, args: ex.ActorArgs = {}) {
+  constructor(
+    protected _template: Tiled.TiledObject,
+    args: ex.ActorArgs = {},
+    game: ex.Engine
+  ) {
     super({ ..._template, ...args });
 
     if (_template.class === undefined) {
@@ -84,11 +88,14 @@ export abstract class Actor
     }
 
     this._id = _template.name;
-    // this.direction = Direction.None;
     this.inDialogue = false;
     this.locked = false;
 
-    this._setSprites(this.getUiInfo());
+    game.add(this);
+
+    this._setSprites(this.getUiInfo(), this._template).then(() => {
+      this.graphics.use(this.sprites[Direction.South]);
+    });
 
     this._abilities = this._getAllAbilities().map(({ ref, level }) => ({
       level,
@@ -280,9 +287,11 @@ export abstract class Actor
     return {
       fps: UI.fps,
       frames: UI.frames,
-      ratio: ex.vec(UI.frames.x, UI.frames.y),
+      columns: UI.frames.x,
+      rows: UI.frames.y,
       scale: UI.scale * config.scale,
       sprite: getImagePath(UI.sprite),
+      sprite_orientation: UI.sprite_orientation ?? SpriteOrientation.Clockwise,
     };
   }
 
