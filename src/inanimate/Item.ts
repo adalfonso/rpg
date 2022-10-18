@@ -1,21 +1,21 @@
-import Inanimate from "./Inanimate";
+import * as ex from "excalibur";
 import Renderable from "@/ui/Renderable";
 import config from "@/config";
-import { ActorInitArgs } from "@/actor/types";
 import { Animation } from "@/ui/animation/Animation";
 import { AnimationFactory } from "@/ui/animation/AnimationFactory";
-import { AnimationType } from "@/ui/animation/Animation";
+import { Direction, RenderData } from "@/ui/types";
 import { EntityConfigFactory } from "@/combat/strategy/types";
 import { ItemConfig } from "@/item/types";
+import { MultiSprite, SpriteOrientation } from "@/ui/MultiSprite";
 import { Nullable } from "@/types";
 import { Stateful } from "@/interfaces";
+import { TiledClassObject } from "@/actor/types";
 import { isItemState, ItemState } from "@schema/inanimate/ItemSchema";
 import { state } from "@/state/StateManager";
 import { ucFirst, getImagePath } from "@/util";
-import { vec, Vector } from "excalibur";
 
 /** An item in the context of a map/level */
-export class Item extends Inanimate implements Stateful<ItemState> {
+export class Item extends MultiSprite(ex.Actor) implements Stateful<ItemState> {
   /** Visual animation */
   private _animation: Nullable<Animation> = null;
 
@@ -37,37 +37,40 @@ export class Item extends Inanimate implements Stateful<ItemState> {
   /**
    * Create a new Item instance
    *
-   * @param template - info about the item
-   * @param config_ctor - used to access a config from a template
+   * @param _template - info about the item
+   * @param config_ctor - used to access an item config from a template
+   * @param game - engine instance
    * @param animation_factory - create an animation from an animation template
    *
    * @throws {MissingDataError} when name or type are missing
    */
   constructor(
-    template: ActorInitArgs,
+    protected _template: TiledClassObject,
     config_ctor: EntityConfigFactory<ItemConfig>,
+    game: ex.Engine,
     animation_factory: AnimationFactory
   ) {
-    const { x, y, width, height } = template;
-    super(vec(x ?? 0, y ?? 0), vec(width ?? 0, height ?? 0));
+    super(_template);
 
-    this._ref = template.class;
-    this._id = template.name;
+    this._config = config_ctor(_template);
 
-    this._config = config_ctor(template);
+    this._setSprites(this.getUiInfo(), this._template).then((scale) => {
+      this.graphics.use(this.sprites[Direction.South]);
 
-    if (this._config.ui.animation) {
-      this._animation = animation_factory(this._config.ui.animation)(this.size);
-    }
+      if (scale !== 1) {
+        this.actions.scaleTo(ex.vec(scale, scale), ex.vec(Infinity, Infinity));
+      }
+    });
 
-    const sprite = getImagePath(this._config.ui.sprite);
+    game.add(this);
 
-    // TODO: streamline how scaling is handled
-    const scale = (this._config.ui?.scale ?? 1) * config.scale;
-    const ratio = new Vector(1, 1);
-    const fps = 0;
+    this._ref = this._template.class;
+    this._id = this._template.name;
 
-    this._renderable = new Renderable(sprite, scale, 0, 1, ratio, fps);
+    // TODO: handle stir animation
+    // if (this._config.ui.animation) {
+    //   this._animation = animation_factory(this._config.ui.animation)(this.size);
+    // }
 
     this._resolveState();
   }
@@ -100,43 +103,6 @@ export class Item extends Inanimate implements Stateful<ItemState> {
     return { obtained: this._obtained };
   }
 
-  /**
-   * Update the item
-   *
-   * @param ts - delta time
-   */
-  public update(dt: number) {
-    if (!this._animation) {
-      return;
-    }
-
-    const { type, delta } = this._animation.update(dt);
-
-    // only handles position animations for now
-    if (type !== AnimationType.Position) {
-      return;
-    }
-
-    this.position = this.position.add(delta);
-  }
-
-  /**
-   * Draw the item
-   *
-   * @param ctx        - render context
-   * @param offset     - render position offset
-   * @param resolution - render resolution
-   */
-  public draw(
-    ctx: CanvasRenderingContext2D,
-    offset: Vector,
-    resolution: Vector
-  ) {
-    super.draw(ctx, offset, resolution);
-
-    this._renderable.draw(ctx, this.position.add(offset), resolution);
-  }
-
   /** Pick up the item */
   public obtain() {
     if (this._obtained) {
@@ -146,6 +112,24 @@ export class Item extends Inanimate implements Stateful<ItemState> {
     this._obtained = true;
 
     state().mergeByRef(`items.${this._id}`, this.state);
+  }
+
+  /**
+   * Get render info from an actor's config
+   *
+   * @return inputs for a renderable
+   */
+  protected getUiInfo(): RenderData {
+    const UI = this._config.ui;
+
+    return {
+      fps: 1,
+      columns: 1,
+      rows: 1,
+      scale: (UI.scale ?? 1) * config.scale,
+      sprite: getImagePath(UI.sprite),
+      sprite_orientation: SpriteOrientation.Singular,
+    };
   }
 
   /**

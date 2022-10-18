@@ -32,8 +32,7 @@ export const MultiSprite = <T extends Constructor>(Base: T) =>
      * @returns scale used to resize actor
      */
     protected async _setSprites(ui: RenderData, template: Tiled.TiledObject) {
-      const { fps, frames, rows, columns, scale, sprite, sprite_orientation } =
-        ui;
+      const { fps, rows, columns, scale, sprite, sprite_orientation } = ui;
       const frame_duration = 1000 / fps;
       const image = new ex.ImageSource(sprite);
 

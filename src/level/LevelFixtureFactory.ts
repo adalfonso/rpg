@@ -10,6 +10,7 @@ import { Item } from "@/inanimate/Item";
 import { NonPlayer } from "@/actor/NonPlayer";
 import { animations } from "@/ui/animation/animations";
 import { getAnimationFromName } from "@/ui/animation/AnimationFactory";
+import { isTiledClassObject, TiledClassObject } from "@/actor/types";
 import {
   isBasicLevelFixtureTemplate,
   isLevelFixtureTemplate,
@@ -27,15 +28,7 @@ const animation_factory = getAnimationFromName(animations);
  *
  * @throws missing data error when it can't locate the config
  */
-const create_item_config = (
-  template: Tiled.TiledObject & { class: string }
-) => {
-  if (!items[template.class]) {
-    throw new MissingDataError(
-      `Config data for "${template.class}" is not defined in items.ts`
-    );
-  }
-
+const create_item_config = (template: TiledClassObject) => {
   return items[template.class];
 };
 
@@ -57,6 +50,12 @@ export class LevelFixtureFactory {
     template: Tiled.TiledObject,
     game: ex.Engine
   ) {
+    if (!isTiledClassObject(template)) {
+      throw new MissingDataError(
+        `Tiled Object is missing "class": ${template.name}`
+      );
+    }
+
     if (!isBasicLevelFixtureTemplate(template)) {
       throw new MissingDataError(
         `Invalid template used to create a basic level fixture: ${JSON.stringify(
@@ -95,7 +94,12 @@ export class LevelFixtureFactory {
         return enemy.isDefeated ? null : enemy;
       }
       case "item": {
-        const item = new Item(template, create_item_config, animation_factory);
+        const item = new Item(
+          template,
+          create_item_config,
+          game,
+          animation_factory
+        );
         // If the item is previously obtained, set to null to be cleared
         return item.obtained ? null : item;
       }

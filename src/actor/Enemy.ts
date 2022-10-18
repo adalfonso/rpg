@@ -1,10 +1,10 @@
-import * as Tiled from "@excaliburjs/plugin-tiled";
+import * as ex from "excalibur";
 import { Actor } from "./Actor";
 import { Direction } from "@/ui/types";
 import { HeroTeam } from "@/combat/HeroTeam";
+import { TiledClassObject } from "./types";
 import { bus } from "@/event/EventBus";
 import { state } from "@/state/StateManager";
-import * as ex from "excalibur";
 
 /** Main class for baddies */
 export class Enemy extends Actor {
@@ -13,7 +13,7 @@ export class Enemy extends Actor {
    *
    * @param template - info about the enemy
    */
-  constructor(template: Tiled.TiledObject, game: ex.Engine) {
+  constructor(template: TiledClassObject, game: ex.Engine) {
     super(template, { collisionType: ex.CollisionType.Fixed }, game);
 
     // TODO: make configurable when needed

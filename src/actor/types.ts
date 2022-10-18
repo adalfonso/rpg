@@ -1,6 +1,13 @@
+import * as Tiled from "@excaliburjs/plugin-tiled";
 import { ActorUiData } from "@/ui/types";
 import { LearnedAbility } from "@/combat/strategy/types";
 import { StatTemplate } from "@/actor/Stats";
+
+export const isTiledClassObject = (
+  template: Tiled.TiledObject
+): template is TiledClassObject => template.class !== undefined;
+
+export type TiledClassObject = Tiled.TiledObject & { class: string };
 
 /**
  * Template data for an actor

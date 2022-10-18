@@ -362,47 +362,47 @@
          "objects":[
                 {
                  "class":"empanada",
-                 "height":22,
+                 "height":19,
                  "id":32,
                  "name":"empanada_1",
                  "rotation":0,
                  "visible":true,
-                 "width":16,
-                 "x":66.6666666666667,
-                 "y":413.333333333333
+                 "width":18,
+                 "x":66,
+                 "y":412
                 }, 
                 {
                  "class":"big_sword",
-                 "height":24,
+                 "height":64,
                  "id":33,
                  "name":"big_sword",
                  "rotation":0,
                  "visible":true,
-                 "width":32,
-                 "x":412.666666666667,
-                 "y":366
+                 "width":64,
+                 "x":405,
+                 "y":322
                 }, 
                 {
                  "class":"water",
-                 "height":24,
+                 "height":45,
                  "id":36,
                  "name":"water_0",
                  "rotation":0,
                  "visible":true,
-                 "width":8,
-                 "x":211.333333333333,
-                 "y":352.666666666667
+                 "width":15,
+                 "x":237.5,
+                 "y":304.25
                 }, 
                 {
                  "class":"ruby_sword",
-                 "height":24,
+                 "height":64,
                  "id":38,
                  "name":"ruby_sword",
                  "rotation":0,
                  "visible":true,
-                 "width":32,
-                 "x":364,
-                 "y":364
+                 "width":64,
+                 "x":332,
+                 "y":322
                 }],
          "opacity":1,
          "properties":[

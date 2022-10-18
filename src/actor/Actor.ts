@@ -9,7 +9,7 @@ import Stats from "@/actor/Stats";
 import Weapon from "@/combat/strategy/Weapon";
 import config from "@/config";
 import { AbilityList, LearnedAbility } from "@/combat/strategy/types";
-import { ActorConfig } from "./types";
+import { ActorConfig, TiledClassObject } from "./types";
 import { ActorState, isActorState } from "@schema/actor/ActorSchema";
 import { Direction, RenderData } from "@/ui/types";
 import { Lockable, Stateful } from "@/interfaces";
@@ -61,17 +61,11 @@ export abstract class Actor
    * @throws {MissingDataError} when name, type, or config are missing
    */
   constructor(
-    protected _template: Tiled.TiledObject,
+    protected _template: TiledClassObject,
     args: ex.ActorArgs = {},
     game: ex.Engine
   ) {
     super({ ..._template, ...args });
-
-    if (_template.class === undefined) {
-      throw new MissingDataError(
-        `Tiled Object is missing "class": ${_template}`
-      );
-    }
 
     this.config = actors()[_template.class];
 
@@ -95,6 +89,7 @@ export abstract class Actor
 
     this._setSprites(this.getUiInfo(), this._template).then((scale) => {
       this.graphics.use(this.sprites[Direction.South]);
+
       if (scale !== 1) {
         this.actions.scaleTo(ex.vec(scale, scale), ex.vec(Infinity, Infinity));
       }
@@ -289,7 +284,6 @@ export abstract class Actor
 
     return {
       fps: UI.fps,
-      frames: UI.frames,
       columns: UI.columns,
       rows: UI.rows,
       scale: UI.scale * config.scale,

@@ -82,12 +82,11 @@ const new_main = async () => {
     canvasElement,
   });
 
-  // game.toggleDebug();
-
   const images = loadImages();
   const loader = new ex.Loader([map, ...Object.values(images)]);
 
   await game.start(loader);
+  //game.toggleDebug();
 
   map.addTiledMapToScene(game.currentScene);
 

@@ -1,6 +1,6 @@
 import Ability from "./Ability";
-import { LevelFixtureTemplate } from "@/level/LevelFixture";
 import { Stat } from "@/actor/Stats";
+import { TiledClassObject } from "@/actor/types";
 /**
  * Basic description for an entity
  *
@@ -13,7 +13,7 @@ export interface EntityConfig {
 }
 
 export type EntityConfigFactory<T extends EntityConfig> = (
-  template: LevelFixtureTemplate
+  template: TiledClassObject
 ) => T;
 
 /**
