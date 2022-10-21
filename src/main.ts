@@ -7,11 +7,9 @@ import config from "@/config";
 import { APP_NAME, SAVE_FILE, RESOLUTION, SAVE_DIR } from "./constants";
 import { DialogueMediator } from "@/ui/dialogue/DialogueMediator";
 import { HeroTeam } from "./combat/HeroTeam";
-import { LevelFixtureFactory } from "./level/LevelFixtureFactory";
+import { Mediator } from "./Mediator";
 import { Pet } from "./actor/Pet";
 import { Player } from "./actor/Player";
-import { TiledMap } from "./TiledMap";
-import { isLevelFixtureType, LevelFixtureType } from "./level/LevelFixture";
 import { loadImages } from "./loader";
 import { path } from "@tauri-apps/api";
 import { resolveSaveData, startAnimation } from "@/util";
@@ -66,13 +64,11 @@ const _main = async (_event) => {
 
 const new_main = async () => {
   const canvasElement = <HTMLCanvasElement>document.getElementById("game");
-  const map = new TiledMap("src/_resource/map/sandbox_0.json");
 
   const game = new ex.Engine({
-    // width: RESOLUTION.x * config.scale,
-    // height: RESOLUTION.y * config.scale,
-    width: RESOLUTION.x,
-    height: RESOLUTION.y,
+    width: RESOLUTION.x * config.scale,
+    height: RESOLUTION.y * config.scale,
+    displayMode: ex.DisplayMode.FillScreen,
     antialiasing: false,
     suppressPlayButton: true,
     resolution: {
@@ -82,39 +78,13 @@ const new_main = async () => {
     canvasElement,
   });
 
-  const images = loadImages();
-  const loader = new ex.Loader([map, ...Object.values(images)]);
-
-  await game.start(loader);
-  //game.toggleDebug();
-
-  map.addTiledMapToScene(game.currentScene);
-
-  const fixture_factory = new LevelFixtureFactory();
-
-  const fixtures = map.data
-    .getExcaliburObjects()
-    .filter(({ name = "" }) => {
-      return isLevelFixtureType(name);
-    })
-    .map(({ name, objects }) => {
-      return objects.map((object) => {
-        if (object.class === undefined) {
-          object.class === name;
-        }
-
-        return fixture_factory.create(name as LevelFixtureType, object, game);
-      });
-    })
-    .forEach((fixture) => {
-      game.currentScene.add(fixture);
-    });
+  // game.toggleDebug();
 
   const player = new Player(
     {
       // TODO: Don't type assert
       template: {
-        x: 75,
+        x: 455,
         y: 75,
         width: 18,
         height: 32,
@@ -126,6 +96,12 @@ const new_main = async () => {
     },
     game
   );
+
+  const images = loadImages();
+  const loader = new ex.Loader(Object.values(images));
+  const mediator = new Mediator(game, player);
+
+  await mediator.start(loader);
 };
 
 document.addEventListener("DOMContentLoaded", new_main);

@@ -1,18 +1,23 @@
-import Inanimate from "./Inanimate";
-import { ActorInitArgs } from "@/actor/types";
-import { vec } from "excalibur";
+import * as ex from "excalibur";
+import MissingDataError from "@/error/MissingDataError";
+import { TiledTemplate } from "@/actor/types";
 
 /** An area on the map that an entity can be loaded on */
-class Entry extends Inanimate {
+export class Entry extends ex.Actor {
   /**
    * Create a new Entry instance
    *
-   * @param template - info about the entry
+   * @param _template - info about the entry
    */
-  constructor(template: ActorInitArgs) {
-    const { x, y, width, height } = template;
-    super(vec(x ?? 0, y ?? 0), vec(width ?? 0, height ?? 0));
+  constructor(private _template: TiledTemplate) {
+    super(_template);
+
+    if (_template.name === undefined) {
+      throw new MissingDataError('Missing required "name" when creating Entry');
+    }
+  }
+
+  get ref() {
+    return this._template.name;
   }
 }
-
-export default Entry;

@@ -9,7 +9,7 @@ import { ItemConfig } from "@/item/types";
 import { MultiSprite, SpriteOrientation } from "@/ui/MultiSprite";
 import { Nullable } from "@/types";
 import { Stateful } from "@/interfaces";
-import { TiledClassObject } from "@/actor/types";
+import { TiledTemplate } from "@/actor/types";
 import { isItemState, ItemState } from "@schema/inanimate/ItemSchema";
 import { state } from "@/state/StateManager";
 import { ucFirst, getImagePath } from "@/util";
@@ -39,15 +39,13 @@ export class Item extends MultiSprite(ex.Actor) implements Stateful<ItemState> {
    *
    * @param _template - info about the item
    * @param config_ctor - used to access an item config from a template
-   * @param game - engine instance
    * @param animation_factory - create an animation from an animation template
    *
    * @throws {MissingDataError} when name or type are missing
    */
   constructor(
-    protected _template: TiledClassObject,
+    protected _template: TiledTemplate,
     config_ctor: EntityConfigFactory<ItemConfig>,
-    game: ex.Engine,
     animation_factory: AnimationFactory
   ) {
     super(_template);
@@ -61,8 +59,6 @@ export class Item extends MultiSprite(ex.Actor) implements Stateful<ItemState> {
         this.actions.scaleTo(ex.vec(scale, scale), ex.vec(Infinity, Infinity));
       }
     });
-
-    game.add(this);
 
     this._ref = this._template.class;
     this._id = this._template.name;

@@ -1,4 +1,3 @@
-import * as Tiled from "@excaliburjs/plugin-tiled";
 import * as ex from "excalibur";
 import MissingDataError from "@/error/MissingDataError";
 import Weapon from "@/combat/strategy/Weapon";
@@ -9,10 +8,11 @@ import { Nullable } from "@/types";
 import { Pet } from "./Pet";
 import { PlayerState } from "@schema/actor/PlayerSchema";
 import { Stateful } from "@/interfaces";
+import { TiledTemplate } from "./types";
 import { bus, EventType } from "@/event/EventBus";
 
 interface PlayerArgs {
-  template: Tiled.TiledObject;
+  template: TiledTemplate;
   args: ex.ActorArgs;
   speed: number;
 }
@@ -32,7 +32,7 @@ export class Player extends Actor implements Stateful<PlayerState> {
    * @param game - game engine instance
    */
   constructor(args: PlayerArgs, game: ex.Engine) {
-    super(args.template, args.args, game);
+    super(args.template, args.args);
     this._speed = args.speed;
 
     this._registerControls(game);

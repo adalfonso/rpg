@@ -36,7 +36,7 @@ export const actors = (): ActorList => ({
       sprite: "actor.player",
       rows: 4,
       columns: 1,
-      scale: 1,
+      scale: 0.5,
       fps: 8,
     },
     abilities: [
@@ -58,7 +58,7 @@ export const actors = (): ActorList => ({
       sprite: "actor.pisti",
       rows: 4,
       columns: 1,
-      scale: 1,
+      scale: 0.5,
       fps: 8,
     },
     abilities: [
@@ -74,7 +74,7 @@ export const actors = (): ActorList => ({
       sprite: "actor.knight",
       rows: 1,
       columns: 8,
-      scale: 2,
+      scale: 1,
       fps: 8,
       sprite_orientation: SpriteOrientation.Singular,
     },

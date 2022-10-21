@@ -1,19 +1,19 @@
-import Inanimate from "./Inanimate";
-import MissingDataError from "@/error/MissingDataError";
-import { vec } from "excalibur";
-import * as Tiled from "@excaliburjs/plugin-tiled";
+import * as ex from "excalibur";
+import { Player } from "@/actor/Player";
+import { TiledTemplate } from "@/actor/types";
+import { bus } from "@/event/EventBus";
 
 /**
  * An invisible area on the map
  *
  * Portals transport entities that enter it into a different area.
  */
-class Portal extends Inanimate {
+export class Portal extends ex.Actor {
   /** Reference to the current area's name */
-  public from = "";
+  public from: string;
 
   /** Reference to the name of the area that the portal leads to */
-  public to = "";
+  public to: string;
 
   /**
    * Create a new Portal instance
@@ -22,24 +22,29 @@ class Portal extends Inanimate {
    *
    * @throws {MissingDataError} when properties or to/from are missing
    */
-  constructor(template: Tiled.TiledObject) {
-    const { x, y, width, height } = template;
-    super(vec(x ?? 0, y ?? 0), vec(width ?? 0, height ?? 0));
+  constructor(template: TiledTemplate) {
+    super({ ...template, collisionType: ex.CollisionType.Passive });
 
-    /**
-     * Sets to/from properties
-     *
-     * TODO: Input should be more concise. At some point wrap map data in some
-     * class so we can make assumptions about the input data.
-     */
-    template.properties?.forEach((prop) => {
-      this[prop.name] = prop.value;
-    });
+    const to = template.getProperty("to");
+    const from = template.getProperty("from");
 
-    if (!this.from || !this.to) {
-      throw new MissingDataError("Cannot find from/to when creating portal.");
+    if (to === undefined) {
+      throw new Error(`Template missing required property "to"`);
     }
+
+    if (from === undefined) {
+      throw new Error(`Template missing required property "from"`);
+    }
+
+    this.to = to.value as string;
+    this.from = from.value as string;
+
+    this.on("collisionstart", (evt) => {
+      if (!(evt.other instanceof Player)) {
+        return;
+      }
+
+      bus.emit("portal.enter", { portal: this });
+    });
   }
 }
-
-export default Portal;

@@ -1,8 +1,8 @@
-import Portal from "../inanimate/Portal";
 import { Enemy } from "@/actor/Enemy";
 import { HeroTeam } from "@/combat/HeroTeam";
 import { Item } from "../inanimate/Item";
 import { LevelFixture } from "../level/LevelFixture";
+import { Portal } from "../inanimate/Portal";
 import { Vector } from "excalibur";
 import { bus } from "@/event/EventBus";
 

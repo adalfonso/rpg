@@ -3,11 +3,18 @@ import { ActorUiData } from "@/ui/types";
 import { LearnedAbility } from "@/combat/strategy/types";
 import { StatTemplate } from "@/actor/Stats";
 
-export const isTiledClassObject = (
+export const isTiledTemplate = (
   template: Tiled.TiledObject
-): template is TiledClassObject => template.class !== undefined;
+): template is TiledTemplate =>
+  template.class !== undefined &&
+  template.height !== undefined &&
+  template.width !== undefined;
 
-export type TiledClassObject = Tiled.TiledObject & { class: string };
+export type TiledTemplate = Tiled.TiledObject & {
+  class: string;
+  height: number;
+  width: number;
+};
 
 /**
  * Template data for an actor

@@ -1,15 +1,13 @@
-import * as Tiled from "@excaliburjs/plugin-tiled";
 import MissingDataError from "@/error/MissingDataError";
 import { Actor } from "./Actor";
 import { Drawable } from "@/interfaces";
 import { Milestone } from "@/state/milestone/Milestone";
 import { MilestoneAttainOn } from "@/state/milestone/types";
 import { Nullable } from "@/types";
-import { Speech } from "./types";
+import { Speech, TiledTemplate } from "./types";
 import { Vector } from "excalibur";
 import { bus, EventType } from "@/event/EventBus";
 import { getSpeech } from "./speech";
-import { levelPropertyLookup } from "@/level/LevelFixture";
 
 /** A non-playable character */
 export class NonPlayer extends Actor implements Drawable {
@@ -32,11 +30,10 @@ export class NonPlayer extends Actor implements Drawable {
    *
    * @param template - info about the non-player
    */
-  constructor(template: Tiled.TiledObject, game: ex.Engine) {
-    super(template, {}, game);
-    const { class: className, name, properties } = template;
+  constructor(template: TiledTemplate) {
+    super(template);
+    const { class: className, name } = template;
     const speech_key = `${className}.${name}`;
-
     const speech = getSpeech(speech_key);
 
     if (!speech) {
@@ -47,10 +44,10 @@ export class NonPlayer extends Actor implements Drawable {
 
     this._speech = speech;
 
-    const milestone_ref = levelPropertyLookup(properties ?? [])("milestone");
+    const milestone_ref = template.getProperty("milestone");
 
     if (milestone_ref !== undefined) {
-      this._milestone = new Milestone(milestone_ref);
+      this._milestone = new Milestone(milestone_ref.value as string);
 
       // Assuming if there is a milestone related to the NPC they're not needed
       if (this._milestone.attained) {

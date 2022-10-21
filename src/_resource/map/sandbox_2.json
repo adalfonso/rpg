@@ -47,24 +47,24 @@
         {
          "draworder":"topdown",
          "id":3,
-         "name":"clip",
+         "name":"collider",
          "objects":[
                 {
-                 "class":"",
+                 "class":"BoxCollider",
                  "height":16,
                  "id":1,
-                 "name":"",
+                 "name":"BoxCollider",
                  "rotation":0,
                  "visible":true,
                  "width":192,
                  "x":32,
-                 "y":12
+                 "y":16
                 }, 
                 {
-                 "class":"",
+                 "class":"BoxCollider",
                  "height":112,
                  "id":2,
-                 "name":"",
+                 "name":"BoxCollider",
                  "rotation":0,
                  "visible":true,
                  "width":16,
@@ -72,10 +72,10 @@
                  "y":28
                 }, 
                 {
-                 "class":"",
+                 "class":"BoxCollider",
                  "height":16,
                  "id":4,
-                 "name":"",
+                 "name":"BoxCollider",
                  "rotation":0,
                  "visible":true,
                  "width":80,
@@ -83,10 +83,10 @@
                  "y":140
                 }, 
                 {
-                 "class":"",
+                 "class":"BoxCollider",
                  "height":112,
                  "id":6,
-                 "name":"",
+                 "name":"BoxCollider",
                  "rotation":0,
                  "visible":true,
                  "width":16,
@@ -94,10 +94,10 @@
                  "y":28
                 }, 
                 {
-                 "class":"",
+                 "class":"BoxCollider",
                  "height":16,
                  "id":7,
-                 "name":"",
+                 "name":"BoxCollider",
                  "rotation":0,
                  "visible":true,
                  "width":80,
@@ -105,6 +105,12 @@
                  "y":140
                 }],
          "opacity":1,
+         "properties":[
+                {
+                 "name":"excalibur",
+                 "type":"bool",
+                 "value":true
+                }],
          "type":"objectgroup",
          "visible":true,
          "x":0,
@@ -117,9 +123,9 @@
          "objects":[
                 {
                  "class":"",
-                 "height":12,
+                 "height":8,
                  "id":8,
-                 "name":"",
+                 "name":"to sandbox_1",
                  "properties":[
                         {
                          "name":"from",
@@ -135,9 +141,15 @@
                  "visible":true,
                  "width":32,
                  "x":112,
-                 "y":148
+                 "y":152
                 }],
          "opacity":1,
+         "properties":[
+                {
+                 "name":"excalibur",
+                 "type":"bool",
+                 "value":true
+                }],
          "type":"objectgroup",
          "visible":true,
          "x":0,
@@ -150,16 +162,22 @@
          "objects":[
                 {
                  "class":"",
-                 "height":24,
+                 "height":32,
                  "id":9,
                  "name":"sandbox_1",
                  "rotation":0,
                  "visible":true,
-                 "width":12,
-                 "x":122,
-                 "y":122
+                 "width":18,
+                 "x":119,
+                 "y":118
                 }],
          "opacity":1,
+         "properties":[
+                {
+                 "name":"excalibur",
+                 "type":"bool",
+                 "value":true
+                }],
          "type":"objectgroup",
          "visible":true,
          "x":0,

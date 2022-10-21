@@ -1,16 +1,16 @@
 import CollisionHandler from "@/physics/CollisionHandler";
-import Entry from "@/inanimate/Entry";
 import Map from "@/inanimate/Map";
 import MissingDataError from "@/error/MissingDataError";
-import Portal from "@/inanimate/Portal";
-import { Drawable, Eventful } from "@/interfaces";
+import { Entry } from "@/inanimate/Entry";
+import { Eventful } from "@/interfaces";
 import { LevelFixture } from "./LevelFixture";
 import { LevelFixtureFactory } from "./LevelFixtureFactory";
 import { LevelTemplate } from "./LevelTemplate";
 import { NonPlayer } from "@/actor/NonPlayer";
 import { Nullable } from "@/types";
 import { Player } from "@/actor/Player";
-import { Vector } from "excalibur";
+import { Portal } from "@/inanimate/Portal";
+import { TiledMap } from "@/TiledMap";
 import { bus, EventType } from "@/event/EventBus";
 import { getImagePath } from "@/util";
 import { getLevels } from "./levels";
@@ -23,7 +23,7 @@ import { getLevels } from "./levels";
  * Level is reusable, for better or for worse. It simply loads a decoded json
  * string into memory when a new area is entered.
  */
-class Level implements Drawable {
+export class Level {
   /** World area associated with the level */
   private _map: Nullable<Map> = null;
 
@@ -41,7 +41,7 @@ class Level implements Drawable {
    * @param handler  - collision handler for player + fixtures
    */
   constructor(
-    template: LevelTemplate,
+    private _map: TiledMap,
     private player: Player,
     private collisionHandler: CollisionHandler
   ) {
@@ -108,29 +108,6 @@ class Level implements Drawable {
   }
 
   /**
-   * Draw map and level fixtures
-   *
-   * @param ctx        - render context
-   * @param offset     - render position offset
-   * @param resolution - render resolution
-   */
-  public draw(
-    ctx: CanvasRenderingContext2D,
-    offset: Vector,
-    resolution: Vector
-  ) {
-    if (!this._map) {
-      throw new MissingDataError(`Cannot draw level when map is not set`);
-    }
-
-    this._map.draw(ctx, offset, resolution);
-
-    [this.player, ...this._fixtures].forEach((fixture) =>
-      fixture.draw(ctx, offset, resolution)
-    );
-  }
-
-  /**
    * Load a level template
    *
    * If there is a referenced portal, move player to corresponding entry point.
@@ -185,5 +162,3 @@ class Level implements Drawable {
     this._fixtures = this._fixtures.filter((f) => f !== fixture);
   }
 }
-
-export default Level;
