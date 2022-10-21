@@ -2,10 +2,10 @@ import MissingDataError from "@/error/MissingDataError";
 import Team from "./Team";
 import config from "@/config";
 import { Actor } from "@/actor/Actor";
-import { LevelFixtureTemplate } from "@/level/LevelFixture";
 import { Player } from "@/actor/Player";
 import { Stateful } from "@/interfaces";
 import { TeamState } from "./types";
+import { TiledTemplate } from "@/actor/types";
 import { Vector } from "excalibur";
 import { bus, EventType } from "@/event/EventBus";
 import { isTeamState } from "@schema/combat/TeamSchema";
@@ -121,7 +121,7 @@ export class HeroTeam extends Team<Player> implements Stateful<TeamState> {
       const placeholder = new Player(
         Vector.Zero,
         new Vector(16, 32).scale(config.scale),
-        member as unknown as LevelFixtureTemplate
+        member as unknown as TiledTemplate
       );
 
       if (member.defeated) {

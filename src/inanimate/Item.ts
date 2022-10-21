@@ -28,9 +28,6 @@ export class Item extends MultiSprite(ex.Actor) implements Stateful<ItemState> {
   /** If the item was picked up */
   private _obtained = false;
 
-  /** UI aspect of the item */
-  private _renderable: Renderable;
-
   /** The item reference*/
   private _ref: string;
 

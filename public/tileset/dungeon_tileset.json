@@ -1,6 +1,6 @@
 {
   "columns": 16,
-  "image": "../img/spritesheet/dungeon_spritesheet.png",
+  "image": "../image/spritesheet/dungeon.png",
   "imageheight": 256,
   "imagewidth": 256,
   "margin": 0,

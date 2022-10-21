@@ -1,0 +1,5 @@
+// load player in origin entrypoint
+// remove expire fixtures on each update
+// remove defeated enemies each update
+// remove items after they are obtained
+// cleanup when scene ends to remove fixtures from the event bus

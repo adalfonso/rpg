@@ -7,9 +7,7 @@ import { DialogueMediator } from "../ui/dialogue/DialogueMediator";
 import { Drawable, Updatable } from "../interfaces";
 import { HeroTeam } from "@/combat/HeroTeam";
 import { Inventory } from "../menu/Inventory";
-import { Level } from "../level/Level";
 import { LevelFixtureFactory } from "../level/LevelFixtureFactory";
-import { LevelTemplate } from "../level/LevelTemplate";
 import { MenuType } from "@/menu/types";
 import { Nullable } from "../types";
 import { StartMenu } from "../menu/StartMenu";
@@ -17,7 +15,7 @@ import { Vector } from "excalibur";
 import { bus, EventType } from "@/event/EventBus";
 import { createEquipper } from "@/combat/EquipperFactory";
 import { createSubMenu } from "@/menu/MenuFactory";
-import { getLevels } from "../level/levels";
+
 /** Different states a game can be in */
 enum GameState {
   StartMenu,

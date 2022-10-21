@@ -78,7 +78,7 @@ const new_main = async () => {
     canvasElement,
   });
 
-  // game.toggleDebug();
+  //game.toggleDebug();
 
   const player = new Player(
     {

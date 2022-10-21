@@ -5,7 +5,7 @@ import { Entry } from "./inanimate/Entry";
 import { LevelFixtureFactory } from "./level/LevelFixtureFactory";
 import { Player } from "./actor/Player";
 import { Portal } from "./inanimate/Portal";
-import { TiledMap } from "./TiledMap";
+import { TiledMapResource as TiledMap } from "@excaliburjs/plugin-tiled";
 import { bus, EventType } from "./event/EventBus";
 import { getMapFromName } from "./level/levels";
 import { isLevelFixtureType, LevelFixtureType } from "./level/LevelFixture";
@@ -28,7 +28,7 @@ export class Mediator {
    */
   public async start(loader: ex.Loader) {
     await this._game.start(loader);
-    await this.load("src/_resource/map/sandbox_0.json");
+    await this.load("/map/sandbox_0.json");
   }
 
   /**

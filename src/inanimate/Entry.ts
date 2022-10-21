@@ -10,11 +10,11 @@ export class Entry extends ex.Actor {
    * @param _template - info about the entry
    */
   constructor(private _template: TiledTemplate) {
-    super(_template);
-
     if (_template.name === undefined) {
       throw new MissingDataError('Missing required "name" when creating Entry');
     }
+
+    super(_template);
   }
 
   get ref() {

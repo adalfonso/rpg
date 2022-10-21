@@ -1,9 +1,9 @@
-import { Vector } from "excalibur";
 import { AnimationFactory } from "@/ui/animation/AnimationFactory";
+import { AnimationType } from "@/ui/animation/Animation";
 import { Item as Sut } from "@/inanimate/Item";
 import { ItemConfig } from "@/item/types";
-import { LevelFixtureTemplate } from "@/level/LevelFixture";
-import { AnimationType } from "@/ui/animation/Animation";
+import { TiledTemplate } from "@/actor/types";
+import { Vector } from "excalibur";
 
 describe("inanimate/Item", () => {
   describe("update", () => {
@@ -57,14 +57,14 @@ const getSut = ({ animation_factory, config_ctor }: any = {}) => {
 };
 
 const getTemplate = () =>
-  <LevelFixtureTemplate>{
+  ({
     name: "foo",
     class: "item",
     x: 0,
     y: 0,
     height: 0,
     width: 0,
-  };
+  } as TiledTemplate);
 
 const getConfigCtor = () => (_: any) =>
   <ItemConfig>{
