@@ -1,7 +1,7 @@
 import * as ex from "excalibur";
 import Renderable from "@/ui/Renderable";
 import config from "@/config";
-import { Animation } from "@/ui/animation/Animation";
+import { Animation, AnimationType } from "@/ui/animation/Animation";
 import { AnimationFactory } from "@/ui/animation/AnimationFactory";
 import { Direction, RenderData } from "@/ui/types";
 import { EntityConfigFactory } from "@/combat/strategy/types";
@@ -64,9 +64,9 @@ export class Item extends MultiSprite(ex.Actor) implements Stateful<ItemState> {
     this._id = this._template.name;
 
     // TODO: handle stir animation
-    // if (this._config.ui.animation) {
-    //   this._animation = animation_factory(this._config.ui.animation)(this.size);
-    // }
+    if (this._config.ui.animation) {
+      this._animation = animation_factory(this._config.ui.animation)(this.size);
+    }
 
     this._resolveState();
 
@@ -85,6 +85,21 @@ export class Item extends MultiSprite(ex.Actor) implements Stateful<ItemState> {
       bus.emit("dialogue.create", {
         speech: [`Picked up ${useVowel ? "an" : "a"} ${this.displayAs}!`],
       });
+    });
+
+    this.on("preupdate", ({ delta: dt }) => {
+      if (!this._animation) {
+        return;
+      }
+
+      const { type, delta } = this._animation.update(dt);
+
+      // only handles position animations for now
+      if (type !== AnimationType.Position) {
+        return;
+      }
+
+      this.pos = this.pos.add(delta);
     });
   }
 
