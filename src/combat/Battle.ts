@@ -1,6 +1,5 @@
 import AbilityFactory from "./strategy/AbilityFactory";
 import CombatStrategy from "./strategy/CombatStrategy";
-import Dialogue from "@/ui/dialogue/Dialogue";
 import OpponentSelect from "./OpponentSelect";
 import StatModifier from "./strategy/StatModifier";
 import Team from "./Team";
@@ -11,6 +10,7 @@ import { Actor } from "@/actor/Actor";
 import { AnimatedEntity } from "@/ui/animation/text/AnimatedEntity";
 import { AnimatedText } from "@/ui/animation/text/AnimatedText";
 import { BattleMenu } from "@/menu/BattleMenu";
+import { Dialogue } from "@/ui/dialogue/Dialogue";
 import { Direction } from "@/ui/types";
 import { Drawable, Lockable } from "@/interfaces";
 import { Enemy } from "@/actor/Enemy";

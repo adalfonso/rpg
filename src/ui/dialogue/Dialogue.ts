@@ -1,11 +1,11 @@
+import * as ex from "excalibur";
 import TextStream from "./TextStream";
 import { Actor } from "@/actor/Actor";
-import { Drawable } from "@/interfaces";
+import { ExcaliburGraphicsContext } from "excalibur";
 import { Nullable } from "@/types";
-import { Vector } from "excalibur";
 import { bus, EventType } from "@/event/EventBus";
 
-class Dialogue implements Drawable {
+export class Dialogue {
   /** If waiting for user input */
   private waiting: boolean;
 
@@ -14,6 +14,11 @@ class Dialogue implements Drawable {
 
   /** A bank of how many seconds have passed since the last rendering */
   private timeStore: number;
+
+  private _canvas: ex.Canvas;
+
+  // TODO : does this need to be a member
+  private _resolution = ex.Vector.Zero;
 
   /**
    * Create a new Dialogue instance
@@ -35,6 +40,8 @@ class Dialogue implements Drawable {
     if (this._speaker) {
       this.actors = [...this.actors, this._speaker];
     }
+
+    this._canvas = new ex.Canvas({ draw: this._draw.bind(this) });
 
     this.start();
   }
@@ -67,30 +74,34 @@ class Dialogue implements Drawable {
   }
 
   /**
+   * Public method to draw Dialogue and all underlying entities
+   *
+   * @param ectx - excalibur rendering context
+   * @param resolution - render resolution for canvas
+   */
+  public draw(ectx: ExcaliburGraphicsContext, resolution: ex.Vector) {
+    this._resolution = resolution;
+    this._canvas.width = resolution.x;
+    this._canvas.height = resolution.y;
+
+    this._canvas.draw(ectx, 0, 0);
+  }
+
+  /**
    * Draw Dialogue and all underlying entities
    *
-   * @param ctx        - render context
-   * @param offset     - render position offset
-   * @param resolution - render resolution
+   * @param ectx - excalibur rendering context
    */
-  public draw(
-    ctx: CanvasRenderingContext2D,
-    offset: Vector = Vector.Zero,
-    resolution: Vector
-  ) {
-    const margin = new Vector(20, 20);
-    const size = new Vector(resolution.x - 2 * margin.x, 130);
-
-    const position = new Vector(margin.x, resolution.y - size.y - margin.y).add(
-      offset
-    );
+  private _draw(ctx: CanvasRenderingContext2D) {
+    const resolution = this._resolution;
+    const margin = new ex.Vector(20, 20);
+    const size = new ex.Vector(resolution.x - 2 * margin.x, 130);
+    const position = new ex.Vector(margin.x, resolution.y - size.y - margin.y);
 
     ctx.save();
     ctx.fillStyle = "#EEE";
     ctx.fillRect(position.x, position.y, size.x, size.y);
-
     this.drawText(ctx, position, resolution.sub(margin.scale(2)));
-
     ctx.restore();
   }
 
@@ -169,11 +180,11 @@ class Dialogue implements Drawable {
    */
   private drawText(
     ctx: CanvasRenderingContext2D,
-    offset: Vector,
-    resolution: Vector
+    offset: ex.Vector,
+    resolution: ex.Vector
   ) {
     const lineHeight = 52;
-    const padding = new Vector(20, 20);
+    const padding = new ex.Vector(20, 20);
 
     ctx.font = "32px Minecraftia";
     ctx.textAlign = "left";
@@ -195,7 +206,7 @@ class Dialogue implements Drawable {
     // Print each line in the buffer
     for (let i = 0; i < lines.length; i++) {
       const text = fragment.length < lines[i].length ? fragment : lines[i];
-      const lineOffset = new Vector(0, lineHeight).scale(i + 1);
+      const lineOffset = new ex.Vector(0, lineHeight).scale(i + 1);
       const position = offset.add(padding).add(lineOffset);
 
       ctx.fillText(text.trim(), position.x, position.y);
@@ -204,5 +215,3 @@ class Dialogue implements Drawable {
     }
   }
 }
-
-export default Dialogue;

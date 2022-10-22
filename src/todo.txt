@@ -3,3 +3,4 @@
 // remove defeated enemies each update
 // remove items after they are obtained
 // cleanup when scene ends to remove fixtures from the event bus
+// lock actors etc

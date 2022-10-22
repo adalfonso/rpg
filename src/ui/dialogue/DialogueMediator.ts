@@ -1,11 +1,11 @@
-import Dialogue from "./Dialogue";
+import * as ex from "excalibur";
 import InvalidDataError from "@/error/InvalidDataError";
 import MissingDataError from "@/error/MissingDataError";
 import Team from "@/combat/Team";
 import TextStream from "./TextStream";
 import { Actor } from "@/actor/Actor";
+import { Dialogue } from "./Dialogue";
 import { Updatable } from "@/interfaces";
-import { Vector } from "excalibur";
 import { bus, EventType } from "@/event/EventBus";
 import { isStringArray, Nullable } from "@/types";
 
@@ -50,16 +50,11 @@ export class DialogueMediator implements Updatable {
   /**
    * Draw the dialogue
    *
-   * @param ctx - render context
-   * @param offset  - render offset
+   * @param ectx - excalibur render context
    * @param resolution - screen resolution
    */
-  public draw(
-    ctx: CanvasRenderingContext2D,
-    offset: Vector = Vector.Zero,
-    resolution: Vector
-  ) {
-    this._dialogue?.draw(ctx, offset, resolution);
+  public draw(ctx: ex.ExcaliburGraphicsContext, resolution: ex.Vector) {
+    this._dialogue?.draw(ctx, resolution);
   }
 
   /**

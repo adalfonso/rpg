@@ -97,9 +97,11 @@ const new_main = async () => {
     game
   );
 
+  const heroes = new HeroTeam([player]);
+  const dialogue = new DialogueMediator(heroes);
   const images = loadImages();
   const loader = new ex.Loader(Object.values(images));
-  const mediator = new Mediator(game, player);
+  const mediator = new Mediator(game, heroes, dialogue);
 
   await mediator.start(loader);
 };

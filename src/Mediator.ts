@@ -1,49 +1,66 @@
 import * as ex from "excalibur";
 import MissingDataError from "./error/MissingDataError";
 import config from "./config";
+import menus from "./menu/menus";
+import { DialogueMediator } from "./ui/dialogue/DialogueMediator";
 import { Entry } from "./inanimate/Entry";
+import { HeroTeam } from "./combat/HeroTeam";
+import { Inventory } from "./menu/Inventory";
+import { Item } from "./inanimate/Item";
 import { LevelFixtureFactory } from "./level/LevelFixtureFactory";
-import { Player } from "./actor/Player";
+import { MenuType } from "./menu/types";
 import { Portal } from "./inanimate/Portal";
 import { TiledMapResource as TiledMap } from "@excaliburjs/plugin-tiled";
 import { bus, EventType } from "./event/EventBus";
+import { createEquipper } from "./combat/EquipperFactory";
+import { createSubMenu } from "./menu/MenuFactory";
 import { getMapFromName } from "./level/levels";
+import { path } from "@tauri-apps/api";
 import {
   isLevelFixtureType,
   LevelFixture,
   LevelFixtureType,
 } from "./level/LevelFixture";
-import { path } from "@tauri-apps/api";
-import { Inventory } from "./menu/Inventory";
-import { createSubMenu } from "./menu/MenuFactory";
-import { MenuType } from "./menu/types";
-import menus from "./menu/menus";
-import { createEquipper } from "./combat/EquipperFactory";
-import { HeroTeam } from "./combat/HeroTeam";
-import { Item } from "./inanimate/Item";
 
 /** Coordinates scenes within the game */
 export class Mediator {
   private _inventory: Inventory;
 
   private _fixtures: LevelFixture[] = [];
+
   /**
    * @param _game - engine instance
-   * @param _player - main player instance
+   * @param _heroes - all protagonist members
    */
-  constructor(private _game: ex.Engine, private _player: Player) {
+  constructor(
+    private _game: ex.Engine,
+    private _heroes: HeroTeam,
+    private _dialogue_mediator: DialogueMediator
+  ) {
     bus.register(this);
 
     this._game.on("postupdate", this._cleanupFixtures.bind(this));
 
-    // TODO: Use DI or something for all of this
-    const heroes = new HeroTeam([this._player]);
     const { inventory } = menus;
-    const equipper = createEquipper(heroes);
+    const equipper = createEquipper(this._heroes);
     this._inventory = new Inventory(
       createSubMenu(MenuType.Inventory)(inventory()),
       equipper
     );
+
+    this._game.on("preupdate", ({ delta: dt }) => {
+      this._dialogue_mediator.update(dt);
+    });
+
+    this._game.on("postdraw", (evt) => {
+      const { width, height } = this._game.screen.resolution;
+      this._dialogue_mediator.draw(evt.ctx, ex.vec(width, height));
+    });
+  }
+
+  /** Current player from the team */
+  get player() {
+    return this._heroes.leader;
   }
 
   /**
@@ -86,8 +103,8 @@ export class Mediator {
 
     this._game.add(scene_name, scene);
     this._game.goToScene(scene_name);
-    this._game.currentScene.add(this._player);
-    this._game.currentScene.camera.strategy.lockToActor(this._player);
+    this._game.currentScene.add(this.player);
+    this._game.currentScene.camera.strategy.lockToActor(this.player);
     this._game.currentScene.camera.zoom = config.scale;
 
     if (from) {
@@ -112,7 +129,7 @@ export class Mediator {
       );
     }
 
-    this._player.pos = entry.pos.clone();
+    this.player.pos = entry.pos.clone();
   }
 
   /**
