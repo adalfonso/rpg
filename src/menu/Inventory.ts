@@ -1,6 +1,5 @@
 import Item from "@/item/Item";
 import MissingDataError from "@/error/MissingDataError";
-import { Vector } from "excalibur";
 import Weapon from "@/combat/strategy/Weapon";
 import WeaponFactory from "@/combat/strategy/WeaponFactory";
 import { BaseMenuItemTemplate as Base } from "./menus";
@@ -12,6 +11,7 @@ import { InventoryState, isInventoryState } from "@schema/menu/InventorySchema";
 import { Menu } from "./Menu";
 import { MenuType } from "./types";
 import { SubMenu } from "./SubMenu";
+import { Vector } from "excalibur";
 import { createConfig } from "./ui/MenuRenderConfigFactory";
 import { createMenuItem, createSubMenu } from "./MenuFactory";
 import { state } from "@/state/StateManager";
@@ -207,7 +207,7 @@ export class Inventory extends Menu<InventoryMenuItem> implements Drawable {
 
     state()
       .get("team")
-      .forEach((member) => {
+      ?.forEach((member) => {
         const { type, equipped } = member;
 
         if (!equipped) {

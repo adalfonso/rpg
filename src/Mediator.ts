@@ -8,17 +8,42 @@ import { Portal } from "./inanimate/Portal";
 import { TiledMapResource as TiledMap } from "@excaliburjs/plugin-tiled";
 import { bus, EventType } from "./event/EventBus";
 import { getMapFromName } from "./level/levels";
-import { isLevelFixtureType, LevelFixtureType } from "./level/LevelFixture";
+import {
+  isLevelFixtureType,
+  LevelFixture,
+  LevelFixtureType,
+} from "./level/LevelFixture";
 import { path } from "@tauri-apps/api";
+import { Inventory } from "./menu/Inventory";
+import { createSubMenu } from "./menu/MenuFactory";
+import { MenuType } from "./menu/types";
+import menus from "./menu/menus";
+import { createEquipper } from "./combat/EquipperFactory";
+import { HeroTeam } from "./combat/HeroTeam";
+import { Item } from "./inanimate/Item";
 
 /** Coordinates scenes within the game */
 export class Mediator {
+  private _inventory: Inventory;
+
+  private _fixtures: LevelFixture[] = [];
   /**
    * @param _game - engine instance
    * @param _player - main player instance
    */
   constructor(private _game: ex.Engine, private _player: Player) {
     bus.register(this);
+
+    this._game.on("postupdate", this._cleanupFixtures.bind(this));
+
+    // TODO: Use DI or something for all of this
+    const heroes = new HeroTeam([this._player]);
+    const { inventory } = menus;
+    const equipper = createEquipper(heroes);
+    this._inventory = new Inventory(
+      createSubMenu(MenuType.Inventory)(inventory()),
+      equipper
+    );
   }
 
   /**
@@ -113,6 +138,19 @@ export class Mediator {
     };
   }
 
+  /** Cleanup any stale fixtures once per update*/
+  private _cleanupFixtures() {
+    const removed = this._fixtures.filter(
+      (fixture) => fixture instanceof Item && fixture.obtained
+    );
+
+    removed.forEach((fixture) => this._game.currentScene.remove(fixture));
+
+    this._fixtures = this._fixtures.filter(
+      (fixture) => !removed.includes(fixture)
+    );
+  }
+
   /**
    * Add level fixtures to a scene from a Tiled map
    *
@@ -122,7 +160,7 @@ export class Mediator {
   private _addFixtures(map: TiledMap, scene: ex.Scene) {
     const fixture_factory = new LevelFixtureFactory();
 
-    map.data
+    this._fixtures = map.data
       .getExcaliburObjects()
       .filter(({ name }) => isLevelFixtureType(name ?? ""))
       .map(({ name, objects }) => {
@@ -135,6 +173,8 @@ export class Mediator {
         });
       })
       .flat()
-      .forEach((fixture) => scene.add(fixture));
+      .filter(Boolean);
+
+    this._fixtures.forEach((fixture) => scene.add(fixture));
   }
 }

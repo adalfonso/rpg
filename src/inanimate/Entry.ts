@@ -1,5 +1,6 @@
 import * as ex from "excalibur";
 import MissingDataError from "@/error/MissingDataError";
+import { CollisionType } from "excalibur";
 import { TiledTemplate } from "@/actor/types";
 
 /** An area on the map that an entity can be loaded on */
@@ -14,7 +15,7 @@ export class Entry extends ex.Actor {
       throw new MissingDataError('Missing required "name" when creating Entry');
     }
 
-    super(_template);
+    super({ ..._template, collisionType: CollisionType.PreventCollision });
   }
 
   get ref() {

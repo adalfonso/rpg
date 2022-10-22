@@ -1,9 +1,9 @@
 import MissingDataError from "@/error/MissingDataError";
 import Renderable from "@/ui/Renderable";
-import { Vector } from "excalibur";
 import config from "@/config";
 import items from "@/item/items";
 import { ItemConfig } from "./types";
+import { Vector } from "excalibur";
 import { ucFirst, getImagePath } from "@/util";
 
 /** An item in the context of an inventory */

@@ -13,6 +13,9 @@ import { TiledTemplate } from "@/actor/types";
 import { isItemState, ItemState } from "@schema/inanimate/ItemSchema";
 import { state } from "@/state/StateManager";
 import { ucFirst, getImagePath } from "@/util";
+import { CollisionType } from "excalibur";
+import { Player } from "@/actor/Player";
+import { bus } from "@/event/EventBus";
 
 /** An item in the context of a map/level */
 export class Item extends MultiSprite(ex.Actor) implements Stateful<ItemState> {
@@ -45,7 +48,7 @@ export class Item extends MultiSprite(ex.Actor) implements Stateful<ItemState> {
     config_ctor: EntityConfigFactory<ItemConfig>,
     animation_factory: AnimationFactory
   ) {
-    super(_template);
+    super({ ..._template, collisionType: CollisionType.Passive });
 
     this._config = config_ctor(_template);
 
@@ -66,6 +69,23 @@ export class Item extends MultiSprite(ex.Actor) implements Stateful<ItemState> {
     // }
 
     this._resolveState();
+
+    this.on("collisionstart", (evt) => {
+      if (!(evt.other instanceof Player)) {
+        return;
+      }
+
+      this.obtain();
+      bus.emit("item.obtain", { item: this });
+
+      const useVowel = ["a", "e", "i", "o", "u"].includes(
+        this.displayAs[0].toLowerCase()
+      );
+
+      bus.emit("dialogue.create", {
+        speech: [`Picked up ${useVowel ? "an" : "a"} ${this.displayAs}!`],
+      });
+    });
   }
 
   /** The item reference */
