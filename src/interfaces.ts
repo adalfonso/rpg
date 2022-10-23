@@ -1,9 +1,9 @@
-import { Vector } from "excalibur";
+import * as ex from "excalibur";
 import { EventType } from "./event/EventBus";
 
 /** Any class that renders itself on a canvas */
 export interface Drawable {
-  draw(ctx: CanvasRenderingContext2D, offset: Vector, resolution: Vector): void;
+  draw(ctx: ex.ExcaliburGraphicsContext, resolution: ex.Vector): void;
 }
 
 export type Callable<T extends Event> = Record<string, (e: T) => void>;

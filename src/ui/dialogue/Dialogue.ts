@@ -15,10 +15,11 @@ export class Dialogue {
   /** A bank of how many seconds have passed since the last rendering */
   private timeStore: number;
 
-  private _canvas: ex.Canvas;
+  /** Ad hoc canvas for manual rendering */
+  private _canvas_2d: ex.Canvas;
 
-  // TODO : does this need to be a member
-  private _resolution = ex.Vector.Zero;
+  // TODO: does this need to be a member
+  private _render_resolution = ex.Vector.Zero;
 
   /**
    * Create a new Dialogue instance
@@ -41,7 +42,7 @@ export class Dialogue {
       this.actors = [...this.actors, this._speaker];
     }
 
-    this._canvas = new ex.Canvas({ draw: this._draw.bind(this) });
+    this._canvas_2d = new ex.Canvas({ draw: this._draw2d.bind(this) });
 
     this.start();
   }
@@ -76,15 +77,14 @@ export class Dialogue {
   /**
    * Public method to draw Dialogue and all underlying entities
    *
-   * @param ectx - excalibur rendering context
+   * @param ctx - excalibur rendering context
    * @param resolution - render resolution for canvas
    */
-  public draw(ectx: ExcaliburGraphicsContext, resolution: ex.Vector) {
-    this._resolution = resolution;
-    this._canvas.width = resolution.x;
-    this._canvas.height = resolution.y;
-
-    this._canvas.draw(ectx, 0, 0);
+  public draw(ctx: ExcaliburGraphicsContext, resolution: ex.Vector) {
+    this._render_resolution = resolution;
+    this._canvas_2d.width = resolution.x;
+    this._canvas_2d.height = resolution.y;
+    this._canvas_2d.draw(ctx, 0, 0);
   }
 
   /**
@@ -92,8 +92,8 @@ export class Dialogue {
    *
    * @param ectx - excalibur rendering context
    */
-  private _draw(ctx: CanvasRenderingContext2D) {
-    const resolution = this._resolution;
+  private _draw2d(ctx: CanvasRenderingContext2D) {
+    const resolution = this._render_resolution;
     const margin = new ex.Vector(20, 20);
     const size = new ex.Vector(resolution.x - 2 * margin.x, 130);
     const position = new ex.Vector(margin.x, resolution.y - size.y - margin.y);

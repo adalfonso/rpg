@@ -1,4 +1,4 @@
-import { Vector } from "excalibur";
+import * as ex from "excalibur";
 import { Drawable } from "@/interfaces";
 import { Menu } from "./Menu";
 import { SubMenu } from "./SubMenu";
@@ -33,11 +33,21 @@ export class StartMenu extends Menu<StartMenuItem> implements Drawable {
    * @param offset     - render position offset
    * @param resolution - render resolution
    */
-  public draw(
-    ctx: CanvasRenderingContext2D,
-    offset: Vector,
-    resolution: Vector
-  ) {
+  public draw(ctx: ex.ExcaliburGraphicsContext, resolution: ex.Vector) {
+    this._render_resolution = resolution;
+    this._canvas_2d.width = resolution.x;
+    this._canvas_2d.height = resolution.y;
+    this._canvas_2d.draw(ctx, 0, 0);
+  }
+
+  /**
+   * Draw StartMenu and all underlying entities
+   *
+   * @param ctx        - render context
+   * @param offset     - render position offset
+   * @param resolution - render resolution
+   */
+  public _draw2d(ctx: CanvasRenderingContext2D) {
     if (!this.active) {
       return;
     }
@@ -56,7 +66,9 @@ export class StartMenu extends Menu<StartMenuItem> implements Drawable {
       this
     );
 
-    this._menu.draw(ctx, offset, resolution, config);
+    const offset = ex.Vector.Zero;
+
+    this._menu.draw(ctx, offset, this._render_resolution, config);
   }
 
   /**

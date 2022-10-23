@@ -44,7 +44,7 @@ export abstract class Actor
   protected _defeated = false;
 
   /** If the actor is locked from updating */
-  protected locked: boolean;
+  protected locked = false;
 
   /** An actor's stats */
   protected _stats: Stats;
@@ -53,7 +53,7 @@ export abstract class Actor
   public weapon: Nullable<Weapon> = null;
 
   /** If the actor is in dialogue */
-  public in_dialogue: boolean;
+  public in_dialogue = false;
 
   /**
    * Create a new Actor-based instance
@@ -81,8 +81,6 @@ export abstract class Actor
     }
 
     this._id = _template.name;
-    this.in_dialogue = false;
-    this.locked = false;
 
     this._setSprites(this.getUiInfo(), this._template).then((scale) => {
       this.graphics.use(this.sprites[Direction.South]);

@@ -21,12 +21,33 @@ import {
   LevelFixture,
   LevelFixtureType,
 } from "./level/LevelFixture";
+import { StartMenu } from "./menu/StartMenu";
+
+/** Different states a game can be in */
+enum GameState {
+  StartMenu,
+  Play,
+  Pause,
+  Inventory,
+  Battle,
+  Dialogue,
+}
 
 /** Coordinates scenes within the game */
+
+// TODO: should this implement lockable
 export class Mediator {
+  /** Main game menu */
+  private _main_menu: StartMenu;
+
+  /** Inventory menu */
   private _inventory: Inventory;
 
+  /** Fixtures in the current scene */
   private _fixtures: LevelFixture[] = [];
+
+  /** Current state of game */
+  private _state = GameState.Play;
 
   /**
    * @param _game - engine instance
@@ -42,8 +63,10 @@ export class Mediator {
 
     this._game.on("postupdate", this._cleanupFixtures.bind(this));
 
-    const { inventory } = menus;
+    const { start, inventory } = menus;
     const equipper = createEquipper(this._heroes);
+
+    this._main_menu = new StartMenu(createSubMenu(MenuType.Start)(start()));
     this._inventory = new Inventory(
       createSubMenu(MenuType.Inventory)(inventory()),
       equipper
@@ -55,8 +78,16 @@ export class Mediator {
 
     this._game.on("postdraw", (evt) => {
       const { width, height } = this._game.screen.resolution;
-      this._dialogue_mediator.draw(evt.ctx, ex.vec(width, height));
+      const resolution = ex.vec(width, height);
+
+      this._dialogue_mediator.draw(evt.ctx, resolution);
+
+      if (this._main_menu.active) {
+        this._main_menu.draw(evt.ctx, resolution);
+      }
     });
+
+    this._main_menu.open();
   }
 
   /** Current player from the team */
@@ -152,6 +183,58 @@ export class Mediator {
 
           this.load(getMapFromName(portal.to), portal.from);
         },
+
+        "battle.start": (e: CustomEvent) => {
+          /**
+           * TODO: in the future, check if a battle will ever be started while
+           * another battle is already underway. If an enemy jumps on the player
+           * during a battle animation, it is plausible that battle.start would
+           * occur.
+           */
+          this._battle = this._battle || BattleBuilder.create(e);
+          this.lock(GameState.Battle);
+        },
+
+        "battle.end": (_: CustomEvent) => {
+          this._battle = null;
+          this.unlock(GameState.Battle);
+        },
+
+        "dialogue.start": (_: CustomEvent) => this.lock(GameState.Dialogue),
+
+        "dialogue.end": (_: CustomEvent) => this.unlock(GameState.Dialogue),
+
+        "menu.inventory.open": (_: CustomEvent) =>
+          this.lock(GameState.Inventory),
+
+        "menu.inventory.close": (_: CustomEvent) =>
+          this.unlock(GameState.Inventory),
+
+        "menu.startMenu.open": (_: CustomEvent) =>
+          this.lock(GameState.StartMenu),
+
+        "menu.startMenu.close": (_: CustomEvent) =>
+          this.unlock(GameState.StartMenu),
+
+        "item.obtain": (e: CustomEvent) => {
+          const item = e.detail?.item;
+
+          if (!item) {
+            throw new MissingDataError(
+              `Inventory unable to detect item on "item.obtain" event.`
+            );
+          }
+
+          const itemName = item.displayAs;
+
+          const useVowel = ["a", "e", "i", "o", "u"].includes(
+            itemName[0].toLowerCase()
+          );
+
+          bus.emit("dialogue.create", {
+            speech: [`Picked up ${useVowel ? "an" : "a"} ${itemName}!`],
+          });
+        },
       },
     };
   }
@@ -194,5 +277,42 @@ export class Mediator {
       .filter(Boolean);
 
     this._fixtures.forEach((fixture) => scene.add(fixture));
+  }
+
+  /**
+   * Lock player movement when non-play state is requested
+   *
+   * @param state - the game state to active
+   */
+  private lock(state: GameState) {
+    if (this._state !== GameState.Play) {
+      return;
+    }
+
+    this._state = state;
+    this.player.lock();
+
+    if (state !== GameState.Inventory) {
+      this._inventory.lock();
+    }
+
+    if (state !== GameState.StartMenu) {
+      this._main_menu.lock();
+    }
+  }
+
+  /**
+   * Unlock player movement if a current state is active
+   *
+   * @param state - the game to deactivate
+   */
+  private unlock(state: GameState) {
+    if (this._state !== state) {
+      return;
+    }
+    this.player.unlock();
+    this._inventory.unlock();
+    this._main_menu.unlock();
+    this._state = GameState.Play;
   }
 }

@@ -99,6 +99,8 @@ export class Inventory extends Menu<InventoryMenuItem> implements Drawable {
     this._menu.draw(ctx, offset, resolution, config);
   }
 
+  private _draw2d(ctx: CanvasRenderingContext2D) {}
+
   /**
    * Register events with the event bus
    *
