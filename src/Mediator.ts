@@ -31,6 +31,7 @@ export class Mediator {
   /**
    * @param _game - engine instance
    * @param _heroes - all protagonist members
+   * @param _dialogue_mediator - coordinates dialogue between actors
    */
   constructor(
     private _game: ex.Engine,

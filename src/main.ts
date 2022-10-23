@@ -1,7 +1,6 @@
 import "./_resource/css/app.css";
 import * as Tiled from "@excaliburjs/plugin-tiled";
 import * as ex from "excalibur";
-import Display from "@/ui/Display";
 import Game from "@/game/Game";
 import config from "@/config";
 import { APP_NAME, SAVE_FILE, RESOLUTION, SAVE_DIR } from "./constants";
@@ -54,7 +53,6 @@ const _main = async (_event) => {
   const team = new HeroTeam([player]);
   const dialogue = new DialogueMediator(team);
   const game = new Game(team, dialogue);
-  const display = new Display(RESOLUTION, canvas, game);
 
   startAnimation((dt: number) => {
     game.update(dt);

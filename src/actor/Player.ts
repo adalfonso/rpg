@@ -1,7 +1,6 @@
 import * as ex from "excalibur";
 import MissingDataError from "@/error/MissingDataError";
 import Weapon from "@/combat/strategy/Weapon";
-import config from "@/config";
 import { Actor } from "./Actor";
 import { Direction } from "@/ui/types";
 import { Nullable } from "@/types";
@@ -55,32 +54,14 @@ export class Player extends Actor implements Stateful<PlayerState> {
    *
    * @emits player.move
    */
-  public update(dt: number) {
-    return;
+  public update(_game: ex.Engine, dt: number) {
     if (this.locked) {
       return;
     }
 
-    super.update(dt);
-
-    let speedModifier = 0.4;
-
-    // Reduce speed when traveling diagonally
-    if (this.speed.x * this.speed.y !== 0) {
-      speedModifier *= 0.75;
-    }
-
-    const distance = this.speed.scale(config.scale).scale(speedModifier);
-
-    this.moveTo(this._position.add(distance));
-
-    if (Math.abs(this.speed.x) + Math.abs(this.speed.y)) {
-      bus.emit("player.move", { player: this });
-    }
-
     if (this._pet) {
       this._pet.follow({
-        position: this._position,
+        position: this.pos,
         direction: this.direction,
         dt,
       });
@@ -221,6 +202,10 @@ export class Player extends Actor implements Stateful<PlayerState> {
    * @param event - keypress event
    */
   private _move(event: ex.Input.KeyEvent) {
+    if (this.locked) {
+      return;
+    }
+
     const { key } = event;
 
     if (key === "ArrowUp") {
@@ -244,7 +229,12 @@ export class Player extends Actor implements Stateful<PlayerState> {
    * @param event - keyrelease event
    */
   private _stopMove(evt: ex.Input.KeyEvent) {
+    if (this.locked) {
+      return;
+    }
+
     const { key } = evt;
+
     if (key === "ArrowUp" && this.vel.y < 0) {
       this.vel.y = 0;
     } else if (key === "ArrowRight" && this.vel.x > 0) {

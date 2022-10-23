@@ -25,6 +25,9 @@ export abstract class Actor
   extends MultiSprite(Resizable(Movable(ex.Actor)))
   implements Lockable, Stateful<ActorState>
 {
+  /** Saves velocity while actor is locked */
+  private _saved_velocity = ex.Vector.Zero;
+
   /** Battle abilities */
   private _abilities: AbilityList[];
 
@@ -50,7 +53,7 @@ export abstract class Actor
   public weapon: Nullable<Weapon> = null;
 
   /** If the actor is in dialogue */
-  public inDialogue: boolean;
+  public in_dialogue: boolean;
 
   /**
    * Create a new Actor-based instance
@@ -78,7 +81,7 @@ export abstract class Actor
     }
 
     this._id = _template.name;
-    this.inDialogue = false;
+    this.in_dialogue = false;
     this.locked = false;
 
     this._setSprites(this.getUiInfo(), this._template).then((scale) => {
@@ -154,6 +157,8 @@ export abstract class Actor
    */
   public lock(): boolean {
     this.locked = true;
+    this._saved_velocity = this.vel.clone();
+    this.vel = ex.Vector.Zero;
 
     return true;
   }
@@ -165,8 +170,10 @@ export abstract class Actor
    */
   public unlock(): boolean {
     // Do not unlock the actor while they are still in dialogue
-    if (!this.inDialogue) {
+    if (!this.in_dialogue) {
       this.locked = false;
+      this.vel = this._saved_velocity.clone();
+      this._saved_velocity = ex.Vector.Zero;
 
       return true;
     }

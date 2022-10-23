@@ -134,7 +134,7 @@ export class Dialogue {
   /** Begin the dialogue */
   private start() {
     this.actors.forEach((a) => {
-      a.inDialogue = true;
+      a.in_dialogue = true;
       a.lock();
     });
 
@@ -144,7 +144,7 @@ export class Dialogue {
   /** End the dialogue */
   private stop() {
     this.actors.forEach((a) => {
-      a.inDialogue = false;
+      a.in_dialogue = false;
       a.unlock();
     });
 

@@ -133,26 +133,6 @@ export class NonPlayer extends Actor implements Drawable {
 
           this.kill();
         },
-
-        "player.move": (e: CustomEvent) => {
-          const player = e.detail?.player;
-
-          if (!player) {
-            throw new MissingDataError(
-              "Player missing on player.move event as tracked by non-player."
-            );
-          }
-
-          if (this.collidesWith(player)) {
-            if (!this.collisions.includes(player)) {
-              this.collisions.push(player);
-            }
-          } else if (this.collisions.includes(player)) {
-            this.collisions = this.collisions.filter(
-              (actor) => actor !== player
-            );
-          }
-        },
       },
       [EventType.Keyboard]: {
         keyup: (e: KeyboardEvent) => {

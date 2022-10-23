@@ -6,11 +6,13 @@ import { StatTemplate } from "@/actor/Stats";
 export const isTiledTemplate = (
   template: Tiled.TiledObject
 ): template is TiledTemplate =>
+  template.name !== undefined &&
   template.class !== undefined &&
   template.height !== undefined &&
   template.width !== undefined;
 
 export type TiledTemplate = Tiled.TiledObject & {
+  name: string;
   class: string;
   height: number;
   width: number;
