@@ -4,6 +4,7 @@ import { Drawable } from "@/interfaces";
 import { Milestone } from "@/state/milestone/Milestone";
 import { MilestoneAttainOn } from "@/state/milestone/types";
 import { Nullable } from "@/types";
+import { Player } from "./Player";
 import { Speech, TiledTemplate } from "./types";
 import { Vector } from "excalibur";
 import { bus, EventType } from "@/event/EventBus";
@@ -12,7 +13,7 @@ import { getSpeech } from "./speech";
 /** A non-playable character */
 export class NonPlayer extends Actor implements Drawable {
   /** Entities that were recently collided with */
-  private collisions: Actor[] = [];
+  private _has_player_collision = false;
 
   /** Speech/dialogue spoken by the npc */
   private _speech: Speech;
@@ -54,6 +55,22 @@ export class NonPlayer extends Actor implements Drawable {
         this.kill();
       }
     }
+
+    this.on("collisionstart", (evt) => {
+      if (!(evt.other instanceof Player)) {
+        return;
+      }
+
+      this._has_player_collision = true;
+    });
+
+    this.on("collisionend", (evt) => {
+      if (!(evt.other instanceof Player)) {
+        return;
+      }
+
+      this._has_player_collision = false;
+    });
 
     this._resolveState();
 
@@ -136,7 +153,7 @@ export class NonPlayer extends Actor implements Drawable {
       },
       [EventType.Keyboard]: {
         keyup: (e: KeyboardEvent) => {
-          if (e.key === "Enter" && this.collisions.length) {
+          if (e.key === "Enter" && this._has_player_collision) {
             this.speak();
           }
         },
