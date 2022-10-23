@@ -27,32 +27,39 @@ export class StartMenu extends Menu<StartMenuItem> implements Drawable {
   }
 
   /**
-   * Draw Menu and all underlying entities
+   * Draw and all underlying entities
    *
-   * @param ctx - 2d render context
+   * @param ctx - render context
+   * @param resolution - render resolution
    */
-  public draw2d(ctx: CanvasRenderingContext2D) {
-    if (!this.active) {
-      return;
-    }
+  public draw(ctx: ex.ExcaliburGraphicsContext, resolution: ex.Vector) {
+    this._canvas.draw(
+      ctx,
+      resolution,
+      (ctx: CanvasRenderingContext2D, resolution: ex.Vector) => {
+        if (!this.active) {
+          return;
+        }
 
-    const config = createConfig(
-      {
-        font: {
-          color: "#FFF",
-          shadow_color: "#FFF",
-          shadow_blur: 4,
-          size: 42,
-          align: "center",
-        },
-        menu: { background_color: "rgba(0, 0, 0, .85)" },
-      },
-      this
+        const config = createConfig(
+          {
+            font: {
+              color: "#FFF",
+              shadow_color: "#FFF",
+              shadow_blur: 4,
+              size: 42,
+              align: "center",
+            },
+            menu: { background_color: "rgba(0, 0, 0, .85)" },
+          },
+          this
+        );
+
+        const offset = ex.Vector.Zero;
+
+        this._menu.draw(ctx, offset, resolution, config);
+      }
     );
-
-    const offset = ex.Vector.Zero;
-
-    this._menu.draw(ctx, offset, this._render_resolution, config);
   }
 
   /**

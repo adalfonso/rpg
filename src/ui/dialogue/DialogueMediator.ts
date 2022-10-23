@@ -5,12 +5,12 @@ import Team from "@/combat/Team";
 import TextStream from "./TextStream";
 import { Actor } from "@/actor/Actor";
 import { Dialogue } from "./Dialogue";
-import { Updatable } from "@/interfaces";
+import { Drawable, Updatable } from "@/interfaces";
 import { bus, EventType } from "@/event/EventBus";
 import { isStringArray, Nullable } from "@/types";
 
 /** Used to start and stop dialogue with a team */
-export class DialogueMediator implements Updatable {
+export class DialogueMediator implements Drawable, Updatable {
   /** Dialogue instance */
   private _dialogue: Nullable<Dialogue> = null;
 

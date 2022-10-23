@@ -1,4 +1,5 @@
 import * as ex from "excalibur";
+import { AdHocCanvas } from "@/ui/AdHocCanvas";
 import { Drawable, Lockable } from "@/interfaces";
 import { Empty } from "@/mixins";
 import { MenuItem } from "./MenuItem";
@@ -11,12 +12,6 @@ export abstract class Menu<T>
   extends Movable(Empty)
   implements Drawable, Lockable
 {
-  // TODO: does this need to be a member
-  protected _render_resolution = ex.Vector.Zero;
-
-  /** Ad hoc canvas for manual rendering */
-  public _canvas_2d: ex.Canvas;
-
   /**
    * A stack of the currently selected menu options
    *
@@ -26,6 +21,9 @@ export abstract class Menu<T>
 
   /** If the menu is locked */
   protected locked = false;
+
+  /** Canvas for rendering 2D */
+  protected _canvas = new AdHocCanvas();
 
   /** If the menu is currently active */
   public active = false;
@@ -46,7 +44,6 @@ export abstract class Menu<T>
     super();
 
     this.selected = [this._menu.items[0]];
-    this._canvas_2d = new ex.Canvas({ draw: this.draw2d.bind(this) });
 
     bus.register(this);
   }
@@ -82,19 +79,10 @@ export abstract class Menu<T>
    * @param ctx - render context
    * @param resolution - render resolution
    */
-  public draw(ctx: ex.ExcaliburGraphicsContext, resolution: ex.Vector) {
-    this._render_resolution = resolution;
-    this._canvas_2d.width = resolution.x;
-    this._canvas_2d.height = resolution.y;
-    this._canvas_2d.draw(ctx, 0, 0);
-  }
-
-  /**
-   * Draw Menu and all underlying entities
-   *
-   * @param ctx - 2d render context
-   */
-  abstract draw2d(ctx: CanvasRenderingContext2D): void;
+  public abstract draw(
+    ctx: ex.ExcaliburGraphicsContext,
+    resolution: ex.Vector
+  ): void;
 
   /**
    * Register events with the event bus

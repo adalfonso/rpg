@@ -1,9 +1,19 @@
 import * as ex from "excalibur";
 import { EventType } from "./event/EventBus";
 
-/** Any class that renders itself on a canvas */
+// 2D drawing strategy (how we used to do it)
+export type DrawStrategy = (
+  ctx: CanvasRenderingContext2D,
+  resolution: ex.Vector
+) => void;
+
+/** Any class that manually renders itself on a canvas */
 export interface Drawable {
-  draw(ctx: ex.ExcaliburGraphicsContext, resolution: ex.Vector): void;
+  draw(
+    ctx: ex.ExcaliburGraphicsContext,
+    resolution: ex.Vector,
+    strategy: DrawStrategy
+  ): void;
 }
 
 export type Callable<T extends Event> = Record<string, (e: T) => void>;

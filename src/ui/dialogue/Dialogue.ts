@@ -1,11 +1,12 @@
 import * as ex from "excalibur";
 import TextStream from "./TextStream";
 import { Actor } from "@/actor/Actor";
-import { ExcaliburGraphicsContext } from "excalibur";
+import { AdHocCanvas } from "../AdHocCanvas";
+import { Drawable } from "@/interfaces";
 import { Nullable } from "@/types";
 import { bus, EventType } from "@/event/EventBus";
 
-export class Dialogue {
+export class Dialogue implements Drawable {
   /** If waiting for user input */
   private waiting: boolean;
 
@@ -15,11 +16,8 @@ export class Dialogue {
   /** A bank of how many seconds have passed since the last rendering */
   private timeStore: number;
 
-  /** Ad hoc canvas for manual rendering */
-  private _canvas_2d: ex.Canvas;
-
-  // TODO: does this need to be a member
-  private _render_resolution = ex.Vector.Zero;
+  /** Canvas for rendering 2D */
+  private _canvas = new AdHocCanvas();
 
   /**
    * Create a new Dialogue instance
@@ -41,8 +39,6 @@ export class Dialogue {
     if (this._speaker) {
       this.actors = [...this.actors, this._speaker];
     }
-
-    this._canvas_2d = new ex.Canvas({ draw: this._draw2d.bind(this) });
 
     this.start();
   }
@@ -75,34 +71,30 @@ export class Dialogue {
   }
 
   /**
-   * Public method to draw Dialogue and all underlying entities
+   * Draw and all underlying entities
    *
-   * @param ctx - excalibur rendering context
-   * @param resolution - render resolution for canvas
+   * @param ctx - render context
+   * @param resolution - render resolution
    */
-  public draw(ctx: ExcaliburGraphicsContext, resolution: ex.Vector) {
-    this._render_resolution = resolution;
-    this._canvas_2d.width = resolution.x;
-    this._canvas_2d.height = resolution.y;
-    this._canvas_2d.draw(ctx, 0, 0);
-  }
+  public draw(ctx: ex.ExcaliburGraphicsContext, resolution: ex.Vector) {
+    this._canvas.draw(
+      ctx,
+      resolution,
+      (ctx: CanvasRenderingContext2D, resolution: ex.Vector) => {
+        const margin = new ex.Vector(20, 20);
+        const size = new ex.Vector(resolution.x - 2 * margin.x, 130);
+        const position = new ex.Vector(
+          margin.x,
+          resolution.y - size.y - margin.y
+        );
 
-  /**
-   * Draw Dialogue and all underlying entities
-   *
-   * @param ectx - excalibur rendering context
-   */
-  private _draw2d(ctx: CanvasRenderingContext2D) {
-    const resolution = this._render_resolution;
-    const margin = new ex.Vector(20, 20);
-    const size = new ex.Vector(resolution.x - 2 * margin.x, 130);
-    const position = new ex.Vector(margin.x, resolution.y - size.y - margin.y);
-
-    ctx.save();
-    ctx.fillStyle = "#EEE";
-    ctx.fillRect(position.x, position.y, size.x, size.y);
-    this.drawText(ctx, position, resolution.sub(margin.scale(2)));
-    ctx.restore();
+        ctx.save();
+        ctx.fillStyle = "#EEE";
+        ctx.fillRect(position.x, position.y, size.x, size.y);
+        this.drawText(ctx, position, resolution.sub(margin.scale(2)));
+        ctx.restore();
+      }
+    );
   }
 
   /**

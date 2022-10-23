@@ -62,35 +62,42 @@ export class Inventory extends Menu<InventoryMenuItem> implements Drawable {
   }
 
   /**
-   * Draw Menu and all underlying entities
+   * Draw and all underlying entities
    *
-   * @param ctx - 2d render context
+   * @param ctx - render context
+   * @param resolution - render resolution
    */
-  public draw2d(ctx: CanvasRenderingContext2D) {
-    if (!this.active) {
-      return;
-    }
+  public draw(ctx: ex.ExcaliburGraphicsContext, resolution: ex.Vector) {
+    this._canvas.draw(
+      ctx,
+      resolution,
+      (ctx: CanvasRenderingContext2D, resolution: ex.Vector) => {
+        if (!this.active) {
+          return;
+        }
 
-    const config = createConfig(
-      {
-        font: {
-          color: "#EEE",
-          highlight_color: "#0AA",
-          shadow_offset: new ex.Vector(0, 4),
-        },
-        menu: { background_color: "#555" },
-        logic: {
-          isSelected: this._isSelected.bind(this),
-          getBadgeTitle: (menu) =>
-            menu.source instanceof Weapon && menu.source.isEquipped
-              ? "Equipped"
-              : "",
-        },
-      },
-      this
+        const config = createConfig(
+          {
+            font: {
+              color: "#EEE",
+              highlight_color: "#0AA",
+              shadow_offset: new ex.Vector(0, 4),
+            },
+            menu: { background_color: "#555" },
+            logic: {
+              isSelected: this._isSelected.bind(this),
+              getBadgeTitle: (menu) =>
+                menu.source instanceof Weapon && menu.source.isEquipped
+                  ? "Equipped"
+                  : "",
+            },
+          },
+          this
+        );
+
+        this._menu.draw(ctx, ex.Vector.Zero, resolution, config);
+      }
     );
-
-    this._menu.draw(ctx, ex.Vector.Zero, this._render_resolution, config);
   }
 
   /**
