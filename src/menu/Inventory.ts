@@ -1,3 +1,4 @@
+import * as ex from "excalibur";
 import Item from "@/item/Item";
 import MissingDataError from "@/error/MissingDataError";
 import Weapon from "@/combat/strategy/Weapon";
@@ -11,7 +12,6 @@ import { InventoryState, isInventoryState } from "@schema/menu/InventorySchema";
 import { Menu } from "./Menu";
 import { MenuType } from "./types";
 import { SubMenu } from "./SubMenu";
-import { Vector } from "excalibur";
 import { createConfig } from "./ui/MenuRenderConfigFactory";
 import { createMenuItem, createSubMenu } from "./MenuFactory";
 import { state } from "@/state/StateManager";
@@ -62,17 +62,11 @@ export class Inventory extends Menu<InventoryMenuItem> implements Drawable {
   }
 
   /**
-   * Draw Inventory and all underlying entities.
+   * Draw Menu and all underlying entities
    *
-   * @param ctx        - render context
-   * @param offset     - render position offset
-   * @param resolution - render resolution
+   * @param ctx - 2d render context
    */
-  public draw(
-    ctx: CanvasRenderingContext2D,
-    offset: Vector,
-    resolution: Vector
-  ) {
+  public draw2d(ctx: CanvasRenderingContext2D) {
     if (!this.active) {
       return;
     }
@@ -82,7 +76,7 @@ export class Inventory extends Menu<InventoryMenuItem> implements Drawable {
         font: {
           color: "#EEE",
           highlight_color: "#0AA",
-          shadow_offset: new Vector(0, 4),
+          shadow_offset: new ex.Vector(0, 4),
         },
         menu: { background_color: "#555" },
         logic: {
@@ -96,10 +90,8 @@ export class Inventory extends Menu<InventoryMenuItem> implements Drawable {
       this
     );
 
-    this._menu.draw(ctx, offset, resolution, config);
+    this._menu.draw(ctx, ex.Vector.Zero, this._render_resolution, config);
   }
-
-  private _draw2d(ctx: CanvasRenderingContext2D) {}
 
   /**
    * Register events with the event bus

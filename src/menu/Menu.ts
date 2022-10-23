@@ -46,7 +46,7 @@ export abstract class Menu<T>
     super();
 
     this.selected = [this._menu.items[0]];
-    this._canvas_2d = new ex.Canvas({ draw: this._draw2d.bind(this) });
+    this._canvas_2d = new ex.Canvas({ draw: this.draw2d.bind(this) });
 
     bus.register(this);
   }
@@ -77,23 +77,24 @@ export abstract class Menu<T>
   }
 
   /**
-   * Draw Menu and all underlying entities
+   * Draw and all underlying entities
    *
    * @param ctx - render context
    * @param resolution - render resolution
    */
-  public abstract draw(
-    ctx: ex.ExcaliburGraphicsContext,
-    resolution: ex.Vector
-  ): void;
+  public draw(ctx: ex.ExcaliburGraphicsContext, resolution: ex.Vector) {
+    this._render_resolution = resolution;
+    this._canvas_2d.width = resolution.x;
+    this._canvas_2d.height = resolution.y;
+    this._canvas_2d.draw(ctx, 0, 0);
+  }
 
   /**
    * Draw Menu and all underlying entities
    *
    * @param ctx - 2d render context
-   * @param resolution - render resolution
    */
-  abstract _draw2d(ctx: CanvasRenderingContext2D): void;
+  abstract draw2d(ctx: CanvasRenderingContext2D): void;
 
   /**
    * Register events with the event bus

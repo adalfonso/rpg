@@ -10,6 +10,7 @@ import { Item } from "./inanimate/Item";
 import { LevelFixtureFactory } from "./level/LevelFixtureFactory";
 import { MenuType } from "./menu/types";
 import { Portal } from "./inanimate/Portal";
+import { StartMenu } from "./menu/StartMenu";
 import { TiledMapResource as TiledMap } from "@excaliburjs/plugin-tiled";
 import { bus, EventType } from "./event/EventBus";
 import { createEquipper } from "./combat/EquipperFactory";
@@ -21,7 +22,6 @@ import {
   LevelFixture,
   LevelFixtureType,
 } from "./level/LevelFixture";
-import { StartMenu } from "./menu/StartMenu";
 
 /** Different states a game can be in */
 enum GameState {
@@ -84,6 +84,10 @@ export class Mediator {
 
       if (this._main_menu.active) {
         this._main_menu.draw(evt.ctx, resolution);
+      }
+
+      if (this._inventory.active) {
+        this._inventory.draw(evt.ctx, resolution);
       }
     });
 

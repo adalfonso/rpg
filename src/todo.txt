@@ -5,4 +5,5 @@
 // lock actors etc
 // slow player when moving diagonally (75%)
 // speak to npc
+// scale inventory items
 
