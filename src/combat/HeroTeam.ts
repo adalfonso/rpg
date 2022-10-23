@@ -1,3 +1,4 @@
+import * as ex from "excalibur";
 import MissingDataError from "@/error/MissingDataError";
 import Team from "./Team";
 import config from "@/config";
@@ -18,7 +19,7 @@ export class HeroTeam extends Team<Player> implements Stateful<TeamState> {
    *
    * @param _members - heroes
    */
-  constructor(protected _members: Player[]) {
+  constructor(protected _members: Player[], private _game: ex.Engine) {
     super(_members);
 
     this._resolveState();
@@ -169,14 +170,9 @@ export class HeroTeam extends Team<Player> implements Stateful<TeamState> {
    * @returns new player
    */
   private _createPlayerFromActor(actor: Actor) {
-    const position = Vector.Zero;
-    const size = new Vector(actor.template.width, actor.template.height);
-
     return new Player(
-      position.scale(config.scale),
-      // TODO: why do we have to provide a size if it is listed in the template?
-      size.scale(config.scale),
-      actor.template
+      { template: actor.template, args: {}, speed: 0 },
+      this._game
     );
   }
 }

@@ -161,6 +161,7 @@ export class Player extends Actor implements Stateful<PlayerState> {
     if (record) {
       bus.emit("team.save", { actor: this });
     }
+    super.kill();
   }
 
   /**

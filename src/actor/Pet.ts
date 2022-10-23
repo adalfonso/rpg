@@ -19,6 +19,7 @@ export class Pet extends Actor {
   /** Kill off a pet */
   public kill() {
     // TODO: pets cannot be killed yet
+    super.kill();
   }
 
   /**

@@ -63,7 +63,7 @@ const _main = async (_event) => {
 const new_main = async () => {
   const canvasElement = <HTMLCanvasElement>document.getElementById("game");
 
-  const game = new ex.Engine({
+  const engine = new ex.Engine({
     width: RESOLUTION.x * config.scale,
     height: RESOLUTION.y * config.scale,
     displayMode: ex.DisplayMode.FillScreen,
@@ -92,14 +92,14 @@ const new_main = async () => {
       args: { collisionType: ex.CollisionType.Active },
       speed: 100,
     },
-    game
+    engine
   );
 
-  const heroes = new HeroTeam([player]);
+  const heroes = new HeroTeam([player], engine);
   const dialogue = new DialogueMediator(heroes);
   const images = loadImages();
   const loader = new ex.Loader(Object.values(images));
-  const mediator = new Mediator(game, heroes, dialogue);
+  const mediator = new Mediator(engine, heroes, dialogue);
 
   await mediator.start(loader);
 };

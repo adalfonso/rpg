@@ -9,6 +9,7 @@ import { Inventory } from "./menu/Inventory";
 import { Item } from "./inanimate/Item";
 import { LevelFixtureFactory } from "./level/LevelFixtureFactory";
 import { MenuType } from "./menu/types";
+import { NonPlayer } from "./actor/NonPlayer";
 import { Portal } from "./inanimate/Portal";
 import { StartMenu } from "./menu/StartMenu";
 import { TiledMapResource as TiledMap } from "@excaliburjs/plugin-tiled";
@@ -226,10 +227,12 @@ export class Mediator {
   /** Cleanup any stale fixtures once per update*/
   private _cleanupFixtures() {
     const removed = this._fixtures.filter(
-      (fixture) => fixture instanceof Item && fixture.obtained
+      (fixture) =>
+        (fixture instanceof Item && fixture.obtained) ||
+        (fixture instanceof NonPlayer && fixture.isExpired)
     );
 
-    removed.forEach((fixture) => this._game.currentScene.remove(fixture));
+    removed.forEach((fixture) => this._game.remove(fixture));
 
     this._fixtures = this._fixtures.filter(
       (fixture) => !removed.includes(fixture)

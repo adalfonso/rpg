@@ -3,7 +3,6 @@ import * as ex from "excalibur";
 import AbilityFactory from "@/combat/strategy/AbilityFactory";
 import CombatStrategy from "@/combat/strategy/CombatStrategy";
 import Damage from "@/combat/Damage";
-import Dialogue from "@/ui/dialogue/Dialogue";
 import MissingDataError from "@/error/MissingDataError";
 import Stats from "@/actor/Stats";
 import Weapon from "@/combat/strategy/Weapon";
@@ -36,9 +35,6 @@ export abstract class Actor
 
   /** Game-related info about the actor */
   protected config: ActorConfig;
-
-  /** Dialogue that the actor is the leader of */
-  protected dialogue: Nullable<Dialogue> = null;
 
   /** If the actor has been defeated */
   protected _defeated = false;
@@ -204,9 +200,6 @@ export abstract class Actor
   public endure(damage: Damage) {
     this.stats.endure(damage);
   }
-
-  /** Kill off the actor */
-  public abstract kill(): void;
 
   /**
    * Equip a weapon

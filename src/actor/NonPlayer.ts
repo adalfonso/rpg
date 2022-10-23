@@ -1,17 +1,15 @@
 import MissingDataError from "@/error/MissingDataError";
 import { Actor } from "./Actor";
-import { Drawable } from "@/interfaces";
 import { Milestone } from "@/state/milestone/Milestone";
 import { MilestoneAttainOn } from "@/state/milestone/types";
 import { Nullable } from "@/types";
 import { Player } from "./Player";
 import { Speech, TiledTemplate } from "./types";
-import { Vector } from "excalibur";
 import { bus, EventType } from "@/event/EventBus";
 import { getSpeech } from "./speech";
 
 /** A non-playable character */
-export class NonPlayer extends Actor implements Drawable {
+export class NonPlayer extends Actor {
   /** Entities that were recently collided with */
   private _has_player_collision = false;
 
@@ -91,30 +89,7 @@ export class NonPlayer extends Actor implements Drawable {
   public kill() {
     bus.unregister(this);
     this._is_expired = true;
-  }
-
-  /**
-   * Update the non-player
-   *
-   * @param dt - delta time
-   */
-  public update(_dt: number) {
-    //
-  }
-
-  /**
-   * Draw NPC and all underlying entities
-   *
-   * @param ctx        - render context
-   * @param offset     - render position offset
-   * @param resolution - render resolution
-   */
-  public draw(
-    ctx: CanvasRenderingContext2D,
-    offset: Vector,
-    resolution: Vector
-  ) {
-    super.draw(ctx, offset, resolution);
+    super.kill();
   }
 
   /**

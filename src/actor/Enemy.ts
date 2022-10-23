@@ -64,5 +64,6 @@ export class Enemy extends Actor {
     this._defeated = true;
 
     state().mergeByRef(`enemies.${this.ref_id}.defeated`, true);
+    super.kill();
   }
 }
