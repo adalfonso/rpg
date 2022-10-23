@@ -1,7 +1,5 @@
 import Battle from "@/combat/Battle";
 import BattleBuilder from "@/combat/BattleBuilder";
-import CollisionHandler from "../physics/CollisionHandler";
-import MissingDataError from "../error/MissingDataError";
 import menus from "@/menu/menus";
 import { DialogueMediator } from "../ui/dialogue/DialogueMediator";
 import { Drawable, Updatable } from "../interfaces";
@@ -176,26 +174,6 @@ class Game implements Drawable, Updatable {
 
         "menu.startMenu.close": (_: CustomEvent) =>
           this.unlock(GameState.StartMenu),
-
-        "item.obtain": (e: CustomEvent) => {
-          const item = e.detail?.item;
-
-          if (!item) {
-            throw new MissingDataError(
-              `Inventory unable to detect item on "item.obtain" event.`
-            );
-          }
-
-          const itemName = item.displayAs;
-
-          const useVowel = ["a", "e", "i", "o", "u"].includes(
-            itemName[0].toLowerCase()
-          );
-
-          bus.emit("dialogue.create", {
-            speech: [`Picked up ${useVowel ? "an" : "a"} ${itemName}!`],
-          });
-        },
       },
     };
   }

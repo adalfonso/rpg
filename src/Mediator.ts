@@ -219,26 +219,6 @@ export class Mediator {
 
         "menu.startMenu.close": (_: CustomEvent) =>
           this.unlock(GameState.StartMenu),
-
-        "item.obtain": (e: CustomEvent) => {
-          const item = e.detail?.item;
-
-          if (!item) {
-            throw new MissingDataError(
-              `Inventory unable to detect item on "item.obtain" event.`
-            );
-          }
-
-          const itemName = item.displayAs;
-
-          const useVowel = ["a", "e", "i", "o", "u"].includes(
-            itemName[0].toLowerCase()
-          );
-
-          bus.emit("dialogue.create", {
-            speech: [`Picked up ${useVowel ? "an" : "a"} ${itemName}!`],
-          });
-        },
       },
     };
   }
