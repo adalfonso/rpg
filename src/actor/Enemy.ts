@@ -1,7 +1,7 @@
 import * as ex from "excalibur";
 import { Actor } from "./Actor";
 import { Direction } from "@/ui/types";
-import { HeroTeam } from "@/combat/HeroTeam";
+import { Player } from "./Player";
 import { TiledTemplate } from "./types";
 import { bus } from "@/event/EventBus";
 import { state } from "@/state/StateManager";
@@ -17,9 +17,17 @@ export class Enemy extends Actor {
     super(template, { collisionType: ex.CollisionType.Fixed });
 
     // TODO: make configurable when needed
-    this.direction = Direction.West;
+    this._direction = Direction.West;
 
     this._resolveState();
+
+    this.on("collisionstart", (evt) => {
+      if (!(evt.other instanceof Player)) {
+        return;
+      }
+
+      this.fight();
+    });
   }
 
   /** State lookup key */
@@ -44,19 +52,14 @@ export class Enemy extends Actor {
   /**
    * Start a fight with the player
    *
-   * @param player - player to fight
-   *
    * @emits battle.start
    */
-  public fight(heroes: HeroTeam) {
+  public fight() {
     if (this._defeated) {
       return;
     }
 
-    bus.emit("battle.start", {
-      heroes,
-      enemy: this,
-    });
+    bus.emit("battle.start", { enemy: this });
   }
 
   /** Kill off the enemy */

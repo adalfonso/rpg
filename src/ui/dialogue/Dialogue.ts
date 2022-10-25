@@ -77,24 +77,19 @@ export class Dialogue implements Drawable {
    * @param resolution - render resolution
    */
   public draw(ctx: ex.ExcaliburGraphicsContext, resolution: ex.Vector) {
-    this._canvas.draw(
-      ctx,
-      resolution,
-      (ctx: CanvasRenderingContext2D, resolution: ex.Vector) => {
-        const margin = new ex.Vector(20, 20);
-        const size = new ex.Vector(resolution.x - 2 * margin.x, 130);
-        const position = new ex.Vector(
-          margin.x,
-          resolution.y - size.y - margin.y
-        );
+    this._canvas.draw(ctx, resolution, this.draw2D.bind(this));
+  }
 
-        ctx.save();
-        ctx.fillStyle = "#EEE";
-        ctx.fillRect(position.x, position.y, size.x, size.y);
-        this.drawText(ctx, position, resolution.sub(margin.scale(2)));
-        ctx.restore();
-      }
-    );
+  public draw2D(ctx: CanvasRenderingContext2D, resolution: ex.Vector) {
+    const margin = new ex.Vector(20, 20);
+    const size = new ex.Vector(resolution.x - 2 * margin.x, 130);
+    const position = new ex.Vector(margin.x, resolution.y - size.y - margin.y);
+
+    ctx.save();
+    ctx.fillStyle = "#EEE";
+    ctx.fillRect(position.x, position.y, size.x, size.y);
+    this.drawText(ctx, position, resolution.sub(margin.scale(2)));
+    ctx.restore();
   }
 
   /**

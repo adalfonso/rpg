@@ -189,15 +189,6 @@ export class Player extends Actor implements Stateful<PlayerState> {
   }
 
   /**
-   * Change the graphic to match the direction the player is facing
-   *
-   * @param direction - cardinal direction to face
-   */
-  private _changeDirection = (direction: Direction) => {
-    this.graphics.use(this.sprites[direction]);
-  };
-
-  /**
    * Move the player in a direction based on the key pressed
    *
    * @param event - keypress event
@@ -211,16 +202,16 @@ export class Player extends Actor implements Stateful<PlayerState> {
 
     if (key === "ArrowUp") {
       this.vel.y = -this._speed;
-      this._changeDirection(Direction.North);
+      this.direction = Direction.North;
     } else if (key === "ArrowRight") {
       this.vel.x = this._speed;
-      this._changeDirection(Direction.East);
+      this.direction = Direction.East;
     } else if (key === "ArrowDown") {
       this.vel.y = this._speed;
-      this._changeDirection(Direction.South);
+      this.direction = Direction.South;
     } else if (key === "ArrowLeft") {
       this.vel.x = -this._speed;
-      this._changeDirection(Direction.West);
+      this.direction = Direction.West;
     }
   }
 

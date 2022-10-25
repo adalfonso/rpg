@@ -55,15 +55,11 @@ export class AnimatedText {
   /**
    * Draw renderable text
    *
-   * @param ctx         - render context
-   * @param offset      - render position offset
+   * @param ctx - render context
+
    * @param _resolution - render resolution
    */
-  public draw(
-    ctx: CanvasRenderingContext2D,
-    offset: Vector,
-    _resolution: Vector
-  ) {
+  public draw2D(ctx: CanvasRenderingContext2D, _resolution: Vector) {
     const options = this._options;
 
     ctx.save();
@@ -72,11 +68,7 @@ export class AnimatedText {
       ctx[option] = options[option];
     }
 
-    ctx.fillText(
-      this._text,
-      this._position.x + offset.x,
-      this._position.y + offset.y
-    );
+    ctx.fillText(this._text, this._position.x, this._position.y);
 
     ctx.restore();
   }

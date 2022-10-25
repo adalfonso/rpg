@@ -79,7 +79,7 @@ export abstract class Actor
     this._id = _template.name;
 
     this._setSprites(this.getUiInfo(), this._template).then((scale) => {
-      this.graphics.use(this.sprites[Direction.South]);
+      this.direction = Direction.South;
 
       if (scale !== 1) {
         this.actions.scaleTo(ex.vec(scale, scale), ex.vec(Infinity, Infinity));

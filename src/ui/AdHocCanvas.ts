@@ -1,4 +1,5 @@
 import * as ex from "excalibur";
+import InvalidDataError from "@/error/InvalidDataError";
 import { DrawStrategy } from "@/interfaces";
 
 /**
@@ -40,10 +41,17 @@ export class AdHocCanvas {
     resolution: ex.Vector,
     draw_strategy: DrawStrategy
   ) {
+    const { x, y } = resolution;
+
+    if (x === 0 || y === 0) {
+      throw new InvalidDataError(
+        `Tried drawing on the AdHocCanvas with an invalid resolution (${x}, ${y})`
+      );
+    }
     this._render_resolution = resolution;
     this._strategy = draw_strategy;
-    this._canvas_2d.width = resolution.x;
-    this._canvas_2d.height = resolution.y;
+    this._canvas_2d.width = x;
+    this._canvas_2d.height = y;
     this._canvas_2d.draw(ctx, 0, 0);
   }
 

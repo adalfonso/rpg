@@ -1,8 +1,11 @@
 import * as ex from "excalibur";
+import Battle from "./combat/Battle";
+import BattleBuilder from "./combat/BattleBuilder";
 import MissingDataError from "./error/MissingDataError";
 import config from "./config";
 import menus from "./menu/menus";
 import { DialogueMediator } from "./ui/dialogue/DialogueMediator";
+import { Enemy } from "./actor/Enemy";
 import { Entry } from "./inanimate/Entry";
 import { HeroTeam } from "./combat/HeroTeam";
 import { Inventory } from "./menu/Inventory";
@@ -34,9 +37,11 @@ enum GameState {
   Dialogue,
 }
 
+const BATTLE_SCENE_NAME = "_battle";
+
 /** Coordinates scenes within the game */
 
-// TODO: should this implement lockable
+// TODO: should this implement lockable?
 export class Mediator {
   /** Main game menu */
   private _main_menu: StartMenu;
@@ -49,6 +54,9 @@ export class Mediator {
 
   /** Current state of game */
   private _state = GameState.Play;
+
+  /** Saved scene name */
+  private _saved_scene = "";
 
   /**
    * @param _game - engine instance
@@ -77,6 +85,15 @@ export class Mediator {
       this._dialogue_mediator.update(dt);
     });
 
+    this._game.on("predraw", (evt) => {
+      const { width, height } = this._game.screen.resolution;
+      const resolution = ex.vec(width, height);
+
+      if (this._game.currentScene instanceof Battle) {
+        this._game.currentScene.drawPre(evt.ctx, resolution);
+      }
+    });
+
     this._game.on("postdraw", (evt) => {
       const { width, height } = this._game.screen.resolution;
       const resolution = ex.vec(width, height);
@@ -89,6 +106,10 @@ export class Mediator {
 
       if (this._inventory.active) {
         this._inventory.draw(evt.ctx, resolution);
+      }
+
+      if (this._game.currentScene instanceof Battle) {
+        this._game.currentScene.drawPost(evt.ctx, resolution);
       }
     });
 
@@ -190,18 +211,41 @@ export class Mediator {
         },
 
         "battle.start": (e: CustomEvent) => {
+          if (!(e.detail.enemy instanceof Enemy)) {
+            throw new MissingDataError(
+              `Missing enemy when creating a battle from an event.`
+            );
+          }
+
+          // TODO: Fix this. It happens when the player collides with an enemy
+          // during battle. Check Enemy class for collision event.
+          if (this._game.currentScene instanceof Battle) {
+            console.warn(
+              "Trying to start a battle but one is currently underway"
+            );
+
+            return;
+          }
+
           /**
            * TODO: in the future, check if a battle will ever be started while
            * another battle is already underway. If an enemy jumps on the player
            * during a battle animation, it is plausible that battle.start would
            * occur.
            */
-          this._battle = this._battle || BattleBuilder.create(e);
+
+          const battle = BattleBuilder.create(this._heroes, e.detail.enemy);
+
+          this._saveCurrentScene();
+          this._game.add(BATTLE_SCENE_NAME, battle);
+          this._game.goToScene(BATTLE_SCENE_NAME);
           this.lock(GameState.Battle);
         },
 
         "battle.end": (_: CustomEvent) => {
-          this._battle = null;
+          this._restoreScene();
+          this._game.removeScene(BATTLE_SCENE_NAME);
+
           this.unlock(GameState.Battle);
         },
 
@@ -222,6 +266,32 @@ export class Mediator {
           this.unlock(GameState.StartMenu),
       },
     };
+  }
+
+  /** Save the current scene for a restore later on */
+  private _saveCurrentScene() {
+    const scenes = Object.entries(this._game.scenes).filter(
+      ([_name, scene]) => scene === this._game.currentScene
+    );
+
+    if (scenes.length === 0) {
+      console.warn("Tried to save scene but could not find the name");
+      return;
+    }
+
+    this._saved_scene = scenes[0][0];
+  }
+
+  /** Restore a saved scene */
+  private _restoreScene() {
+    if (this._saved_scene === "") {
+      throw new MissingDataError(
+        "Tried to restore scene but saved scene is empty"
+      );
+    }
+
+    this._game.goToScene(this._saved_scene);
+    this._saved_scene = "";
   }
 
   /** Cleanup any stale fixtures once per update*/

@@ -1,3 +1,4 @@
+import * as ex from "excalibur";
 import AbilityFactory from "./strategy/AbilityFactory";
 import CombatStrategy from "./strategy/CombatStrategy";
 import OpponentSelect from "./OpponentSelect";
@@ -7,15 +8,16 @@ import TextStream from "@/ui/dialogue/TextStream";
 import WeaponFactory from "./strategy/WeaponFactory";
 import menus from "@/menu/menus";
 import { Actor } from "@/actor/Actor";
+import { AdHocCanvas } from "@/ui/AdHocCanvas";
 import { AnimatedEntity } from "@/ui/animation/text/AnimatedEntity";
 import { AnimatedText } from "@/ui/animation/text/AnimatedText";
 import { BattleMenu } from "@/menu/BattleMenu";
 import { Dialogue } from "@/ui/dialogue/Dialogue";
 import { Direction } from "@/ui/types";
-import { Drawable, Lockable } from "@/interfaces";
 import { Enemy } from "@/actor/Enemy";
 import { HeroTeam } from "./HeroTeam";
 import { LearnedAbility } from "./strategy/types";
+import { Lockable } from "@/interfaces";
 import { MenuType } from "@/menu/types";
 import { Vector } from "excalibur";
 import { bus, EventType } from "@/event/EventBus";
@@ -25,11 +27,8 @@ import { createSubMenu } from "@/menu/MenuFactory";
 interface BattleEvent {
   isDone: boolean;
   update(dt: number): void;
-  draw?(
-    ctx: CanvasRenderingContext2D,
-    offset: Vector,
-    resolution: Vector
-  ): void;
+  draw?(ctx: ex.ExcaliburGraphicsContext, resolution: Vector): void;
+  draw2D?(ctx: CanvasRenderingContext2D, resolution: Vector): void;
 }
 
 const isBattleEvent = (event: unknown): event is BattleEvent =>
@@ -38,7 +37,7 @@ const isBattleEvent = (event: unknown): event is BattleEvent =>
   typeof event["isDone"] === "boolean" &&
   event["update"] instanceof Function;
 
-class Battle implements Drawable, Lockable {
+class Battle extends ex.Scene implements Lockable {
   /** Menu for the battle */
   private _menu: BattleMenu;
 
@@ -47,6 +46,12 @@ class Battle implements Drawable, Lockable {
 
   /** Queue of animations and battle actions to execute */
   private _event_queue: (BattleEvent | (() => void))[] = [];
+
+  /** Canvas for rendering 2D */
+  private _pre_canvas = new AdHocCanvas();
+
+  /** Canvas for rendering 2D */
+  private _post_canvas = new AdHocCanvas();
 
   /** If the battle is currently active */
   public active: boolean;
@@ -67,6 +72,7 @@ class Battle implements Drawable, Lockable {
     private _opponentSelect: OpponentSelect,
     intro_animation: AnimatedText
   ) {
+    super();
     this.active = true;
     this._event_queue.push(
       () => this.lock(),
@@ -75,8 +81,11 @@ class Battle implements Drawable, Lockable {
     );
 
     // TODO: make these scale
-    this._heroes.prepare(Direction.East, new Vector(64, 128));
-    this._foes.prepare(Direction.West, new Vector(256 + 64, 0));
+    this._heroes.prepare(Direction.East, new Vector(512, 256));
+    this._heroes.each((hero) => this.add(hero));
+
+    this._foes.prepare(Direction.West, new Vector(256 + 512 + 64, 128));
+    this._foes.each((foe) => this.add(foe));
 
     this._menu = this._getBattleMenu();
 
@@ -100,7 +109,9 @@ class Battle implements Drawable, Lockable {
    *
    * @param dt - delta time
    */
-  public update(dt: number) {
+  public update(engine: ex.Engine, dt: number) {
+    super.update(engine, dt);
+
     if (this._event_queue.length > 0) {
       const [event] = this._event_queue;
 
@@ -127,41 +138,57 @@ class Battle implements Drawable, Lockable {
   }
 
   /**
-   * Draw Battle and all underlying entities
+   * Draw and all underlying entities
    *
-   * @param ctx        - render context
-   * @param offset     - render position offset
+   * @param ectx - render context
    * @param resolution - render resolution
    */
-  public draw(
-    ctx: CanvasRenderingContext2D,
-    offset: Vector,
-    resolution: Vector
-  ) {
-    const width: number = resolution.x;
-    const height: number = resolution.y;
-    ctx.fillStyle = "#CCC";
-    ctx.fillRect(0, 0, width, height);
-
-    this._heroes.draw(ctx, offset, resolution);
-    this._foes.draw(ctx, offset, resolution);
-
-    this._drawUiBar(ctx, resolution);
-    this._drawEnemyUiBar(ctx, resolution);
-
-    if (this._herosTurn && !this.isDone) {
-      this._menu.draw(ctx, offset, resolution);
-
-      if (!this._opponentSelect.isLocked) {
-        this._opponentSelect.draw(ctx, offset, resolution);
+  public drawPre(ectx: ex.ExcaliburGraphicsContext, resolution: ex.Vector) {
+    this._pre_canvas.draw(
+      ectx,
+      resolution,
+      (ctx: CanvasRenderingContext2D, resolution: ex.Vector) => {
+        ctx.fillStyle = "#CCC";
+        ctx.fillRect(0, 0, resolution.x, resolution.y);
       }
-    }
+    );
+  }
 
-    const [event] = this._event_queue;
+  /**
+   * Draw and all underlying entities
+   *
+   * @param ctx - render context
+   * @param resolution - render resolution
+   */
+  public drawPost(ectx: ex.ExcaliburGraphicsContext, resolution: ex.Vector) {
+    this._post_canvas.draw(
+      ectx,
+      resolution,
+      (ctx: CanvasRenderingContext2D, resolution: ex.Vector) => {
+        const offset = ex.Vector.Zero;
 
-    if (isBattleEvent(event) && event?.draw) {
-      event.draw(ctx, Vector.Zero, resolution);
-    }
+        if (this._herosTurn && !this.isDone) {
+          this._menu.draw(ectx, resolution);
+
+          if (!this._opponentSelect.isLocked) {
+            this._opponentSelect.draw(ctx, offset, resolution);
+          }
+        }
+
+        const [event] = this._event_queue;
+
+        if (isBattleEvent(event) && event?.draw) {
+          event.draw(ectx, resolution);
+        }
+
+        if (isBattleEvent(event) && event?.draw2D) {
+          event.draw2D(ctx, resolution);
+        }
+
+        this._drawUiBar(ctx, resolution);
+        this._drawEnemyUiBar(ctx, resolution);
+      }
+    );
   }
 
   /**
@@ -367,10 +394,14 @@ class Battle implements Drawable, Lockable {
 
     this.unlock();
 
-    this._heroes.each((hero: Actor) => hero.restorePosition());
+    this._heroes.each((hero: Actor) => {
+      hero.restorePosition();
+      hero.restoreDirection();
+    });
 
     this._foes.each((foe: Actor) => {
       foe.restorePosition();
+      foe.restoreDirection();
 
       /**
        * This logic is for when a player runs away from battle. We don't want to

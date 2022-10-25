@@ -1,8 +1,9 @@
+import * as ex from "excalibur";
 import CombatStrategy from "@/combat/strategy/CombatStrategy";
-import { Vector } from "excalibur";
 import { Drawable } from "@/interfaces";
 import { EventType } from "@/event/EventBus";
 import { Menu } from "./Menu";
+import { Vector } from "excalibur";
 import { createConfig } from "./ui/MenuRenderConfigFactory";
 
 export interface BattleMenuItem {
@@ -25,33 +26,36 @@ export class BattleMenu extends Menu<BattleMenuItem> implements Drawable {
   }
 
   /**
-   * Draw BattleMenu and all underlying entities
+   * Draw and all underlying entities
    *
-   * @param ctx         - render context
-   * @param offset      - render position offset
-   * @param _resolution - render resolution
+   * @param ctx - render context
+   * @param resolution - render resolution
    */
-  public draw(
-    ctx: CanvasRenderingContext2D,
-    offset: Vector,
-    resolution: Vector
-  ) {
-    const config = createConfig(
-      {
-        font: {
-          size: 12,
-          color: "#333",
-          background_color: "#FFF",
-          border_color: "#DDD",
-          shadow_offset: new Vector(1, 1),
-          highlight_color: "#0DD",
-        },
-        logic: { isSelected: this._isSelected.bind(this) },
-      },
-      this
-    );
+  public draw(ctx: ex.ExcaliburGraphicsContext, resolution: ex.Vector) {
+    this._canvas.draw(
+      ctx,
+      resolution,
+      (ctx: CanvasRenderingContext2D, resolution: ex.Vector) => {
+        const config = createConfig(
+          {
+            font: {
+              size: 12,
+              color: "#333",
+              background_color: "#FFF",
+              border_color: "#DDD",
+              shadow_offset: new Vector(1, 1),
+              highlight_color: "#0DD",
+            },
+            logic: { isSelected: this._isSelected.bind(this) },
+          },
+          this
+        );
 
-    this._menu.draw(ctx, offset.add(this.position), resolution, config);
+        const offset = ex.Vector.Zero;
+
+        this._menu.draw(ctx, offset.add(this.position), resolution, config);
+      }
+    );
   }
 
   /** Reset this menu back to its original option */

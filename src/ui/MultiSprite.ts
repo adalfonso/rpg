@@ -1,7 +1,9 @@
-import * as Tiled from "@excaliburjs/plugin-tiled";
 import * as ex from "excalibur";
-import { Direction, RenderData } from "./types";
+import MissingDataError from "@/error/MissingDataError";
 import { Constructor } from "@/mixins";
+import { Direction, RenderData } from "./types";
+import { Nullable } from "@/types";
+import { TiledTemplate } from "@/actor/types";
 
 export enum SpriteOrientation {
   Clockwise = "CLOCKWISE",
@@ -19,10 +21,29 @@ export const MultiSprite = <T extends Constructor>(Base: T) =>
   /** An entity that renders a series of sprites */
   class MultiSprite extends Base {
     /** List of all entity's sprites */
-    protected sprites: Record<Direction, ex.Graphic> = {};
+    protected _sprites: Record<Direction, ex.Graphic> = {};
 
-    /** Direction entity is facing */
-    protected _direction: Direction = Direction.None;
+    /** Saved direction to restore to later on */
+    protected _saved_direction: Nullable<Direction> = null;
+
+    // TODO this relies on excalibur graphics but it's types locally as any
+
+    /** Save the direction of an actor */
+    public saveDirection() {
+      this._saved_direction = this.direction;
+    }
+
+    /** Restore the direction of Actor */
+    public restoreDirection() {
+      if (this._saved_direction === null) {
+        throw new MissingDataError(
+          "Tried to restore direction but saved direction was null"
+        );
+      }
+
+      this.direction = this._saved_direction;
+      this._saved_direction = null;
+    }
 
     /**
      * Set initial sprite from UI data
@@ -31,7 +52,7 @@ export const MultiSprite = <T extends Constructor>(Base: T) =>
      * @param getStartFrames - fn that determines starting frame per direction
      * @returns scale used to resize actor
      */
-    protected async _setSprites(ui: RenderData, template: Tiled.TiledObject) {
+    protected async _setSprites(ui: RenderData, template: TiledTemplate) {
       const { fps, rows, columns, scale, sprite, sprite_orientation } = ui;
       const frame_duration = 1000 / fps;
       const image = new ex.ImageSource(sprite);
@@ -46,7 +67,7 @@ export const MultiSprite = <T extends Constructor>(Base: T) =>
         Direction.None,
       ];
 
-      this.sprites = directions.reduce(
+      this._sprites = directions.reduce(
         (carry, direction, i) => ({
           ...carry,
           [direction]: ex.Animation.fromSpriteSheet(
@@ -80,10 +101,23 @@ export const MultiSprite = <T extends Constructor>(Base: T) =>
     }
 
     get direction() {
-      return this._direction;
+      const sprites: [Direction, ex.Graphic][] = Object.entries(
+        this._sprites
+      ).filter(([_, animation]) =>
+        this.graphics.current.map((g) => g.graphic).includes(animation)
+      );
+
+      if (sprites.length === 0) {
+        console.warn(
+          "Tried to save Actor direction but could not find the direction"
+        );
+        return Direction.None;
+      }
+
+      return sprites[0][0];
     }
 
     set direction(direction: Direction) {
-      this._direction = direction;
+      this.graphics.use(this._sprites[direction]);
     }
   };

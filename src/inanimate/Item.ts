@@ -1,21 +1,20 @@
 import * as ex from "excalibur";
-import Renderable from "@/ui/Renderable";
 import config from "@/config";
 import { Animation, AnimationType } from "@/ui/animation/Animation";
 import { AnimationFactory } from "@/ui/animation/AnimationFactory";
+import { CollisionType } from "excalibur";
 import { Direction, RenderData } from "@/ui/types";
 import { EntityConfigFactory } from "@/combat/strategy/types";
 import { ItemConfig } from "@/item/types";
 import { MultiSprite, SpriteOrientation } from "@/ui/MultiSprite";
 import { Nullable } from "@/types";
+import { Player } from "@/actor/Player";
 import { Stateful } from "@/interfaces";
 import { TiledTemplate } from "@/actor/types";
+import { bus } from "@/event/EventBus";
 import { isItemState, ItemState } from "@schema/inanimate/ItemSchema";
 import { state } from "@/state/StateManager";
 import { ucFirst, getImagePath } from "@/util";
-import { CollisionType } from "excalibur";
-import { Player } from "@/actor/Player";
-import { bus } from "@/event/EventBus";
 
 /** An item in the context of a map/level */
 export class Item extends MultiSprite(ex.Actor) implements Stateful<ItemState> {
@@ -53,7 +52,7 @@ export class Item extends MultiSprite(ex.Actor) implements Stateful<ItemState> {
     this._config = config_ctor(_template);
 
     this._setSprites(this.getUiInfo(), this._template).then((scale) => {
-      this.graphics.use(this.sprites[Direction.South]);
+      this.direction = Direction.South;
 
       if (scale !== 1) {
         this.actions.scaleTo(ex.vec(scale, scale), ex.vec(Infinity, Infinity));

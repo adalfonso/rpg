@@ -1,7 +1,7 @@
+import * as ex from "excalibur";
 import MissingDataError from "@/error/MissingDataError";
 import { Actor } from "@/actor/Actor";
 import { Direction } from "@/ui/types";
-import { Vector } from "excalibur";
 
 /** A battle-centric collection of actors that are related in some way */
 class Team<M extends Actor> {
@@ -59,8 +59,8 @@ class Team<M extends Actor> {
    */
   public draw(
     ctx: CanvasRenderingContext2D,
-    offset: Vector,
-    resolution: Vector
+    offset: ex.Vector,
+    resolution: ex.Vector
   ) {
     this._members
       .filter((member) => !member.isDefeated)
@@ -73,11 +73,13 @@ class Team<M extends Actor> {
    * @param direction - direction members will face
    * @param position  - position members are moved to
    */
-  public prepare(direction: Direction, position: Vector) {
+  public prepare(direction: Direction, position: ex.Vector) {
     this._members.forEach((member, index) => {
-      member.savePosition(true);
+      // TODO: Look into a general save method instead
+      member.savePosition();
+      member.saveDirection();
       member.direction = direction;
-      member.moveTo(position.add(new Vector(member.size.x * index * 4, 0)));
+      member.moveTo(position.add(new ex.Vector(member.size.x * index * 4, 0)));
       member.lock();
     });
     this.cycle();

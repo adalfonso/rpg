@@ -22,7 +22,7 @@ describe("AnimatedText", () => {
         restore: () => {},
       };
 
-      sut.draw(ctx, Vector.Zero, Vector.Zero);
+      sut.draw2D(ctx, Vector.Zero, Vector.Zero);
 
       expect(results).toEqual(expected);
     });

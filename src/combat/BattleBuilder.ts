@@ -5,6 +5,7 @@ import Team from "./Team";
 import config from "./battle.json";
 import { AnimatedTextFactory } from "@/ui/animation/text/AnimatedTextFactory";
 import { Enemy } from "@/actor/Enemy";
+import { HeroTeam } from "./HeroTeam";
 
 /** Blueprint for an enemy team */
 type TeamBlueprint = {
@@ -15,43 +16,15 @@ type TeamBlueprint = {
 
 class BattleBuilder {
   /**
-   * Create a new Battle
-   *
-   * @param e - target event
-   *
-   * @return battle instance
-   */
-  public static create(e: CustomEvent): Battle {
-    const builder = new BattleBuilder();
-    return builder.createFromEvent(e);
-  }
-
-  /**
    * Create a battle from a battle event
    *
-   * @param e - target event
-   *
+   * @param heroes - hero team
+   * @param enemy - enemy to fight
    * @return battle instance
-   *
-   * @throws {MissingDataError} when the player/enemy aren't provided
    */
-  public createFromEvent(e: CustomEvent): Battle {
-    const heroes = e.detail?.heroes;
-    const enemy = e.detail?.enemy;
-
-    if (!heroes) {
-      throw new MissingDataError(
-        `Missing hero team when creating a battle from an event.`
-      );
-    }
-
-    if (!enemy) {
-      throw new MissingDataError(
-        `Missing enemy when creating a battle from an event.`
-      );
-    }
-
-    const enemyTeam = this._createTeamFromEnemy(enemy);
+  public static create(heroes: HeroTeam, enemy: Enemy): Battle {
+    const builder = new BattleBuilder();
+    const enemyTeam = builder._createTeamFromEnemy(enemy);
 
     return new Battle(
       heroes,
