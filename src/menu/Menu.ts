@@ -3,7 +3,7 @@ import { AdHocCanvas } from "@/ui/AdHocCanvas";
 import { Drawable, Lockable } from "@/interfaces";
 import { Empty } from "@/mixins";
 import { MenuItem } from "./MenuItem";
-import { Movable } from "@/physics/Entity";
+import { Movable } from "@/actor/Entity";
 import { SubMenu } from "./SubMenu";
 import { bus, EventType } from "@/event/EventBus";
 

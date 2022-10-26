@@ -13,8 +13,8 @@ class Ability extends DamageDealing(Visual(Descriptive(CombatStrategy))) {
    * Create a new Ability instance
    *
    * @param _template - ability's template
-   * @param _ui       - UI component of the ability
-   * @param _damage   - damage the ability deals
+   * @param _ui - UI component of the ability
+   * @param _damage - damage the ability deals
    */
   constructor(
     protected _template: EntityConfig,

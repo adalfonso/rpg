@@ -12,7 +12,7 @@ import { ActorConfig, TiledTemplate } from "./types";
 import { ActorState, isActorState } from "@schema/actor/ActorSchema";
 import { Direction, RenderData } from "@/ui/types";
 import { Lockable, Stateful } from "@/interfaces";
-import { Movable, Resizable } from "@/physics/Entity";
+import { Movable, Resizable } from "@/actor/Entity";
 import { MultiSprite, SpriteOrientation } from "@/ui/MultiSprite";
 import { Nullable } from "@/types";
 import { actors } from "./actors";

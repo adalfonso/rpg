@@ -8,9 +8,8 @@ import { HeroTeam } from "./combat/HeroTeam";
 import { Mediator } from "./Mediator";
 import { Pet } from "./actor/Pet";
 import { Player } from "./actor/Player";
-import { loadImages } from "./loader";
 import { path } from "@tauri-apps/api";
-import { resolveSaveData } from "@/util";
+import { loadImages, resolveSaveData } from "@/util";
 import { state } from "@/state/StateManager";
 
 const new_main = async () => {

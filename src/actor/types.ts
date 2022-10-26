@@ -24,8 +24,8 @@ export type TiledTemplate = Tiled.TiledObject & {
  * @prop base_stats - base stats scale
  * @prop displayAs - display name
  * @prop abilities - abilities learned
- * @prop teamType  - reference to team type for battles
- * @prop ui        - render info
+ * @prop teamType - reference to team type for battles
+ * @prop ui - render info
  */
 export type ActorConfig = {
   abilities: LearnedAbility[];

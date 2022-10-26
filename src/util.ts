@@ -1,6 +1,8 @@
+import * as ex from "excalibur";
 import InvalidDataError from "./error/InvalidDataError";
 import MissingDataError from "./error/MissingDataError";
 import manifest from "@img/manifest";
+import player_sprite from "@img/player_new.png";
 import { fs, path } from "@tauri-apps/api";
 import { isRecord } from "./types";
 
@@ -156,3 +158,9 @@ export const resolveSaveData =
 
     return path.join(await path.dataDir(), app_name, save_dir);
   };
+
+export const loadImages = () => ({
+  player: new ex.ImageSource(player_sprite),
+});
+
+export const getMapFromName = (name: string) => `/map/${name}.json`;

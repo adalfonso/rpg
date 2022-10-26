@@ -1,3 +1,4 @@
+import * as ex from "excalibur";
 import Damage from "../Damage";
 import MissingDataError from "@/error/MissingDataError";
 import Renderable from "@/ui/Renderable";
@@ -5,8 +6,8 @@ import { Actor } from "@/actor/Actor";
 import { Constructor } from "@/mixins";
 import { EntityConfig } from "./types";
 import { Nullable } from "@/types";
-import { Vector } from "excalibur";
 import { bus } from "@/event/EventBus";
+import { OffsetDrawable } from "@/interfaces";
 
 export interface Descriptive {
   displayAs: string;
@@ -53,7 +54,7 @@ export const Descriptive = <T extends Constructor>(Base: T) =>
  */
 export const Visual = <T extends Constructor>(Base: T) =>
   /** Classes that have a UI component */
-  class Visual extends Base {
+  class Visual extends Base implements OffsetDrawable {
     /** Reference to UI component */
     protected _ui: Nullable<Renderable> = null;
 
@@ -65,14 +66,14 @@ export const Visual = <T extends Constructor>(Base: T) =>
     /**
      * Draw the entity
      *
-     * @param ctx        - render context
-     * @param offset     - render position offset
-     * @param resolution - render resolution
+     * @param ctx render context
+     * @param offset render position offset
+     * @param resolution render resolution
      */
     public draw(
       ctx: CanvasRenderingContext2D,
-      offset: Vector,
-      resolution: Vector
+      offset: ex.Vector,
+      resolution: ex.Vector
     ) {
       if (!this._ui) {
         throw new MissingDataError("Missing UI when trying to draw Visual");

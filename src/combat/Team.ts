@@ -51,23 +51,6 @@ class Team<M extends Actor> {
   }
 
   /**
-   * Draw opponent select
-   *
-   * @param ctx        - render context
-   * @param offset     - render position offset
-   * @param resolution - render resolution
-   */
-  public draw(
-    ctx: CanvasRenderingContext2D,
-    offset: ex.Vector,
-    resolution: ex.Vector
-  ) {
-    this._members
-      .filter((member) => !member.isDefeated)
-      .forEach((member) => member.draw(ctx, offset, resolution));
-  }
-
-  /**
    * Prepare the team's positioning for battle
    *
    * @param direction - direction members will face

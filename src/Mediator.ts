@@ -7,10 +7,10 @@ import menus from "./menu/menus";
 import { DialogueMediator } from "./ui/dialogue/DialogueMediator";
 import { Enemy } from "./actor/Enemy";
 import { Entry } from "./inanimate/Entry";
+import { FixtureFactory } from "./fixture/FixtureFactory";
 import { HeroTeam } from "./combat/HeroTeam";
 import { Inventory } from "./menu/Inventory";
 import { Item } from "./inanimate/Item";
-import { LevelFixtureFactory } from "./level/LevelFixtureFactory";
 import { MenuType } from "./menu/types";
 import { NonPlayer } from "./actor/NonPlayer";
 import { Portal } from "./inanimate/Portal";
@@ -19,13 +19,9 @@ import { TiledMapResource as TiledMap } from "@excaliburjs/plugin-tiled";
 import { bus, EventType } from "./event/EventBus";
 import { createEquipper } from "./combat/EquipperFactory";
 import { createSubMenu } from "./menu/MenuFactory";
-import { getMapFromName } from "./level/levels";
+import { isFixtureType, LevelFixture, FixtureType } from "./fixture/Fixture";
 import { path } from "@tauri-apps/api";
-import {
-  isLevelFixtureType,
-  LevelFixture,
-  LevelFixtureType,
-} from "./level/LevelFixture";
+import { getMapFromName } from "./util";
 
 /** Different states a game can be in */
 enum GameState {
@@ -321,18 +317,18 @@ export class Mediator {
    * @param scene - new scene
    */
   private _addFixtures(map: TiledMap, scene: ex.Scene) {
-    const fixture_factory = new LevelFixtureFactory();
+    const fixture_factory = new FixtureFactory();
 
     this._fixtures = map.data
       .getExcaliburObjects()
-      .filter(({ name }) => isLevelFixtureType(name ?? ""))
+      .filter(({ name }) => isFixtureType(name ?? ""))
       .map(({ name, objects }) => {
         return objects.map((object) => {
           if (object.class === undefined) {
             object.class === name;
           }
 
-          return fixture_factory.create(name as LevelFixtureType, object);
+          return fixture_factory.create(name as FixtureType, object);
         });
       })
       .flat()

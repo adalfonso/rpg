@@ -71,6 +71,7 @@ class BattleBuilder {
       );
     }
 
+    // TODO don't load this from a json file. use TS
     const blueprint = config.blueprints[teamType];
 
     if (!blueprint) {

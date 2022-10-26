@@ -3,11 +3,12 @@ import Renderable from "@/ui/Renderable";
 import config from "@/config";
 import items from "@/item/items";
 import { ItemConfig } from "./types";
+import { OffsetDrawable } from "@/interfaces";
 import { Vector } from "excalibur";
 import { ucFirst, getImagePath } from "@/util";
 
 /** An item in the context of an inventory */
-class Item {
+class Item implements OffsetDrawable {
   /** Game-related info about the item */
   private _config: ItemConfig;
 
@@ -85,9 +86,9 @@ class Item {
   /**
    * Draw the item
    *
-   * @param ctx        - render context
-   * @param offset     - render position offset
-   * @param resolution - render resolution
+   * @param ctx render context
+   * @param offset render position offset
+   * @param resolution render resolution
    */
   public draw(
     ctx: CanvasRenderingContext2D,

@@ -16,6 +16,16 @@ export interface Drawable {
   ): void;
 }
 
+/** Any class that manually renders itself on a canvas with an offset */
+// TODO: refactor this. It relies on Renderable
+export interface OffsetDrawable {
+  draw(
+    ctx: CanvasRenderingContext2D,
+    offset: ex.Vector,
+    resolution: ex.Vector
+  ): void;
+}
+
 export type Callable<T extends Event> = Record<string, (e: T) => void>;
 
 export interface CallableMap {

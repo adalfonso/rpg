@@ -65,20 +65,15 @@ class OpponentSelect implements Drawable, Lockable {
    * Draw opponent select arrow
    *
    * @param ctx         - render context
-   * @param offset      - render position offset
    * @param _resolution - render resolution
    */
-  public draw(
-    ctx: CanvasRenderingContext2D,
-    offset: Vector,
-    _resolution: Vector
-  ) {
+  public draw(ctx: CanvasRenderingContext2D, _resolution: Vector) {
     if (this._opponents.areDefeated) {
       return;
     }
 
     const fontOffset = new Vector(17, -36);
-    const position = this.selected.position.add(offset).add(fontOffset);
+    const position = this.selected.position.add(fontOffset);
 
     ctx.save();
 

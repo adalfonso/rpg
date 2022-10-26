@@ -165,13 +165,11 @@ class Battle extends ex.Scene implements Lockable {
       ectx,
       resolution,
       (ctx: CanvasRenderingContext2D, resolution: ex.Vector) => {
-        const offset = ex.Vector.Zero;
-
         if (this._herosTurn && !this.isDone) {
           this._menu.draw(ectx, resolution);
 
           if (!this._opponentSelect.isLocked) {
-            this._opponentSelect.draw(ctx, offset, resolution);
+            this._opponentSelect.draw(ctx, resolution);
           }
         }
 

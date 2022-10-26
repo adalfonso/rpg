@@ -4,8 +4,8 @@ import { UiData } from "@/ui/types";
 /**
  * Info about an item
  * @prop category - more specific use case of the item
- * @prop ui       - render info
- * @prop value    - value of the item
+ * @prop ui - render info
+ * @prop value - value of the item
  *
  */
 export interface ItemConfig extends EntityConfig {

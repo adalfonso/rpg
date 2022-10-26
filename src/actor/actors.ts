@@ -1,5 +1,5 @@
-import { SpriteOrientation } from "@/ui/MultiSprite";
 import { ActorList } from "./types";
+import { SpriteOrientation } from "@/ui/MultiSprite";
 
 /** All actors contained in the game */
 export const actors = (): ActorList => ({

@@ -5,7 +5,7 @@ import items from "@/item/items";
 import { Enemy } from "@/actor/Enemy";
 import { Entry } from "@/inanimate/Entry";
 import { Item } from "@/inanimate/Item";
-import { LevelFixtureType } from "./LevelFixture";
+import { FixtureType } from "./Fixture";
 import { NonPlayer } from "@/actor/NonPlayer";
 import { Portal } from "@/inanimate/Portal";
 import { animations } from "@/ui/animation/animations";
@@ -28,7 +28,7 @@ const create_item_config = (template: TiledTemplate) => {
 };
 
 /** Create a level fixture based on a type and a template */
-export class LevelFixtureFactory {
+export class FixtureFactory {
   /**
    * Load a single fixture from a layer object
    *
@@ -40,7 +40,7 @@ export class LevelFixtureFactory {
    * @throws {MissingDataError} when x, y, width, or height are missing
    * @throws {InvalidDataError} when the type is invalid
    */
-  public create(type: LevelFixtureType, template: Tiled.TiledObject) {
+  public create(type: FixtureType, template: Tiled.TiledObject) {
     if (!isTiledTemplate(template)) {
       throw new MissingDataError(
         `Provided template is not Tiled Template.` +

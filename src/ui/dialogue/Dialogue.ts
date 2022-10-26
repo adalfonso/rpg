@@ -161,9 +161,9 @@ export class Dialogue implements Drawable {
   /**
    * Draw text
    *
-   * @param ctx        - render context
-   * @param offset     - render position offset
-   * @param resolution - render resolution
+   * @param ctx render context
+   * @param offset render position offset
+   * @param resolution render resolution
    */
   private drawText(
     ctx: CanvasRenderingContext2D,

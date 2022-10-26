@@ -5,7 +5,7 @@ import { Item } from "@/inanimate/Item";
 import { NonPlayer } from "@/actor/NonPlayer";
 
 /** Available types of level fixtures */
-export enum LevelFixtureType {
+export enum FixtureType {
   Enemy = "enemy",
   Portal = "portal",
   NonPlayer = "npc",
@@ -13,8 +13,8 @@ export enum LevelFixtureType {
   Item = "item",
 }
 
-export const isLevelFixtureType = (name: string): name is LevelFixtureType =>
-  Object.values(LevelFixtureType).includes(name as LevelFixtureType);
+export const isFixtureType = (name: string): name is FixtureType =>
+  Object.values(FixtureType).includes(name as FixtureType);
 
 /** Type classes of fixtures to expect in a level */
 export type LevelFixture = Enemy | Portal | NonPlayer | Entry | Item;

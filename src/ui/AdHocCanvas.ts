@@ -1,6 +1,6 @@
 import * as ex from "excalibur";
 import InvalidDataError from "@/error/InvalidDataError";
-import { DrawStrategy } from "@/interfaces";
+import { Drawable, DrawStrategy } from "@/interfaces";
 
 /**
  * For all your ad hoc 2D canvas drawing
@@ -13,7 +13,7 @@ import { DrawStrategy } from "@/interfaces";
  * rendering info/logic as members on the class so it can persist until the 2D
  * ctx is provided.
  */
-export class AdHocCanvas {
+export class AdHocCanvas implements Drawable {
   /** Current rendering resolution */
   private _render_resolution = ex.Vector.Zero;
 

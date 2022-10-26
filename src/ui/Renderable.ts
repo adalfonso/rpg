@@ -1,8 +1,8 @@
-import { Vector } from "excalibur";
 import config from "@/config";
-import { Drawable } from "@/interfaces";
+import { OffsetDrawable } from "@/interfaces";
+import { Vector } from "excalibur";
 
-export default class Renderable implements Drawable {
+export default class Renderable implements OffsetDrawable {
   /** Image element to render */
   private img: HTMLImageElement;
 
@@ -30,12 +30,12 @@ export default class Renderable implements Drawable {
   /**
    * Create a new Renderable instance
    *
-   * @param src        - source path of image element to render
-   * @param scale      - scale at which to render the image
+   * @param src - source path of image element to render
+   * @param scale - scale at which to render the image
    * @param startFrame - starting frame in animation sequence
    * @param frameCount - total number of frames in animation sequence
-   * @param gridRatio  - vector of columns/rows in animation sequence
-   * @param fps        - number of frames to render in a second
+   * @param gridRatio - vector of columns/rows in animation sequence
+   * @param fps - number of frames to render in a second
    */
   constructor(
     src: string,
@@ -63,9 +63,9 @@ export default class Renderable implements Drawable {
   /**
    * Render the image
    *
-   * @param ctx         - render context
-   * @param offset      - render position offset
-   * @param _resolution - render resolution
+   * @param ctx render context
+   * @param offset render position offset
+   * @param _resolution render resolution
    */
   public draw(
     ctx: CanvasRenderingContext2D,
