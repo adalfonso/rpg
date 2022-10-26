@@ -1,5 +1,4 @@
 import "./_resource/css/app.css";
-import * as Tiled from "@excaliburjs/plugin-tiled";
 import * as ex from "excalibur";
 import config from "@/config";
 import { APP_NAME, SAVE_FILE, RESOLUTION, SAVE_DIR } from "./constants";
@@ -8,8 +7,8 @@ import { HeroTeam } from "./combat/HeroTeam";
 import { Mediator } from "./Mediator";
 import { Pet } from "./actor/Pet";
 import { Player } from "./actor/Player";
+import { createTiledTemplate, loadImages, resolveSaveData } from "@/util";
 import { path } from "@tauri-apps/api";
-import { loadImages, resolveSaveData } from "@/util";
 import { state } from "@/state/StateManager";
 
 const new_main = async () => {
@@ -32,33 +31,33 @@ const new_main = async () => {
     canvasElement,
   });
 
-  //game.toggleDebug();
-
   const player = new Player(
     {
       // TODO: Don't type assert
-      template: {
+      template: createTiledTemplate({
         x: 455,
         y: 75,
         width: 18,
         height: 32,
         name: "Me",
         class: "player",
-      } as Tiled.TiledObject,
+      }),
       args: { collisionType: ex.CollisionType.Active },
       speed: 100,
     },
     engine
   );
 
-  const doggo = new Pet({
-    name: "Lea",
-    class: "lea",
-    x: player.pos.x,
-    y: player.pos.y,
-    width: 20,
-    height: 16,
-  });
+  const doggo = new Pet(
+    createTiledTemplate({
+      name: "Lea",
+      class: "lea",
+      x: player.pos.x,
+      y: player.pos.y,
+      width: 20,
+      height: 16,
+    })
+  );
   player.adoptPet(doggo);
 
   const heroes = new HeroTeam([player], engine);

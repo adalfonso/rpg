@@ -1,13 +1,10 @@
 import * as ex from "excalibur";
 import MissingDataError from "@/error/MissingDataError";
 import Team from "./Team";
-import config from "@/config";
 import { Actor } from "@/actor/Actor";
-import { Player } from "@/actor/Player";
+import { Player, PlayerArgs } from "@/actor/Player";
 import { Stateful } from "@/interfaces";
 import { TeamState } from "./types";
-import { TiledTemplate } from "@/actor/types";
-import { Vector } from "excalibur";
 import { bus, EventType } from "@/event/EventBus";
 import { isTeamState } from "@schema/combat/TeamSchema";
 import { state } from "@/state/StateManager";
@@ -120,9 +117,8 @@ export class HeroTeam extends Team<Player> implements Stateful<TeamState> {
 
       // TODO: Remove this hack
       const placeholder = new Player(
-        Vector.Zero,
-        new Vector(16, 32).scale(config.scale),
-        member as unknown as TiledTemplate
+        member as unknown as PlayerArgs,
+        this._game
       );
 
       if (member.defeated) {

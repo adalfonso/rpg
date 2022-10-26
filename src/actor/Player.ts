@@ -10,7 +10,7 @@ import { Stateful } from "@/interfaces";
 import { TiledTemplate } from "./types";
 import { bus, EventType } from "@/event/EventBus";
 
-interface PlayerArgs {
+export interface PlayerArgs {
   template: TiledTemplate;
   args: ex.ActorArgs;
   speed: number;

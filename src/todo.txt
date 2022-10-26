@@ -2,4 +2,5 @@
 // cleanup when scene ends to remove fixtures from the event bus
 // slow player when moving diagonally (75%)
 // scale inventory items
+// state not working properly
 

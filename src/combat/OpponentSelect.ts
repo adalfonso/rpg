@@ -1,6 +1,6 @@
 import Team from "./Team";
 import { Actor } from "@/actor/Actor";
-import { Drawable, Lockable } from "@/interfaces";
+import { Lockable, OffsetDrawable } from "@/interfaces";
 import { Vector } from "excalibur";
 import { bus, EventType } from "@/event/EventBus";
 
@@ -10,7 +10,7 @@ import { bus, EventType } from "@/event/EventBus";
  * This class allows members of a team to be traversed and targeted for combat.
  * It draws an arrow above their sprite as an indicator.
  */
-class OpponentSelect implements Drawable, Lockable {
+class OpponentSelect implements OffsetDrawable, Lockable {
   /** Currently selected index of the opponents */
   private _index = 0;
 
@@ -67,7 +67,11 @@ class OpponentSelect implements Drawable, Lockable {
    * @param ctx         - render context
    * @param _resolution - render resolution
    */
-  public draw(ctx: CanvasRenderingContext2D, _resolution: Vector) {
+  public draw(
+    ctx: CanvasRenderingContext2D,
+    _offset: Vector,
+    _resolution: Vector
+  ) {
     if (this._opponents.areDefeated) {
       return;
     }

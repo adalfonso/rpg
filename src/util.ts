@@ -3,6 +3,8 @@ import InvalidDataError from "./error/InvalidDataError";
 import MissingDataError from "./error/MissingDataError";
 import manifest from "@img/manifest";
 import player_sprite from "@img/player_new.png";
+import { BaseTiledTemplate, TiledTemplate } from "./actor/types";
+import { TiledObject } from "@excaliburjs/plugin-tiled";
 import { fs, path } from "@tauri-apps/api";
 import { isRecord } from "./types";
 
@@ -164,3 +166,25 @@ export const loadImages = () => ({
 });
 
 export const getMapFromName = (name: string) => `/map/${name}.json`;
+
+/**
+ * Create a TiledTemplate from a partial config
+ *
+ * @param partial partial template
+ *
+ * @returns tiled template
+ */
+export const createTiledTemplate = (
+  partial: BaseTiledTemplate
+): TiledTemplate => {
+  const id = Math.floor(Math.random() * 999999999999);
+  return TiledObject.parse({
+    id,
+    gid: id,
+    point: false,
+    properties: [],
+    rotation: 0,
+    visible: true,
+    ...partial,
+  } as any) as TiledTemplate;
+};

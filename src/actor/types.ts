@@ -11,12 +11,16 @@ export const isTiledTemplate = (
   template.height !== undefined &&
   template.width !== undefined;
 
-export type TiledTemplate = Tiled.TiledObject & {
+export type BaseTiledTemplate = {
   name: string;
   class: string;
   height: number;
   width: number;
+  x: number;
+  y: number;
 };
+
+export type TiledTemplate = Tiled.TiledObject & BaseTiledTemplate;
 
 /**
  * Template data for an actor

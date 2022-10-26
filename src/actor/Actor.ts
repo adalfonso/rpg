@@ -290,7 +290,9 @@ export abstract class Actor
    * @param props - list of properties
    */
   private assignCustomProperties(props: Tiled.TiledProperty[]) {
-    const lvl = props.filter((prop) => prop.name === "lvl")[0]?.value;
+    const lvl = props
+      .filter((prop) => prop.name === "lvl")[0]
+      ?.value?.toString();
 
     if (lvl && this.stats) {
       this.stats.lvl = +lvl;
