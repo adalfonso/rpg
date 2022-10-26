@@ -17,7 +17,7 @@ export const actors = (): ActorList => ({
       sprite: "actor.doggo",
       rows: 4,
       columns: 1,
-      scale: 1,
+      scale: 0.5,
       fps: 8,
     },
     abilities: [],

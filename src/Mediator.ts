@@ -162,6 +162,7 @@ export class Mediator {
     this._game.add(scene_name, scene);
     this._game.goToScene(scene_name);
     this._game.currentScene.add(this.player);
+    this.player.pet && this._game.currentScene.add(this.player.pet);
     this._game.currentScene.camera.strategy.lockToActor(this.player);
     this._game.currentScene.camera.zoom = config.scale;
 
@@ -188,6 +189,10 @@ export class Mediator {
     }
 
     this.player.pos = entry.pos.clone();
+
+    if (this.player.pet) {
+      this.player.pet.moveTo(entry.pos.clone(), true);
+    }
   }
 
   /**

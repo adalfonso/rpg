@@ -32,6 +32,22 @@ export class Pet extends Actor {
   }
 
   /**
+   * Move pet to a position
+   *
+   * Overrides Entity mixin
+   *
+   * @param position - position to move to
+   * @param force - force clear the position queue
+   */
+  public moveTo(position: ex.Vector, force = false) {
+    this.pos = position.clone();
+
+    if (force) {
+      this._position_queue = [];
+    }
+  }
+
+  /**
    * Update the pet's position and direction
    *
    * Normally an Actor controls its own update but Pets are given their update
@@ -39,7 +55,7 @@ export class Pet extends Actor {
    *
    * @param _dt delta time - unused
    */
-  public update(_dt: number) {
+  public update(_engine: ex.Engine, _dt: number) {
     if (this._getQueueDurationMs() < this._trailing_delay_ms) {
       return;
     }

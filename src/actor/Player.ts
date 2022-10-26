@@ -47,6 +47,10 @@ export class Player extends Actor implements Stateful<PlayerState> {
     };
   }
 
+  get pet() {
+    return this._pet;
+  }
+
   /**
    * Update the player
    *
@@ -54,19 +58,19 @@ export class Player extends Actor implements Stateful<PlayerState> {
    *
    * @emits player.move
    */
-  public update(_game: ex.Engine, dt: number) {
+  public update(engine: ex.Engine, dt: number) {
     if (this.locked) {
       return;
     }
 
     if (this._pet) {
       this._pet.follow({
-        position: this.pos,
+        position: this.pos.clone(),
         direction: this.direction,
         dt,
       });
 
-      this._pet.update(dt);
+      this._pet.update(engine, dt);
     }
   }
 
