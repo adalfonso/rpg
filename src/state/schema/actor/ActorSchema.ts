@@ -16,7 +16,7 @@ const schema: JSONSchemaType<ActorState> = {
     dmg: { type: "number" },
     lvl: { type: "number" },
   },
-  required: ["type", "defeated", "dmg", "lvl"],
+  required: ["class", "defeated", "dmg", "lvl"],
   additionalProperties: false,
 };
 

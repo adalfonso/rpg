@@ -41,9 +41,12 @@ export class Player extends Actor implements Stateful<PlayerState> {
   /** Current data state */
   get state(): PlayerState {
     return {
+      name: this.displayAs,
       ...super.state,
       exp: this.stats.exp,
       equipped: this.weapon?.ref ?? null,
+      width: this.width,
+      height: this.height,
     };
   }
 

@@ -11,6 +11,7 @@ import { EventType } from "@/event/EventBus";
 import { InventoryState, isInventoryState } from "@schema/menu/InventorySchema";
 import { Menu } from "./Menu";
 import { MenuType } from "./types";
+import { PlayerState } from "@/state/schema/actor/PlayerSchema";
 import { SubMenu } from "./SubMenu";
 import { createConfig } from "./ui/MenuRenderConfigFactory";
 import { createMenuItem, createSubMenu } from "./MenuFactory";
@@ -208,8 +209,8 @@ export class Inventory extends Menu<InventoryMenuItem> implements Drawable {
 
     state()
       .get("team")
-      ?.forEach((member) => {
-        const { type, equipped } = member;
+      ?.forEach((member: PlayerState) => {
+        const { class: className, equipped } = member;
 
         if (!equipped) {
           return;
@@ -222,17 +223,17 @@ export class Inventory extends Menu<InventoryMenuItem> implements Drawable {
 
         if (!weapon_item) {
           throw new MissingDataError(
-            `Could not find weapon "${equipped}" in inventory for actor "${type}"`
+            `Could not find weapon "${equipped}" in inventory for actor "${className}"`
           );
         }
 
         const equipper_item = weapon_item.menu?.items.filter(
-          (equipper) => equipper.ref === type
+          (equipper) => equipper.ref === className
         )[0];
 
         if (!equipper_item) {
           throw new MissingDataError(
-            `Could not find equipper for weapon "${equipped}" and actor "${type}"`
+            `Could not find equipper for weapon "${equipped}" and actor "${className}"`
           );
         }
 

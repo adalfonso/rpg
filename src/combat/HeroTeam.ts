@@ -2,10 +2,12 @@ import * as ex from "excalibur";
 import MissingDataError from "@/error/MissingDataError";
 import Team from "./Team";
 import { Actor } from "@/actor/Actor";
-import { Player, PlayerArgs } from "@/actor/Player";
+import { Player } from "@/actor/Player";
+import { PlayerState } from "@/state/schema/actor/PlayerSchema";
 import { Stateful } from "@/interfaces";
 import { TeamState } from "./types";
 import { bus, EventType } from "@/event/EventBus";
+import { createTiledTemplate } from "@/util";
 import { isTeamState } from "@schema/combat/TeamSchema";
 import { state } from "@/state/StateManager";
 
@@ -106,6 +108,7 @@ export class HeroTeam extends Team<Player> implements Stateful<TeamState> {
     const refs = this.all().map((member) => member.state_ref);
 
     for (const member of data) {
+      // resolve saved members currently in the party
       if (refs.includes(member.class)) {
         if (member.defeated) {
           this.all()
@@ -115,17 +118,14 @@ export class HeroTeam extends Team<Player> implements Stateful<TeamState> {
         continue;
       }
 
-      // TODO: Remove this hack
-      const placeholder = new Player(
-        member as unknown as PlayerArgs,
-        this._game
-      );
+      // Resolved any members not currently in the party
+      const member_instance = this._createPlayerFromState(member);
 
       if (member.defeated) {
-        placeholder.kill(false);
+        member_instance.kill(false);
       }
 
-      this.add(placeholder, false);
+      this.add(member_instance, false);
     }
 
     return data;
@@ -168,6 +168,32 @@ export class HeroTeam extends Team<Player> implements Stateful<TeamState> {
   private _createPlayerFromActor(actor: Actor) {
     return new Player(
       { template: actor.template, args: {}, speed: 0 },
+      this._game
+    );
+  }
+
+  /**
+   * Create a new player from their save state
+   *
+   * TODO: Should this be defined elsewhere?
+   *
+   * @param member member's save state
+   * @returns player instance
+   */
+  private _createPlayerFromState(member: PlayerState) {
+    return new Player(
+      {
+        template: createTiledTemplate({
+          x: 0,
+          y: 0,
+          height: member.height,
+          width: member.width,
+          name: member.name,
+          class: member.class,
+        }),
+        args: {},
+        speed: 0,
+      },
       this._game
     );
   }
