@@ -22,9 +22,9 @@ class BattleBuilder {
    * @param enemy - enemy to fight
    * @return battle instance
    */
-  public static create(heroes: HeroTeam, enemy: Enemy): Battle {
+  public static async create(heroes: HeroTeam, enemy: Enemy): Promise<Battle> {
     const builder = new BattleBuilder();
-    const enemyTeam = builder._createTeamFromEnemy(enemy);
+    const enemyTeam = await builder._createTeamFromEnemy(enemy);
 
     return new Battle(
       heroes,
@@ -39,7 +39,7 @@ class BattleBuilder {
    *
    * @param enemy - enemy to create team for
    */
-  private _createTeamFromEnemy(enemy: Enemy) {
+  private async _createTeamFromEnemy(enemy: Enemy) {
     const blueprint = this._getBattleBlueprint(enemy);
 
     // Default team leader
@@ -49,7 +49,7 @@ class BattleBuilder {
       blueprint.limit[Math.floor(Math.random() * blueprint.limit.length)];
 
     while (--teamSize > 0) {
-      team.push(team[0].clone());
+      team.push(await team[0].cloneAsync());
     }
 
     return new Team(team);

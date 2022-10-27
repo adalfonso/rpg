@@ -18,3 +18,7 @@ export const isFixtureType = (name: string): name is FixtureType =>
 
 /** Type classes of fixtures to expect in a level */
 export type LevelFixture = Enemy | Portal | NonPlayer | Entry | Item;
+
+export const isLevelFixture = (
+  fixture: Enemy | Portal | NonPlayer | Entry | Item | null
+): fixture is LevelFixture => fixture !== null;

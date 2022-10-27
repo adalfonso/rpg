@@ -45,8 +45,8 @@ export class Enemy extends Actor {
    *
    * @return the clone
    */
-  public clone(): Enemy {
-    return new Enemy(this.template);
+  public async cloneAsync() {
+    return new Enemy(this.template).init();
   }
 
   /**

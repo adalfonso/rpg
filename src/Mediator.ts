@@ -19,7 +19,12 @@ import { TiledMapResource as TiledMap } from "@excaliburjs/plugin-tiled";
 import { bus, EventType } from "./event/EventBus";
 import { createEquipper } from "./combat/EquipperFactory";
 import { createSubMenu } from "./menu/MenuFactory";
-import { isFixtureType, LevelFixture, FixtureType } from "./fixture/Fixture";
+import {
+  isFixtureType,
+  LevelFixture,
+  FixtureType,
+  isLevelFixture,
+} from "./fixture/Fixture";
 import { path } from "@tauri-apps/api";
 import { getMapFromName } from "./util";
 
@@ -153,7 +158,7 @@ export class Mediator {
 
     map.addTiledMapToScene(scene);
 
-    this._addFixtures(map, scene);
+    await this._addFixtures(map, scene);
 
     this._game.add(scene_name, scene);
     this._game.goToScene(scene_name);
@@ -211,7 +216,7 @@ export class Mediator {
           this.load(getMapFromName(portal.to), portal.from);
         },
 
-        "battle.start": (e: CustomEvent) => {
+        "battle.start": async (e: CustomEvent) => {
           if (!(e.detail.enemy instanceof Enemy)) {
             throw new MissingDataError(
               `Missing enemy when creating a battle from an event.`
@@ -235,7 +240,10 @@ export class Mediator {
            * occur.
            */
 
-          const battle = BattleBuilder.create(this._heroes, e.detail.enemy);
+          const battle = await BattleBuilder.create(
+            this._heroes,
+            e.detail.enemy
+          );
 
           this._saveCurrentScene();
           this._game.add(BATTLE_SCENE_NAME, battle);
@@ -316,24 +324,26 @@ export class Mediator {
    * @param map - Tiled map
    * @param scene - new scene
    */
-  private _addFixtures(map: TiledMap, scene: ex.Scene) {
+  private async _addFixtures(map: TiledMap, scene: ex.Scene) {
     const fixture_factory = new FixtureFactory();
 
-    this._fixtures = map.data
-      .getExcaliburObjects()
-      .filter(({ name }) => isFixtureType(name ?? ""))
-      .map(({ name, objects }) => {
-        return objects.map((object) => {
-          if (object.class === undefined) {
-            object.class === name;
-          }
+    const fixtures = await Promise.all(
+      map.data
+        .getExcaliburObjects()
+        .filter(({ name }) => isFixtureType(name ?? ""))
+        .map(({ name, objects }) => {
+          return objects.map((object) => {
+            if (object.class === undefined) {
+              object.class === name;
+            }
 
-          return fixture_factory.create(name as FixtureType, object);
-        });
-      })
-      .flat()
-      .filter(Boolean);
+            return fixture_factory.create(name as FixtureType, object);
+          });
+        })
+        .flat()
+    );
 
+    this._fixtures = fixtures.filter(isLevelFixture);
     this._fixtures.forEach((fixture) => scene.add(fixture));
   }
 

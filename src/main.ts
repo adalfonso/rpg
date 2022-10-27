@@ -31,7 +31,7 @@ const new_main = async () => {
     canvasElement,
   });
 
-  const player = new Player(
+  const player = await new Player(
     {
       // TODO: Don't type assert
       template: createTiledTemplate({
@@ -46,9 +46,9 @@ const new_main = async () => {
       speed: 100,
     },
     engine
-  );
+  ).init();
 
-  const doggo = new Pet(
+  const doggo = await new Pet(
     createTiledTemplate({
       name: "Lea",
       class: "lea",
@@ -57,7 +57,8 @@ const new_main = async () => {
       width: 20,
       height: 16,
     })
-  );
+  ).init();
+
   player.adoptPet(doggo);
 
   const heroes = new HeroTeam([player], engine);

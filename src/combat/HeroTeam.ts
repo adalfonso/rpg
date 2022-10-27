@@ -58,7 +58,7 @@ export class HeroTeam extends Team<Player> implements Stateful<TeamState> {
   public register() {
     return {
       [EventType.Custom]: {
-        "team.newMember": (e: CustomEvent) => {
+        "team.newMember": async (e: CustomEvent) => {
           const actor = e.detail?.target.actor;
 
           if (!actor || !(actor instanceof Actor)) {
@@ -67,7 +67,7 @@ export class HeroTeam extends Team<Player> implements Stateful<TeamState> {
             );
           }
 
-          this.add(this._createPlayerFromActor(actor));
+          this.add(await this._createPlayerFromActor(actor));
         },
         "team.save": (e: CustomEvent) => {
           const { actor } = e.detail ?? {};
@@ -102,7 +102,7 @@ export class HeroTeam extends Team<Player> implements Stateful<TeamState> {
    *
    * @return actor data as stored in the state
    */
-  private _resolveState() {
+  private async _resolveState() {
     const data = state().resolve(this, isTeamState);
 
     const refs = this.all().map((member) => member.state_ref);
@@ -119,7 +119,7 @@ export class HeroTeam extends Team<Player> implements Stateful<TeamState> {
       }
 
       // Resolved any members not currently in the party
-      const member_instance = this._createPlayerFromState(member);
+      const member_instance = await this._createPlayerFromState(member);
 
       if (member.defeated) {
         member_instance.kill(false);
@@ -165,11 +165,11 @@ export class HeroTeam extends Team<Player> implements Stateful<TeamState> {
    *
    * @returns new player
    */
-  private _createPlayerFromActor(actor: Actor) {
+  private async _createPlayerFromActor(actor: Actor) {
     return new Player(
       { template: actor.template, args: {}, speed: 0 },
       this._game
-    );
+    ).init();
   }
 
   /**
@@ -180,7 +180,7 @@ export class HeroTeam extends Team<Player> implements Stateful<TeamState> {
    * @param member member's save state
    * @returns player instance
    */
-  private _createPlayerFromState(member: PlayerState) {
+  private async _createPlayerFromState(member: PlayerState) {
     return new Player(
       {
         template: createTiledTemplate({
@@ -195,6 +195,6 @@ export class HeroTeam extends Team<Player> implements Stateful<TeamState> {
         speed: 0,
       },
       this._game
-    );
+    ).init();
   }
 }

@@ -40,7 +40,7 @@ export class FixtureFactory {
    * @throws {MissingDataError} when x, y, width, or height are missing
    * @throws {InvalidDataError} when the type is invalid
    */
-  public create(type: FixtureType, template: Tiled.TiledObject) {
+  public async create(type: FixtureType, template: Tiled.TiledObject) {
     if (!isTiledTemplate(template)) {
       throw new MissingDataError(
         `Provided template is not Tiled Template.` +
@@ -60,13 +60,13 @@ export class FixtureFactory {
       case "portal":
         return new Portal(template);
       case "npc": {
-        const npc = new NonPlayer(template);
+        const npc = await new NonPlayer(template).init();
 
         // If the npc is expired, set to null to be cleared
         return npc.isExpired ? null : npc;
       }
       case "enemy": {
-        const enemy = new Enemy(template);
+        const enemy = await new Enemy(template).init();
         // If the enemy is previously defeated, set to null to be cleared
         return enemy.isDefeated ? null : enemy;
       }
