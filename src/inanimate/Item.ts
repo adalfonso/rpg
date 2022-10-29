@@ -51,12 +51,8 @@ export class Item extends MultiSprite(ex.Actor) implements Stateful<ItemState> {
 
     this._config = config_ctor(_template);
 
-    this._setSprites(this.getUiInfo(), this._template).then((scale) => {
+    this._setSprites(this.getUiInfo(), this._template).then(() => {
       this.direction = Direction.South;
-
-      if (scale !== 1) {
-        this.actions.scaleTo(ex.vec(scale, scale), ex.vec(Infinity, Infinity));
-      }
     });
 
     this._ref = this._template.class;

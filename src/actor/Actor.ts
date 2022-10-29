@@ -90,12 +90,8 @@ export abstract class Actor
    * @returns instance
    */
   public async init() {
-    const scale = await this._setSprites(this.getUiInfo(), this._template);
+    await this._setSprites(this.getUiInfo(), this._template);
     this.direction = Direction.South;
-
-    if (scale !== 1) {
-      this.actions.scaleTo(ex.vec(scale, scale), ex.vec(Infinity, Infinity));
-    }
 
     return this;
   }
