@@ -49,9 +49,9 @@ export type UiData = {
 };
 
 export enum Direction {
-  None,
-  North,
-  East,
-  South,
-  West,
+  None = "0",
+  North = "1",
+  East = "2",
+  South = "3",
+  West = "3",
 }

@@ -21,7 +21,7 @@ export const MultiSprite = <T extends Constructor>(Base: T) =>
   /** An entity that renders a series of sprites */
   class MultiSprite extends Base {
     /** List of all entity's sprites */
-    protected _sprites: Record<Direction, ex.Graphic> = {};
+    protected _sprites: Nullable<Record<Direction, ex.Graphic>> = null;
 
     /** Saved direction to restore to later on */
     protected _saved_direction: Nullable<Direction> = null;
@@ -102,9 +102,12 @@ export const MultiSprite = <T extends Constructor>(Base: T) =>
     }
 
     get direction() {
-      const sprites: [Direction, ex.Graphic][] = Object.entries(
-        this._sprites
-      ).filter(([_, animation]) =>
+      if (this._sprites === null) {
+        return Direction.None;
+      }
+
+      const sprites = Object.entries(this._sprites).filter(([_, animation]) =>
+        // Check all current graphics to see if animation is included
         this.graphics.current.map((g) => g.graphic).includes(animation)
       );
 
@@ -115,10 +118,18 @@ export const MultiSprite = <T extends Constructor>(Base: T) =>
         return Direction.None;
       }
 
-      return sprites[0][0];
+      return sprites[0][0] as Direction;
     }
 
     set direction(direction: Direction) {
+      if (this._sprites === null) {
+        console.warn(
+          `Tried to set direction of MultiSprite but _sprites is null`
+        );
+
+        return;
+      }
+
       this.graphics.use(this._sprites[direction]);
     }
   };

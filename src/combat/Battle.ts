@@ -169,7 +169,7 @@ class Battle extends ex.Scene implements Lockable {
           this._menu.draw(ectx, resolution);
 
           if (!this._opponentSelect.isLocked) {
-            this._opponentSelect.draw(ctx, resolution);
+            this._opponentSelect.draw(ctx, ex.Vector.Zero, resolution);
           }
         }
 
