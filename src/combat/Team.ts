@@ -1,4 +1,3 @@
-import * as ex from "excalibur";
 import MissingDataError from "@/error/MissingDataError";
 import { Actor } from "@/actor/Actor";
 import { Direction } from "@/ui/types";
@@ -54,15 +53,13 @@ class Team<M extends Actor> {
    * Prepare the team's positioning for battle
    *
    * @param direction - direction members will face
-   * @param position  - position members are moved to
    */
-  public prepare(direction: Direction, position: ex.Vector) {
-    this._members.forEach((member, index) => {
+  public prepare(direction: Direction) {
+    this._members.forEach((member) => {
       // TODO: Look into a general save method instead
       member.savePosition();
       member.saveDirection();
       member.direction = direction;
-      member.moveTo(position.add(new ex.Vector(member.size.x * index * 4, 0)));
       member.lock();
     });
     this.cycle();

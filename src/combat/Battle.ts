@@ -42,16 +42,16 @@ class Battle extends ex.Scene implements Lockable {
   private _menu: BattleMenu;
 
   /** If it is currently the player's turn */
-  private _herosTurn = true;
+  private _is_heros_turn = true;
 
   /** Queue of animations and battle actions to execute */
   private _event_queue: (BattleEvent | (() => void))[] = [];
 
-  /** Canvas for rendering 2D */
-  private _pre_canvas = new AdHocCanvas();
+  /** Canvas for pre-rendering 2D */
+  private _pre_draw_canvas = new AdHocCanvas();
 
-  /** Canvas for rendering 2D */
-  private _post_canvas = new AdHocCanvas();
+  /** Canvas for post-rendering 2D */
+  private _post_draw_canvas = new AdHocCanvas();
 
   /** If the battle is currently active */
   public active: boolean;
@@ -62,6 +62,7 @@ class Battle extends ex.Scene implements Lockable {
    * @param _heroes         - heroes in battle
    * @param _foes           - enemies in battle
    * @param _opponentSelect - utility to traverse opponents in battle
+   * @param _resolution     - screen resolution used to manually draw battle
    * @param intro_animation - animation sequence occurring at the start of battle
    *
    * @emits battle.action
@@ -70,38 +71,62 @@ class Battle extends ex.Scene implements Lockable {
     private _heroes: HeroTeam,
     private _foes: Team<Enemy>,
     private _opponentSelect: OpponentSelect,
+    private _resolution: ex.Vector,
     intro_animation: AnimatedText
   ) {
     super();
     this.active = true;
+
     this._event_queue.push(
       () => this.lock(),
       intro_animation,
-      () => this.unlock()
+      () => this.unlock(),
+      /**
+       * Actually places the menu under the first hero. This is ineffective if
+       * the user resizes the screen while the intro animation is rendering
+       */
+      () => this._refreshBattleMenu()
     );
 
-    // TODO: make these scale
-    this._heroes.prepare(Direction.East, new Vector(512, 256));
+    this._heroes.prepare(Direction.East);
     this._heroes.each((hero) => this.add(hero));
-
-    this._foes.prepare(Direction.West, new Vector(256 + 512 + 64, 128));
+    this._foes.prepare(Direction.West);
     this._foes.each((foe) => this.add(foe));
-
     this._menu = this._getBattleMenu();
-
-    this._moveBattleMenu();
+    this._updateEntityPositions();
+    // Move the menu off screen initially until the into animation is done
+    this._moveBattleMenu(ex.vec(9999, 9999));
 
     bus.register(this);
 
     // Force enemy to attack if it is their turn first
-    if (!this._herosTurn) {
+    if (!this._is_heros_turn) {
       bus.emit("battle.action");
     }
   }
 
   /** Determine if the battle is done */
-  get isDone() {
+  get is_done() {
     return this._heroes.areDefeated || this._foes.areDefeated;
+  }
+
+  /**
+   * Sets the resolution
+   *
+   * When the resolution changes we want to trigger entities to relocate. n.b.
+   * doing this while entities are in the middle of moving around will mess
+   * stuff up
+   *
+   * @param resolution - new resolution
+   */
+  set resolution(resolution: ex.Vector) {
+    if (this._resolution.equals(resolution)) {
+      return;
+    }
+
+    this._resolution = resolution.clone();
+
+    this._updateEntityPositions();
   }
 
   /**
@@ -132,7 +157,7 @@ class Battle extends ex.Scene implements Lockable {
       ? this._opponentSelect.unlock()
       : this._opponentSelect.lock();
 
-    if (this.isDone && this._event_queue.length === 0) {
+    if (this.is_done && this._event_queue.length === 0) {
       this.stop();
     }
   }
@@ -144,7 +169,9 @@ class Battle extends ex.Scene implements Lockable {
    * @param resolution - render resolution
    */
   public drawPre(ectx: ex.ExcaliburGraphicsContext, resolution: ex.Vector) {
-    this._pre_canvas.draw(
+    this.resolution = resolution;
+
+    this._pre_draw_canvas.draw(
       ectx,
       resolution,
       (ctx: CanvasRenderingContext2D, resolution: ex.Vector) => {
@@ -161,11 +188,11 @@ class Battle extends ex.Scene implements Lockable {
    * @param resolution - render resolution
    */
   public drawPost(ectx: ex.ExcaliburGraphicsContext, resolution: ex.Vector) {
-    this._post_canvas.draw(
+    this._post_draw_canvas.draw(
       ectx,
       resolution,
       (ctx: CanvasRenderingContext2D, resolution: ex.Vector) => {
-        if (this._herosTurn && !this.isDone) {
+        if (this._is_heros_turn && !this.is_done) {
           this._menu.draw(ectx, resolution);
 
           if (!this._opponentSelect.isLocked) {
@@ -203,7 +230,9 @@ class Battle extends ex.Scene implements Lockable {
             return;
           }
 
-          this._herosTurn ? this._handleHeroAction(e) : this._handleFoeAction();
+          this._is_heros_turn
+            ? this._handleHeroAction(e)
+            : this._handleFoeAction();
         },
 
         "actor.gainExp": (e: CustomEvent) => {
@@ -261,11 +290,56 @@ class Battle extends ex.Scene implements Lockable {
     return this._menu.unlock();
   }
 
-  /** Move the battle menu to where it should be */
-  private _moveBattleMenu() {
+  /* Relocates camera, hero, and foe positions based on the screen resolution */
+  private _updateEntityPositions() {
+    const x_half = Math.round(this._resolution.x / 2);
+    const y_half = Math.round(this._resolution.y / 2);
+
+    this.camera.pos = this._resolution.scale(0.5);
+
+    this._heroes.each((hero, i) =>
+      hero.moveTo(
+        ex.vec(
+          x_half -
+            hero.width * 2 -
+            hero.width * 2 * (this._heroes.all().length - i),
+          y_half + hero.height * 2
+        )
+      )
+    );
+
+    this._foes.each((foe, i) =>
+      foe.moveTo(
+        ex.vec(
+          x_half + foe.width * 2 + foe.width * 2 * i,
+          y_half - foe.height * 2
+        )
+      )
+    );
+
+    this._moveBattleMenu();
+  }
+
+  /**
+   * Relocate the battle menu
+   *
+   * If a position is provided it will be used, otherwise it will try to
+   * co-locate the menu next to the current player whose turn it is
+   *
+   * @param position - position to move the menu to
+   */
+  private _moveBattleMenu(position?: ex.Vector) {
     const hero = this._heroes.nextToTakeTurn;
+
+    this._menu.moveTo(
+      position?.clone() ?? hero.pos.clone().add(hero.size.scale(3))
+    );
+  }
+
+  /* Refresh the menu to apply to a hero */
+  private _refreshBattleMenu() {
     this._menu.reset();
-    this._menu.moveTo(hero.position.add(hero.size));
+    this._moveBattleMenu();
   }
 
   /** Cause game over */
@@ -288,10 +362,10 @@ class Battle extends ex.Scene implements Lockable {
    * @emits battle.action
    */
   private _cycle() {
-    this._herosTurn = !this._herosTurn;
-    this._herosTurn ? this._heroes.cycle() : this._foes.cycle();
+    this._is_heros_turn = !this._is_heros_turn;
+    this._is_heros_turn ? this._heroes.cycle() : this._foes.cycle();
 
-    if (!this._herosTurn) {
+    if (!this._is_heros_turn) {
       bus.emit("battle.action");
     }
   }
@@ -329,9 +403,9 @@ class Battle extends ex.Scene implements Lockable {
     this._event_queue.push(
       () => this._heroes.takeTurn(hero),
       // Handle post turn ops if turn is over or game has ended
-      () => (this._heroes.turnIsOver || this.isDone) && this._handlePostTurn(),
+      () => (this._heroes.turnIsOver || this.is_done) && this._handlePostTurn(),
       // Adjust menu unless turn is over
-      () => this._moveBattleMenu(),
+      () => this._refreshBattleMenu(),
       () => this._opponentSelect.resolveSelected()
     );
   }
@@ -386,7 +460,7 @@ class Battle extends ex.Scene implements Lockable {
    */
   public stop() {
     // Safety check added after making this a public method
-    if (!this.isDone && this._event_queue.length > 0) {
+    if (!this.is_done && this._event_queue.length > 0) {
       return;
     }
 

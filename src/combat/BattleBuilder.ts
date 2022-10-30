@@ -1,3 +1,4 @@
+import * as ex from "excalibur";
 import Battle from "./Battle";
 import MissingDataError from "@/error/MissingDataError";
 import OpponentSelect from "./OpponentSelect";
@@ -22,14 +23,20 @@ class BattleBuilder {
    * @param enemy - enemy to fight
    * @return battle instance
    */
-  public static async create(heroes: HeroTeam, enemy: Enemy): Promise<Battle> {
+  public static async create(
+    heroes: HeroTeam,
+    enemy: Enemy,
+    engine: ex.Engine
+  ): Promise<Battle> {
     const builder = new BattleBuilder();
     const enemyTeam = await builder._createTeamFromEnemy(enemy);
+    const resolution = engine.screen.resolution;
 
     return new Battle(
       heroes,
       enemyTeam,
       new OpponentSelect(enemyTeam),
+      ex.vec(resolution.width, resolution.height),
       AnimatedTextFactory.createStartBattleAnimation()
     );
   }

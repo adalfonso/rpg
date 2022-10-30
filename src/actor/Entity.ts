@@ -18,7 +18,7 @@ export const Movable = <T extends Constructor>(Base: T) =>
         );
       }
 
-      return this.pos;
+      return this.pos.clone() as ex.Vector;
     }
 
     /**

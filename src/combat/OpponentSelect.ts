@@ -76,7 +76,7 @@ class OpponentSelect implements OffsetDrawable, Lockable {
       return;
     }
 
-    const fontOffset = new Vector(17, -36);
+    const fontOffset = new Vector(-17, -36 - 16);
     const position = this.selected.position.add(fontOffset);
 
     ctx.save();
