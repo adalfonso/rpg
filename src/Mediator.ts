@@ -142,11 +142,7 @@ export class Mediator {
     const scene_name = (await path.basename(map_path)).replace(/\..+$/, "");
     const scene = this._game.scenes[scene_name] ?? new ex.Scene();
 
-    // If we've already loaded this scene, just go to it
-    if (this._game.scenes[scene_name] !== undefined) {
-      this._movePlayerToEntry(from ?? "This entry does not exist", scene);
-      return this._game.goToScene(scene_name);
-    }
+    this._removeCurrentLevel();
 
     const map = new TiledMap(map_path);
 
@@ -164,10 +160,6 @@ export class Mediator {
       (fixture) => fixture instanceof Entry && fixture.name === "origin"
     );
 
-    if (!from && origin) {
-      this.player.moveTo(origin.pos.clone());
-    }
-
     this._game.add(scene_name, scene);
     this._game.goToScene(scene_name);
     this._game.currentScene.add(this.player);
@@ -177,7 +169,23 @@ export class Mediator {
 
     if (from) {
       this._movePlayerToEntry(from, scene);
+    } else if (origin) {
+      this.player.moveTo(origin.pos.clone());
     }
+  }
+
+  /**
+   * Remove current level information from the mediator
+   *
+   * We will not persist level info (fixtures) on the mediator because we don't
+   * want t them handle events by accident. Additionally we will remove the
+   * scene from the game since it is performant enough to recreate it on the
+   * fly.
+   */
+  private _removeCurrentLevel() {
+    this._fixtures.forEach((fixture) => bus.unregister(fixture));
+    this._fixtures = [];
+    this._game.remove(this._game.currentScene);
   }
 
   /**

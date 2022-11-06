@@ -1,6 +1,4 @@
-// cleanup when scene ends to remove fixtures from the event bus
 // scale inventory items
-// state not working properly
 // resolve what name, class, ref, etc represent
 // saving commits but doesnt force save. if we change how the state for something
    is calculated during deve it wont forcefully write the new data

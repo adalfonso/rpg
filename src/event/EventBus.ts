@@ -63,9 +63,12 @@ export class EventBus {
   /**
    * Unregister an entity from the event bus
    *
+   * Observer type is lax to easily allow unregistration without knowing the
+   * exact type.
+   *
    * @param observer - eventful entity
    */
-  public unregister(observer: Eventful) {
+  public unregister(observer: unknown) {
     for (const type in this._handlers) {
       for (const name in this._handlers[type]) {
         this._handlers[type][name] = this._handlers[type][name].filter(
