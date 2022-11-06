@@ -21,9 +21,13 @@ export class HeroTeam extends Team<Player> implements Stateful<TeamState> {
   constructor(protected _members: Player[], private _game: ex.Engine) {
     super(_members);
 
-    this._resolveState();
-
     bus.register(this);
+  }
+
+  // Async init operations
+  public async init() {
+    await this._resolveState();
+    return this;
   }
 
   /** State lookup key */
@@ -104,7 +108,6 @@ export class HeroTeam extends Team<Player> implements Stateful<TeamState> {
    */
   private async _resolveState() {
     const data = state().resolve(this, isTeamState);
-
     const refs = this.all().map((member) => member.state_ref);
 
     for (const member of data) {

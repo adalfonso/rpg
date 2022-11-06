@@ -63,7 +63,7 @@ const new_main = async () => {
 
   player.adoptPet(doggo);
 
-  const heroes = new HeroTeam([player], engine);
+  const heroes = await new HeroTeam([player], engine).init();
   const dialogue = new DialogueMediator(heroes);
   const images = loadImages();
   const loader = new ex.Loader(Object.values(images));
