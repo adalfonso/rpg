@@ -9,10 +9,12 @@ import { PlayerState } from "@schema/actor/PlayerSchema";
 import { Stateful } from "@/interfaces";
 import { TiledTemplate } from "./types";
 import { bus, EventType } from "@/event/EventBus";
-
-// Scales down player's velocity when they are moving diagonally
-const DIAG_VELOCITY_MOD = 0.707;
-
+/**
+ * Scales down player's velocity when they are moving diagonally
+ * n.b. since we adjust the player's position on postupdate this modifier
+ * doesn't accurately apply because fractions of the postition are lost
+ */
+const DIAG_VELOCITY_MOD = 0.9;
 export interface PlayerArgs {
   template: TiledTemplate;
   args: ex.ActorArgs;
@@ -69,6 +71,11 @@ export class Player extends Actor implements Stateful<PlayerState> {
       return;
     }
 
+    /**
+     * TODO: Come up with a better solution. This approach loses the fractions
+     * of a pixel that would compound, and as a result reduces the actual
+     * velocity
+     */
     this.pos = ex.vec(Math.round(this.pos.x), Math.round(this.pos.y));
 
     if (this._pet) {
@@ -256,7 +263,15 @@ export class Player extends Actor implements Stateful<PlayerState> {
       this.vel.x = 0;
     }
 
+    const { x, y } = this.vel;
+
     // Make velocity normal again when not moving diagonally
-    this.vel = this.vel.scale(1 / DIAG_VELOCITY_MOD);
+    if (x !== 0) {
+      this.vel.x = (Math.abs(this.vel.x) / this.vel.x) * this._speed;
+    }
+
+    if (y !== 0) {
+      this.vel.y = (Math.abs(this.vel.y) / this.vel.y) * this._speed;
+    }
   }
 }
