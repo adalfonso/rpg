@@ -31,12 +31,14 @@ const new_main = async () => {
     canvasElement,
   });
 
+  //engine.toggleDebug();
+
   const player = await new Player(
     {
       // TODO: Don't type assert
       template: createTiledTemplate({
-        x: 455,
-        y: 75,
+        x: 0,
+        y: 0,
         width: 18,
         height: 32,
         name: "Me",

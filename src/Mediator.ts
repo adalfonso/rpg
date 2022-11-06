@@ -160,6 +160,14 @@ export class Mediator {
 
     await this._addFixtures(map, scene);
 
+    const origin = this._fixtures.find(
+      (fixture) => fixture instanceof Entry && fixture.name === "origin"
+    );
+
+    if (!from && origin) {
+      this.player.moveTo(origin.pos.clone());
+    }
+
     this._game.add(scene_name, scene);
     this._game.goToScene(scene_name);
     this._game.currentScene.add(this.player);
