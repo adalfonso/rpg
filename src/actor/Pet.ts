@@ -55,7 +55,7 @@ export class Pet extends Actor {
    *
    * @param _dt delta time - unused
    */
-  public update(_engine: ex.Engine, _dt: number) {
+  public onPostUpdate(_engine: ex.Engine, _dt: number) {
     if (this._getQueueDurationMs() < this._trailing_delay_ms) {
       return;
     }

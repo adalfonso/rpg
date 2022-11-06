@@ -64,10 +64,12 @@ export class Player extends Actor implements Stateful<PlayerState> {
    *
    * @emits player.move
    */
-  public update(engine: ex.Engine, dt: number) {
+  public onPostUpdate(engine: ex.Engine, dt: number) {
     if (this.locked) {
       return;
     }
+
+    this.pos = ex.vec(Math.round(this.pos.x), Math.round(this.pos.y));
 
     if (this._pet) {
       this._pet.follow({
@@ -76,7 +78,7 @@ export class Player extends Actor implements Stateful<PlayerState> {
         dt,
       });
 
-      this._pet.update(engine, dt);
+      this._pet.onPostUpdate(engine, dt);
     }
   }
 

@@ -45,7 +45,7 @@ describe("Pet", () => {
       steps.forEach((step, index) => {
         const { position, direction } = expected[index];
         pet.follow(step);
-        pet.update(0);
+        pet.onPostUpdate(0);
         expect(pet.position).toEqual(position);
         expect(pet.direction).toEqual(direction);
       });

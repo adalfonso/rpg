@@ -1,7 +1,10 @@
 // scale inventory items
-// resolve what name, class, ref, etc represent
-// saving commits but doesnt force save. if we change how the state for something
-   is calculated during deve it wont forcefully write the new data
 // battle animation used config resolution instead of current resolution
 // align battle menu to player
 // scale battle
+// visual clipping
+
+--------------------------------------------------------------------------------
+// feat: saving commits but doesnt force save. if we change how the state for something
+   is calculated during deve it wont forcefully write the new data
+// chore: resolve what name, class, ref, etc represent

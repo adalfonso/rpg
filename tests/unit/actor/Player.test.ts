@@ -13,7 +13,7 @@ describe("Player", () => {
       const dt = 16;
 
       player.adoptPet(pet);
-      player.update(dt);
+      player.onPostUpdate(dt);
 
       expect(update_spy).toBeCalledTimes(1);
       expect(spy).toBeCalledWith({

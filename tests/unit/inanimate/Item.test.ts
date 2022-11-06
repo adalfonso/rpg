@@ -9,7 +9,7 @@ describe("inanimate/Item", () => {
   describe("update", () => {
     it("remains stationary when no animation", () => {
       const sut = getSut();
-      sut.update(100);
+      sut.onPostUpdate(100);
 
       const { x, y } = sut.position;
 
@@ -37,7 +37,7 @@ describe("inanimate/Item", () => {
         };
 
       const sut = getSut({ animation_factory, config_ctor });
-      sut.update(100);
+      sut.onPostUpdate(100);
 
       const { x, y } = sut.position;
 
