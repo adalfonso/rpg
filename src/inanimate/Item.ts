@@ -58,7 +58,6 @@ export class Item extends MultiSprite(ex.Actor) implements Stateful<ItemState> {
     this._ref = this._template.class;
     this._id = this._template.name;
 
-    // TODO: handle stir animation
     if (this._config.ui.animation) {
       this._animation = animation_factory(this._config.ui.animation)(this.size);
     }

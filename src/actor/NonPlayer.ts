@@ -25,8 +25,6 @@ export class NonPlayer extends Actor {
   /**
    * Create a new NonPlayer instance
    *
-   * TODO: handle sprites when they are available
-   *
    * @param template - info about the non-player
    */
   constructor(template: TiledTemplate) {

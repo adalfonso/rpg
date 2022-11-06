@@ -5,9 +5,6 @@ import { Nullable } from "../types";
 export const Movable = <T extends Constructor>(Base: T) =>
   /** A class that has a position and can be moved */
   class Movable extends Base {
-    /** Position of the entity */
-    // TODO: this relies on excalibur pos but it's typed locally as any
-
     /** Saved postion */
     private _saved_position: Nullable<ex.Vector> = null;
 

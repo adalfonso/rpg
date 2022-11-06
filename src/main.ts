@@ -35,7 +35,6 @@ const new_main = async () => {
 
   const player = await new Player(
     {
-      // TODO: Don't type assert
       template: createTiledTemplate({
         x: 0,
         y: 0,
