@@ -10,6 +10,9 @@ import { Stateful } from "@/interfaces";
 import { TiledTemplate } from "./types";
 import { bus, EventType } from "@/event/EventBus";
 
+// Scales down player's velocity when they are moving diagonally
+const DIAG_VELOCITY_MOD = 0.707;
+
 export interface PlayerArgs {
   template: TiledTemplate;
   args: ex.ActorArgs;
@@ -220,6 +223,13 @@ export class Player extends Actor implements Stateful<PlayerState> {
       this.vel.x = -this._speed;
       this.direction = Direction.West;
     }
+
+    const { x, y } = this.vel;
+
+    if (x * y !== 0) {
+      // Slow velocity when player is moving diagonally
+      this.vel = this.vel.scale(DIAG_VELOCITY_MOD);
+    }
   }
 
   /**
@@ -243,5 +253,8 @@ export class Player extends Actor implements Stateful<PlayerState> {
     } else if (key === "ArrowLeft" && this.vel.x < 0) {
       this.vel.x = 0;
     }
+
+    // Make velocity normal again when not moving diagonally
+    this.vel = this.vel.scale(1 / DIAG_VELOCITY_MOD);
   }
 }
