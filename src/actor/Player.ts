@@ -60,8 +60,9 @@ export class Player extends Actor implements Stateful<PlayerState> {
   }
 
   /**
-   * Update the player
+   * Hook the post-update
    *
+   * @param engine - game engine instance
    * @param dt - delta time
    *
    * @emits player.move

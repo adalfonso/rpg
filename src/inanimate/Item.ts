@@ -81,21 +81,27 @@ export class Item extends MultiSprite(ex.Actor) implements Stateful<ItemState> {
         speech: [`Picked up ${useVowel ? "an" : "a"} ${this.displayAs}!`],
       });
     });
+  }
 
-    this.on("preupdate", ({ delta: dt }) => {
-      if (!this._animation) {
-        return;
-      }
+  /**
+   * Hook the pre-update
+   *
+   * @param _engine - game engine instance
+   * @param dt - delta time
+   */
+  public onPreUpdate(_engine: ex.Engine, dt: number) {
+    if (!this._animation) {
+      return;
+    }
 
-      const { type, delta } = this._animation.update(dt);
+    const { type, delta } = this._animation.update(dt);
 
-      // only handles position animations for now
-      if (type !== AnimationType.Position) {
-        return;
-      }
+    // only handles position animations for now
+    if (type !== AnimationType.Position) {
+      return;
+    }
 
-      this.pos = this.pos.add(delta);
-    });
+    this.pos = this.pos.add(delta);
   }
 
   /** The item reference */

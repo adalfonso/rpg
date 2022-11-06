@@ -53,6 +53,7 @@ export class Pet extends Actor {
    * Normally an Actor controls its own update but Pets are given their update
    * through the follow method which is consumed here during an update.
    *
+   * @param _engine - game engine instance
    * @param _dt delta time - unused
    */
   public onPostUpdate(_engine: ex.Engine, _dt: number) {
