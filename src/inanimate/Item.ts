@@ -1,5 +1,4 @@
 import * as ex from "excalibur";
-import config from "@/config";
 import { Animation, AnimationType } from "@/ui/animation/Animation";
 import { AnimationFactory } from "@/ui/animation/AnimationFactory";
 import { CollisionType } from "excalibur";
@@ -148,14 +147,14 @@ export class Item extends MultiSprite(ex.Actor) implements Stateful<ItemState> {
    * @return inputs for a renderable
    */
   protected getUiInfo(): RenderData {
-    const UI = this._config.ui;
+    const ui = this._config.ui;
 
     return {
       fps: 1,
       columns: 1,
       rows: 1,
-      scale: (UI.scale ?? 1) * config.scale,
-      sprite: getImagePath(UI.sprite),
+      scale: ui.scale ?? 1,
+      sprite: getImagePath(ui.sprite),
       sprite_orientation: SpriteOrientation.Singular,
     };
   }

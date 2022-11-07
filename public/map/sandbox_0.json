@@ -395,14 +395,14 @@
                 }, 
                 {
                  "class":"big_sword",
-                 "height":64,
+                 "height":32,
                  "id":33,
                  "name":"big_sword",
                  "rotation":0,
                  "visible":true,
-                 "width":64,
-                 "x":412,
-                 "y":322
+                 "width":32,
+                 "x":440,
+                 "y":354
                 }, 
                 {
                  "class":"water",
@@ -417,14 +417,14 @@
                 }, 
                 {
                  "class":"ruby_sword",
-                 "height":64,
+                 "height":32,
                  "id":38,
                  "name":"ruby_sword",
                  "rotation":0,
                  "visible":true,
-                 "width":64,
-                 "x":332,
-                 "y":322
+                 "width":32,
+                 "x":356,
+                 "y":350
                 }],
          "opacity":1,
          "properties":[

@@ -1,7 +1,10 @@
-// scale inventory items
 // battle animation used config resolution instead of current resolution
 // align battle menu to player
 // scale battle
+
+// unit tests
+
+// refactor mediator
 
 --------------------------------------------------------------------------------
 // feat: saving commits but doesnt force save. if we change how the state for something
