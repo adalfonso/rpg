@@ -188,3 +188,12 @@ export const createTiledTemplate = (
     ...partial,
   } as any) as TiledTemplate;
 };
+
+/**
+ * Convert degrees to radians
+ *
+ * @param degrees - angle
+ *
+ * @returns angle in radians
+ */
+export const degreesToRadian = (degrees: number) => degrees * (Math.PI / 180);

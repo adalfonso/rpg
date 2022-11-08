@@ -1,8 +1,24 @@
+import * as ex from "excalibur";
 import Team from "./Team";
 import { Actor } from "@/actor/Actor";
-import { Lockable, OffsetDrawable } from "@/interfaces";
-import { Vector } from "excalibur";
 import { bus, EventType } from "@/event/EventBus";
+import { degreesToRadian } from "@/util";
+
+const FONT_SIZE = 28;
+
+const default_options = {
+  text: "➧",
+  color: ex.Color.fromHex("#00DDDD"),
+  font: new ex.Font({
+    size: FONT_SIZE,
+    unit: ex.FontUnit.Px,
+    family: "Minecraftia",
+    shadow: {
+      offset: ex.vec(2, -2),
+      color: ex.Color.fromHex("#333333"),
+    },
+  }),
+};
 
 /**
  * A tool to select which opponent to attack
@@ -10,12 +26,9 @@ import { bus, EventType } from "@/event/EventBus";
  * This class allows members of a team to be traversed and targeted for combat.
  * It draws an arrow above their sprite as an indicator.
  */
-class OpponentSelect implements OffsetDrawable, Lockable {
+export class OpponentSelect extends ex.Label {
   /** Currently selected index of the opponents */
   private _index = 0;
-
-  /** If this selection is locked from changing */
-  private _locked = true;
 
   /**
    * Create a new OpponentSelect instance
@@ -23,12 +36,12 @@ class OpponentSelect implements OffsetDrawable, Lockable {
    * @param _opponents - opponent team members
    */
   constructor(private _opponents: Team<Actor>) {
-    bus.register(this);
-  }
+    super(default_options);
 
-  /** Get the locked state of the selection */
-  get isLocked(): boolean {
-    return this._locked;
+    this.rotation = degreesToRadian(90);
+    this._move();
+
+    bus.register(this);
   }
 
   /** Get the currently selected opponent */
@@ -45,7 +58,7 @@ class OpponentSelect implements OffsetDrawable, Lockable {
     return {
       [EventType.Keyboard]: {
         keyup: (e: KeyboardEvent) => {
-          if (this._locked) {
+          if (!this.graphics.visible) {
             return;
           }
 
@@ -61,56 +74,15 @@ class OpponentSelect implements OffsetDrawable, Lockable {
     };
   }
 
-  /**
-   * Draw opponent select arrow
-   *
-   * @param ctx         - render context
-   * @param _resolution - render resolution
-   */
-  public draw(
-    ctx: CanvasRenderingContext2D,
-    _offset: Vector,
-    _resolution: Vector
-  ) {
-    if (this._opponents.areDefeated) {
-      return;
-    }
-
-    const fontOffset = new Vector(-17, -36 - 16);
-    const position = this.selected.position.add(fontOffset);
-
-    ctx.save();
-
-    ctx.translate(position.x, position.y);
-    ctx.rotate((90 * Math.PI) / 180);
-    ctx.font = "42px Minecraftia";
-    ctx.fillStyle = "#0DD";
-    ctx.shadowOffsetY = 2;
-    ctx.shadowBlur = 0;
-    ctx.shadowColor = "#333";
-    ctx.fillText("➧", 0, 0);
-
-    ctx.restore();
+  /** Hide the selection */
+  public hide() {
+    this.graphics.visible = false;
   }
 
-  /**
-   * Lock the selection
-   *
-   * @return if the lock succeeded
-   */
-  public lock(): boolean {
-    this._locked = true;
-    return true;
-  }
-
-  /**
-   * Unlock the selection
-   *
-   * @return if the unlock succeeded
-   */
-  public unlock(): boolean {
-    this._locked = false;
-    return true;
+  /** Show the selection */
+  public show() {
+    this.graphics.visible = true;
+    this._move();
   }
 
   /** Select the first non-defeated enemy */
@@ -120,6 +92,7 @@ class OpponentSelect implements OffsetDrawable, Lockable {
     for (let i = 0; i < opponents.length; i++) {
       if (!opponents[i].isDefeated) {
         this._index = i;
+        this._move();
         return;
       }
     }
@@ -144,6 +117,8 @@ class OpponentSelect implements OffsetDrawable, Lockable {
     if (this.selected.isDefeated) {
       this._next();
     }
+
+    this._move();
   }
 
   /** Switch to the previous selection */
@@ -165,7 +140,17 @@ class OpponentSelect implements OffsetDrawable, Lockable {
     if (this.selected.isDefeated) {
       this._previous();
     }
+
+    this._move();
+  }
+
+  /** Moves selector to current entity */
+  private _move() {
+    const offset = ex.vec(
+      Math.round(-default_options.font.size / 3),
+      Math.round(-default_options.font.size * 1.5)
+    );
+
+    this.pos = this.selected.center.clone().add(offset);
   }
 }
-
-export default OpponentSelect;

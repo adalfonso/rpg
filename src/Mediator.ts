@@ -265,7 +265,7 @@ export class Mediator {
           this._saveCurrentScene();
           this._game.add(BATTLE_SCENE_NAME, battle);
           this._game.goToScene(BATTLE_SCENE_NAME);
-          //this._game.currentScene.camera.zoom = config.scale;
+          this._game.currentScene.camera.zoom = config.scale;
           this.lock(GameState.Battle);
         },
 

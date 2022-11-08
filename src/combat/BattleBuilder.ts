@@ -1,12 +1,12 @@
 import * as ex from "excalibur";
 import Battle from "./Battle";
 import MissingDataError from "@/error/MissingDataError";
-import OpponentSelect from "./OpponentSelect";
 import Team from "./Team";
 import config from "./battle.json";
 import { AnimatedTextFactory } from "@/ui/animation/text/AnimatedTextFactory";
 import { Enemy } from "@/actor/Enemy";
 import { HeroTeam } from "./HeroTeam";
+import { OpponentSelect } from "./OpponentSelect";
 
 /** Blueprint for an enemy team */
 type TeamBlueprint = {

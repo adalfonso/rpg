@@ -1,6 +1,6 @@
 // battle animation used config resolution instead of current resolution
 // align battle menu to player
-// scale battle
+// enemy still drawn after death
 
 // unit tests
 

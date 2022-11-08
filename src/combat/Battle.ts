@@ -1,7 +1,6 @@
 import * as ex from "excalibur";
 import AbilityFactory from "./strategy/AbilityFactory";
 import CombatStrategy from "./strategy/CombatStrategy";
-import OpponentSelect from "./OpponentSelect";
 import StatModifier from "./strategy/StatModifier";
 import Team from "./Team";
 import TextStream from "@/ui/dialogue/TextStream";
@@ -19,6 +18,7 @@ import { HeroTeam } from "./HeroTeam";
 import { LearnedAbility } from "./strategy/types";
 import { Lockable } from "@/interfaces";
 import { MenuType } from "@/menu/types";
+import { OpponentSelect } from "./OpponentSelect";
 import { Vector } from "excalibur";
 import { bus, EventType } from "@/event/EventBus";
 import { createAnimation } from "@/ui/animation/CreateAnimation";
@@ -61,7 +61,7 @@ class Battle extends ex.Scene implements Lockable {
    *
    * @param _heroes         - heroes in battle
    * @param _foes           - enemies in battle
-   * @param _opponentSelect - utility to traverse opponents in battle
+   * @param _opponent_select - utility to traverse opponents in battle
    * @param _resolution     - screen resolution used to manually draw battle
    * @param intro_animation - animation sequence occurring at the start of battle
    *
@@ -70,12 +70,13 @@ class Battle extends ex.Scene implements Lockable {
   constructor(
     private _heroes: HeroTeam,
     private _foes: Team<Enemy>,
-    private _opponentSelect: OpponentSelect,
+    private _opponent_select: OpponentSelect,
     private _resolution: ex.Vector,
     intro_animation: AnimatedText
   ) {
     super();
     this.active = true;
+    this.add(_opponent_select);
 
     this._event_queue.push(
       () => this.lock(),
@@ -154,8 +155,8 @@ class Battle extends ex.Scene implements Lockable {
     }
 
     this._menu.wantsCombat
-      ? this._opponentSelect.unlock()
-      : this._opponentSelect.lock();
+      ? this._opponent_select.show()
+      : this._opponent_select.hide();
 
     if (this.is_done && this._event_queue.length === 0) {
       this.stop();
@@ -194,10 +195,6 @@ class Battle extends ex.Scene implements Lockable {
       (ctx: CanvasRenderingContext2D, resolution: ex.Vector) => {
         if (this._is_heros_turn && !this.is_done) {
           this._menu.draw(ectx, resolution);
-
-          if (!this._opponentSelect.isLocked) {
-            this._opponentSelect.draw(ctx, ex.Vector.Zero, resolution);
-          }
         }
 
         const [event] = this._event_queue;
@@ -300,21 +297,14 @@ class Battle extends ex.Scene implements Lockable {
     this._heroes.each((hero, i) =>
       hero.moveTo(
         ex.vec(
-          x_half -
-            hero.width * 2 -
-            hero.width * 2 * (this._heroes.all().length - i),
+          x_half - hero.width * 2 * (this._heroes.all().length - i),
           y_half + hero.height * 2
         )
       )
     );
 
     this._foes.each((foe, i) =>
-      foe.moveTo(
-        ex.vec(
-          x_half + foe.width * 2 + foe.width * 2 * i,
-          y_half - foe.height * 2
-        )
-      )
+      foe.moveTo(ex.vec(x_half + foe.width * 2 * i, y_half - foe.height * 2))
     );
 
     this._moveBattleMenu();
@@ -376,7 +366,7 @@ class Battle extends ex.Scene implements Lockable {
    * @param e - battle action event
    */
   private _handleHeroAction(e: CustomEvent) {
-    const opponent = this._opponentSelect.selected;
+    const opponent = this._opponent_select.selected;
     const hero = this._heroes.nextToTakeTurn;
 
     if (e.detail?.strategy instanceof CombatStrategy) {
@@ -406,7 +396,7 @@ class Battle extends ex.Scene implements Lockable {
       () => (this._heroes.turnIsOver || this.is_done) && this._handlePostTurn(),
       // Adjust menu unless turn is over
       () => this._refreshBattleMenu(),
-      () => this._opponentSelect.resolveSelected()
+      () => this._opponent_select.resolveSelected()
     );
   }
 
@@ -529,7 +519,7 @@ class Battle extends ex.Scene implements Lockable {
     ctx.fillStyle = "#FFF";
     ctx.font = "20px Arial";
     ctx.fillText(
-      "HP : " + this._opponentSelect.selected.stats.hp,
+      "HP : " + this._opponent_select.selected.stats.hp,
       position.x + 16,
       position.y + 32
     );
