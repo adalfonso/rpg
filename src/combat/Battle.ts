@@ -396,7 +396,18 @@ class Battle extends ex.Scene implements Lockable {
       () => (this._heroes.turnIsOver || this.is_done) && this._handlePostTurn(),
       // Adjust menu unless turn is over
       () => this._refreshBattleMenu(),
-      () => this._opponent_select.resolveSelected()
+      () => this._opponent_select.resolveSelected(),
+      /**
+       * Don't draw foes when they are defeated
+       *
+       * TODO: We should probably utilize Enemy.kill here but not sure of the
+       * implications
+       */
+      () =>
+        this._foes
+          .all()
+          .filter((foe) => foe.isDefeated)
+          .forEach((foe) => (foe.graphics.visible = false))
     );
   }
 
