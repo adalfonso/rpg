@@ -1,5 +1,5 @@
-// battle animation used config resolution instead of current resolution
 // align battle menu to player
+// change collision type while in battle players move around
 
 // unit tests
 
