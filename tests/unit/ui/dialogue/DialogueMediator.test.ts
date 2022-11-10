@@ -1,9 +1,8 @@
-import Dialogue from "@/ui/dialogue/Dialogue";
 import Team from "@/combat/Team";
+import { Dialogue } from "@/ui/dialogue/Dialogue";
 import { DialogueMediator } from "@/ui/dialogue/DialogueMediator";
 import { EventType } from "@/event/EventBus";
-import { Player } from "@/actor/Player";
-import { Vector } from "excalibur";
+import { getPlayer } from "tests/unit/actor/_fixtures";
 
 describe("DialogueMediator", () => {
   describe("_createDialogue", () => {
@@ -50,9 +49,7 @@ describe("DialogueMediator", () => {
     });
 
     it("locks targets while dialogue is active", () => {
-      const player = new Player(Vector.Zero, Vector.Zero, {
-        type: "_default_actor",
-      } as any);
+      const player = getPlayer();
 
       const lock_spy = jest.spyOn(player, "lock");
       const unlock_spy = jest.spyOn(player, "unlock");

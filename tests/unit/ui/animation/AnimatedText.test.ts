@@ -1,6 +1,6 @@
-import { Vector } from "excalibur";
 import { AnimatedText as Sut } from "@/ui/animation/text/AnimatedText";
 import { Animation, AnimationType } from "@/ui/animation/Animation";
+import { Vector } from "excalibur";
 
 describe("AnimatedText", () => {
   describe("update", () => {
@@ -22,7 +22,7 @@ describe("AnimatedText", () => {
         restore: () => {},
       };
 
-      sut.draw2D(ctx, Vector.Zero, Vector.Zero);
+      sut.draw2D(ctx, Vector.Zero);
 
       expect(results).toEqual(expected);
     });

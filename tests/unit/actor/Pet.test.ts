@@ -1,5 +1,5 @@
-import { Vector } from "excalibur";
 import { Direction } from "@/ui/types";
+import { Vector } from "excalibur";
 import { getPet } from "./_fixtures";
 
 const tests = [
@@ -45,7 +45,7 @@ describe("Pet", () => {
       steps.forEach((step, index) => {
         const { position, direction } = expected[index];
         pet.follow(step);
-        pet.onPostUpdate(0);
+        pet.onPostUpdate({} as ex.Engine, 0);
         expect(pet.position).toEqual(position);
         expect(pet.direction).toEqual(direction);
       });

@@ -1,16 +1,7 @@
 import { Enemy } from "@/actor/Enemy";
 import { Pet } from "@/actor/Pet";
 import { Player } from "@/actor/Player";
-import { Vector } from "excalibur";
-
-export const getActorTemplate = () => ({
-  x: 1,
-  y: 1,
-  height: 5,
-  width: 5,
-  name: "_default_actor",
-  type: "_default_actor",
-});
+import { getTiledTemplate } from "../level/_fixtures";
 
 export const getActorConfig = () => ({
   displayAs: "Mr Foo",
@@ -25,26 +16,26 @@ export const getActorConfig = () => ({
 });
 
 export const getPet = () => {
-  return new Pet(Vector.Zero, Vector.Zero, getActorTemplate());
+  return new Pet(getTiledTemplate());
 };
 
-export const getPlayer = (input: Record<string, unknown> = {}) => {
-  const { size } = input;
+export const getPlayer = () => {
   return new Player(
-    Vector.Zero,
-    (size as Vector) ?? Vector.Zero,
-    getActorTemplate()
+    { template: getTiledTemplate(), args: {}, speed: 1 },
+    {} as ex.Engine
   );
 };
 
 export const getEnemy = (input: Record<string, string> = {}) => {
   const { name } = input;
-  return new Enemy(Vector.Zero, Vector.Zero, {
-    name: name ?? "_default_enemy",
-    class: "_default_enemy",
-    x: 1,
-    y: 1,
-    height: 5,
-    width: 5,
-  });
+  return new Enemy(
+    getTiledTemplate({
+      name: name ?? "_default_enemy",
+      class: "_default_enemy",
+      x: 1,
+      y: 1,
+      height: 5,
+      width: 5,
+    })
+  );
 };

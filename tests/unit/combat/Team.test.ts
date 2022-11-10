@@ -1,5 +1,5 @@
 import Stats from "@/actor/Stats";
-import Sut from "@/combat/Team";
+import Team from "@/combat/Team";
 import { Actor } from "@/actor/Actor";
 import { Direction } from "@/ui/types";
 import { Vector } from "excalibur";
@@ -19,15 +19,15 @@ describe("Team", () => {
       jest.spyOn(actor1, "stats", "get").mockReturnValue({ hp: 0 } as Stats);
       jest.spyOn(actor2, "stats", "get").mockReturnValue({ hp: 0 } as Stats);
 
-      const sut = new Sut([actor1, actor2]);
+      const team = new Team([actor1, actor2]);
 
-      expect(sut.areDefeated).toBe(true);
+      expect(team.areDefeated).toBe(true);
     });
 
     it("detects when the team is not yet defeated", () => {
-      const sut = new Sut([getPlayer(), getPlayer()]);
+      const team = new Team([getPlayer(), getPlayer()]);
 
-      expect(sut.areDefeated).toBe(false);
+      expect(team.areDefeated).toBe(false);
     });
   });
 
@@ -36,26 +36,26 @@ describe("Team", () => {
       const actor1 = getPlayer();
       const actor2 = getPlayer();
 
-      const sut = new Sut([actor1, actor2]);
+      const team = new Team([actor1, actor2]);
 
-      expect(sut.leader).toBe(actor1);
+      expect(team.leader).toBe(actor1);
     });
   });
 
   describe("length", () => {
     it("gets the team length", () => {
-      const sut = new Sut([getPlayer(), getPlayer()]);
+      const team = new Team([getPlayer(), getPlayer()]);
 
-      expect(sut.length).toBe(2);
+      expect(team.length).toBe(2);
     });
   });
 
   describe("each", () => {
     it("applies something to each member", () => {
-      const sut = new Sut([getPlayer(), getPlayer()]);
+      const team = new Team([getPlayer(), getPlayer()]);
       let timesCalled = 0;
 
-      sut.each((_actor: Actor) => {
+      team.each((_actor: Actor) => {
         timesCalled++;
       });
 
@@ -65,19 +65,19 @@ describe("Team", () => {
 
   describe("prepare", () => {
     it("set direction and position of team members", () => {
-      const sut = new Sut([getPlayer(), getPlayer({ size: new Vector(1, 1) })]);
+      const team = new Team([getPlayer(), getPlayer()]);
 
-      const position = new Vector(5, 6);
+      // const position = new Vector(5, 6);
       const direction = Direction.East;
 
-      const members = sut.all();
-      const leader = sut.leader;
+      const members = team.all();
+      const leader = team.leader;
 
       expect(leader.direction).not.toBe(Direction.East);
       expect(leader.position.x).not.toBe(5);
       expect(leader.position.y).not.toBe(6);
 
-      sut.prepare(direction, position);
+      team.prepare(direction);
 
       expect(leader.direction).toBe(Direction.East);
       expect(leader.position.x).toBe(5);
@@ -92,9 +92,9 @@ describe("Team", () => {
   describe("all", () => {
     it("returns all members", () => {
       const actors = [getPlayer(), getPlayer()];
-      const sut = new Sut(actors);
+      const team = new Team(actors);
 
-      expect(sut.all()).toBe(actors);
+      expect(team.all()).toBe(actors);
     });
   });
 
@@ -110,7 +110,7 @@ describe("Team", () => {
         .spyOn(actor2, "stats", "get")
         .mockReturnValue({ givesExp: 15 } as unknown as Stats);
 
-      const sut = new Sut([actor1, actor2]);
+      const sut = new Team([actor1, actor2]);
 
       expect(sut.givesExp).toBe(25);
     });
@@ -120,15 +120,15 @@ describe("Team", () => {
     it("detects when has last man standing", () => {
       const actor1 = getPlayer();
       const actor2 = getPlayer();
-      const sut = new Sut([actor1, actor2]);
+      const team = new Team([actor1, actor2]);
 
-      expect(sut.hasLastManStanding()).toBe(false);
+      expect(team.hasLastManStanding()).toBe(false);
 
       actor2.kill();
-      expect(sut.hasLastManStanding()).toBe(true);
+      expect(team.hasLastManStanding()).toBe(true);
 
       actor1.kill();
-      expect(sut.hasLastManStanding()).toBe(false);
+      expect(team.hasLastManStanding()).toBe(false);
     });
   });
 });

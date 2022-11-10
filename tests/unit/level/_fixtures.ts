@@ -1,15 +1,20 @@
-export const getFixtureTemplate = (input: any = {}) => {
-  const { type, name } = input;
+import { TiledTemplate } from "@/actor/types";
+
+export const getTiledTemplate = (input: any = {}) => {
+  const { class: className, name } = input;
+
   return {
     x: 0,
     y: 0,
     height: 0,
     width: 0,
+    visible: true,
+    rotation: 0,
     name: name ?? "foo",
-    type: type ?? "foo",
+    class: className ?? "foo",
     value: "",
     properties: [] as any[],
-  };
+  } as unknown as TiledTemplate;
 };
 
 export const getAbilityTemplate = () => ({

@@ -19,7 +19,7 @@ describe("HeroTeam", () => {
         .spyOn(actor2, "gainExp")
         .mockImplementationOnce((exp) => (actor2Exp = exp));
 
-      const sut = new HeroTeam([actor1, actor2]);
+      const sut = new HeroTeam([actor1, actor2], {} as ex.Engine);
 
       sut.gainExp(20);
 
@@ -48,7 +48,7 @@ describe("HeroTeam", () => {
         .spyOn(actor3, "gainExp")
         .mockImplementationOnce((exp) => (actor3Exp = exp));
 
-      const sut = new HeroTeam([actor1, actor2, actor3]);
+      const sut = new HeroTeam([actor1, actor2, actor3], {} as ex.Engine);
 
       sut.gainExp(20);
 
@@ -71,7 +71,7 @@ describe("HeroTeam", () => {
         givesExp: 15,
       } as Stats);
 
-      const sut = new HeroTeam([actor1, actor2]);
+      const sut = new HeroTeam([actor1, actor2], {} as ex.Engine);
 
       expect(sut.givesExp).toBe(25);
     });

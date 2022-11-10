@@ -1,6 +1,7 @@
 import * as ex from "excalibur";
 import InvalidDataError from "@/error/InvalidDataError";
 import { Drawable, DrawStrategy } from "@/interfaces";
+import { Nullable } from "@/types";
 
 /**
  * For all your ad hoc 2D canvas drawing
@@ -21,7 +22,7 @@ export class AdHocCanvas implements Drawable {
   private _canvas_2d: ex.Canvas;
 
   /** Handles the actual drawing logic */
-  private _strategy: DrawStrategy = () => {};
+  private _strategy: Nullable<DrawStrategy> = null;
 
   constructor() {
     this._canvas_2d = new ex.Canvas({ draw: this._draw.bind(this) });
@@ -61,6 +62,13 @@ export class AdHocCanvas implements Drawable {
    * @param ctx - 2D render context
    */
   private _draw(ctx: CanvasRenderingContext2D) {
+    if (this._strategy === null) {
+      console.warn(
+        "Tried to draw with AdHocCanvas but could not locate drawing strategy"
+      );
+      return;
+    }
+
     this._strategy(ctx, this._render_resolution);
   }
 }

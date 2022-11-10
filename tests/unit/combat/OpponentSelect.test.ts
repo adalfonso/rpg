@@ -1,6 +1,6 @@
-import Sut from "@/combat/OpponentSelect";
 import Team from "@/combat/Team";
 import { EventType } from "@/event/EventBus";
+import { OpponentSelect } from "@/combat/OpponentSelect";
 import { getEnemy } from "../actor/_fixtures";
 import { state } from "@/state/StateManager";
 
@@ -11,31 +11,34 @@ afterEach(() => {
 describe("OpponentSelect", () => {
   describe("lock", () => {
     it("automatically locks the selection", () => {
-      const sut = new Sut(new Team([getEnemy(), getEnemy(), getEnemy()]));
+      const select = new OpponentSelect(
+        new Team([getEnemy(), getEnemy(), getEnemy()])
+      );
 
-      expect(sut.isLocked).toBe(true);
+      expect(select.graphics.visible).toBe(true);
     });
 
     it("manually locks the selection", () => {
-      const sut = new Sut(new Team([getEnemy(), getEnemy(), getEnemy()]));
+      const select = new OpponentSelect(
+        new Team([getEnemy(), getEnemy(), getEnemy()])
+      );
 
-      sut.unlock();
+      select.show();
+      expect(select.graphics.visible).toBe(false);
 
-      expect(sut.isLocked).toBe(false);
-
-      sut.lock();
-
-      expect(sut.isLocked).toBe(true);
+      select.hide();
+      expect(select.graphics.visible).toBe(true);
     });
 
     it("manually unlocks the selection", () => {
-      const sut = new Sut(new Team([getEnemy(), getEnemy(), getEnemy()]));
+      const select = new OpponentSelect(
+        new Team([getEnemy(), getEnemy(), getEnemy()])
+      );
 
-      expect(sut.isLocked).toBe(true);
+      expect(select.graphics.visible).toBe(true);
 
-      sut.unlock();
-
-      expect(sut.isLocked).toBe(false);
+      select.show();
+      expect(select.graphics.visible).toBe(false);
     });
   });
 
@@ -47,9 +50,9 @@ describe("OpponentSelect", () => {
         getEnemy({ name: "e3" }),
       ];
 
-      const sut = new Sut(new Team(enemies));
+      const select = new OpponentSelect(new Team(enemies));
 
-      expect(sut.selected.ref_id).toBe("e1");
+      expect(select.selected.ref_id).toBe("e1");
     });
 
     it("selects the previous opponent", () => {
@@ -59,23 +62,22 @@ describe("OpponentSelect", () => {
         getEnemy({ name: "e3" }),
       ];
 
-      const sut = new Sut(new Team(enemies));
+      const select = new OpponentSelect(new Team(enemies));
+      const listeners = select.register();
 
-      const listeners = sut.register();
-
-      sut.unlock();
-
-      listeners[EventType.Keyboard].keyup({
-        key: "ArrowLeft",
-      } as KeyboardEvent);
-
-      expect(sut.selected.ref_id).toBe("e3");
+      select.show();
 
       listeners[EventType.Keyboard].keyup({
         key: "ArrowLeft",
       } as KeyboardEvent);
 
-      expect(sut.selected.ref_id).toBe("e2");
+      expect(select.selected.ref_id).toBe("e3");
+
+      listeners[EventType.Keyboard].keyup({
+        key: "ArrowLeft",
+      } as KeyboardEvent);
+
+      expect(select.selected.ref_id).toBe("e2");
     });
 
     it("selects the previous opponent but not ones that are defeated", () => {
@@ -89,17 +91,16 @@ describe("OpponentSelect", () => {
 
       defeatedEnemy.kill();
 
-      const sut = new Sut(new Team(enemies));
+      const select = new OpponentSelect(new Team(enemies));
+      const listeners = select.register();
 
-      const listeners = sut.register();
-
-      sut.unlock();
+      select.show();
 
       listeners[EventType.Keyboard].keyup({
         key: "ArrowLeft",
       } as KeyboardEvent);
 
-      expect(sut.selected.ref_id).toBe("e2");
+      expect(select.selected.ref_id).toBe("e2");
     });
 
     it("selects the next opponent", () => {
@@ -109,22 +110,22 @@ describe("OpponentSelect", () => {
         getEnemy({ name: "e3" }),
       ];
 
-      const sut = new Sut(new Team(enemies));
+      const select = new OpponentSelect(new Team(enemies));
 
-      const listeners = sut.register();
+      const listeners = select.register();
 
-      sut.unlock();
+      select.show();
 
       listeners[EventType.Keyboard].keyup({
         key: "ArrowRight",
       } as KeyboardEvent);
 
-      expect(sut.selected.ref_id).toBe("e2");
+      expect(select.selected.ref_id).toBe("e2");
       listeners[EventType.Keyboard].keyup({
         key: "ArrowRight",
       } as KeyboardEvent);
 
-      expect(sut.selected.ref_id).toBe("e3");
+      expect(select.selected.ref_id).toBe("e3");
     });
 
     it("selects the next opponent but not ones that are defeated", () => {
@@ -138,17 +139,16 @@ describe("OpponentSelect", () => {
 
       defeatedEnemy.kill();
 
-      const sut = new Sut(new Team(enemies));
+      const select = new OpponentSelect(new Team(enemies));
+      const listeners = select.register();
 
-      const listeners = sut.register();
-
-      sut.unlock();
+      select.show();
 
       listeners[EventType.Keyboard].keyup({
         key: "ArrowRight",
       } as KeyboardEvent);
 
-      expect(sut.selected.ref_id).toBe("e3");
+      expect(select.selected.ref_id).toBe("e3");
     });
   });
 
@@ -164,13 +164,13 @@ describe("OpponentSelect", () => {
       enemy1.kill();
       enemy2.kill();
 
-      const sut = new Sut(new Team(enemies));
+      const select = new OpponentSelect(new Team(enemies));
 
-      expect(sut.selected.ref_id).toBe("e1");
+      expect(select.selected.ref_id).toBe("e1");
 
-      sut.resolveSelected();
+      select.resolveSelected();
 
-      expect(sut.selected.ref_id).toBe("e3");
+      expect(select.selected.ref_id).toBe("e3");
     });
   });
 });

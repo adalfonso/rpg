@@ -1,6 +1,6 @@
 import { AnimationFactory } from "@/ui/animation/AnimationFactory";
 import { AnimationType } from "@/ui/animation/Animation";
-import { Item as Sut } from "@/inanimate/Item";
+import { Item } from "@/inanimate/Item";
 import { ItemConfig } from "@/item/types";
 import { TiledTemplate } from "@/actor/types";
 import { Vector } from "excalibur";
@@ -8,10 +8,10 @@ import { Vector } from "excalibur";
 describe("inanimate/Item", () => {
   describe("update", () => {
     it("remains stationary when no animation", () => {
-      const sut = getSut();
-      sut.onPostUpdate(100);
+      const item = getItem();
+      item.onPostUpdate({} as ex.Engine, 100);
 
-      const { x, y } = sut.position;
+      const { x, y } = item.position;
 
       expect([x, y]).toEqual([1, 1]);
     });
@@ -36,20 +36,18 @@ describe("inanimate/Item", () => {
           value: 15,
         };
 
-      const sut = getSut({ animation_factory, config_ctor });
-      sut.onPostUpdate(100);
+      const item = getItem({ animation_factory, config_ctor });
+      item.onPostUpdate({} as ex.Engine, 100);
 
-      const { x, y } = sut.position;
+      const { x, y } = item.position;
 
       expect([x, y]).toEqual([2, 2]);
     });
   });
 });
 
-const getSut = ({ animation_factory, config_ctor }: any = {}) => {
-  return new Sut(
-    new Vector(1, 1),
-    new Vector(1, 1),
+const getItem = ({ animation_factory, config_ctor }: any = {}) => {
+  return new Item(
     getTemplate(),
     config_ctor ?? getConfigCtor(),
     animation_factory ?? getAnimationFactory

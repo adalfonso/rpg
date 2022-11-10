@@ -1,8 +1,7 @@
-import { Vector } from "excalibur";
 import { Direction } from "@/ui/types";
 import { Pet } from "@/actor/Pet";
+import { Vector } from "excalibur";
 import { getPet, getPlayer } from "./_fixtures";
-
 describe("Player", () => {
   describe("update", () => {
     it("tells the pet to follow", () => {
@@ -13,7 +12,7 @@ describe("Player", () => {
       const dt = 16;
 
       player.adoptPet(pet);
-      player.onPostUpdate(dt);
+      player.onPostUpdate({} as ex.Engine, dt);
 
       expect(update_spy).toBeCalledTimes(1);
       expect(spy).toBeCalledWith({
