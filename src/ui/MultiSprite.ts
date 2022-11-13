@@ -54,9 +54,16 @@ export const MultiSprite = <T extends Constructor>(Base: T) =>
     protected async _setSprites(ui: RenderData, template: TiledTemplate) {
       const { fps, rows, columns, scale, sprite, sprite_orientation } = ui;
       const frame_duration = 1000 / fps;
+
       const image = new ex.ImageSource(sprite);
 
-      await image.load();
+      try {
+        await image.load();
+      } catch (e) {
+        console.error(
+          `Failed to load image when setting sprites for MultiSprite`
+        );
+      }
 
       const directions = [
         Direction.North,

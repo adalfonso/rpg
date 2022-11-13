@@ -7,20 +7,26 @@ describe("TeamSchema", () => {
         label: "passes a valid structure",
         data: [
           {
-            type: "Team",
+            name: "player1",
+            class: "player1",
             defeated: false,
             dmg: 0,
             lvl: 10,
             exp: 0,
             equipped: "big_sword",
+            height: 1,
+            width: 1,
           },
           {
-            type: "Team",
+            name: "player1",
+            class: "player2",
             defeated: false,
             dmg: 0,
             lvl: 10,
             exp: 0,
             equipped: "big_sword",
+            height: 1,
+            width: 1,
           },
         ],
         expected: true,
@@ -29,7 +35,8 @@ describe("TeamSchema", () => {
         label: "fails an invalid structure",
         data: [
           {
-            type: "Team",
+            name: "player1",
+            class: "player1",
             defeated: "invalid value",
             dmg: 0,
             lvl: 10,

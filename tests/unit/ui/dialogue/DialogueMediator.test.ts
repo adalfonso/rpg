@@ -2,7 +2,7 @@ import Team from "@/combat/Team";
 import { Dialogue } from "@/ui/dialogue/Dialogue";
 import { DialogueMediator } from "@/ui/dialogue/DialogueMediator";
 import { EventType } from "@/event/EventBus";
-import { getPlayer } from "tests/unit/actor/_fixtures";
+import { getPlayer } from "../../actor/_fixtures";
 
 describe("DialogueMediator", () => {
   describe("_createDialogue", () => {

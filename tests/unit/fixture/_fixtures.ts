@@ -10,10 +10,11 @@ export const getTiledTemplate = (input: any = {}) => {
     width: 0,
     visible: true,
     rotation: 0,
-    name: name ?? "foo",
-    class: className ?? "foo",
+    name: name ?? "_default_actor",
+    class: className ?? "_default_actor",
     value: "",
     properties: [] as any[],
+    getProperty: jest.fn(),
   } as unknown as TiledTemplate;
 };
 

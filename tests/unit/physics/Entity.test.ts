@@ -3,7 +3,7 @@ import { Empty } from "@/mixins";
 import { Movable } from "@/actor/Entity";
 
 class MovableImpl extends Movable(Empty) {
-  constructor(protected _position: Vector) {
+  constructor(protected pos: Vector) {
     super();
   }
 }

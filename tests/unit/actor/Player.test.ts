@@ -8,7 +8,7 @@ describe("Player", () => {
       const player = getPlayer();
       const pet = getPet();
       const spy = jest.spyOn(pet, "follow");
-      const update_spy = jest.spyOn(pet, "update");
+      const update_spy = jest.spyOn(pet, "onPostUpdate");
       const dt = 16;
 
       player.adoptPet(pet);

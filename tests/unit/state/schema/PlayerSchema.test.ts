@@ -6,19 +6,22 @@ describe("PlayerSchema", () => {
       {
         label: "passes a valid structure",
         data: {
-          type: "Player",
+          name: "player1",
+          class: "Player",
           defeated: false,
           dmg: 0,
           lvl: 10,
           exp: 0,
           equipped: "big_sword",
+          height: 1,
+          width: 1,
         },
         expected: true,
       },
       {
         label: "fails an invalid structure",
         data: {
-          type: "Player",
+          class: "Player",
           defeated: "invalid value",
           dmg: 0,
           lvl: 10,
@@ -30,7 +33,7 @@ describe("PlayerSchema", () => {
       {
         label: "fails an incomplete structure",
         data: {
-          type: "Player",
+          class: "Player",
         },
         expected: false,
       },

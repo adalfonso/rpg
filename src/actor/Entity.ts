@@ -2,11 +2,14 @@ import * as ex from "excalibur";
 import MissingDataError from "../error/MissingDataError";
 import { Constructor } from "../mixins";
 import { Nullable } from "../types";
+
 export const Movable = <T extends Constructor>(Base: T) =>
   /** A class that has a position and can be moved */
   class Movable extends Base {
-    /** Saved postion */
+    /** Saved position */
     private _saved_position: Nullable<ex.Vector> = null;
+
+    // Expect consumers to have pos: ex.Vector
 
     get position() {
       if (!this.pos) {

@@ -1,7 +1,10 @@
+import * as ex from "excalibur";
+import { Direction } from "@/ui/types";
 import { Enemy } from "@/actor/Enemy";
 import { Pet } from "@/actor/Pet";
 import { Player } from "@/actor/Player";
-import { getTiledTemplate } from "../level/_fixtures";
+import { getEngine } from "../_fixtures";
+import { getTiledTemplate } from "../fixture/_fixtures";
 
 export const getActorConfig = () => ({
   displayAs: "Mr Foo",
@@ -20,15 +23,30 @@ export const getPet = () => {
 };
 
 export const getPlayer = () => {
-  return new Player(
+  const engine = getEngine();
+
+  const player = new Player(
     { template: getTiledTemplate(), args: {}, speed: 1 },
-    {} as ex.Engine
+    engine
   );
+
+  player.scene = {} as ex.Scene;
+
+  // @ts-ignore
+  player._sprites = {
+    [Direction.North]: new ex.Animation({ frames: [] }),
+    [Direction.East]: new ex.Animation({ frames: [] }),
+    [Direction.South]: new ex.Animation({ frames: [] }),
+    [Direction.West]: new ex.Animation({ frames: [] }),
+    [Direction.None]: new ex.Animation({ frames: [] }),
+  };
+
+  return player;
 };
 
 export const getEnemy = (input: Record<string, string> = {}) => {
   const { name } = input;
-  return new Enemy(
+  const enemy = new Enemy(
     getTiledTemplate({
       name: name ?? "_default_enemy",
       class: "_default_enemy",
@@ -38,4 +56,8 @@ export const getEnemy = (input: Record<string, string> = {}) => {
       width: 5,
     })
   );
+
+  enemy.scene = {} as ex.Scene;
+
+  return enemy;
 };

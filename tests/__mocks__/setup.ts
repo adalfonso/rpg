@@ -1,6 +1,15 @@
+import "jest-canvas-mock";
 import { MilestoneConfig } from "@/state/milestone/types";
-import { getAbilityTemplate } from "../unit/level/_fixtures";
+import { ResizeObserver } from "./ResizeObserver";
+import { getAbilityTemplate } from "../unit/fixture/_fixtures";
 import { getActorConfig } from "../unit/actor/_fixtures";
+import { matchMedia } from "./matchMedia";
+
+// missing jsdom mocks needed by excalibur
+global.URL.createObjectURL = jest.fn();
+global.URL.revokeObjectURL = jest.fn();
+global.ResizeObserver = ResizeObserver;
+global.matchMedia = matchMedia;
 
 jest.mock("@tauri-apps/api", () => {
   return {

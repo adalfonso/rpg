@@ -362,7 +362,13 @@ export class Mediator {
     );
 
     this._fixtures = fixtures.filter(isLevelFixture);
-    this._fixtures.forEach((fixture) => scene.add(fixture));
+    this._fixtures.forEach(async (fixture) => {
+      if ("init" in fixture) {
+        await fixture.init();
+      }
+
+      scene.add(fixture);
+    });
   }
 
   /**

@@ -6,7 +6,7 @@ describe("ActorSchema", () => {
       {
         label: "passes a valid structure",
         data: {
-          type: "actor",
+          class: "actor",
           defeated: false,
           dmg: 0,
           lvl: 10,
@@ -16,7 +16,7 @@ describe("ActorSchema", () => {
       {
         label: "fails an invalid structure",
         data: {
-          type: "actor",
+          class: "actor",
           defeated: "invalid value",
           dmg: 0,
           lvl: 10,

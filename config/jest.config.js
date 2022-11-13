@@ -7,8 +7,9 @@ module.exports = {
   testEnvironment: "jsdom",
   setupFiles: ["<rootDir>/tests/__mocks__/setup.ts"],
   moduleNameMapper: {
-    ...pathsToModuleNameMapper(compilerOptions.paths, { prefix: "<rootDir>/" }),
+    // This mock needs to come first or else it conflicts with @ from tsconfig
     "\\.(jpg|ico|jpeg|png|gif|svg|ttf|woff|woff2)$":
       "<rootDir>/tests/__mocks__/fileMock.ts",
+    ...pathsToModuleNameMapper(compilerOptions.paths, { prefix: "<rootDir>/" }),
   },
 };

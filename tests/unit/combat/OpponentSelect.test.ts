@@ -18,27 +18,16 @@ describe("OpponentSelect", () => {
       expect(select.graphics.visible).toBe(true);
     });
 
-    it("manually locks the selection", () => {
+    it("manually shows and hides the selection", () => {
       const select = new OpponentSelect(
         new Team([getEnemy(), getEnemy(), getEnemy()])
       );
-
-      select.show();
-      expect(select.graphics.visible).toBe(false);
 
       select.hide();
-      expect(select.graphics.visible).toBe(true);
-    });
-
-    it("manually unlocks the selection", () => {
-      const select = new OpponentSelect(
-        new Team([getEnemy(), getEnemy(), getEnemy()])
-      );
-
-      expect(select.graphics.visible).toBe(true);
+      expect(select.graphics.visible).toBe(false);
 
       select.show();
-      expect(select.graphics.visible).toBe(false);
+      expect(select.graphics.visible).toBe(true);
     });
   });
 

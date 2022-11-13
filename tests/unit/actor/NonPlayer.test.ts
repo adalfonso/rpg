@@ -1,5 +1,5 @@
 import { NonPlayer } from "@/actor/NonPlayer";
-import { getTiledTemplate } from "../level/_fixtures";
+import { getTiledTemplate } from "../fixture/_fixtures";
 
 describe("NonPlayer", () => {
   describe("constructor", () => {

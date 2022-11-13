@@ -1,8 +1,6 @@
 import Stats from "@/actor/Stats";
 import Team from "@/combat/Team";
 import { Actor } from "@/actor/Actor";
-import { Direction } from "@/ui/types";
-import { Vector } from "excalibur";
 import { getPlayer } from "../actor/_fixtures";
 import { state } from "@/state/StateManager";
 
@@ -63,31 +61,20 @@ describe("Team", () => {
     });
   });
 
-  describe("prepare", () => {
-    it("set direction and position of team members", () => {
-      const team = new Team([getPlayer(), getPlayer()]);
+  // describe("prepare", () => {
+  //   it("set direction of team members", () => {
+  //     const team = new Team([getPlayer(), getPlayer()]);
+  //     const members = team.all();
+  //     const leader = team.leader;
 
-      // const position = new Vector(5, 6);
-      const direction = Direction.East;
+  //     expect(leader.direction).not.toBe(Direction.East);
 
-      const members = team.all();
-      const leader = team.leader;
+  //     team.prepare(Direction.East);
 
-      expect(leader.direction).not.toBe(Direction.East);
-      expect(leader.position.x).not.toBe(5);
-      expect(leader.position.y).not.toBe(6);
-
-      team.prepare(direction);
-
-      expect(leader.direction).toBe(Direction.East);
-      expect(leader.position.x).toBe(5);
-      expect(leader.position.y).toBe(6);
-
-      expect(members[1].direction).toBe(Direction.East);
-      expect(members[1].position.x).toBe(9);
-      expect(members[1].position.y).toBe(6);
-    });
-  });
+  //     expect(leader.direction).toBe(Direction.East);
+  //     expect(members[1].direction).toBe(Direction.East);
+  //   });
+  // });
 
   describe("all", () => {
     it("returns all members", () => {
@@ -132,14 +119,3 @@ describe("Team", () => {
     });
   });
 });
-
-const getVector = () => {
-  return <Vector>(<unknown>{
-    copy() {
-      return getVector();
-    },
-    times() {
-      return getVector();
-    },
-  });
-};

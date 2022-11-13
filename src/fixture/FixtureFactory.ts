@@ -60,13 +60,13 @@ export class FixtureFactory {
       case "portal":
         return new Portal(template);
       case "npc": {
-        const npc = await new NonPlayer(template).init();
+        const npc = new NonPlayer(template);
 
         // If the npc is expired, set to null to be cleared
         return npc.isExpired ? null : npc;
       }
       case "enemy": {
-        const enemy = await new Enemy(template).init();
+        const enemy = new Enemy(template);
         // If the enemy is previously defeated, set to null to be cleared
         return enemy.isDefeated ? null : enemy;
       }

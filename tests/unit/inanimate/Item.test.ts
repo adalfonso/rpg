@@ -9,11 +9,11 @@ describe("inanimate/Item", () => {
   describe("update", () => {
     it("remains stationary when no animation", () => {
       const item = getItem();
-      item.onPostUpdate({} as ex.Engine, 100);
+      item.onPreUpdate({} as ex.Engine, 100);
 
-      const { x, y } = item.position;
+      const { x, y } = item.pos;
 
-      expect([x, y]).toEqual([1, 1]);
+      expect([x, y]).toEqual([0, 0]);
     });
 
     it("updates position during animation", () => {
@@ -37,11 +37,11 @@ describe("inanimate/Item", () => {
         };
 
       const item = getItem({ animation_factory, config_ctor });
-      item.onPostUpdate({} as ex.Engine, 100);
+      item.onPreUpdate({} as ex.Engine, 100);
 
-      const { x, y } = item.position;
+      const { x, y } = item.pos;
 
-      expect([x, y]).toEqual([2, 2]);
+      expect([x, y]).toEqual([1, 1]);
     });
   });
 });
