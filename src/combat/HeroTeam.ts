@@ -7,9 +7,9 @@ import { PlayerState } from "@/state/schema/actor/PlayerSchema";
 import { Stateful } from "@/interfaces";
 import { TeamState } from "./types";
 import { bus, EventType } from "@/event/EventBus";
-import { createTiledTemplate } from "@/util";
 import { isTeamState } from "@schema/combat/TeamSchema";
 import { state } from "@/state/StateManager";
+import { toTiledTemplate } from "@/util";
 
 /** Similar to a Team but specific to playable characters */
 export class HeroTeam extends Team<Player> implements Stateful<TeamState> {
@@ -186,7 +186,7 @@ export class HeroTeam extends Team<Player> implements Stateful<TeamState> {
   private async _createPlayerFromState(member: PlayerState) {
     return new Player(
       {
-        template: createTiledTemplate({
+        template: toTiledTemplate({
           x: 0,
           y: 0,
           height: member.height,

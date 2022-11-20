@@ -1,5 +1,5 @@
-import config from "@/config";
 import { OffsetDrawable } from "@/interfaces";
+import { scale } from "@/util";
 import { Vector } from "excalibur";
 
 export default class Renderable implements OffsetDrawable {
@@ -31,7 +31,7 @@ export default class Renderable implements OffsetDrawable {
    * Create a new Renderable instance
    *
    * @param src - source path of image element to render
-   * @param scale - scale at which to render the image
+   * @param sprite_scale - scale at which to render the image
    * @param startFrame - starting frame in animation sequence
    * @param frameCount - total number of frames in animation sequence
    * @param gridRatio - vector of columns/rows in animation sequence
@@ -39,7 +39,7 @@ export default class Renderable implements OffsetDrawable {
    */
   constructor(
     src: string,
-    public scale: number = config.scale,
+    public sprite_scale: number = scale(),
     private startFrame: number = 0,
     private frameCount: number = 9,
     private gridRatio: Vector = new Vector(9, 4),
@@ -100,8 +100,8 @@ export default class Renderable implements OffsetDrawable {
       this.spriteSize.y,
       offset.x,
       offset.y,
-      this.spriteSize.x * this.scale,
-      this.spriteSize.y * this.scale
+      this.spriteSize.x * this.sprite_scale,
+      this.spriteSize.y * this.sprite_scale
     );
   }
 }

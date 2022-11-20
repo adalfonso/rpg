@@ -1,26 +1,25 @@
 import "./_resource/css/app.css";
 import * as ex from "excalibur";
-import config from "@/config";
 import { APP_NAME, SAVE_FILE, RESOLUTION, SAVE_DIR } from "./constants";
 import { DialogueMediator } from "@/ui/dialogue/DialogueMediator";
 import { HeroTeam } from "./combat/HeroTeam";
 import { Mediator } from "./Mediator";
 import { Pet } from "./actor/Pet";
 import { Player } from "./actor/Player";
-import { createTiledTemplate, loadImages, resolveSaveData } from "@/util";
 import { path } from "@tauri-apps/api";
 import { state } from "@/state/StateManager";
+import { toTiledTemplate, loadImages, resolveSaveData, scale } from "@/util";
 
-const new_main = async () => {
-  const save_dir = await resolveSaveData(APP_NAME)(SAVE_DIR);
-  const save_path = await path.join(save_dir, SAVE_FILE);
-
-  await state().load(save_path);
+const main = async () => {
   const canvasElement = <HTMLCanvasElement>document.getElementById("game");
 
+  const save_dir = await resolveSaveData(APP_NAME)(SAVE_DIR);
+  const save_path = await path.join(save_dir, SAVE_FILE);
+  await state().load(save_path);
+
   const engine = new ex.Engine({
-    width: RESOLUTION.x * config.scale,
-    height: RESOLUTION.y * config.scale,
+    width: scale(RESOLUTION.x),
+    height: scale(RESOLUTION.y),
     displayMode: ex.DisplayMode.FillScreen,
     antialiasing: false,
     suppressPlayButton: true,
@@ -31,11 +30,9 @@ const new_main = async () => {
     canvasElement,
   });
 
-  //engine.toggleDebug();
-
   const player = await new Player(
     {
-      template: createTiledTemplate({
+      template: toTiledTemplate({
         x: 0,
         y: 0,
         width: 18,
@@ -50,7 +47,7 @@ const new_main = async () => {
   ).init();
 
   const doggo = await new Pet(
-    createTiledTemplate({
+    toTiledTemplate({
       name: "Lea",
       class: "lea",
       x: player.pos.x,
@@ -71,4 +68,4 @@ const new_main = async () => {
   await mediator.start(loader);
 };
 
-document.addEventListener("DOMContentLoaded", new_main);
+document.addEventListener("DOMContentLoaded", main);

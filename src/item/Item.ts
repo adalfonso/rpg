@@ -1,11 +1,10 @@
 import MissingDataError from "@/error/MissingDataError";
 import Renderable from "@/ui/Renderable";
-import config from "@/config";
 import items from "@/item/items";
 import { ItemConfig } from "./types";
 import { OffsetDrawable } from "@/interfaces";
 import { Vector } from "excalibur";
-import { ucFirst, getImagePath } from "@/util";
+import { ucFirst, getImagePath, scale } from "@/util";
 
 /** An item in the context of an inventory */
 class Item implements OffsetDrawable {
@@ -36,11 +35,11 @@ class Item implements OffsetDrawable {
 
     const sprite = getImagePath(this._config.ui.sprite);
     // TODO: streamline how scaling is handled
-    const scale = (this._config.ui?.scale ?? 1) * config.scale;
+    const sprite_scale = scale(this._config.ui?.scale ?? 1);
     const ratio = new Vector(1, 1);
     const fps = 0;
 
-    this._renderable = new Renderable(sprite, scale, 0, 1, ratio, fps);
+    this._renderable = new Renderable(sprite, sprite_scale, 0, 1, ratio, fps);
   }
 
   /** Get the item's category */

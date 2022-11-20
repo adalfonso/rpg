@@ -6,7 +6,6 @@ import Damage from "@/combat/Damage";
 import MissingDataError from "@/error/MissingDataError";
 import Stats from "@/actor/Stats";
 import Weapon from "@/combat/strategy/Weapon";
-import config from "@/config";
 import { AbilityList, LearnedAbility } from "@/combat/strategy/types";
 import { ActorConfig, TiledTemplate } from "./types";
 import { ActorState, isActorState } from "@schema/actor/ActorSchema";
@@ -16,7 +15,7 @@ import { Movable, Resizable } from "@/actor/Entity";
 import { MultiSprite, SpriteOrientation } from "@/ui/MultiSprite";
 import { Nullable } from "@/types";
 import { actors } from "./actors";
-import { getImagePath } from "@/util";
+import { getImagePath, scale } from "@/util";
 import { state } from "@/state/StateManager";
 
 /** Base class for entities that affect change within the game */
@@ -282,7 +281,7 @@ export abstract class Actor
       fps: UI.fps,
       columns: UI.columns,
       rows: UI.rows,
-      scale: UI.scale * config.scale,
+      scale: scale(UI.scale),
       sprite: getImagePath(UI.sprite),
       sprite_orientation: UI.sprite_orientation ?? SpriteOrientation.Clockwise,
     };

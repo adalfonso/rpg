@@ -2,7 +2,6 @@ import * as ex from "excalibur";
 import Battle from "./combat/Battle";
 import BattleBuilder from "./combat/BattleBuilder";
 import MissingDataError from "./error/MissingDataError";
-import config from "./config";
 import menus from "./menu/menus";
 import { DialogueMediator } from "./ui/dialogue/DialogueMediator";
 import { Enemy } from "./actor/Enemy";
@@ -19,14 +18,14 @@ import { TiledMapResource as TiledMap } from "@excaliburjs/plugin-tiled";
 import { bus, EventType } from "./event/EventBus";
 import { createEquipper } from "./combat/EquipperFactory";
 import { createSubMenu } from "./menu/MenuFactory";
+import { getMapFromName, scale } from "./util";
+import { path } from "@tauri-apps/api";
 import {
   isFixtureType,
   LevelFixture,
   FixtureType,
   isLevelFixture,
 } from "./fixture/Fixture";
-import { path } from "@tauri-apps/api";
-import { getMapFromName } from "./util";
 
 /** Different states a game can be in */
 enum GameState {
@@ -165,7 +164,7 @@ export class Mediator {
     this._game.currentScene.add(this.player);
     this.player.pet && this._game.currentScene.add(this.player.pet);
     this._game.currentScene.camera.strategy.lockToActor(this.player);
-    this._game.currentScene.camera.zoom = config.scale;
+    this._game.currentScene.camera.zoom = scale();
 
     if (from) {
       this._movePlayerToEntry(from, scene);
@@ -265,7 +264,7 @@ export class Mediator {
           this._saveCurrentScene();
           this._game.add(BATTLE_SCENE_NAME, battle);
           this._game.goToScene(BATTLE_SCENE_NAME);
-          this._game.currentScene.camera.zoom = config.scale;
+          this._game.currentScene.camera.zoom = scale();
           this.lock(GameState.Battle);
         },
 

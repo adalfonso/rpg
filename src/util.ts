@@ -1,6 +1,7 @@
 import * as ex from "excalibur";
 import InvalidDataError from "./error/InvalidDataError";
 import MissingDataError from "./error/MissingDataError";
+import config from "./config";
 import manifest from "@img/manifest";
 import player_sprite from "@img/player_new.png";
 import { BaseTiledTemplate, TiledTemplate } from "./actor/types";
@@ -174,9 +175,7 @@ export const getMapFromName = (name: string) => `/map/${name}.json`;
  *
  * @returns tiled template
  */
-export const createTiledTemplate = (
-  partial: BaseTiledTemplate
-): TiledTemplate => {
+export const toTiledTemplate = (partial: BaseTiledTemplate): TiledTemplate => {
   const id = Math.floor(Math.random() * 999999999999);
   return TiledObject.parse({
     id,
@@ -197,3 +196,11 @@ export const createTiledTemplate = (
  * @returns angle in radians
  */
 export const degreesToRadian = (degrees: number) => degrees * (Math.PI / 180);
+
+/**
+ * Apply the game scale
+ *
+ * @param figure - number to scale up
+ * @returns scaled figure
+ */
+export const scale = (figure: number = 1) => figure * config.scale;
