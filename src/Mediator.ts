@@ -61,39 +61,10 @@ export class Mediator {
   ) {
     bus.register(this);
 
-    this._game.on("postupdate", this._cleanupFixtures.bind(this));
-
-    this._game.on("preupdate", ({ delta: dt }) => {
-      this._dialogue_mediator.update(dt);
-    });
-
-    this._game.on("predraw", (evt) => {
-      const { width, height } = this._game.screen.resolution;
-      const resolution = ex.vec(width, height);
-
-      if (this._game.currentScene instanceof Battle) {
-        this._game.currentScene.drawPre(evt.ctx, resolution);
-      }
-    });
-
-    this._game.on("postdraw", (evt) => {
-      const { width, height } = this._game.screen.resolution;
-      const resolution = ex.vec(width, height);
-
-      this._dialogue_mediator.draw(evt.ctx, resolution);
-
-      if (this._menus.start.active) {
-        this._menus.start.draw(evt.ctx, resolution);
-      }
-
-      if (this._menus.inventory.active) {
-        this._menus.inventory.draw(evt.ctx, resolution);
-      }
-
-      if (this._game.currentScene instanceof Battle) {
-        this._game.currentScene.drawPost(evt.ctx, resolution);
-      }
-    });
+    this._game.on("preupdate", this._onPreUpdate.bind(this));
+    this._game.on("postupdate", this._onPostUpdate.bind(this));
+    this._game.on("predraw", this._onPreDraw.bind(this));
+    this._game.on("postdraw", this._onPostDraw.bind(this));
 
     this._menus.start.open();
   }
@@ -302,7 +273,63 @@ export class Mediator {
     this._saved_scene = "";
   }
 
-  /** Cleanup any stale fixtures once per update*/
+  /**
+   * Handle Excalibur pre-update
+   *
+   * @param evt - pre-update event
+   */
+  private _onPreUpdate(evt: ex.PreUpdateEvent<ex.Engine>) {
+    this._dialogue_mediator.update(evt.delta);
+  }
+
+  /**
+   * Handle Excalibur post-update
+   *
+   * @param evt - post-update event
+   */
+  private _onPostUpdate(_evt: ex.PostUpdateEvent<ex.Engine>) {
+    this._cleanupFixtures();
+  }
+
+  /**
+   * Handle Excalibur pre-update
+   *
+   * @param evt - pre-draw event
+   */
+  private _onPreDraw(evt: ex.PreDrawEvent) {
+    const { width, height } = this._game.screen.resolution;
+    const resolution = ex.vec(width, height);
+
+    if (this._game.currentScene instanceof Battle) {
+      this._game.currentScene.drawPre(evt.ctx, resolution);
+    }
+  }
+
+  /**
+   * Handle Excalibur post-draw
+   *
+   * @param evt - post-draw event
+   */
+  private _onPostDraw(evt: ex.PostDrawEvent) {
+    const { width, height } = this._game.screen.resolution;
+    const resolution = ex.vec(width, height);
+
+    this._dialogue_mediator.draw(evt.ctx, resolution);
+
+    if (this._menus.start.active) {
+      this._menus.start.draw(evt.ctx, resolution);
+    }
+
+    if (this._menus.inventory.active) {
+      this._menus.inventory.draw(evt.ctx, resolution);
+    }
+
+    if (this._game.currentScene instanceof Battle) {
+      this._game.currentScene.drawPost(evt.ctx, resolution);
+    }
+  }
+
+  /** Cleanup any stale fixtures once per update */
   private _cleanupFixtures() {
     const removed = this._fixtures.filter(
       (fixture) =>
