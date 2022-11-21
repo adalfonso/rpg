@@ -1,9 +1,8 @@
 import { Vector } from "excalibur";
-import { Empty } from "@/mixins";
-import { Movable } from "@/actor/Entity";
+import { BaseMovable, Movable } from "@/actor/Entity";
 
-class MovableImpl extends Movable(Empty) {
-  constructor(protected pos: Vector) {
+class MovableImpl extends Movable(BaseMovable) {
+  constructor(readonly pos: Vector) {
     super();
   }
 }

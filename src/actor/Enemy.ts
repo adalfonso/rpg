@@ -17,7 +17,7 @@ export class Enemy extends Actor {
     super(template, { collisionType: ex.CollisionType.Fixed });
 
     // TODO: make configurable when needed
-    this._direction = Direction.West;
+    this.direction = Direction.West;
 
     this._resolveState();
 

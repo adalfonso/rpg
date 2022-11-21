@@ -24,6 +24,7 @@ enum GameState {
   Dialogue,
 }
 
+const FALLBACK_LEVEL = "/map/sandbox_0.json";
 const BATTLE_SCENE_NAME = "_battle";
 
 /** Coordinates scenes within the game */
@@ -72,7 +73,7 @@ export class Mediator {
    */
   public async start(loader: ex.Loader) {
     await this._game.start(loader);
-    await this.load("/map/sandbox_0.json");
+    await this.load(FALLBACK_LEVEL);
   }
 
   /**
@@ -278,7 +279,7 @@ export class Mediator {
    * @param evt - post-update event
    */
   private _onPostUpdate(_evt: ex.PostUpdateEvent<ex.Engine>) {
-    this._fixtures.clean(this._game);
+    this._fixtures.clean();
   }
 
   /**

@@ -272,7 +272,7 @@ export abstract class Actor
   /**
    * Get render info from an actor's config
    *
-   * @return inputs for a renderable
+   * @return inputs for a rendering
    */
   protected getUiInfo(): RenderData {
     const UI = this.config.ui;

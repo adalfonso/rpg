@@ -1,15 +1,14 @@
 import * as ex from "excalibur";
 import { AdHocCanvas } from "@/ui/AdHocCanvas";
 import { Drawable, Lockable } from "@/interfaces";
-import { Empty } from "@/mixins";
 import { MenuItem } from "./MenuItem";
-import { Movable } from "@/actor/Entity";
+import { BaseMovable, Movable } from "@/actor/Entity";
 import { SubMenu } from "./SubMenu";
 import { bus, EventType } from "@/event/EventBus";
 
 /** A visual UI that can be opened, closed, and traversed */
 export abstract class Menu<T>
-  extends Movable(Empty)
+  extends Movable(BaseMovable)
   implements Drawable, Lockable
 {
   /**
@@ -236,7 +235,8 @@ export abstract class Menu<T>
     typeof input === "object" &&
     input !== null &&
     "menu" in input &&
-    input["menu"];
+    input["menu"] !== undefined &&
+    input["menu"] !== null;
 
   /**
    * Determine if current menu option has a sub-menu

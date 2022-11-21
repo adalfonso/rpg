@@ -65,7 +65,7 @@ export class Pet extends Actor {
     const { position, direction } = update;
 
     this.moveTo(position);
-    this._direction = direction;
+    this.direction = direction;
     this._position_queue = rest;
   }
 
