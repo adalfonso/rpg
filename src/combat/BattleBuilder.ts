@@ -2,11 +2,11 @@ import * as ex from "excalibur";
 import Battle from "./Battle";
 import MissingDataError from "@/error/MissingDataError";
 import Team from "./Team";
-import config from "./battle.json";
 import { AnimatedTextFactory } from "@/ui/animation/text/AnimatedTextFactory";
 import { Enemy } from "@/actor/Enemy";
 import { HeroTeam } from "./HeroTeam";
 import { OpponentSelect } from "./OpponentSelect";
+import { config } from "./battle_config";
 
 /** Blueprint for an enemy team */
 type TeamBlueprint = {
@@ -78,7 +78,6 @@ class BattleBuilder {
       );
     }
 
-    // TODO don't load this from a json file. use TS
     const blueprint = config.blueprints[teamType];
 
     if (!blueprint) {
@@ -86,22 +85,6 @@ class BattleBuilder {
         `Could not find team type "${teamType}" in battle.json.`
       );
     }
-
-    /**
-     * NOTE: No type checking is going on here besides that the data are arrays.
-     * This is a potential source of bugs if the data aren't configured properly.
-     */
-    ["limit", "include", "require"].forEach((prop) => {
-      const value = blueprint[prop];
-
-      if (value && Array.isArray(value)) {
-        return;
-      }
-
-      throw new MissingDataError(
-        `Missing required property "${prop}" when loading team blueprint "${teamType}".`
-      );
-    });
 
     return blueprint;
   }

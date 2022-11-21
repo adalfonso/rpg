@@ -1,9 +1,0 @@
-{
-  "blueprints": {
-    "knights": {
-      "limit": [1, 2, 3, 4],
-      "include": ["knight"],
-      "require": ["knight"]
-    }
-  }
-}
