@@ -147,35 +147,23 @@ export abstract class Actor
       .map((ability) => ability.ability);
   }
 
-  /**
-   * Lock the menu
-   *
-   * @return if lock was successful
-   */
-  public lock(): boolean {
+  /** Lock the menu */
+  public lock() {
     this.locked = true;
     this._saved_velocity = this.vel.clone();
     this.vel = ex.Vector.Zero;
-
-    return true;
   }
 
-  /**
-   * Unlock the menu
-   *
-   * @return if unlock was successful
-   */
-  public unlock(): boolean {
+  /** Unlock the menu */
+  public unlock() {
     // Do not unlock the actor while they are still in dialogue
-    if (!this.in_dialogue) {
-      this.locked = false;
-      this.vel = this._saved_velocity.clone();
-      this._saved_velocity = ex.Vector.Zero;
-
-      return true;
+    if (this.in_dialogue) {
+      return;
     }
 
-    return false;
+    this.locked = false;
+    this.vel = this._saved_velocity.clone();
+    this._saved_velocity = ex.Vector.Zero;
   }
 
   /**

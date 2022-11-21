@@ -51,9 +51,9 @@ export interface Eventful {
  * Lockables can be disabled to prevent their default behavior from happening
  */
 export interface Lockable {
-  lock(): boolean;
+  lock(): void;
 
-  unlock(): boolean;
+  unlock(): void;
 }
 
 /** Any class that can update itself as a function of time */

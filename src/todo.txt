@@ -1,10 +1,6 @@
 // align battle menu to player
 // change collision type while in battle players move around
 
-// unit tests
-
-// refactor mediator
-
 --------------------------------------------------------------------------------
 // feat: saving commits but doesnt force save. if we change how the state for something
    is calculated during deve it wont forcefully write the new data

@@ -140,26 +140,14 @@ export abstract class Menu<T>
     bus.emit(`menu.${this._name}.close`);
   }
 
-  /**
-   * Lock the menu
-   *
-   * @return if unlock was successful
-   */
+  /** Lock the menu */
   public lock() {
     this.locked = true;
-
-    return true;
   }
 
-  /**
-   * Unlock the menu
-   *
-   * @return if unlock was successful
-   */
+  /** Unlock the menu */
   public unlock() {
     this.locked = false;
-
-    return true;
   }
 
   /** Completely remove the menu */

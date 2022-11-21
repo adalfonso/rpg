@@ -28,8 +28,6 @@ const FALLBACK_LEVEL = "/map/sandbox_0.json";
 const BATTLE_SCENE_NAME = "_battle";
 
 /** Coordinates scenes within the game */
-
-// TODO: should this implement lockable?
 export class Mediator {
   /** Current state of game */
   private _state = GameState.Play;
@@ -148,11 +146,8 @@ export class Mediator {
       );
     }
 
-    this.player.pos = entry.pos.clone();
-
-    if (this.player.pet) {
-      this.player.pet.moveTo(entry.pos.clone(), true);
-    }
+    this.player.moveTo(entry.pos.clone());
+    this.player.pet?.moveTo(entry.pos.clone(), true);
   }
 
   /**
@@ -209,31 +204,31 @@ export class Mediator {
           this._game.add(BATTLE_SCENE_NAME, battle);
           this._game.goToScene(BATTLE_SCENE_NAME);
           this._game.currentScene.camera.zoom = scale();
-          this.lock(GameState.Battle);
+          this._lock(GameState.Battle);
         },
 
         "battle.end": (_: CustomEvent) => {
           this._restoreScene();
           this._game.removeScene(BATTLE_SCENE_NAME);
 
-          this.unlock(GameState.Battle);
+          this._unlock(GameState.Battle);
         },
 
-        "dialogue.start": (_: CustomEvent) => this.lock(GameState.Dialogue),
+        "dialogue.start": (_: CustomEvent) => this._lock(GameState.Dialogue),
 
-        "dialogue.end": (_: CustomEvent) => this.unlock(GameState.Dialogue),
+        "dialogue.end": (_: CustomEvent) => this._unlock(GameState.Dialogue),
 
         "menu.inventory.open": (_: CustomEvent) =>
-          this.lock(GameState.Inventory),
+          this._lock(GameState.Inventory),
 
         "menu.inventory.close": (_: CustomEvent) =>
-          this.unlock(GameState.Inventory),
+          this._unlock(GameState.Inventory),
 
         "menu.startMenu.open": (_: CustomEvent) =>
-          this.lock(GameState.StartMenu),
+          this._lock(GameState.StartMenu),
 
         "menu.startMenu.close": (_: CustomEvent) =>
-          this.unlock(GameState.StartMenu),
+          this._unlock(GameState.StartMenu),
       },
     };
   }
@@ -325,7 +320,7 @@ export class Mediator {
    *
    * @param state - the game state to active
    */
-  private lock(state: GameState) {
+  private _lock(state: GameState) {
     if (this._state !== GameState.Play) {
       return;
     }
@@ -347,7 +342,7 @@ export class Mediator {
    *
    * @param state - the game to deactivate
    */
-  private unlock(state: GameState) {
+  private _unlock(state: GameState) {
     if (this._state !== state) {
       return;
     }

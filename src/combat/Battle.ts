@@ -269,22 +269,14 @@ class Battle extends ex.Scene implements Lockable {
     };
   }
 
-  /**
-   * Lock the battle and its menu
-   *
-   * @return if the lock was successful
-   */
-  public lock(): boolean {
-    return this._menu.lock();
+  /** Lock the battle and its menu */
+  public lock() {
+    this._menu.lock();
   }
 
-  /**
-   * Unlock the battle and its menu
-   *
-   * @return if the unlock was successful
-   */
-  public unlock(): boolean {
-    return this._menu.unlock();
+  /** Unlock the battle and its menu */
+  public unlock() {
+    this._menu.unlock();
   }
 
   /* Relocates camera, hero, and foe positions based on the screen resolution */
