@@ -48,9 +48,12 @@
       "active": false
     },
     "allowlist": {
-      "all": true,
       "fs": {
+        "all": true,
         "scope": ["$DATA", "$DATA/*"]
+      },
+      "path": {
+        "all": true
       }
     },
     "windows": [
