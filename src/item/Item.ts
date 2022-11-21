@@ -34,7 +34,6 @@ class Item implements OffsetDrawable {
     }
 
     const sprite = getImagePath(this._config.ui.sprite);
-    // TODO: streamline how scaling is handled
     const sprite_scale = scale(this._config.ui?.scale ?? 1);
     const ratio = new Vector(1, 1);
     const fps = 0;

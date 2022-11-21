@@ -1,7 +1,8 @@
+import InvalidDataError from "@/error/InvalidDataError";
 import TextBuffer from "@/ui/dialogue/TextBuffer";
-import { Vector } from "excalibur";
 import { MenuItem } from "../MenuItem";
 import { MenuRenderConfig } from "./types";
+import { Vector } from "excalibur";
 import { isInventoryItem } from "../Inventory";
 
 /**
@@ -37,11 +38,6 @@ export function render<T>(
       config,
       item
     );
-
-    if (!detail_size) {
-      // TODO: This should never happen; remove this check
-      throw new Error("missing detail_size. this should not happen");
-    }
 
     detail_offset = new Vector(0, detail_size.y - font.size / 2);
     menu_offset = new Vector(detail_size.x, 0);
@@ -83,7 +79,9 @@ function _drawDetails<T>(
   const { font, logic } = config;
 
   if (!isInventoryItem(source)) {
-    return;
+    throw new InvalidDataError(
+      `Tried to draw details of an inventory item but source is not an inventory item`
+    );
   }
 
   // y-value is not known until the description renders

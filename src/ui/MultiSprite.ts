@@ -26,8 +26,6 @@ export const MultiSprite = <T extends Constructor>(Base: T) =>
     /** Saved direction to restore to later on */
     protected _saved_direction: Nullable<Direction> = null;
 
-    // TODO this relies on excalibur graphics but it's types locally as any
-
     /** Save the direction of an actor */
     public saveDirection() {
       this._saved_direction = this.direction;
