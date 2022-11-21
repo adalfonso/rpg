@@ -9,6 +9,7 @@ import { PlayerState } from "@schema/actor/PlayerSchema";
 import { Stateful } from "@/interfaces";
 import { TiledTemplate } from "./types";
 import { bus, EventType } from "@/event/EventBus";
+import { toTiledTemplate } from "@/util";
 /**
  * Scales down player's velocity when they are moving diagonally
  * n.b. since we adjust the player's position on postupdate this modifier
@@ -28,6 +29,44 @@ export class Player extends Actor implements Stateful<PlayerState> {
 
   /** Pet owned by the player */
   private _pet: Nullable<Pet> = null;
+
+  /**
+   * Create a new Player from some Actor instance
+   *
+   * @param actor - Actor instance
+   * @param game - game engine instance
+   * @returns new player
+   */
+  public static fromActor(actor: Actor, game: ex.Engine) {
+    return new Player(
+      { template: actor.template, args: {}, speed: 0 },
+      game
+    ).init();
+  }
+
+  /**
+   * Create a new player from their save state
+   *
+   * @param member member's save state
+   * @returns new player
+   */
+  public static fromState(member: PlayerState, game: ex.Engine) {
+    return new Player(
+      {
+        template: toTiledTemplate({
+          x: 0,
+          y: 0,
+          height: member.height,
+          width: member.width,
+          name: member.name,
+          class: member.class,
+        }),
+        args: {},
+        speed: 0,
+      },
+      game
+    ).init();
+  }
 
   /**
    * Create a new Player instance
