@@ -2,22 +2,17 @@ import * as ex from "excalibur";
 import Battle from "./combat/Battle";
 import BattleBuilder from "./combat/BattleBuilder";
 import MissingDataError from "./error/MissingDataError";
-import menus from "./menu/menus";
 import { DialogueMediator } from "./ui/dialogue/DialogueMediator";
 import { Enemy } from "./actor/Enemy";
 import { Entry } from "./inanimate/Entry";
 import { FixtureFactory } from "./fixture/FixtureFactory";
 import { HeroTeam } from "./combat/HeroTeam";
-import { Inventory } from "./menu/Inventory";
 import { Item } from "./inanimate/Item";
-import { MenuType } from "./menu/types";
+import { MenuList } from "./menu/MenuFactory";
 import { NonPlayer } from "./actor/NonPlayer";
 import { Portal } from "./inanimate/Portal";
-import { StartMenu } from "./menu/StartMenu";
 import { TiledMapResource as TiledMap } from "@excaliburjs/plugin-tiled";
 import { bus, EventType } from "./event/EventBus";
-import { createEquipper } from "./combat/EquipperFactory";
-import { createSubMenu } from "./menu/MenuFactory";
 import { getMapFromName, scale } from "./util";
 import { path } from "@tauri-apps/api";
 import {
@@ -43,12 +38,6 @@ const BATTLE_SCENE_NAME = "_battle";
 
 // TODO: should this implement lockable?
 export class Mediator {
-  /** Main game menu */
-  private _main_menu: StartMenu;
-
-  /** Inventory menu */
-  private _inventory: Inventory;
-
   /** Fixtures in the current scene */
   private _fixtures: LevelFixture[] = [];
 
@@ -62,24 +51,17 @@ export class Mediator {
    * @param _game - engine instance
    * @param _heroes - all protagonist members
    * @param _dialogue_mediator - coordinates dialogue between actors
+   * @param _menus - list of menus needed, (start, inventory)
    */
   constructor(
     private _game: ex.Engine,
     private _heroes: HeroTeam,
-    private _dialogue_mediator: DialogueMediator
+    private _dialogue_mediator: DialogueMediator,
+    private _menus: MenuList
   ) {
     bus.register(this);
 
     this._game.on("postupdate", this._cleanupFixtures.bind(this));
-
-    const { start, inventory } = menus;
-    const equipper = createEquipper(this._heroes);
-
-    this._main_menu = new StartMenu(createSubMenu(MenuType.Start)(start()));
-    this._inventory = new Inventory(
-      createSubMenu(MenuType.Inventory)(inventory()),
-      equipper
-    );
 
     this._game.on("preupdate", ({ delta: dt }) => {
       this._dialogue_mediator.update(dt);
@@ -100,12 +82,12 @@ export class Mediator {
 
       this._dialogue_mediator.draw(evt.ctx, resolution);
 
-      if (this._main_menu.active) {
-        this._main_menu.draw(evt.ctx, resolution);
+      if (this._menus.start.active) {
+        this._menus.start.draw(evt.ctx, resolution);
       }
 
-      if (this._inventory.active) {
-        this._inventory.draw(evt.ctx, resolution);
+      if (this._menus.inventory.active) {
+        this._menus.inventory.draw(evt.ctx, resolution);
       }
 
       if (this._game.currentScene instanceof Battle) {
@@ -113,7 +95,7 @@ export class Mediator {
       }
     });
 
-    this._main_menu.open();
+    this._menus.start.open();
   }
 
   /** Current player from the team */
@@ -384,11 +366,11 @@ export class Mediator {
     this.player.lock();
 
     if (state !== GameState.Inventory) {
-      this._inventory.lock();
+      this._menus.inventory.lock();
     }
 
     if (state !== GameState.StartMenu) {
-      this._main_menu.lock();
+      this._menus.start.lock();
     }
   }
 
@@ -402,8 +384,8 @@ export class Mediator {
       return;
     }
     this.player.unlock();
-    this._inventory.unlock();
-    this._main_menu.unlock();
+    this._menus.inventory.unlock();
+    this._menus.start.unlock();
     this._state = GameState.Play;
   }
 }

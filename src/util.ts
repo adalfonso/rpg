@@ -203,4 +203,4 @@ export const degreesToRadian = (degrees: number) => degrees * (Math.PI / 180);
  * @param figure - number to scale up
  * @returns scaled figure
  */
-export const scale = (figure: number = 1) => figure * config.scale;
+export const scale = (figure = 1) => figure * config.scale;

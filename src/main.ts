@@ -6,6 +6,8 @@ import { HeroTeam } from "./combat/HeroTeam";
 import { Mediator } from "./Mediator";
 import { Pet } from "./actor/Pet";
 import { Player } from "./actor/Player";
+import { createEquipper } from "./combat/EquipperFactory";
+import { createMenus } from "./menu/MenuFactory";
 import { path } from "@tauri-apps/api";
 import { state } from "@/state/StateManager";
 import { toTiledTemplate, loadImages, resolveSaveData, scale } from "@/util";
@@ -60,10 +62,12 @@ const main = async () => {
   player.adoptPet(doggo);
 
   const heroes = await new HeroTeam([player], engine).init();
+  const equipper = createEquipper(heroes);
+  const menus = createMenus(equipper);
   const dialogue = new DialogueMediator(heroes);
   const images = loadImages();
   const loader = new ex.Loader(Object.values(images));
-  const mediator = new Mediator(engine, heroes, dialogue);
+  const mediator = new Mediator(engine, heroes, dialogue, menus);
 
   await mediator.start(loader);
 };

@@ -1,7 +1,10 @@
 import MissingDataError from "@/error/MissingDataError";
+import menus, { MenuItemTemplate, MenuTemplate } from "./menus";
+import { EquipperFactory } from "@/combat/EquipperFactory";
+import { Inventory } from "./Inventory";
 import { MenuItem } from "./MenuItem";
-import { MenuItemTemplate, MenuTemplate } from "./menus";
 import { MenuType } from "./types";
+import { StartMenu } from "./StartMenu";
 import { SubMenu } from "./SubMenu";
 import { manifest } from "./ui/manifest";
 
@@ -48,3 +51,22 @@ export const createMenuItem =
 
     return new MenuItem(template, menu_type, renderer.item);
   };
+
+export interface MenuList {
+  start: StartMenu;
+  inventory: Inventory;
+}
+
+/**
+ * Create the common menus used in the game
+ *
+ * @param equipper - factory to establish how the inventory can equip weapons
+ * @returns menus
+ */
+export const createMenus = (equipper: EquipperFactory): MenuList => ({
+  start: new StartMenu(createSubMenu(MenuType.Start)(menus.start())),
+  inventory: new Inventory(
+    createSubMenu(MenuType.Inventory)(menus.inventory()),
+    equipper
+  ),
+});
