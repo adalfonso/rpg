@@ -16,9 +16,6 @@ export class Enemy extends Actor {
   constructor(template: TiledTemplate) {
     super(template, { collisionType: ex.CollisionType.Fixed });
 
-    // TODO: make configurable when needed
-    this.direction = Direction.West;
-
     this._resolveState();
 
     this.on("collisionstart", (evt) => {
@@ -55,7 +52,7 @@ export class Enemy extends Actor {
    * @emits battle.start
    */
   public fight() {
-    if (this._defeated) {
+    if (this._defeated || this.in_combat) {
       return;
     }
 

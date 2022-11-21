@@ -177,23 +177,6 @@ export class Mediator {
             );
           }
 
-          // TODO: Fix this. It happens when the player collides with an enemy
-          // during battle. Check Enemy class for collision event.
-          if (this._game.currentScene instanceof Battle) {
-            console.warn(
-              "Trying to start a battle but one is currently underway"
-            );
-
-            return;
-          }
-
-          /**
-           * TODO: in the future, check if a battle will ever be started while
-           * another battle is already underway. If an enemy jumps on the player
-           * during a battle animation, it is plausible that battle.start would
-           * occur.
-           */
-
           const battle = await BattleBuilder.create(
             this._heroes,
             e.detail.enemy,

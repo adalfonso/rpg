@@ -462,11 +462,13 @@ class Battle extends ex.Scene implements Lockable {
     this._heroes.each((hero: Actor) => {
       hero.restorePosition();
       hero.restoreDirection();
+      hero.in_combat = false;
     });
 
     this._foes.each((foe: Actor) => {
       foe.restorePosition();
       foe.restoreDirection();
+      foe.in_combat = false;
 
       /**
        * This logic is for when a player runs away from battle. We don't want to

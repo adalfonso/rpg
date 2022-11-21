@@ -60,6 +60,7 @@ class Team<M extends Actor> {
       member.savePosition();
       member.saveDirection();
       member.direction = direction;
+      member.in_combat = true;
       member.lock();
     });
     this.cycle();

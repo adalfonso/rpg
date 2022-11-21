@@ -50,6 +50,9 @@ export abstract class Actor
   /** If the actor is in dialogue */
   public in_dialogue = false;
 
+  /** If the actor is in combat */
+  public in_combat = false;
+
   /**
    * Create a new Actor-based instance
    *
