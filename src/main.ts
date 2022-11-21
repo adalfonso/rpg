@@ -11,6 +11,7 @@ import { createMenus } from "./menu/MenuFactory";
 import { path } from "@tauri-apps/api";
 import { state } from "@/state/StateManager";
 import { toTiledTemplate, loadImages, resolveSaveData, scale } from "@/util";
+import { FixtureMediator } from "./fixture/FixtureMediator";
 
 const main = async () => {
   const canvasElement = <HTMLCanvasElement>document.getElementById("game");
@@ -67,7 +68,8 @@ const main = async () => {
   const dialogue = new DialogueMediator(heroes);
   const images = loadImages();
   const loader = new ex.Loader(Object.values(images));
-  const mediator = new Mediator(engine, heroes, dialogue, menus);
+  const fixtures = new FixtureMediator(engine);
+  const mediator = new Mediator(engine, heroes, dialogue, menus, fixtures);
 
   await mediator.start(loader);
 };

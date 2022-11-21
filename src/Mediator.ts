@@ -5,22 +5,14 @@ import MissingDataError from "./error/MissingDataError";
 import { DialogueMediator } from "./ui/dialogue/DialogueMediator";
 import { Enemy } from "./actor/Enemy";
 import { Entry } from "./inanimate/Entry";
-import { FixtureFactory } from "./fixture/FixtureFactory";
+import { FixtureMediator } from "./fixture/FixtureMediator";
 import { HeroTeam } from "./combat/HeroTeam";
-import { Item } from "./inanimate/Item";
 import { MenuList } from "./menu/MenuFactory";
-import { NonPlayer } from "./actor/NonPlayer";
 import { Portal } from "./inanimate/Portal";
 import { TiledMapResource as TiledMap } from "@excaliburjs/plugin-tiled";
 import { bus, EventType } from "./event/EventBus";
 import { getMapFromName, scale } from "./util";
 import { path } from "@tauri-apps/api";
-import {
-  isFixtureType,
-  LevelFixture,
-  FixtureType,
-  isLevelFixture,
-} from "./fixture/Fixture";
 
 /** Different states a game can be in */
 enum GameState {
@@ -38,9 +30,6 @@ const BATTLE_SCENE_NAME = "_battle";
 
 // TODO: should this implement lockable?
 export class Mediator {
-  /** Fixtures in the current scene */
-  private _fixtures: LevelFixture[] = [];
-
   /** Current state of game */
   private _state = GameState.Play;
 
@@ -52,12 +41,14 @@ export class Mediator {
    * @param _heroes - all protagonist members
    * @param _dialogue_mediator - coordinates dialogue between actors
    * @param _menus - list of menus needed, (start, inventory)
+   * @param _fixtures - fixture mediator
    */
   constructor(
     private _game: ex.Engine,
     private _heroes: HeroTeam,
     private _dialogue_mediator: DialogueMediator,
-    private _menus: MenuList
+    private _menus: MenuList,
+    private _fixtures: FixtureMediator
   ) {
     bus.register(this);
 
@@ -106,9 +97,9 @@ export class Mediator {
 
     map.addTiledMapToScene(scene);
 
-    await this._addFixtures(map, scene);
+    await this._fixtures.add(map, scene);
 
-    const origin = this._fixtures.find(
+    const origin = this._fixtures.all.find(
       (fixture) => fixture instanceof Entry && fixture.name === "origin"
     );
 
@@ -130,13 +121,12 @@ export class Mediator {
    * Remove current level information from the mediator
    *
    * We will not persist level info (fixtures) on the mediator because we don't
-   * want t them handle events by accident. Additionally we will remove the
+   * want to them handle events by accident. Additionally we will remove the
    * scene from the game since it is performant enough to recreate it on the
    * fly.
    */
   private _removeCurrentLevel() {
-    this._fixtures.forEach((fixture) => bus.unregister(fixture));
-    this._fixtures = [];
+    this._fixtures.clear();
     this._game.remove(this._game.currentScene);
   }
 
@@ -288,7 +278,7 @@ export class Mediator {
    * @param evt - post-update event
    */
   private _onPostUpdate(_evt: ex.PostUpdateEvent<ex.Engine>) {
-    this._cleanupFixtures();
+    this._fixtures.clean(this._game);
   }
 
   /**
@@ -327,56 +317,6 @@ export class Mediator {
     if (this._game.currentScene instanceof Battle) {
       this._game.currentScene.drawPost(evt.ctx, resolution);
     }
-  }
-
-  /** Cleanup any stale fixtures once per update */
-  private _cleanupFixtures() {
-    const removed = this._fixtures.filter(
-      (fixture) =>
-        (fixture instanceof Item && fixture.obtained) ||
-        (fixture instanceof NonPlayer && fixture.isExpired)
-    );
-
-    removed.forEach((fixture) => this._game.remove(fixture));
-
-    this._fixtures = this._fixtures.filter(
-      (fixture) => !removed.includes(fixture)
-    );
-  }
-
-  /**
-   * Add level fixtures to a scene from a Tiled map
-   *
-   * @param map - Tiled map
-   * @param scene - new scene
-   */
-  private async _addFixtures(map: TiledMap, scene: ex.Scene) {
-    const fixture_factory = new FixtureFactory();
-
-    const fixtures = await Promise.all(
-      map.data
-        .getExcaliburObjects()
-        .filter(({ name }) => isFixtureType(name ?? ""))
-        .map(({ name, objects }) => {
-          return objects.map((object) => {
-            if (object.class === undefined) {
-              object.class === name;
-            }
-
-            return fixture_factory.create(name as FixtureType, object);
-          });
-        })
-        .flat()
-    );
-
-    this._fixtures = fixtures.filter(isLevelFixture);
-    this._fixtures.forEach(async (fixture) => {
-      if ("init" in fixture) {
-        await fixture.init();
-      }
-
-      scene.add(fixture);
-    });
   }
 
   /**
