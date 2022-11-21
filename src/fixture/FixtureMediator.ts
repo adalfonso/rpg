@@ -1,6 +1,6 @@
 import * as ex from "excalibur";
-import Item from "@/item/Item";
 import { FixtureFactory } from "./FixtureFactory";
+import { Item } from "@/inanimate/Item";
 import { NonPlayer } from "@/actor/NonPlayer";
 import { TiledMapResource as TiledMap } from "@excaliburjs/plugin-tiled";
 import { bus } from "@/event/EventBus";
@@ -71,9 +71,7 @@ export class FixtureMediator {
   public clean() {
     const removed = this._fixtures.filter(
       (fixture) =>
-        (fixture instanceof Item &&
-          "obtained" in fixture &&
-          fixture.obtained) ||
+        (fixture instanceof Item && fixture.obtained) ||
         (fixture instanceof NonPlayer && fixture.isExpired)
     );
 

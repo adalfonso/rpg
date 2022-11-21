@@ -64,7 +64,7 @@ export class Item extends MultiSprite(ex.Actor) implements Stateful<ItemState> {
     this._resolveState();
 
     this.on("collisionstart", (evt) => {
-      if (!(evt.other instanceof Player)) {
+      if (this.obtained || !(evt.other instanceof Player)) {
         return;
       }
 
