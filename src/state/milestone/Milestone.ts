@@ -22,13 +22,13 @@ export class Milestone implements Stateful<MilestoneState> {
   private _config: MilestoneConfig;
 
   /**
-   * @param _id - id ref of the milestone
+   * @param ref - id ref of the milestone
    */
-  constructor(private _id: string) {
-    this._config = milestones()[_id];
+  constructor(readonly ref: string) {
+    this._config = milestones()[ref];
 
     if (this._config === undefined) {
-      throw new MissingDataError(`Cannot locate milestone for ref "${_id}"`);
+      throw new MissingDataError(`Cannot locate milestone for ref "${ref}"`);
     }
 
     this._resolveState();
@@ -37,7 +37,7 @@ export class Milestone implements Stateful<MilestoneState> {
   /** State lookup key */
   // TODO: need to detect collisions with state
   get state_ref() {
-    return `milestones.${this._id}`;
+    return `milestones.${this.ref}`;
   }
 
   /** Attain the milestone */
@@ -56,7 +56,7 @@ export class Milestone implements Stateful<MilestoneState> {
 
     this._attained = true;
 
-    state().mergeByRef(`milestones.${this._id}`, this.state);
+    state().mergeByRef(this.state_ref, this.state);
   }
 
   /** If the milestone has been attained (completed) */

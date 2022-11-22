@@ -74,7 +74,7 @@ class BattleBuilder {
 
     if (!teamType) {
       throw new MissingDataError(
-        `Could not find team type for enemy "${enemy.ref_id}".`
+        `Could not find team type for enemy "${enemy.ref}".`
       );
     }
 

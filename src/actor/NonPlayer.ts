@@ -75,7 +75,7 @@ export class NonPlayer extends Actor {
 
   /** State lookup key */
   get state_ref() {
-    return `nonPlayers.${this.ref_id}`;
+    return `nonPlayers.${this.ref}`;
   }
 
   /** If the NPC is expired and should be torn down */

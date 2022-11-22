@@ -19,19 +19,15 @@ class Weapon extends DamageDealing(
    * @param _template - weapon's template
    * @param _ui       - UI component of the weapon
    * @param _damage   - damage the weapon deals
-   * @param _id       - weapon type
+   * @param ref       - weapon type
    */
   constructor(
     protected _template: EntityConfig,
     protected _ui: Renderable,
     protected _damage: Damage,
-    private _id: string
+    readonly ref: string
   ) {
     super();
-  }
-
-  get ref(): string {
-    return this._id;
   }
 }
 

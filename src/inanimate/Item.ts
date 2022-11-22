@@ -23,14 +23,8 @@ export class Item extends MultiSprite(ex.Actor) implements Stateful<ItemState> {
   /** Game-related info about the item */
   private _config: ItemConfig;
 
-  /** Unique identifier */
-  private _id: string;
-
   /** If the item was picked up */
   private _obtained = false;
-
-  /** The item reference*/
-  private _ref: string;
 
   /**
    * Create a new Item instance
@@ -53,9 +47,6 @@ export class Item extends MultiSprite(ex.Actor) implements Stateful<ItemState> {
     this._setSprites(this.getUiInfo(), this._template).then(() => {
       this.direction = Direction.South;
     });
-
-    this._ref = this._template.class;
-    this._id = this._template.name;
 
     if (this._config.ui.animation) {
       this._animation = animation_factory(this._config.ui.animation)(this.size);
@@ -102,11 +93,6 @@ export class Item extends MultiSprite(ex.Actor) implements Stateful<ItemState> {
     this.pos = this.pos.add(delta);
   }
 
-  /** The item reference */
-  get ref() {
-    return this._ref;
-  }
-
   /** If the item was picked up */
   get obtained() {
     return this._obtained;
@@ -114,15 +100,20 @@ export class Item extends MultiSprite(ex.Actor) implements Stateful<ItemState> {
 
   /** Get the name used for the item when rendering dialogue */
   get displayAs() {
-    return this.ref
+    return this._template.class
       .split("_")
       .map((s) => ucFirst(s))
       .join(" ");
   }
 
+  /** General lookup key */
+  get ref() {
+    return this._template.name;
+  }
+
   /** State lookup key */
   get state_ref() {
-    return `items.${this._id}`;
+    return `items.${this.ref}`;
   }
 
   /** Current data state */
@@ -138,7 +129,7 @@ export class Item extends MultiSprite(ex.Actor) implements Stateful<ItemState> {
 
     this._obtained = true;
 
-    state().mergeByRef(`items.${this._id}`, this.state);
+    state().mergeByRef(this.state_ref, this.state);
   }
 
   /**

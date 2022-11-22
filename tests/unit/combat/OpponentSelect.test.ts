@@ -41,7 +41,7 @@ describe("OpponentSelect", () => {
 
       const select = new OpponentSelect(new Team(enemies));
 
-      expect(select.selected.ref_id).toBe("e1");
+      expect(select.selected.ref).toBe("e1");
     });
 
     it("selects the previous opponent", () => {
@@ -60,13 +60,13 @@ describe("OpponentSelect", () => {
         key: "ArrowLeft",
       } as KeyboardEvent);
 
-      expect(select.selected.ref_id).toBe("e3");
+      expect(select.selected.ref).toBe("e3");
 
       listeners[EventType.Keyboard].keyup({
         key: "ArrowLeft",
       } as KeyboardEvent);
 
-      expect(select.selected.ref_id).toBe("e2");
+      expect(select.selected.ref).toBe("e2");
     });
 
     it("selects the previous opponent but not ones that are defeated", () => {
@@ -89,7 +89,7 @@ describe("OpponentSelect", () => {
         key: "ArrowLeft",
       } as KeyboardEvent);
 
-      expect(select.selected.ref_id).toBe("e2");
+      expect(select.selected.ref).toBe("e2");
     });
 
     it("selects the next opponent", () => {
@@ -109,12 +109,12 @@ describe("OpponentSelect", () => {
         key: "ArrowRight",
       } as KeyboardEvent);
 
-      expect(select.selected.ref_id).toBe("e2");
+      expect(select.selected.ref).toBe("e2");
       listeners[EventType.Keyboard].keyup({
         key: "ArrowRight",
       } as KeyboardEvent);
 
-      expect(select.selected.ref_id).toBe("e3");
+      expect(select.selected.ref).toBe("e3");
     });
 
     it("selects the next opponent but not ones that are defeated", () => {
@@ -137,7 +137,7 @@ describe("OpponentSelect", () => {
         key: "ArrowRight",
       } as KeyboardEvent);
 
-      expect(select.selected.ref_id).toBe("e3");
+      expect(select.selected.ref).toBe("e3");
     });
   });
 
@@ -155,11 +155,11 @@ describe("OpponentSelect", () => {
 
       const select = new OpponentSelect(new Team(enemies));
 
-      expect(select.selected.ref_id).toBe("e1");
+      expect(select.selected.ref).toBe("e1");
 
       select.resolveSelected();
 
-      expect(select.selected.ref_id).toBe("e3");
+      expect(select.selected.ref).toBe("e3");
     });
   });
 });

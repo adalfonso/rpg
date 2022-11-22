@@ -29,9 +29,6 @@ export abstract class Actor
   /** Battle abilities */
   private _abilities: AbilityList[];
 
-  /** Unique identifier */
-  protected _id: string;
-
   /** Game-related info about the actor */
   protected config: ActorConfig;
 
@@ -78,12 +75,15 @@ export abstract class Actor
       this.assignCustomProperties(_template.properties);
     }
 
-    this._id = _template.name;
-
     this._abilities = this._getAllAbilities().map(({ ref, level }) => ({
       level,
       ability: new AbilityFactory().createStrategy(ref),
     }));
+  }
+
+  /** General lookup key */
+  get ref() {
+    return this._template.name;
   }
 
   /**
@@ -96,12 +96,6 @@ export abstract class Actor
     this.direction = Direction.South;
 
     return this;
-  }
-
-  // TODO: wtf this. We need better consistency for ref, displayAs, etc
-  /** Get the actor's id */
-  get ref_id() {
-    return this._id;
   }
 
   /** Get the actor's defeated status */

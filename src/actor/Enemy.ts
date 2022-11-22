@@ -1,6 +1,5 @@
 import * as ex from "excalibur";
 import { Actor } from "./Actor";
-import { Direction } from "@/ui/types";
 import { Player } from "./Player";
 import { TiledTemplate } from "./types";
 import { bus } from "@/event/EventBus";
@@ -29,7 +28,7 @@ export class Enemy extends Actor {
 
   /** State lookup key */
   get state_ref() {
-    return `enemies.${this.ref_id}`;
+    return `enemies.${this.ref}`;
   }
 
   /** Get the string reference to the team type */
@@ -63,7 +62,7 @@ export class Enemy extends Actor {
   public kill() {
     this._defeated = true;
 
-    state().mergeByRef(`enemies.${this.ref_id}.defeated`, true);
+    state().mergeByRef(`${this.state_ref}.defeated`, true);
     super.kill();
   }
 }
