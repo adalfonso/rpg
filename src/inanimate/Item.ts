@@ -103,6 +103,11 @@ export class Item
     return this._obtained;
   }
 
+  /** General lookup key */
+  get class() {
+    return this._template.class;
+  }
+
   /** Get the name used for the item when rendering dialogue */
   get displayAs() {
     return this._template.class.split("_").map(_.upperFirst).join(" ");

@@ -120,7 +120,7 @@ export class Inventory extends Menu<InventoryMenuItem> implements Drawable {
             );
           }
 
-          this.store(new Item(item.ref));
+          this.store(new Item(item.class));
         },
       },
       [EventType.Keyboard]: {
