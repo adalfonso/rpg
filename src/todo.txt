@@ -3,4 +3,3 @@ feat: saving commits but doesnt force save. if we change how the state for
       something is calculated during deve it wont forcefully write the new data
       e.g. rename a field in the state, defeated -> killed, and both will persist
 bug: obtain item, obtain new team member, new team member cant equip item
-bug: multiple player has same item equipped

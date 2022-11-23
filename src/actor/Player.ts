@@ -150,22 +150,25 @@ export class Player extends Actor implements Stateful<PlayerState> {
             );
           }
 
-          if (equipment instanceof Weapon) {
-            this.equip(equipment);
+          if (!(equipment instanceof Weapon)) {
+            console.warn("Tried to equip non-weapon to player");
+            return;
           }
+
+          this.equip(equipment);
         },
 
         "equipment.unequip": (e: CustomEvent) => {
           const { equipment } = e.detail;
 
-          if (this.weapon !== equipment) {
-            return;
-          }
-
           if (!equipment) {
             throw new MissingDataError(
               `Player unable to unequip equipment because it is missing.`
             );
+          }
+
+          if (this.weapon !== equipment) {
+            return;
           }
 
           this.unequip();
@@ -227,18 +230,15 @@ export class Player extends Actor implements Stateful<PlayerState> {
    * Equip a weapon
    *
    * @param weapon - weapon to equip
-   * @param record - if this should be recorded to the state
    */
-  protected equip(weapon: Weapon, record = true) {
+  protected equip(weapon: Weapon) {
     if (weapon === this.weapon) {
       return;
     }
 
     super.equip(weapon);
 
-    if (record) {
-      bus.emit("team.save", { actor: this });
-    }
+    bus.emit("team.save", { actor: this });
   }
 
   /** Register main keyboard controls */

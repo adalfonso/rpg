@@ -15,6 +15,7 @@ import { Movable, Resizable } from "@/actor/Entity";
 import { MultiSprite, SpriteOrientation } from "@/ui/MultiSprite";
 import { Nullable } from "@/types";
 import { actors } from "./actors";
+import { bus } from "@/event/EventBus";
 import { getImagePath, scale } from "@/util";
 import { state } from "@/state/StateManager";
 
@@ -248,6 +249,8 @@ export abstract class Actor
     }
 
     this.weapon = null;
+
+    bus.emit("team.save", { actor: this });
   }
 
   /**
