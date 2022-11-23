@@ -10,26 +10,6 @@ import { fs, path } from "@tauri-apps/api";
 import { isRecord } from "./types";
 
 /**
- * Lowercase the first character of a string
- *
- * @param input - string to format
- *
- * @return formatted string
- */
-export const lcFirst = (input: string): string =>
-  input.charAt(0).toLowerCase() + input.slice(1);
-
-/**
- * Uppercase the first character of a string
- *
- * @param input - string to format
- *
- * @return formatted string
- */
-export const ucFirst = (input: string): string =>
-  input.charAt(0).toUpperCase() + input.slice(1);
-
-/**
  * Merge two objects together
  *
  * If duplicates are found, favor the second object.
@@ -70,41 +50,6 @@ export const merge = (
   }
 
   return obj1;
-};
-
-type AnimationCallback = (dt: number) => void;
-
-/**
- * Create an animation frame loop
- *
- * @param callback - callback to perform on each frame render
- */
-export const startAnimation = (callback: AnimationCallback) => {
-  let lastTime = 0;
-
-  const frame: FrameRequestCallback = (time: number) => {
-    const dt = time - lastTime;
-    lastTime = time;
-
-    callback(dt);
-    requestAnimationFrame(frame);
-  };
-
-  requestAnimationFrame(frame);
-};
-
-/**
- * Clone an object with JSON stringify/parse method
- *
- * NOTE: Complex objects may not be preserved during string conversion. This
- * should only be used when the object is naturally JSON-like.
- *
- * @param input - input data
- *
- * @return cloned data
- */
-export const cloneByStringify = (input: unknown): unknown => {
-  return JSON.parse(JSON.stringify(input));
 };
 
 /**

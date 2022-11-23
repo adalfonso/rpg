@@ -1,4 +1,5 @@
 import * as ex from "excalibur";
+import _ from "lodash";
 import { Animation, AnimationType } from "@/ui/animation/Animation";
 import { AnimationFactory } from "@/ui/animation/AnimationFactory";
 import { CollisionType } from "excalibur";
@@ -12,9 +13,9 @@ import { Resizable } from "@/actor/Entity";
 import { Stateful } from "@/interfaces";
 import { TiledTemplate } from "@/actor/types";
 import { bus } from "@/event/EventBus";
+import { getImagePath } from "@/util";
 import { isItemState, ItemState } from "@schema/inanimate/ItemSchema";
 import { state } from "@/state/StateManager";
-import { ucFirst, getImagePath } from "@/util";
 
 /** An item in the context of a map/level */
 export class Item
@@ -104,10 +105,7 @@ export class Item
 
   /** Get the name used for the item when rendering dialogue */
   get displayAs() {
-    return this._template.class
-      .split("_")
-      .map((s) => ucFirst(s))
-      .join(" ");
+    return this._template.class.split("_").map(_.upperFirst).join(" ");
   }
 
   /** General lookup key */

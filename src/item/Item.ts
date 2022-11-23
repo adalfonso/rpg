@@ -1,10 +1,11 @@
 import MissingDataError from "@/error/MissingDataError";
 import Renderable from "@/ui/Renderable";
+import _ from "lodash";
 import items from "@/item/items";
 import { ItemConfig } from "./types";
 import { OffsetDrawable } from "@/interfaces";
 import { Vector } from "excalibur";
-import { ucFirst, getImagePath, scale } from "@/util";
+import { getImagePath, scale } from "@/util";
 
 /** An item in the context of an inventory */
 class Item implements OffsetDrawable {
@@ -53,10 +54,7 @@ class Item implements OffsetDrawable {
 
   /** Get the name used when rendering dialogue */
   get displayAs(): string {
-    return this._ref
-      .split("_")
-      .map((s) => ucFirst(s))
-      .join(" ");
+    return this._ref.split("_").map(_.upperFirst).join(" ");
   }
 
   /** Get the item's ref */

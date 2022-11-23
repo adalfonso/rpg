@@ -1,9 +1,9 @@
 import Item from "@/item/Item";
+import _ from "lodash";
 import menus, { MenuTemplate } from "@/menu/menus";
 import { EquipperFactory } from "@/combat/EquipperFactory";
 import { Inventory, InventoryMenuItem } from "@/menu/Inventory";
 import { MenuType } from "@/menu/types";
-import { cloneByStringify } from "@/util";
 import { createSubMenu } from "@/menu/MenuFactory";
 import { state } from "@/state/StateManager";
 
@@ -51,7 +51,7 @@ describe("Inventory", () => {
 
       let sut = getSut();
 
-      let expected = cloneByStringify(inventoryState);
+      let expected = _.cloneDeep(inventoryState);
 
       expect(sut.state).toEqual(expected);
     });
@@ -59,7 +59,7 @@ describe("Inventory", () => {
 });
 
 const getSut = () => {
-  let menu = cloneByStringify(menus.inventory());
+  let menu = _.cloneDeep(menus.inventory());
   return new Inventory(
     createSubMenu(MenuType.Inventory)(menu as MenuTemplate<InventoryMenuItem>),
     (() => ({ menu: () => [] })) as unknown as EquipperFactory

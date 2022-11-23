@@ -1,45 +1,11 @@
-import {
-  lcFirst,
-  ucFirst,
-  merge,
-  cloneByStringify,
-  resolveSaveData,
-} from "@/util";
 import { fs, path } from "@tauri-apps/api";
+import { merge, resolveSaveData } from "@/util";
 
 afterEach(() => {
   jest.clearAllMocks();
 });
 
 describe("util", () => {
-  describe("lcFirst", () => {
-    it("lowercases the first character of a string", () => {
-      [
-        ["cat", "cat"],
-        ["CAT", "cAT"],
-        ["CAt", "cAt"],
-      ].forEach((data) => {
-        let [input, expected] = data;
-
-        expect(lcFirst(input)).toBe(expected);
-      });
-    });
-  });
-
-  describe("ucFirst", () => {
-    it("lowercases the first character of a string", () => {
-      [
-        ["cat", "Cat"],
-        ["CAT", "CAT"],
-        ["cAt", "CAt"],
-      ].forEach((data) => {
-        let [input, expected] = data;
-
-        expect(ucFirst(input)).toBe(expected);
-      });
-    });
-  });
-
   describe("merge", () => {
     it("merges two objects together", () => {
       let obj1 = { things: { thing1: 1, thing2: 2 } };
@@ -111,25 +77,6 @@ describe("util", () => {
       };
 
       expect(merged).toEqual(expected);
-    });
-  });
-
-  describe("cloneByStringify", () => {
-    it("clones a basic object", () => {
-      let input: any = {
-        number: 1,
-        boolean: true,
-        empty: null,
-        nested: {
-          nestedProp: "nestedProp",
-        },
-        array: [1, 2, 3, 4, true, "TRUE"],
-      };
-
-      let clone = cloneByStringify(input);
-
-      expect(input).toEqual(clone);
-      expect(input).not.toBe(clone);
     });
   });
 
