@@ -56,13 +56,9 @@ class Team<M extends Actor> {
    */
   public prepare(direction: Direction) {
     this._members.forEach((member) => {
-      // TODO: Look into a general save method instead
-      member.savePosition();
-      member.saveDirection();
-      member.direction = direction;
-      member.in_combat = true;
-      member.lock();
+      member.onBattleStart(direction);
     });
+
     this.cycle();
   }
 

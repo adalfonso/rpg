@@ -50,6 +50,9 @@ export abstract class Actor
   /** If the actor is in combat */
   public in_combat = false;
 
+  /** Saved Collision Type */
+  private _saved_collision_type: Nullable<ex.CollisionType> = null;
+
   /**
    * Create a new Actor-based instance
    *
@@ -161,6 +164,30 @@ export abstract class Actor
     this.locked = false;
     this.vel = this._saved_velocity.clone();
     this._saved_velocity = ex.Vector.Zero;
+  }
+
+  /**
+   * Prepare the actor for battle
+   *
+   * @param direction - direction actor should face
+   */
+  public onBattleStart(direction: Direction) {
+    this._savePosition();
+    this._saveDirection();
+    this._saveCollisionType();
+    this.direction = direction;
+    this.in_combat = true;
+    this.body.collisionType = ex.CollisionType.Passive;
+    this.lock();
+  }
+
+  /** Restore the actor's properties for the overworld */
+  public onBattleEnd() {
+    this._restorePosition();
+    this._restoreDirection();
+    this._restoreCollisionType();
+    this.in_combat = false;
+    this.unlock();
   }
 
   /**
@@ -283,5 +310,17 @@ export abstract class Actor
     if (lvl && typeof lvl === "string" && this.stats) {
       this.stats.lvl = +lvl;
     }
+  }
+
+  /* Save the collision type of the actor so it can be used later */
+  private _saveCollisionType() {
+    this._saved_collision_type = this.body.collisionType;
+  }
+
+  /** Restore the position of the actor */
+  private _restoreCollisionType() {
+    this.body.collisionType =
+      this._saved_collision_type ?? CollisionType.Active;
+    this._saved_collision_type = null;
   }
 }

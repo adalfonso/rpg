@@ -26,12 +26,12 @@ export const Movable = <T extends Constructor<{ pos: ex.Vector }>>(Base: T) =>
     }
 
     /* Save the position of the entity so it can be used later */
-    public savePosition() {
+    protected _savePosition() {
       this._saved_position = this.pos.clone();
     }
 
-    /** Restore the position of the entity*/
-    public restorePosition() {
+    /** Restore the position of the entity */
+    protected _restorePosition() {
       if (!this._saved_position) {
         console.warn(
           `Tried to restore position for Entity but saved position is null`

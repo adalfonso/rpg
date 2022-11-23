@@ -27,12 +27,12 @@ export const MultiSprite = <T extends Constructor>(Base: T) =>
     protected _saved_direction: Nullable<Direction> = null;
 
     /** Save the direction of an actor */
-    public saveDirection() {
+    protected _saveDirection() {
       this._saved_direction = this.direction;
     }
 
     /** Restore the direction of Actor */
-    public restoreDirection() {
+    protected _restoreDirection() {
       if (this._saved_direction === null) {
         throw new MissingDataError(
           "Tried to restore direction but saved direction was null"
