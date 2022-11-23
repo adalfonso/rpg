@@ -24,7 +24,8 @@
     "@excaliburjs/plugin-tiled": "^0.27.0",
     "@tauri-apps/api": "^1.2.0",
     "ajv": "^8.11.2",
-    "excalibur": "^0.27.0"
+    "excalibur": "^0.27.0",
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^1.2.0",
