@@ -17,7 +17,7 @@ export interface SpriteConfig {
   orientation: SpriteOrientation;
 }
 
-export const MultiSprite = <T extends Constructor>(Base: T) =>
+export const MultiSprite = <T extends Constructor<ex.Actor>>(Base: T) =>
   /** An entity that renders a series of sprites */
   class MultiSprite extends Base {
     /** List of all entity's sprites */

@@ -320,7 +320,7 @@ export abstract class Actor
   /** Restore the position of the actor */
   private _restoreCollisionType() {
     this.body.collisionType =
-      this._saved_collision_type ?? CollisionType.Active;
+      this._saved_collision_type ?? ex.CollisionType.Active;
     this._saved_collision_type = null;
   }
 }

@@ -8,6 +8,7 @@ import { ItemConfig } from "@/item/types";
 import { MultiSprite, SpriteOrientation } from "@/ui/MultiSprite";
 import { Nullable } from "@/types";
 import { Player } from "@/actor/Player";
+import { Resizable } from "@/actor/Entity";
 import { Stateful } from "@/interfaces";
 import { TiledTemplate } from "@/actor/types";
 import { bus } from "@/event/EventBus";
@@ -16,7 +17,10 @@ import { state } from "@/state/StateManager";
 import { ucFirst, getImagePath } from "@/util";
 
 /** An item in the context of a map/level */
-export class Item extends MultiSprite(ex.Actor) implements Stateful<ItemState> {
+export class Item
+  extends Resizable(MultiSprite(ex.Actor))
+  implements Stateful<ItemState>
+{
   /** Visual animation */
   private _animation: Nullable<Animation> = null;
 
