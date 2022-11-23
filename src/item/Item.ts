@@ -78,7 +78,7 @@ class Item implements OffsetDrawable {
       return;
     }
 
-    console.info("Tried to equip an item. This has not happend before");
+    console.warn("Tried to equip an item. This has not happend before");
   }
 
   /**

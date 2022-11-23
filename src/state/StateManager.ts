@@ -83,7 +83,7 @@ export class StateManager {
     const data_is_valid = guard(data);
 
     if (data && !data_is_valid) {
-      console.info(
+      console.warn(
         `Unexpected data in state for "${source.state_ref}". Merging in fresh data instead.`
       );
     }
@@ -182,7 +182,7 @@ export class StateManager {
         }
       }
     } catch (e) {
-      console.info(
+      console.warn(
         `Warning: Tried to remove a non-existent reference from the state manager: ${ref}`
       );
     }
