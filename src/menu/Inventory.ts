@@ -160,7 +160,9 @@ export class Inventory extends Menu<InventoryMenuItem> implements Drawable {
         weapon
       );
       const equipper = this._equipper(weapon);
-      const sub_menu = createSubMenu<Equipper>(MenuType.Equip)(equipper.menu);
+      const sub_menu = createSubMenu<Equipper>(MenuType.Equip)(
+        () => equipper.menu
+      );
 
       menu_item.overrideMenu(sub_menu);
 

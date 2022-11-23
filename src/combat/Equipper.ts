@@ -10,33 +10,31 @@ import { HeroTeam } from "./HeroTeam";
  **/
 export class TeamEquipper {
   /** Menu items */
-  private _items: Equipper[];
+  private _equippers: Map<string, Equipper> = new Map();
 
   /**
    * @param _team  team of actors who may be equipped with an item
    * @param _weapon an item that may be equipped
    */
-  constructor(private _team: HeroTeam, public _weapon: Weapon) {
-    /**
-     * Since the menu rendering process depends on exact object comparison, we
-     * should generate the "menu items" for this class so they won't be
-     * regenerated each time.
-     */
-    this._items = this._toMenu();
-  }
+  constructor(private _team: HeroTeam, public _weapon: Weapon) {}
 
   /** Obligatory menu to SubMenu pattern */
   get menu() {
-    return this._items;
+    this._refresh();
+
+    return Array.from(this._equippers.values());
   }
 
-  /**
-   * Convert the team into menu items
-   *
-   * @returns mapped team members
-   */
-  private _toMenu() {
-    return this._team.all().map((actor) => new Equipper(actor, this._weapon));
+  /** Add any new team members to the equipper map */
+  private _refresh() {
+    this._team.each((actor) => {
+      if (this._equippers.has(actor.ref)) {
+        return;
+      }
+
+      // TODO: Should this be keyed of state_ref, or will only actors hole equipment?
+      this._equippers.set(actor.ref, new Equipper(actor, this._weapon));
+    });
   }
 }
 
