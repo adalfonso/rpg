@@ -72,6 +72,24 @@ const main = async () => {
   const mediator = new Mediator(engine, heroes, dialogue, menus, fixtures);
 
   await mediator.start(loader);
+
+  const entity_graphics = new ex.Rectangle({
+    height: 20,
+    width: 200,
+    color: ex.Color.Red,
+  });
+  const comp = new ex.GraphicsComponent(entity_graphics);
+  // const body = new ex.BodyComponent({
+  //   type: ex.CollisionType.PreventCollision,
+  // });
+
+  const transform = new ex.TransformComponent();
+
+  // console.log({ body });
+  transform.pos = ex.vec(110, 110);
+
+  const entity = new ex.Entity([comp, transform], "bob");
+  engine.add(entity);
 };
 
 document.addEventListener("DOMContentLoaded", main);
