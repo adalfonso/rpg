@@ -4,7 +4,7 @@
 
 ### Project Setup
 
-This project uses [Tauri](https://github.com/tauri-apps/tauri). First must install required prerequisites as specified per your operating system [here](https://tauri.studio/docs/getting-started/prerequisites).
+This project uses [Tauri](https://github.com/tauri-apps/tauri). First must install required prerequisites as specified per your operating system [here](https://tauri.app/v1/guides/getting-started/prerequisites).
 
 Then install project dependencies:
 
